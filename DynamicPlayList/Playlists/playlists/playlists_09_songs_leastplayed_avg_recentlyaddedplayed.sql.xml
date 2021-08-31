@@ -1,0 +1,79 @@
+-- PlaylistName:Playlists - least played (average count)
+-- PlaylistGroups:Playlists
+-- PlaylistCategory:playlists
+-- PlaylistParameter1:list:Limit to playlists that contain recently PLAYED songs?:0:all playlists,1:playlists with recently played songs
+-- PlaylistParameter2:list:Limit to playlists that contain recently ADDED songs?:0:all playlists,1:playlists with recently added songs
+create temporary table dynamicplaylist_random_playlists as 
+	select leastavgplayed.playlist as playlist from
+		(select playlist_track.playlist as playlist, avg(ifnull(tracks_persistent.playCount,0)) as avgcount from playlist_track
+		join tracks on
+			tracks.url = playlist_track.track
+		join library_track on
+			library_track.track = tracks.id
+		join tracks_persistent on
+			tracks_persistent.urlmd5 = tracks.urlmd5
+		left join dynamicplaylist_history on
+			dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
+		where 
+			dynamicplaylist_history.id is null
+			and
+				case
+					when 'PlaylistParameter1'=1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyPlayed' DAY'))-tracks_persistent.lastPlayed) < 0)
+					else 1
+				end
+			and
+				case
+					when 'PlaylistParameter2'=1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-tracks_persistent.added) < 0)
+					else 1
+				end
+			and
+				case
+					when ('PlaylistCurrentVirtualLibraryForClient'!='' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
+					then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
+					else 1
+				end
+			and not exists (select * from tracks t2,genre_track,genres
+							where
+								t2.id=tracks.id and
+								tracks.id=genre_track.track and 
+								genre_track.genre=genres.id and
+								genres.name in ('PlaylistExcludedGenres'))
+		group by playlist_track.playlist
+			having
+				case
+					when 'PlaylistParameter2' = 1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-tracks_persistent.added) < 0)
+					else 1
+				end
+		order by avgcount asc, random()
+		limit 30) as leastavgplayed
+	order by random()
+	limit 1;
+select distinct tracks.url from tracks
+	join playlist_track on 
+		playlist_track.track = tracks.url
+	join dynamicplaylist_random_playlists on
+		dynamicplaylist_random_playlists.playlist = playlist_track.playlist
+	join library_track on
+		library_track.track = tracks.id
+	left join dynamicplaylist_history on
+		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
+	where
+		audio=1
+		and tracks.secs >= 'PlaylistTrackMinDuration'
+		and dynamicplaylist_history.id is null
+		and
+			case
+				when ('PlaylistCurrentVirtualLibraryForClient' != '' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
+				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
+				else 1
+			end
+		and not exists (select * from tracks t2,genre_track,genres
+						where
+							t2.id=tracks.id and
+							tracks.id=genre_track.track and 
+							genre_track.genre=genres.id and
+							genres.name in ('PlaylistExcludedGenres'))
+	group by tracks.id
+	order by random()
+	limit 'PlaylistLimit';
+drop table dynamicplaylist_random_playlists;

@@ -1,0 +1,38 @@
+[% BLOCK contentanchor %]
+	<p>[% content %]</p>
+[% END %]
+
+[% BLOCK controls %]
+	[% IF playlist.dynamicplaylistplugin == "Plugins::SQLPlayList::Plugin" %]
+		[% WRAPPER editlink noTarget=1 -%]href="[% webroot %][% playlist.url %]&player=[% player | uri %]"[%- END %]
+	[%- END %]
+	[% IF !playlist.dynamicplaylistid %]
+		[%
+			itemobj = {
+				url = "dynamicplaylist://${playlist.dynamicplaylistid}"
+				title = "${playlist.name}"
+			};
+			PROCESS favoritescontrol isFavorite = playlist.isFavorite
+		%]
+	[% END %]
+	[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="0" parameters=playlist.parameters %]
+	[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="1" parameters=playlist.parameters %]
+[% END %]
+
+[% BLOCK dpcontentcontainer %]
+	[% WRAPPER contentcontainer %]
+		[% content %]
+	[% END %]
+[% END %]
+
+[% BLOCK dpcontentitemgroup %]
+	<a href="[% webroot %]plugins/DynamicPlayList/dynamicplaylist_list.html?[% group.url %]&player=[% player | uri %]">[% group.name %]/</a>
+[% END %]
+
+[% BLOCK dpcontentitemplaylist %]
+	[% IF playlist.url %]
+		<a href="[% webroot %][% playlist.url %]&player=[% player | uri %][% playlist.urlcontext %]">[% playlist.name %]</a>
+	[% ELSE %]
+		[% playlist.name %]
+	[% END %]
+[% END %]

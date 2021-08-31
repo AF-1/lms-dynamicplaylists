@@ -1,0 +1,81 @@
+-- PlaylistName:Songs - random with rated percentage   (from this DECADE)
+-- PlaylistGroups:Context menu lists/ decade
+-- PlaylistMenuListType:contextmenu
+-- PlaylistCategory:years
+-- PlaylistParameter1:year:Select year:
+-- PlaylistParameter2:list:Select percentage of rated songs:0:0%,10:10%,20:20%,30:30%,40:40%,50:50%,60:60%,70:70%,80:80%,90:90%,100:100%
+-- PlaylistParameter3:list:Choose songs to include:0:all songs,1:unplayed,2:played
+drop table if exists randomweightedratingshigh;
+drop table if exists randomweightedratingslow;
+drop table if exists randomweightedratingscombined;
+create temporary table randomweightedratingslow as select distinct tracks.url as url from tracks
+	join library_track on
+		library_track.track = tracks.id
+	join tracks_persistent on
+		tracks_persistent.urlmd5 = tracks.urlmd5 and (tracks_persistent.rating = 0 or tracks_persistent.rating is null)
+	left join dynamicplaylist_history on
+		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
+	where
+		audio=1
+		and tracks.year>=cast((('PlaylistParameter1'/10)*10) as int) and tracks.year<(cast((('PlaylistParameter1'/10)*10) as int)+10)
+		and tracks.secs >= 'PlaylistTrackMinDuration'
+		and dynamicplaylist_history.id is null
+		and
+			case
+				when ('PlaylistCurrentVirtualLibraryForClient'!='' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
+				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
+				else 1
+			end
+		and
+			case
+				when 'PlaylistParameter3'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
+				when 'PlaylistParameter3'=2 then tracks_persistent.playCount > 0
+				else 1
+			end
+		and not exists (select * from tracks t2,genre_track,genres
+						where
+							t2.id=tracks.id and
+							tracks.id=genre_track.track and 
+							genre_track.genre=genres.id and
+							genres.name in ('PlaylistExcludedGenres'))
+	order by random()
+	limit (100-'PlaylistParameter2');
+create temporary table randomweightedratingshigh as select distinct tracks.url as url from tracks
+	join library_track on
+		library_track.track = tracks.id
+	join tracks_persistent on
+		tracks_persistent.urlmd5 = tracks.urlmd5 and tracks_persistent.rating > 0
+	left join dynamicplaylist_history on
+		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
+	where
+		audio=1
+		and tracks.year>=cast((('PlaylistParameter1'/10)*10) as int) and tracks.year<(cast((('PlaylistParameter1'/10)*10) as int)+10)
+		and tracks.secs >= 'PlaylistTrackMinDuration'
+		and dynamicplaylist_history.id is null
+		and
+			case
+				when ('PlaylistCurrentVirtualLibraryForClient'!='' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
+				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
+				else 1
+			end
+		and
+			case
+				when 'PlaylistParameter3'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
+				when 'PlaylistParameter3'=2 then tracks_persistent.playCount > 0
+				else 1
+			end
+		and not exists (select * from tracks t2,genre_track,genres
+						where
+							t2.id=tracks.id and
+							tracks.id=genre_track.track and 
+							genre_track.genre=genres.id and
+							genres.name in ('PlaylistExcludedGenres'))
+	order by random()
+	limit 'PlaylistParameter2';
+create temporary table randomweightedratingscombined as select * from randomweightedratingslow union select * from randomweightedratingshigh;
+	select * from randomweightedratingscombined
+	order by random()
+	limit 'PlaylistLimit';
+drop table randomweightedratingshigh;
+drop table randomweightedratingslow;
+drop table randomweightedratingscombined;

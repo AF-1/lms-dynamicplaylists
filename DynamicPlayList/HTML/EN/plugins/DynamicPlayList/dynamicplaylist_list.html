@@ -1,0 +1,65 @@
+<style>.boldtitle{font-weight:600;}</style>
+[% PROCESS plugins/DynamicPlayList/dpcomponents.html %]
+[%- pagetitle = 'PLUGIN_DYNAMICPLAYLIST' | string; pageicon = 'PLUGIN_DYNAMICPLAYLIST' -%]
+
+[%- pwd_list = BLOCK -%]/
+	<a href="[% webroot %]plugins/DynamicPlayList/dynamicplaylist_list.html?player=[% player | uri %]">
+		[% "PLUGIN_DYNAMICPLAYLIST" | string %]
+	</a>
+	[% FOREACH group IN pluginDynamicPlayListContext %]
+		[% IF group.dynamicplaylistenabled %]
+			&nbsp;/&nbsp;<a href="[% webroot %]plugins/DynamicPlayList/dynamicplaylist_list.html?[% group.url %]&player=[% player | uri %]">[% group.name %]</a>
+		[% END %]
+	[% END %]
+[% END -%]
+
+[% PROCESS pageheader.html %]
+[% PROCESS plugins/DynamicPlayList/dynamicplaylistlink.html %]
+
+[% BLOCK href %]
+href="[% webroot %]
+		[%- IF customurl -%]
+			[%- customurl -%]&player=[% player | uri %]"
+		[%- ELSE -%]
+			plugins/DynamicPlayList/dynamicplaylist_mix.html?type=[% type %]&addOnly=[% addOnly %]&player=[% player | uri %][% IF playlisttype and dynamicplaylist_parameter_1 %]&dynamicplaylist_parameter_1=[% dynamicplaylist_parameter_1 %][% END %]"
+		[%- END -%]
+[% END %]
+
+[% WRAPPER dpcontentcontainer %]
+	[% IF player == '' %]
+		[% "NO_PLAYER_FOUND" | string %]
+	[% ELSE %]
+		<br>
+		[% IF activeClientMixName %]<span class="boldtitle">Active</span> dynamic playlist for client "[% activeClientName %]":  <span class="boldtitle">[% activeClientMixName %]</span><br><br>
+		[% END %]
+
+		[% IF pluginDynamicPlayListContextName %]
+			[% WRAPPER contentitem %][% "PLUGIN_DYNAMICPLAYLIST_CONTEXT_CHOOSE_BELOW" | string %] <span class="boldtitle">[% pluginDynamicPlayListContextName %]</span>[% END %]
+		[% ELSE %]
+			[% WRAPPER contentanchor %][% "PLUGIN_DYNAMICPLAYLIST_CHOOSE_BELOW" | string %][% END %]
+		[% END %]
+
+		[% odd = 1 %]
+		[% FOREACH group IN pluginDynamicPlayListGroups %]
+		[% IF group.name != "Context menu lists" %]
+			[% IF group.dynamicplaylistenabled %]
+				[%- WRAPPER contentitem %]
+					[% PROCESS dpcontentitemgroup %]
+				[% END %]
+				[% odd = (not odd) %]
+			[% END %]
+		[% END %]
+		[% END %]
+		[% FOREACH playlist IN pluginDynamicPlayListPlayLists %]
+			[% IF (playlist.menulisttype != "contextmenu" || iscontextmenu == 1) %]
+				[% IF playlist.dynamicplaylistenabled %]
+					[%- WRAPPER contentitem controls='controls' %]
+						[% PROCESS dpcontentitemplaylist %]
+					[% END %]
+					[% odd = (not odd) %]
+				[% END %]
+			[% END %]
+		[% END %]
+	[% END %]
+[% END %]
+[% PROCESS pagefooter.html %]
