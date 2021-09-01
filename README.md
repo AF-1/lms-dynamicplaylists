@@ -24,7 +24,7 @@ Some changes:<br>
 <br><br>
 
 ## Dynamic playlists: stand-alone and context menu
-By default all dynamic playlists that don't include the context menulisttype parameter will show up in the **Dynamic Playlists** menu under the **home menu**. Here you won't find any dynamic playlists that can be called from an item's context menu.<br>
+By default all dynamic playlists that don't include the context menulisttype parameter will show up in the **Home > Dynamic Playlists** menu. Here you won't find any dynamic playlists that can be called from an item's context menu.<br>
 
 **Context menus** will only show dynamic playlists for context menus. So there may be some overlap but this separation greatly helps reduce clutter. Context menus can even be used with the default LMS web UI if you install the *Context Menu* plugin.
 <br><br>
