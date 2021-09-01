@@ -3574,10 +3574,6 @@ sub getNextDynamicPlayListTracks {
 			'id' => 'TopRatedMinRating',
 			'value' => $prefs->get('toprated_min_rating'),
 		);
-		my %minAlbumTracks = (
-			'id' => 'MinAlbumTracks',
-			'value' => $prefs->get('minalbumtracks'),
-		);
 		my %periodRecentlyAdded = (
 			'id' => 'PeriodRecentlyAdded',
 			'value' => $prefs->get('period_recentlyadded'),
@@ -3605,7 +3601,6 @@ sub getNextDynamicPlayListTracks {
 		$predefinedParameters->{'PlaylistVariousArtistsString'} = \%VAstring;
 		$predefinedParameters->{'PlaylistTrackMinDuration'} = \%minTrackDuration;
 		$predefinedParameters->{'PlaylistTopRatedMinRating'} = \%topratedMinRating;
-		$predefinedParameters->{'PlaylistMinAlbumTracks'} = \%minAlbumTracks;
 		$predefinedParameters->{'PlaylistPeriodRecentlyAdded'} = \%periodRecentlyAdded;
 		$predefinedParameters->{'PlaylistPeriodRecentlyPlayed'} = \%periodRecentlyPlayed;
 		$predefinedParameters->{'PlaylistPeriodPlayedLongAgo'} = \%periodPlayedLongAgo;
