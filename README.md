@@ -2,7 +2,7 @@ Dynamic Playlists
 ====
 
 This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>.<br>
-It comes with a number of ready-to-use dynamic playlists. In addition you can now <b>use your own custom dynamic playlist</b> definitions <b>directly</b> in this plugin, you don't need other plugins for that anymore. Based on Erland's <i>DynamicPlayList</i> plugin<br><br>
+It comes with a number of ready-to-use dynamic playlists. In addition you can now <b>use your own custom dynamic playlist</b> definitions <b>directly</b> in this plugin, you don't need other plugins for that anymore. Based on Erland's <i>DynamicPlayList</i> plugin.
 <br><br>
 
 ## Installation
@@ -21,7 +21,6 @@ Some changes:<br>
 - allow other plugins to check if a client is playing a DPL mix, no more clashes with DSTM
 - SQLite only, removed CustomBrowse/MultiLibraries code, min. LMS version = 7.9
 - …
-
 <br><br>
 
 ## Custom dynamic playlists
