@@ -17,7 +17,7 @@ Some changes:<br>
 - use your own custom dynamic playlist files/definitions in DPL so you can but don't have to install other plugins (like SQLPlayList or TrackStat) to get dynamic playlists
 - UI changes
 - separation of stand-alone from context menu dynamic playlists to minimize clutter
-- added new playlist parameters like <b>virtuallibrary</b>
+- added new playlist parameters like <i>virtuallibrary</i>
 - allow other plugins to check if a client is playing a DPL mix, no more clashes with DSTM
 - SQLite only, removed CustomBrowse/MultiLibraries code, min. LMS version = 7.9
 - …
