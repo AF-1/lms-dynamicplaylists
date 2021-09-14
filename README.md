@@ -19,14 +19,14 @@ Some changes:<br>
 - separation of stand-alone from context menu dynamic playlists to minimize clutter
 - added new playlist parameters like <i>virtuallibrary</i>
 - allow other plugins to check if a client is playing a DPL mix, no more clashes with DSTM
-- SQLite only, removed CustomBrowse/MultiLibraries code, min. LMS version = 7.9
+- SQLite only, removed some deprecated code, min. LMS version = 7.9
 - …
 <br><br>
 
 ## Dynamic playlists: stand-alone and context menu
 By default all dynamic playlists that don't include the context menulisttype parameter will show up in the **Home > Dynamic Playlists** menu. Here you won't find any dynamic playlists that can be called from an item's context menu.<br>
 
-**Context menus** will only show dynamic playlists for context menus. So there may be some overlap but this separation greatly helps reduce clutter. Context menus can even be used with the default LMS web UI if you install the *Context Menu* plugin.
+**Context menus** (= *More* menu in webUI) will only show dynamic playlists for context menus. So there may be some overlap but this separation greatly helps reduce clutter.
 <br><br>
 
 ## Custom dynamic playlists
