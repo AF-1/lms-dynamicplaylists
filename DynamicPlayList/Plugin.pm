@@ -2150,11 +2150,11 @@ sub mixerlink {
 sub webPages {
 	my $class = shift;
 	my %pages = (
-		'dynamicplaylist_list\.(?:htm|xml)' => \&handleWebList,
-		'dynamicplaylist_mix\.(?:htm|xml)' => \&handleWebMix,
-		'dynamicplaylist_mixparameters\.(?:htm|xml)' => \&handleWebMixParameters,
-		'dynamicplaylist_selectplaylists\.(?:htm|xml)' => \&handleWebSelectPlaylists,
-		'dynamicplaylist_saveselectplaylists\.(?:htm|xml)' => \&handleWebSaveSelectPlaylists,
+		'dynamicplaylist_list\.html' => \&handleWebList,
+		'dynamicplaylist_mix\.html' => \&handleWebMix,
+		'dynamicplaylist_mixparameters\.html' => \&handleWebMixParameters,
+		'dynamicplaylist_selectplaylists\.html' => \&handleWebSelectPlaylists,
+		'dynamicplaylist_saveselectplaylists\.html' => \&handleWebSaveSelectPlaylists,
 	);
 
 	my $value = $htmlTemplate;
