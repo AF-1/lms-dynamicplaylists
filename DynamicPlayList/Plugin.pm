@@ -62,10 +62,7 @@ my $log = Slim::Utils::Log->addLogCategory({
 my %stopcommands = ();
 my %mixInfo = ();
 my $htmlTemplate = 'plugins/DynamicPlayList/dynamicplaylist_list.html';
-my $playLists = undef;
-my $playListTypes = undef;
-my $playListItems = undef;
-my $jiveMenu = undef;
+my ($playLists, $localDynamicPlaylists, $playListTypes, $playListItems, $jiveMenu);
 my $rescan = 0;
 
 my %plugins = ();
@@ -83,7 +80,6 @@ my $deleteAllQueues = 0;
 
 my %empty = ();
 my %choiceMapping;
-my $localDynamicPlaylists;
 
 sub initPlugin {
 	my $class = shift;
@@ -147,10 +143,6 @@ sub initPlugin {
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'mixjive'], [1, 1, 1, \&cliMixJiveHandler]);
 
 	Slim::Player::ProtocolHandlers->registerHandler(dynamicplaylist => 'Plugins::DynamicPlayList::ProtocolHandler');
-}
-
-sub title {
-	return 'DYNAMICPLAYLIST';
 }
 
 sub weight {
@@ -1935,39 +1927,6 @@ sub commandCallback65 {
 	}
 }
 
-sub mixable {
-	my $class = shift;
-	my $item = shift;
-	my $blessed = blessed($item);
-
-	if (!$playListTypes) {
-		initPlayListTypes();
-	}
-
-	if (!$blessed) {
-		if (ref($item) eq 'HASH' && defined($item->{'type'})) {
-			return 1 if ($playListTypes->{$item->{'type'}});
-		} else {
-			return undef;
-		}
-	} elsif ($blessed eq 'Slim::Schema::Track') {
-		return 1 if ($playListTypes->{'track'});
-	} elsif ($blessed eq 'Slim::Schema::Year') {
-		return 1 if ($playListTypes->{'year'} && $item->id);
-	} elsif ($blessed eq 'Slim::Schema::Album') {
-		return 1 if ($playListTypes->{'album'});
-	} elsif ($blessed eq 'Slim::Schema::Age') {
-		return 1 if ($playListTypes->{'album'});
-	} elsif ($blessed eq 'Slim::Schema::Contributor') {
-		return 1 if ($playListTypes->{'artist'} && Slim::Schema->variousArtistsObject->id ne $item->id);
-	} elsif ($blessed eq 'Slim::Schema::Genre') {
-		return 1 if ($playListTypes->{'genre'});
-	} elsif ($blessed eq 'Slim::Schema::Playlist') {
-		return 1 if ($playListTypes->{'playlist'});
-	}
-	return undef;
-}
-
 sub mixerFunction {
 	my ($client, $noSettings) = @_;
 	# look for parentParams (needed when multiple mixers have been used)
@@ -2561,7 +2520,7 @@ sub registerJiveMenu {
 	my $client = shift;
 	my @menuItems = (
 		{
-			text => Slim::Utils::Strings::string(getDisplayName()),
+			text => Slim::Utils::Strings::string('PLUGIN_DYNAMICPLAYLIST'),
 			weight => 78,
 			id => 'dynamicplaylist',
 			menuIcon => 'plugins/DynamicPlayList/html/images/dpl_icon_svg.png',
@@ -2648,7 +2607,6 @@ sub objectInfoHandler {
 		initPlayListTypes();
 	}
 
-	my $mixable = 0;
 	if ($playListTypes->{$objectType} && ($objectType ne 'artist' || Slim::Schema->variousArtistsObject->id ne $objectId)) {
 		my $jive = {};
 
@@ -2694,9 +2652,6 @@ sub objectInfoHandler {
 	}
 	return undef;
 }
-
-
-## CLI ##
 
 sub cliJiveHandler {
 	$log->debug('Entering cliJiveHandler');
@@ -3087,6 +3042,9 @@ sub cliMixJiveHandler {
 	$request->setStatusDone();
 	$log->debug('Exiting cliJiveHandler');
 }
+
+
+## CLI common ##
 
 sub cliGetPlaylists {
 	$log->debug('Entering cliGetPlaylists');
@@ -4338,10 +4296,6 @@ sub getFunctions {
 	}
 }
 
-sub getDisplayName {
-	return 'PLUGIN_DYNAMICPLAYLIST';
-}
-
 sub masterOrSelf {
 	my $client = shift;
 	if (!defined($client)) {
@@ -4416,22 +4370,6 @@ sub starts_with {
 	# complete_string, start_string, position
 	return rindex($_[0], $_[1], 0);
 	# 0 for yes, -1 for no
-}
-
-sub printPlayListItems {
-	my $currentpath = shift;
-	my $items = shift;
-	return;
-	for my $itemKey (keys %{$items}) {
-		my $item = $items->{$itemKey};
-		if (defined($item->{'playlist'})) {
-			my $playlist = $item->{'playlist'};
-			$log->debug('Got: '.$currentpath.'/'.$playlist->{'name'}.' (enabled='.$item->{'dynamicplaylistenabled'}.', '.$playlist->{'dynamicplaylistid'}.','.$playlist->{'dynamicplaylistplugin'}.')');
-		} else {
-			my $childs = $item->{'childs'};
-			printPlayListItems($currentpath.'/'.$item->{'name'}, $childs);
-		}
-	}
 }
 
 *escape = \&URI::Escape::uri_escape_utf8;
