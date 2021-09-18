@@ -3,12 +3,12 @@
         <title lang="EN">AF - DPL Repo</title>
     </details>
     <plugins>
-        <plugin name="DynamicPlayList" version="3.1.5" minTarget="7.9" maxTarget="*">
+        <plugin name="DynamicPlayList" version="3.1.6" minTarget="7.9" maxTarget="*">
             <title lang="EN">Dynamic Playlists</title>
             <desc lang="EN">This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>. Comes with a number of ready-to-use dynamic playlists. In addition you can now <b>use your own custom dynamic playlist</b> definitions <b>directly</b> in this plugin, you don't need other plugins for that anymore. More information on the github page.</desc>
-        	<url>https://github.com/AF-1/lms-dynamicplaylists/releases/download/3.1.5/lms-dynamicplaylists-3.1.5.zip</url>
+        	<url>https://github.com/AF-1/lms-dynamicplaylists/releases/download/3.1.6/lms-dynamicplaylists-3.1.6.zip</url>
             <creator>AF</creator>
-            <sha>7db213b2842b8fa9c2b506a0f6dc0f2743dbbfb9</sha>
+            <sha>7577b62caa9a0ace0d38acc8e6a6c91959f973ad</sha>
         </plugin>
     </plugins>
 </extensions>
