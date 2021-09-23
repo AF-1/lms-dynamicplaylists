@@ -25,31 +25,29 @@ use strict;
 
 use base qw(Slim::Plugin::Base);
 
-use Slim::Utils::Prefs;
 use Slim::Buttons::Home;
-use Slim::Utils::Misc;
-use Slim::Utils::Strings qw(string);
-use Slim::Player::ProtocolHandlers;
 use Slim::Player::Client;
-use File::Spec::Functions qw(:ALL);
-use POSIX qw(floor);
+use Slim::Player::ProtocolHandlers;
+use Slim::Utils::Misc;
+use Slim::Utils::Prefs;
+use Slim::Utils::Strings qw(string);
 use Class::Struct;
-use DBI qw(:sql_types);
+use Data::Dumper;
+use Digest::SHA1 qw(sha1_base64);
+use File::Basename;
+use File::Slurp; # for read_file
+use File::Spec::Functions qw(:ALL);
 use FindBin qw($Bin);
+use HTML::Entities; # for parsing
+use List::Util qw(shuffle);
+use POSIX qw(floor);
 use Scalar::Util qw(blessed);
+use Time::HiRes qw(time);
+
 use Plugins::DynamicPlayList::Settings;
 use Plugins::DynamicPlayList::PlaylistSettings;
 use Plugins::DynamicPlayList::FavouriteSettings;
 use Plugins::DynamicPlayList::ProtocolHandler;
-use Digest::SHA1 qw(sha1_base64);
-use Data::Dumper;
-use File::Slurp; # for read_file
-use File::Basename;
-use HTML::Entities; # for parsing
-use List::Util qw(shuffle);
-use Time::HiRes qw(time);
-
-our $PLUGINVERSION = undef;
 
 my $prefs = preferences('plugin.dynamicplaylist');
 my $serverPrefs = preferences('server');
@@ -84,7 +82,6 @@ my %choiceMapping;
 sub initPlugin {
 	my $class = shift;
 	$class->SUPER::initPlugin(@_);
-	$PLUGINVERSION = Slim::Utils::PluginManager->dataForPlugin($class)->{'version'};
 	Plugins::DynamicPlayList::Settings->new();
 	Plugins::DynamicPlayList::PlaylistSettings->new();
 	Plugins::DynamicPlayList::FavouriteSettings->new();
@@ -500,8 +497,8 @@ sub findAndAdd {
 	for (my $i = 1; $i <= $noOfRetriesToGetUnplayedTracks; $i++) {
 		my $iterationStartTime = time();
 		$items = getTracksForPlaylist($masterClient, $playlist, $limit, $offset + $noOfFoundItems);
-		if ($items eq "error") {
-			$log->error("Error trying to find tracks. Please check your playlist definition.");
+		if ($items eq 'error') {
+			$log->error('Error trying to find tracks. Please check your playlist definition.');
 			last;
 		}
 		next if (!defined $items || scalar(@{$items}) == 0);
@@ -1080,48 +1077,48 @@ sub addParameterValues {
 sub getVirtualLibraries {
 	my (@items, @hiddenVLs);
 	my $libraries = Slim::Music::VirtualLibraries->getLibraries();
-	$log->debug("ALL virtual libraries: ".Dumper($libraries));
+	$log->debug('ALL virtual libraries: '.Dumper($libraries));
 
-	my $localonlyname = Slim::Music::VirtualLibraries->getNameForId("localTracksOnly");
-	my $preferlocalname = Slim::Music::VirtualLibraries->getNameForId("preferLocalLibraryOnly");
+	my $localonlyname = Slim::Music::VirtualLibraries->getNameForId('localTracksOnly');
+	my $preferlocalname = Slim::Music::VirtualLibraries->getNameForId('preferLocalLibraryOnly');
 
 	my %hiddenVLs;
 	if ((defined $localonlyname) && ($localonlyname ne '') && (defined $preferlocalname) && ($preferlocalname ne '')) {
 		%hiddenVLs = map {
 		$_ => 1
-		} ("Ratings Light - Rated Tracks", "Ratings Light - Top Rated Tracks", $preferlocalname, $localonlyname);
+		} ('Ratings Light - Rated Tracks', 'Ratings Light - Top Rated Tracks', $preferlocalname, $localonlyname);
 	} else {
 		%hiddenVLs = map {
 		$_ => 1
-		} ("Ratings Light - Rated Tracks", "Ratings Light - Top Rated Tracks");
+		} ('Ratings Light - Rated Tracks', 'Ratings Light - Top Rated Tracks');
 	}
-	$log->debug("hidden libraries: ".Dumper(\%hiddenVLs));
+	$log->debug('hidden libraries: '.Dumper(\%hiddenVLs));
 
 	while (my ($k, $v) = each %{$libraries}) {
-		my $count = Slim::Utils::Misc::delimitThousands(Slim::Music::VirtualLibraries->getTrackCount($k));
+		my $count = Slim::Utils::Misc::delimitThousands(Slim::Music::VirtualLibraries->getTrackCount($k)) + 0;
 		my $name = Slim::Music::VirtualLibraries->getNameForId($k);
-		$log->debug("VL: ".$name." (".$count.")");
+		$log->debug('VL: '.$name.' ('.$count.')');
 
 		unless ($hiddenVLs{$name}) {
 			push @items, {
-				name => Slim::Utils::Unicode::utf8decode($name, 'utf8')." (".$count.($count eq '1' ? " track)" : " tracks)"),
+				name => Slim::Utils::Unicode::utf8decode($name, 'utf8').' ('.$count.($count == 1 ? ' track)' : ' tracks)'),
 				sortName => Slim::Utils::Unicode::utf8decode($name, 'utf8'),
-				value => "'".$k."'",
-				id => "'".$k."'",
+				value => qq('$k'),
+				id => qq('$k'),
 			};
 		}
 	}
 	if (scalar @items == 0) {
 		push @items, {
-			name => "complete library",
-			sortName => "complete library",
-			value => "\'\'",
-			id => "\'\'",
+			name => 'complete library',
+			sortName => 'complete library',
+			value => qq(''),
+			id => qq(''),
 		};
 	}
 
 	if (scalar @items > 1) {
-		@items = sort { $a->{sortName} cmp $b->{sortName} } @items;
+		@items = sort {$a->{sortName} cmp $b->{sortName}} @items;
 	}
 	return \@items;
 }
@@ -1157,7 +1154,7 @@ sub getTracksForPlaylist {
 		$result = eval {&{"${plugin}::getNextDynamicPlayListTracks"}($client, $playlist, $limit, $offset, \%parameterHash)};
 		if ($@) {
 			$log->debug("Error getting tracks from $plugin: $@");
-			return "error";
+			return 'error';
 		} else {
 			$log->debug('Found '.scalar(@{$result}).(scalar(@{$result}) == 1 ? ' track ' : ' tracks ').'for playlist \''.$playlist->{'name'}.'\'');
 		}
@@ -2841,7 +2838,7 @@ sub cliJivePlaylistParametersHandler {
 	}
 	my $playlist = getPlayList($client, $playlistId);
 	if (!defined($playlist)) {
-		$log->warn("Playlist $playlistId can\'t be found");
+		$log->warn("Playlist $playlistId can't be found");
 		$request->setStatusBadParams();
 		$log->debug('Exiting cliJivePlaylistParametersHandler');
 		return;
@@ -3391,11 +3388,12 @@ sub getNextDynamicPlayListTracks {
 		my $playlist = getPlayList($client, $dynamicplaylistID);
 		my $localDynamicPlaylistSQLstatement = $localDynamicPlaylists->{$localDynamicPlaylistID}->{'sql'};
 		my $sqlstatement = replaceParametersInSQL($localDynamicPlaylistSQLstatement, $parameters);
+		my $dbh = getCurrentDBH();
 
 		my $predefinedParameters = ();
 		my %player = (
 			'id' => 'Player',
-			'value' => "'".$client->id."'",
+			'value' => $dbh->quote($client->id),
 		);
 		my %offsetParameter = (
 			'id' => 'Offset',
@@ -3408,7 +3406,7 @@ sub getNextDynamicPlayListTracks {
 		);
 		my %VAstring = (
 			'id' => 'VariousArtistsString',
-			'value' => "'".($serverPrefs->get('variousArtistsString') || 'Various Artists')."'",
+			'value' => $dbh->quote($serverPrefs->get('variousArtistsString')) || 'Various Artists',
 		);
 		my %minTrackDuration = (
 			'id' => 'TrackMinDuration',
@@ -3436,7 +3434,7 @@ sub getNextDynamicPlayListTracks {
 		);
 		my %currentVirtualLibraryForClient = (
 			'id' => 'CurrentVirtualLibraryForClient',
-			'value' => "'".Slim::Music::VirtualLibraries->getLibraryIdForClient($client)."'",
+			'value' => $dbh->quote(Slim::Music::VirtualLibraries->getLibraryIdForClient($client)),
 		);
 
 		$predefinedParameters->{'PlaylistPlayer'} = \%player;
@@ -3455,7 +3453,6 @@ sub getNextDynamicPlayListTracks {
 		$log->debug('sqlstatement = '.$sqlstatement);
 
 		my @result = ();
-		my $dbh = getCurrentDBH();
 		for my $sql (split(/[\n\r]/, $sqlstatement)) {
 			eval {
 				my $sth = $dbh->prepare($sql);
@@ -3477,7 +3474,7 @@ sub getNextDynamicPlayListTracks {
 			};
 			if ($@) {
 				$log->warn("Database error: $DBI::errstr\n$@");
-				return "error";
+				return 'error';
 			}
 		}
 		$log->debug('Got '.scalar(@result).' tracks');
@@ -3520,7 +3517,7 @@ sub getNextDynamicPlayListTracks {
 			};
 			if ($@) {
 				$log->warn("Database error: $DBI::errstr\n$@");
-				return "error";
+				return 'error';
 			}
 		}
 		my $count = 0;
@@ -3929,7 +3926,7 @@ sub initDatabase {
 	}
 	$st->finish();
 	unless ($tblexists) {
-		my $sqlCreate = "CREATE TABLE IF NOT EXISTS dynamicplaylist_history (client varchar(20) NOT NULL, position INTEGER PRIMARY KEY AUTOINCREMENT, id int(10) NOT NULL UNIQUE, url text NOT NULL UNIQUE, added int(10) NOT NULL, skipped int(10) DEFAULT NULL);";
+		my $sqlCreate = "create table if not exists dynamicplaylist_history (client varchar(20) not null, position integer primary key autoincrement, id int(10) not null unique, url text not null unique, added int(10) not null, skipped int(10) default null);";
 		$log->debug('Creating DPL history database table');
 		eval {$dbh->do($sqlCreate)};
 		if ($@) {
@@ -3937,39 +3934,12 @@ sub initDatabase {
 		}
 	}
 	$log->debug('Creating DPL history database indexes');
-	my $sqlIndex = "CREATE UNIQUE INDEX IF NOT EXISTS idClientIndex on dynamicplaylist_history (id,client);";
+	my $sqlIndex = "create unique index if not exists idClientIndex on dynamicplaylist_history (id,client);";
 	eval {$dbh->do($sqlIndex)};
 	if ($@) {
 		msg("Couldn't index DPL history database table: [$@]");
 	}
 	commit($dbh);
-}
-
-sub getNoOfItemsInHistory {
-	my $client = shift;
-	my $result = 0;
-	my $dbh = getCurrentDBH();
-	eval {
-		my $clientid = $dbh->quote($client->id);
-		my $sql = "select count(position) from dynamicplaylist_history where dynamicplaylist_history.client=$clientid and skipped=0";
-		my $sth = $dbh->prepare($sql);
-		$log->debug("Executing history count SQL: $sql");
-		$sth->execute() or do {
-			$log->debug("Error executing: $sql");
-			$sql = undef;
-		};
-		if (defined($sql)) {
-			my $count = undef;
-			$sth->bind_columns(undef, \$count);
-			if ($sth->fetch()) {
-				$result = $count;
-			}
-		}
-	};
-	if ($@) {
-		$log->warn("Error history count: $@");
-	}
-	return $result;
 }
 
 sub addToPlayListHistory {
@@ -3993,10 +3963,10 @@ sub addToPlayListHistory {
 	}
 
 	my $dbh = getCurrentDBH();
-	my $sth = $dbh->prepare("INSERT OR REPLACE INTO dynamicplaylist_history (client, id, url, added, skipped) values (?,".$track->id.", ?, ".$addedTime.",".$skipped.")");
+	my $sth = $dbh->prepare("insert or replace into dynamicplaylist_history (client, id, url, added, skipped) values (?,".$track->id.", ?, ".$addedTime.",".$skipped.")");
 	eval {
-		$sth->bind_param(1, $client->id , SQL_VARCHAR);
-		$sth->bind_param(2, $track->url , SQL_VARCHAR);
+		$sth->bind_param(1, $client->id);
+		$sth->bind_param(2, $track->url);
 		$sth->execute();
 		commit($dbh);
 	};
@@ -4037,10 +4007,10 @@ sub clearPlayListHistory {
 			}
 			$clientIds .= $dbh->quote($client->id);
 		}
-		my $sql = "DELETE FROM dynamicplaylist_history where client in ($clientIds)";
+		my $sql = "delete from dynamicplaylist_history where client in ($clientIds)";
 		$sth = $dbh->prepare($sql);
 	} else {
-		$sth = $dbh->prepare("DELETE FROM dynamicplaylist_history");
+		$sth = $dbh->prepare("delete from dynamicplaylist_history");
 	}
 	eval {
 		$sth->execute();
@@ -4053,6 +4023,33 @@ sub clearPlayListHistory {
 		};
 	}
 	$sth->finish();
+}
+
+sub getNoOfItemsInHistory {
+	my $client = shift;
+	my $result = 0;
+	my $dbh = getCurrentDBH();
+	eval {
+		my $clientid = $dbh->quote($client->id);
+		my $sql = "select count(position) from dynamicplaylist_history where dynamicplaylist_history.client=$clientid and skipped=0";
+		my $sth = $dbh->prepare($sql);
+		$log->debug("Executing history count SQL: $sql");
+		$sth->execute() or do {
+			$log->debug("Error executing: $sql");
+			$sql = undef;
+		};
+		if (defined($sql)) {
+			my $count = undef;
+			$sth->bind_columns(undef, \$count);
+			if ($sth->fetch()) {
+				$result = $count;
+			}
+		}
+	};
+	if ($@) {
+		$log->warn("Error history count: $@");
+	}
+	return $result;
 }
 
 
@@ -4105,12 +4102,13 @@ sub getCustomSkipFilterTypes {
 	my %recentlyaddedalbums = (
 		'id' => 'dynamicplaylist_recentlyaddedalbum',
 		'name' => 'Recently added album',
+		'filtercategory' => 'album',
 		'description' => 'Skip songs from albums that have been recently added to current dynamic playlist',
 		'parameters' => [
 			{
 				'id' => 'nooftracks',
 				'type' => 'singlelist',
-				'name' => 'Songs between',
+				'name' => 'Don\'t add more songs from recently added albums for',
 				'data' => '1=1 song,2=2 songs,2=3 songs,4=4 songs,5=5 songs,10=10 songs,20=20 songs,30=30 songs,50=50 songs',
 				'value' => 10
 			}
@@ -4120,12 +4118,13 @@ sub getCustomSkipFilterTypes {
 	my %recentlyaddedartists = (
 		'id' => 'dynamicplaylist_recentlyaddedartist',
 		'name' => 'Recently added artist',
+		'filtercategory' => 'artist',
 		'description' => 'Skip songs by artists that have been recently added to current dynamic playlist',
 		'parameters' => [
 			{
 				'id' => 'nooftracks',
 				'type' => 'singlelist',
-				'name' => 'Songs between',
+				'name' => 'Don\'t add more songs from recently added artists for',
 				'data' => '1=1 song,2=2 songs,2=3 songs,4=4 songs,5=5 songs,10=10 songs,20=20 songs,30=30 songs,50=50 songs',
 				'value' => 10
 			}
@@ -4248,14 +4247,9 @@ sub disableDSTM {
 sub getExcludedGenreList {
 	my $excludegenres_namelist = $prefs->get('excludegenres_namelist');
 	my $excludedgenreString = '';
+
 	if ((defined $excludegenres_namelist) && (scalar @{$excludegenres_namelist} > 0)) {
-		foreach my $thisgenre (@{$excludegenres_namelist}) {
-			if ($excludedgenreString eq '') {
-				$excludedgenreString = "'".$thisgenre."'";
-			} else {
-				$excludedgenreString = $excludedgenreString.", '".$thisgenre."'";
-			}
-		}
+		$excludedgenreString = join ',', map qq/'$_'/, @{$excludegenres_namelist};
 	}
 	return $excludedgenreString;
 }
