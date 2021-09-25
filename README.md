@@ -11,7 +11,7 @@ You should be able to install *Dynamic PlayLists* from *LMS* > *Settings* > *Plu
 
 Or you could download the latest (source code) zip from this repository and drop the folder called *DynamicPlayList* into your local LMS plugin folder.
 
-If you want to test a new patch that hasn't made it into a release version yet or you need to install a previous version:
+If you want to test a *new* patch that hasn't made it into a release version yet or if you need to install a *previous* version:
 
 * go to *settings > plugins* and uninstall the currently installed version of Dynamic PlayLists.
 * then go to *settings > information*. Near the bottom of the page you'll find several plugin folder paths. The path you want does not include the word Cache. Examples:
