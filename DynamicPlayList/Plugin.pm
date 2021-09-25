@@ -672,7 +672,6 @@ sub playRandom {
 	my $minNumberUnplayedSongs = $prefs->get('min_number_of_unplayed_tracks');
 	# Work out how many items need adding
 	my $numItems = 0;
-# my $unplayedSongsToAdd = $minNumberUnplayedSongs - $songsRemaining > 0 ? $minNumberUnplayedSongs - $songsRemaining : 0;
 
 	if ($type ne 'disable' && ($continuousMode || !$mixInfo{$masterClient} || $mixInfo{$masterClient}->{'type'} ne $type || $songsRemaining < $minNumberUnplayedSongs)) {
 		# Add new tracks if there aren't enough after the current track
@@ -2064,7 +2063,7 @@ sub mixerlink {
 			$contextType = 'album';
 		} elsif (ref($item) eq 'Slim::Schema::Track') {
 			$contextId = $item->id;
-			$contextName = Slim::Music::Info::standardTitle(undef, $item); # was $item),;
+			$contextName = Slim::Music::Info::standardTitle(undef, $item);
 			$contextType = 'track';
 			$form->{'noitems'} = 1;
 		} elsif (ref($item) eq 'Slim::Schema::Contributor' && Slim::Schema->variousArtistsObject->id ne $item->id) {
@@ -2496,10 +2495,10 @@ sub savePlayListGroups {
 			my $groupid = escape($path).'_'.escape($item->{'name'});
 			my $playlistid = 'playlist_'.$groupid;
 			if ($params->{$playlistid}) {
-				#$log->debug('Saving: plugin_dynamicplaylist_playlist_'.escape($path).'_'.escape($itemKey).'_enabled=1');
+				$log->debug('Saving: playlist_group_'.$groupid.'_enabled=1');
 				$prefs->set('playlist_group_'.$groupid.'_enabled', 1);
 			} else {
-				#$log->debug('Saving: plugin_dynamicplaylist_playlist_'.escape($path).'_'.escape($itemKey).'_enabled=0');
+				$log->debug('Saving: playlist_group_'.$groupid.'_enabled=0');
 				$prefs->set('playlist_group_'.$groupid.'_enabled', 0);
 			}
 			if (defined($item->{'childs'})) {
