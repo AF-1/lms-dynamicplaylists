@@ -7,12 +7,26 @@ It comes with a number of ready-to-use dynamic playlists. In addition you can no
 
 ## Installation
 
-Add the repo URL below at the bottom of *LMS* > *Settings* > *Plugins*:<br>
-[https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/public.xml](https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/public.xml)
+You should be able to install *Dynamic PlayLists* from *LMS* > *Settings* > *Plugins*
+
+Or you could download the latest (source code) zip from this repository and drop the folder called *DynamicPlayList* into your local LMS plugin folder.
+
+If you want to test a new patch that hasn't made it into a release version yet or you need to install a previous version:
+
+* go to *settings > plugins* and uninstall the currently installed version of Dynamic PlayLists.
+* then go to *settings > information*. Near the bottom of the page you'll find several plugin folder paths. The path you want does not include the word Cache. Examples:
+    * *piCorePlayer*: /usr/local/slimserver/Plugins
+    * *Mac*: /Users/yourusername/Library/Application Support/Squeezebox/Plugins
+* now download the version you need:
+    * the *latest* version of Dynamic PlayLists (incl. patches not yet released) is on github. Click the green Code button and download the zip archive. Move the folder called DynamicPlayList from that archive into the plugin folder mentioned above.
+	* *previously released* versions are available here for a *limited* time after the release of a new version. Download the source code zip archive and move the folder called DynamicPlayList from that archive into the plugin folder mentioned above.
+* restart LMS
+<br>
+
+BTW it usually takes a couple of hours before released versions show up on the official LMS plugins page.
 <br><br>
-Or download the latest (source code) zip from this repository and put the folder called *DynamicPlayList* in your local LMS plugin folder.
-<br><br>
-Some changes:<br>
+
+## Some changes<br>
 - comes with ready-to-use dynamic playlists (stand-alone + for context menus)
 - use your own custom dynamic playlist files/definitions in DPL so you can but don't have to install other plugins (like SQLPlayList or TrackStat) to get dynamic playlists
 - UI changes
@@ -24,7 +38,7 @@ Some changes:<br>
 <br><br>
 
 ## Dynamic playlists: stand-alone and context menu
-By default all dynamic playlists that don't include the context menulisttype parameter will show up in the **Home > Dynamic Playlists** menu. Here you won't find any dynamic playlists that can be called from an item's context menu.<br>
+By default all dynamic playlists that *don't* include the *context menulisttype* parameter will show up in the **Home > Dynamic Playlists** menu. Here you won't find any dynamic playlists that can be called from an item's context menu.<br>
 
 **Context menus** (= *More* menu in webUI) will only show dynamic playlists for context menus. So there may be some overlap but this separation greatly helps reduce clutter.
 <br><br>
