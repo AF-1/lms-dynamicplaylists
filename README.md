@@ -55,4 +55,4 @@ If you're interested in creating your own custom dynamic playlists (without SQLP
 
 If you're **reporting a bug** please **include relevant server log entries and the version number of LMS and your OS**. You'll find all of that on the *settings > information* page.
 
-Please post bug reports only [here](https://forums.slimdevices.com/showthread.php?115073-Announce-Dynamic-Playlists-3-(mod)).
+Please post bug reports only [**here**](https://forums.slimdevices.com/showthread.php?115073-Announce-Dynamic-Playlists-3-(mod)).
