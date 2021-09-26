@@ -7,23 +7,23 @@ It comes with a number of ready-to-use dynamic playlists. In addition you can no
 
 ## Installation
 
-You should be able to install *Dynamic PlayLists* from *LMS* > *Settings* > *Plugins*
+You should be able to install *Dynamic PlayLists* from *LMS* > *Settings* > *Plugins*<br>(It usually takes a couple of hours before released versions show up on the official LMS plugins page.)<br>
 
 Or you could download the latest (source code) zip from this repository and drop the folder called *DynamicPlayList* into your local LMS plugin folder.
 
-If you want to test a *new* patch that hasn't made it into a release version yet or if you need to install a *previous* version:
+If you want to test a **new** patch that hasn't made it into a release version yet or if you need to install a **previous** version:
 
 * go to *settings > plugins* and uninstall the currently installed version of Dynamic PlayLists.
-* then go to *settings > information*. Near the bottom of the page you'll find several plugin folder paths. The path you want does not include the word Cache. Examples:
+* then go to *settings > information*. Near the bottom of the page you'll find several plugin folder paths. The *path* you're looking for does **not** include the word *Cache* and it's not the server plugin folder that contains built-in LMS plugins. Examples of correct paths:
     * *piCorePlayer*: /usr/local/slimserver/Plugins
     * *Mac*: /Users/yourusername/Library/Application Support/Squeezebox/Plugins
 * now download the version you need:
-    * the *latest* version of Dynamic PlayLists (incl. patches not yet released) is on github. Click the green Code button and download the zip archive. Move the folder called DynamicPlayList from that archive into the plugin folder mentioned above.
-	* *previously released* versions are available here for a *limited* time after the release of a new version. Download the source code zip archive and move the folder called DynamicPlayList from that archive into the plugin folder mentioned above.
+    * the *latest* version of Dynamic PlayLists (incl. patches not yet released) is on github. Click the green Code button and download the zip archive. Move the folder called *DynamicPlayList* from that archive into the plugin folder mentioned above.
+	* *previously released* versions are available here for a *limited* time after the release of a new version. Download the source code zip archive and move the folder called *DynamicPlayList* from that archive into the plugin folder mentioned above.
 * restart LMS
-<br>
+<br><br>
 
-BTW it usually takes a couple of hours before released versions show up on the official LMS plugins page.
+If you updated to DPL version 3+ but for some reason prefer to continue using the older deprecated version 2 then download the package with the [DPL v2 plugin](https://github.com/erland/lms-dynamicplaylist), unzip the archive, rename the folder *src* to *DynamicPlayList* and put it into the plugin folder mentioned in the description above, restart LMS. LMS should ignore DPL v3 if you install DPL 2.x this way.
 <br><br>
 
 ## Some changes<br>
