@@ -44,9 +44,9 @@ use POSIX qw(floor);
 use Scalar::Util qw(blessed);
 use Time::HiRes qw(time);
 
-use Plugins::DynamicPlayList::Settings;
-use Plugins::DynamicPlayList::PlaylistSettings;
-use Plugins::DynamicPlayList::FavouriteSettings;
+use Plugins::DynamicPlayList::Settings::Basic;
+use Plugins::DynamicPlayList::Settings::PlaylistSettings;
+use Plugins::DynamicPlayList::Settings::FavouriteSettings;
 use Plugins::DynamicPlayList::ProtocolHandler;
 
 my $prefs = preferences('plugin.dynamicplaylist');
@@ -82,9 +82,9 @@ my %choiceMapping;
 sub initPlugin {
 	my $class = shift;
 	$class->SUPER::initPlugin(@_);
-	Plugins::DynamicPlayList::Settings->new();
-	Plugins::DynamicPlayList::PlaylistSettings->new();
-	Plugins::DynamicPlayList::FavouriteSettings->new();
+	Plugins::DynamicPlayList::Settings::Basic->new();
+	Plugins::DynamicPlayList::Settings::PlaylistSettings->new();
+	Plugins::DynamicPlayList::Settings::FavouriteSettings->new();
 
 	# playlist commands that will stop random play
 	%stopcommands = (
@@ -193,10 +193,6 @@ sub initPrefs {
 		$log->debug('Defaulting song_adding_check_delay to 30');
 		$prefs->set('song_adding_check_delay', 30);
 	}
-	if (!defined($prefs->get('showmessages'))) {
-		$log->debug('Defaulting to not showing messages');
-		$prefs->set('showmessages', 0);
-	}
 	if (!defined($prefs->get('song_min_duration'))) {
 		$log->debug('Defaulting song_min_duration to 90');
 		$prefs->set('song_min_duration', 90);
@@ -216,6 +212,14 @@ sub initPrefs {
 	if (!defined($prefs->get('period_playedlongago'))) {
 		$log->debug('Defaulting period_playedlongago to 2 years');
 		$prefs->set('period_playedlongago', 2);
+	}
+	if (!defined($prefs->get('minartisttracks'))) {
+		$log->debug('Defaulting minartisttracks to 3 tracks');
+		$prefs->set('minartisttracks', 3);
+	}
+	if (!defined($prefs->get('minalbumtracks'))) {
+		$log->debug('Defaulting minalbumtracks to 3 tracks');
+		$prefs->set('minalbumtracks', 3);
 	}
 	if (!defined($prefs->get('_ts_rememberactiveplaylist'))) {
 		$log->debug('Defaulting to remember active playlist');
@@ -251,9 +255,9 @@ sub initPrefs {
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 60}, 'song_adding_check_delay');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 10}, 'min_number_of_unplayed_tracks');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 1800}, 'song_min_duration');
-	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 365}, 'period_recentlyadded');
-	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 365}, 'period_recentlyplayed');
+	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 365}, qw(period_recentlyadded period_recentlyplayed));
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 20}, 'period_playedlongago');
+	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 10}, qw(minartisttracks minalbumtracks));
 	$prefs->setValidate('dir', 'customdirparentfolderpath');
 	$prefs->setChange(sub {
 		my $customlistdir_parentfolderpath = $prefs->get('customdirparentfolderpath');
@@ -733,11 +737,21 @@ sub playRandom {
 					$client->showBriefly({'line' => [string($addOnly ? 'ADDING_TO_PLAYLIST' : 'NOW_PLAYING'),
 										 $string]}, $showTime);
 				}
+				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
+					my $materialMsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'NOW_PLAYING').': '.$string;
+					$log->info($materialMsg);
+					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg]);
+				}
 			}
 		} elsif ($showFeedback) {
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 					$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLIST_NOW_PLAYING_FAILED'),
 										 string('PLUGIN_DYNAMICPLAYLIST_NOW_PLAYING_FAILED_LONG').' '.$string]}, $showTime);
+				}
+				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
+					my $materialMsg = string('PLUGIN_DYNAMICPLAYLIST_NOW_PLAYING_FAILED_LONG').' '.$string;
+					$log->info($materialMsg);
+					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg]);
 				}
 		}
 		# Never show random as modified, since its a living playlist
@@ -755,7 +769,11 @@ sub playRandom {
 		if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLIST'), string('PLUGIN_DYNAMICPLAYLIST_DISABLED')]});
 		}
-
+		if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
+			my $materialMsg = string('PLUGIN_DYNAMICPLAYLIST_DISABLED');
+			$log->info($materialMsg);
+			Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg]);
+		}
 		stateStop($masterClient);
 		my @players = Slim::Player::Sync::slaves($masterClient);
 		push @players, $masterClient;
@@ -3407,6 +3425,10 @@ sub getNextDynamicPlayListTracks {
 			'id' => 'VariousArtistsString',
 			'value' => $dbh->quote($serverPrefs->get('variousArtistsString')) || 'Various Artists',
 		);
+		my %VAid = (
+			'id' => 'VariousArtistsID',
+			'value' => Slim::Schema->variousArtistsObject->id,
+		);
 		my %minTrackDuration = (
 			'id' => 'TrackMinDuration',
 			'value' => $prefs->get('song_min_duration'),
@@ -3427,6 +3449,14 @@ sub getNextDynamicPlayListTracks {
 			'id' => 'PeriodPlayedLongAgo',
 			'value' => $prefs->get('period_playedlongago'),
 		);
+		my %minArtistTracks = (
+			'id' => 'MinArtistTracks',
+			'value' => $prefs->get('minartisttracks'),
+		);
+		my %minAlbumTracks = (
+			'id' => 'MinAlbumTracks',
+			'value' => $prefs->get('minalbumtracks'),
+		);
 		my %excludedGenres = (
 			'id' => 'ExcludedGenres',
 			'value' => getExcludedGenreList(),
@@ -3440,11 +3470,14 @@ sub getNextDynamicPlayListTracks {
 		$predefinedParameters->{'PlaylistOffset'} = \%offsetParameter;
 		$predefinedParameters->{'PlaylistLimit'} = \%limitParameter;
 		$predefinedParameters->{'PlaylistVariousArtistsString'} = \%VAstring;
+		$predefinedParameters->{'PlaylistVariousArtistsID'} = \%VAid;
 		$predefinedParameters->{'PlaylistTrackMinDuration'} = \%minTrackDuration;
 		$predefinedParameters->{'PlaylistTopRatedMinRating'} = \%topratedMinRating;
 		$predefinedParameters->{'PlaylistPeriodRecentlyAdded'} = \%periodRecentlyAdded;
 		$predefinedParameters->{'PlaylistPeriodRecentlyPlayed'} = \%periodRecentlyPlayed;
 		$predefinedParameters->{'PlaylistPeriodPlayedLongAgo'} = \%periodPlayedLongAgo;
+		$predefinedParameters->{'PlaylistMinArtistTracks'} = \%minArtistTracks;
+		$predefinedParameters->{'PlaylistMinAlbumTracks'} = \%minAlbumTracks;
 		$predefinedParameters->{'PlaylistExcludedGenres'} = \%excludedGenres;
 		$predefinedParameters->{'PlaylistCurrentVirtualLibraryForClient'} = \%currentVirtualLibraryForClient;
 

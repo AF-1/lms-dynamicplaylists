@@ -17,7 +17,7 @@ PLUGIN_DYNAMICPLAYLIST_FAVIOURITESETTINGS
 	EN	Favourite dynamic playlists
 
 PLUGIN_DYNAMICPLAYLIST_DISABLED
-	EN	DynamicPlayList Stopped
+	EN	Dynamic PlayList Stopped
 
 PLUGIN_DYNAMICPLAYLIST_CHOOSE_BELOW
 	EN	Choose a dynamic playlist: 
@@ -106,6 +106,18 @@ SETTINGS_PLUGIN_DYNAMICPLAYLIST_PERIOD_PLAYEDLONGAGO
 
 SETTINGS_PLUGIN_DYNAMICPLAYLIST_PERIOD_PLAYEDLONGAGO_DESC
 	EN	Set the time period for tracks to be considered <b>played long ago</b> in dynamic playlists that use the <i>PeriodPlayedLongAgo</i> parameter (some built-in playlists use this).
+
+SETTINGS_PLUGIN_DYNAMICPLAYLIST_MINTRACKS_ARTIST
+	EN	Min. artist tracks
+
+SETTINGS_PLUGIN_DYNAMICPLAYLIST_MINTRACKS_ARTIST_DESC
+	EN	<b>Artists</b> that have less than the minimum number of tracks you set here will be ignored in dynamic playlists that use the <i>PlaylistMinArtistTracks</i> parameter (some built-in playlists use this).
+
+SETTINGS_PLUGIN_DYNAMICPLAYLIST_MINTRACKS_ALBUM
+	EN	Min. album tracks
+
+SETTINGS_PLUGIN_DYNAMICPLAYLIST_MINTRACKS_ALBUM_DESC
+	EN	<b>Albums</b> that have less than the minimum number of tracks you set here will be ignored in dynamic playlists that use the <i>PlaylistMinAlbumTracks</i> parameter (some built-in playlists use this).
 
 SETTINGS_PLUGIN_DYNAMICPLAYLIST_REMEMBERACTIVEPLAYLIST
 	EN	Remember active dynamic playlist

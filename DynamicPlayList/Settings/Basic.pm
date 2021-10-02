@@ -19,10 +19,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-package Plugins::DynamicPlayList::Settings;
+package Plugins::DynamicPlayList::Settings::Basic;
 
 use strict;
-use base qw(Plugins::DynamicPlayList::BaseSettings);
+use base qw(Plugins::DynamicPlayList::Settings::BaseSettings);
 
 use File::Basename;
 use File::Next;
@@ -66,7 +66,7 @@ sub pages {
 }
 
 sub prefs {
-	return ($prefs, qw(max_number_of_unplayed_tracks min_number_of_unplayed_tracks number_of_played_tracks_to_keep includesavedplaylists randomsavedplaylists groupunclassifiedcustomplaylists flatlist structured_savedplaylists rememberactiveplaylist song_adding_check_delay song_min_duration toprated_min_rating customdirparentfolderpath period_recentlyadded period_recentlyplayed period_playedlongago showactiveplaylistinmainmenu));
+	return ($prefs, qw(max_number_of_unplayed_tracks min_number_of_unplayed_tracks number_of_played_tracks_to_keep includesavedplaylists randomsavedplaylists groupunclassifiedcustomplaylists flatlist structured_savedplaylists rememberactiveplaylist song_adding_check_delay song_min_duration toprated_min_rating customdirparentfolderpath period_recentlyadded period_recentlyplayed period_playedlongago minartisttracks minalbumtracks showactiveplaylistinmainmenu));
 }
 
 sub handler {

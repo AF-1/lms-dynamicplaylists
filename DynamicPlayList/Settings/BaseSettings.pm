@@ -19,7 +19,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-package Plugins::DynamicPlayList::BaseSettings;
+package Plugins::DynamicPlayList::Settings::BaseSettings;
 
 use strict;
 use base qw(Slim::Web::Settings);

@@ -3,7 +3,7 @@
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:genres
 -- PlaylistParameter1:genre:Select genre:
--- PlaylistParameter2:customdecadechained:Select decade:select cast(((tracks.year/10)*10) as int),case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else 'Unknown' end from tracks where tracks.audio=1 group by cast(((tracks.year/10)*10) as int) order by tracks.year desc
+-- PlaylistParameter2:customdecadechained:Select decade:select cast(((ifnull(tracks.year,0)/10)*10) as int),case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else 'Unknown' end from tracks where tracks.audio=1 group by cast(((ifnull(tracks.year,0)/10)*10) as int) order by tracks.year desc
 -- PlaylistParameter3:list:Choose songs to include:0:all songs,1:unplayed,2:played
 select distinct tracks.url from tracks
 	join genre_track on
@@ -15,7 +15,7 @@ select distinct tracks.url from tracks
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 	where
-		audio=1
+		tracks.audio = 1
 		and tracks.secs >= 'PlaylistTrackMinDuration'
 		and dynamicplaylist_history.id is null
 		and

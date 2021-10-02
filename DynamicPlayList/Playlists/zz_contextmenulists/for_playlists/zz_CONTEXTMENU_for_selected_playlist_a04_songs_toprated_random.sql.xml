@@ -1,26 +1,32 @@
--- PlaylistName:Songs - least played   (from selected playlist)
+-- PlaylistName:Songs - top rated   (from selected playlist)
 -- PlaylistGroups:Context menu lists/ playlist
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:playlists
 -- PlaylistParameter1:playlist:Select playlist:
-select leastplayed.url from
-	(select distinct tracks.url from tracks
+-- PlaylistParameter2:list:Choose songs to include:0:all songs,1:unplayed,2:played
+select distinct tracks.url from tracks
 	join playlist_track on
 		playlist_track.track = tracks.url and playlist_track.playlist='PlaylistParameter1'
 	join library_track on
 		library_track.track = tracks.id
 	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5
+		tracks_persistent.urlmd5 = tracks.urlmd5 and tracks_persistent.rating >= 'PlaylistTopRatedMinRating'
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 	where
-		audio=1
+		tracks.audio = 1
 		and tracks.secs >= 'PlaylistTrackMinDuration'
 		and dynamicplaylist_history.id is null
 		and
 			case
 				when ('PlaylistCurrentVirtualLibraryForClient'!='' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
+				else 1
+			end
+		and
+			case
+				when 'PlaylistParameter2'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
+				when 'PlaylistParameter2'=2 then tracks_persistent.playCount > 0
 				else 1
 			end
 		and not exists (select * from tracks t2,genre_track,genres
@@ -30,6 +36,5 @@ select leastplayed.url from
 							genre_track.genre=genres.id and
 							genres.name in ('PlaylistExcludedGenres'))
 	group by tracks.id
-	order by tracks_persistent.playCount asc,random()
-	limit 'PlaylistLimit') as leastplayed
-	order by random();
+	order by random()
+	limit 'PlaylistLimit';

@@ -4,9 +4,9 @@
 -- PlaylistParameter1:virtuallibrary:Select virtuallibrary:
 -- PlaylistParameter2:list:Choose songs to include:0:all songs,1:unplayed,2:played
 create temporary table dynamicplaylist_random_contributors as 
-	select contributor_track.contributor as contributor, count(distinct tracks.id) as totaltrackcount from tracks
+	select distinct contributor_track.contributor as contributor, count(distinct tracks.id) as totaltrackcount from tracks
 		join contributor_track on
-			contributor_track.track=tracks.id and contributor_track.role in (1,6)
+			contributor_track.track=tracks.id and contributor_track.role in (1,4,5,6)
 		join library_track on
 			library_track.track = tracks.id
 		join tracks_persistent on
@@ -14,8 +14,9 @@ create temporary table dynamicplaylist_random_contributors as
 		left join dynamicplaylist_history on
 			dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 		where
-			audio=1
+			tracks.audio = 1
 			and dynamicplaylist_history.id is null
+			and contributor_track.contributor != 'PlaylistVariousArtistsID'
 			and
 				case
 					when ('PlaylistParameter1'!='' and 'PlaylistParameter1' is not null)
@@ -35,12 +36,12 @@ create temporary table dynamicplaylist_random_contributors as
 								genre_track.genre=genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 		group by contributor_track.contributor
-			having totaltrackcount > 3
+			having totaltrackcount > 'PlaylistMinArtistTracks'
 		order by random()
 		limit 1;
 select distinct tracks.url from tracks
 	join contributor_track on
-		contributor_track.track=tracks.id and contributor_track.role in (1,6)
+		contributor_track.track=tracks.id and contributor_track.role in (1,4,5,6)
 	join dynamicplaylist_random_contributors on
 		dynamicplaylist_random_contributors.contributor=contributor_track.contributor
 	join library_track on
@@ -48,7 +49,7 @@ select distinct tracks.url from tracks
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 	where
-		audio=1
+		tracks.audio = 1
 		and tracks.secs >= 'PlaylistTrackMinDuration'
 		and dynamicplaylist_history.id is null
 		and
@@ -63,6 +64,6 @@ select distinct tracks.url from tracks
 							tracks.id = genre_track.track and 
 							genre_track.genre = genres.id and
 							genres.name in ('PlaylistExcludedGenres'))
-	order by dynamicplaylist_random_contributors.contributor,random()
+	order by dynamicplaylist_random_contributors.contributor, random()
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_contributors;

@@ -10,11 +10,11 @@ create temporary table dynamicplaylist_random_years as
 		left join dynamicplaylist_history on
 			dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 		where
-			audio=1
+			tracks.audio = 1
 			and dynamicplaylist_history.id is null
 			and tracks.year is not null
 			and tracks.year!=0
-			and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-tracks_persistent.lastPlayed) > 0)
+			and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-ifnull(tracks_persistent.lastPlayed,0)) > 0)
 			and not exists (select * from tracks t2,genre_track,genres
 							where
 								t2.id=tracks.id and
@@ -28,7 +28,7 @@ create temporary table dynamicplaylist_random_years as
 					else 1
 				end
 		group by tracks.year
-			having ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-tracks_persistent.lastPlayed) > 0)
+			having ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-ifnull(tracks_persistent.lastPlayed,0)) > 0)
 		order by random()
 		limit 1;
 select distinct tracks.url from tracks
@@ -39,7 +39,7 @@ select distinct tracks.url from tracks
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 	where
-		audio=1
+		tracks.audio = 1
 		and tracks.year=dynamicplaylist_random_years.year
 		and tracks.secs >= 'PlaylistTrackMinDuration'
 		and dynamicplaylist_history.id is null

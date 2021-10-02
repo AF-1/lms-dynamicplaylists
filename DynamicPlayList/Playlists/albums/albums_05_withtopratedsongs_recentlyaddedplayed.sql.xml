@@ -4,7 +4,7 @@
 -- PlaylistParameter1:list:Limit to albums that contain recently PLAYED songs?:0:all albums,1:albums with recently played songs
 -- PlaylistParameter2:list:Limit to albums with recently ADDED songs?:0:all albums,1:albums with recently added songs
 create temporary table dynamicplaylist_random_albums as
-	select tracks.album as album, count(distinct tracks.id) as totaltrackcount from tracks
+	select distinct tracks.album as album, count(distinct tracks.id) as totaltrackcount from tracks
 		join tracks_persistent on
 			tracks_persistent.urlmd5 = tracks.urlmd5 and tracks_persistent.rating >= 'PlaylistTopRatedMinRating'
 		join library_track on
@@ -12,7 +12,7 @@ create temporary table dynamicplaylist_random_albums as
 		left join dynamicplaylist_history on
 			dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 		where
-			audio = 1
+			tracks.audio = 1
 			and dynamicplaylist_history.id is null
 			and
 				case
@@ -22,7 +22,7 @@ create temporary table dynamicplaylist_random_albums as
 				end
 			and
 				case
-					when 'PlaylistParameter1' = 1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyPlayed' DAY'))-tracks_persistent.lastPlayed) < 0)
+					when 'PlaylistParameter1' = 1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyPlayed' DAY'))-ifnull(tracks_persistent.lastPlayed,0)) < 0)
 					else 1
 				end
 			and
@@ -37,7 +37,7 @@ create temporary table dynamicplaylist_random_albums as
 								genre_track.genre = genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 		group by tracks.album
-			having totaltrackcount > 3
+			having totaltrackcount > 'PlaylistMinAlbumTracks'
 				and
 					case
 						when 'PlaylistParameter2' = 1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-tracks_persistent.added) < 0)
@@ -53,7 +53,7 @@ select distinct tracks.url from tracks
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 	where
-		audio=1
+		tracks.audio = 1
 		and tracks.secs >= 'PlaylistTrackMinDuration'
 		and dynamicplaylist_history.id is null
 		and

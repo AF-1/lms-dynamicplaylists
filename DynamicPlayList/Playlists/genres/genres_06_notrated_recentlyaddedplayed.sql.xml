@@ -10,12 +10,13 @@ create temporary table dynamicplaylist_random_genres as
 				genre_track.track=tracks.id
 			join library_track on
 				library_track.track = tracks.id
-			left join tracks_persistent on
+			join tracks_persistent on
 				tracks_persistent.urlmd5 = tracks.urlmd5
 			left join dynamicplaylist_history on
-				dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer' and dynamicplaylist_history.id is null
+				dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 			where
 				genre_track.genre is not null
+				and dynamicplaylist_history.id is null
 				and not exists (select * from tracks t2,genre_track,genres
 								where
 									t2.id=tracks.id and
@@ -24,7 +25,7 @@ create temporary table dynamicplaylist_random_genres as
 									genres.name in ('PlaylistExcludedGenres'))
 				and
 					case
-						when 'PlaylistParameter1'=1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyPlayed' DAY'))-tracks_persistent.lastPlayed) < 0)
+						when 'PlaylistParameter1'=1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyPlayed' DAY'))-ifnull(tracks_persistent.lastPlayed,0)) < 0)
 						else 1
 					end
 				and
@@ -53,9 +54,10 @@ select distinct tracks.url from tracks
 	join library_track on
 		library_track.track = tracks.id
 	left join dynamicplaylist_history on
-		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer' and dynamicplaylist_history.id is null
+		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 	where
-		audio=1
+		tracks.audio = 1
+		and dynamicplaylist_history.id is null
 		and tracks.secs >= 'PlaylistTrackMinDuration'
 		and
 			case

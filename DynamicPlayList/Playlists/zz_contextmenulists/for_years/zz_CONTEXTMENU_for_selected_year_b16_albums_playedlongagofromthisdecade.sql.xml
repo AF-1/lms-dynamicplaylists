@@ -4,17 +4,18 @@
 -- PlaylistCategory:years
 -- PlaylistParameter1:year:Select year:
 create temporary table dynamicplaylist_random_albums as
-	select tracks.album as album, count(distinct tracks.id) as totaltrackcount from tracks
+	select distinct tracks.album as album, count(distinct tracks.id) as totaltrackcount from tracks
 		join library_track on
 			library_track.track = tracks.id
 		join tracks_persistent on
-			tracks_persistent.urlmd5 = tracks.urlmd5 and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-tracks_persistent.lastPlayed) > 0)
+			tracks_persistent.urlmd5 = tracks.urlmd5
 		left join dynamicplaylist_history on
 			dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 		where
-			audio=1
+			tracks.audio = 1
 			and tracks.year>=cast((('PlaylistParameter1'/10)*10) as int) and tracks.year<(cast((('PlaylistParameter1'/10)*10) as int)+10)
 			and dynamicplaylist_history.id is null
+			and (strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR')) - ifnull(tracks_persistent.lastPlayed,0)) > 0
 			and
 				case
 					when ('PlaylistCurrentVirtualLibraryForClient'!='' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
@@ -28,7 +29,7 @@ create temporary table dynamicplaylist_random_albums as
 								genre_track.genre=genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 		group by tracks.album
-			having totaltrackcount > 3 and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-tracks_persistent.lastPlayed) > 0)
+			having totaltrackcount > 'PlaylistMinAlbumTracks' and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-ifnull(tracks_persistent.lastPlayed,0)) > 0)
 		order by random() 
 		limit 1;
 select distinct tracks.url from tracks
@@ -39,7 +40,7 @@ select distinct tracks.url from tracks
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 	where
-		audio=1
+		tracks.audio = 1
 		and tracks.secs >= 'PlaylistTrackMinDuration'
 		and dynamicplaylist_history.id is null
 		and
