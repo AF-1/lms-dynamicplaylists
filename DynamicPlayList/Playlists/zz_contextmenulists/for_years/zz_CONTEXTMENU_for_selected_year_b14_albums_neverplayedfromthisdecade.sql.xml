@@ -2,10 +2,11 @@
 -- PlaylistGroups:Context menu lists/ decade
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:years
+-- PlaylistContentType:album
 -- PlaylistParameter1:year:Select year:
 create temporary table dynamicplaylist_random_albums as
 	select distinct tracks.album as album, sum(ifnull(tracks_persistent.playCount,0)) as sumplaycount, count(distinct tracks.id) as totaltrackcount from tracks
-		join library_track on
+		left join library_track on
 			library_track.track = tracks.id
 		join tracks_persistent on
 			tracks_persistent.urlmd5 = tracks.urlmd5
@@ -24,17 +25,17 @@ create temporary table dynamicplaylist_random_albums as
 			and not exists (select * from tracks t2,genre_track,genres
 							where
 								t2.id=tracks.id and
-								tracks.id=genre_track.track and 
+								tracks.id=genre_track.track and
 								genre_track.genre=genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 		group by tracks.album
 			having totaltrackcount > 'PlaylistMinAlbumTracks' and sumplaycount = 0
-		order by random() 
+		order by random()
 		limit 1;
 select distinct tracks.url from tracks
 	join dynamicplaylist_random_albums on
 		dynamicplaylist_random_albums.album = tracks.album
-	join library_track on
+	left join library_track on
 		library_track.track = tracks.id
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
@@ -51,10 +52,21 @@ select distinct tracks.url from tracks
 		and not exists (select * from tracks t2,genre_track,genres
 						where
 							t2.id=tracks.id and
-							tracks.id=genre_track.track and 
+							tracks.id=genre_track.track and
 							genre_track.genre=genres.id and
 							genres.name in ('PlaylistExcludedGenres'))
 	group by tracks.id
-	order by dynamicplaylist_random_albums.album, random()
-	limit 'PlaylistLimit';
+	order by
+		case
+			when 'PlaylistCompleteAlbums' = 1 then "dynamicplaylist_random_albums.album, tracks.disc, tracks.tracknum"
+		else
+			"dynamicplaylist_random_albums.album, random()"
+		end
+	limit
+		case
+			when 'PlaylistCompleteAlbums' = 1 then -1
+		else
+			'PlaylistLimit'
+		end
+		;
 drop table dynamicplaylist_random_albums;

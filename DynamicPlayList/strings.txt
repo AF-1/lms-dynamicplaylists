@@ -89,6 +89,12 @@ SETTINGS_PLUGIN_DYNAMICPLAYLIST_TOPRATED_MINRATING
 SETTINGS_PLUGIN_DYNAMICPLAYLIST_TOPRATED_MINRATING_DESC
 	EN	Minimum rating for tracks to be considered <b>top</b> rated in dynamic playlists that use the <i>TopRatedMinRating</i> parameter (some built-in playlists use this).
 
+SETTINGS_PLUGIN_DYNAMICPLAYLIST_COMPLETEALBUMS
+	EN	Use complete albums
+
+SETTINGS_PLUGIN_DYNAMICPLAYLIST_COMPLETEALBUMS_DESC
+	EN	By default DPL keeps adding a <i>user-specified max. number of new (unplayed)</i> tracks in <i>random</i> order to the current playlist. <br>With this setting checked built-in dynamic <b><u>album</u></b> playlists will add <b>complete</b> albums (<i>no track limit</i>) in <i>album track order</i>. 
+
 SETTINGS_PLUGIN_DYNAMICPLAYLIST_PERIOD_RECENTLYADDED
 	EN	Recently added period
 

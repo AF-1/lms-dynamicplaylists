@@ -174,7 +174,7 @@ sub initPrefs {
 	);
 
 	if (!defined($prefs->get('max_number_of_unplayed_tracks'))) {
-		$log->debug('Defaulting max_number_of_unplayed_tracks to 10');
+		$log->debug('Defaulting max_number_of_unplayed_tracks to 15');
 		$prefs->set('max_number_of_unplayed_tracks', 15);
 	}
 	if (!defined($prefs->get('min_number_of_unplayed_tracks'))) {
@@ -182,7 +182,7 @@ sub initPrefs {
 		$prefs->set('min_number_of_unplayed_tracks', 4);
 	}
 	if (!defined($prefs->get('number_of_played_tracks_to_keep'))) {
-		$log->debug('Defaulting to keep 5 tracks');
+		$log->debug('Defaulting to keep 3 tracks');
 		$prefs->set('number_of_played_tracks_to_keep', 3);
 	}
 	if (!defined $prefs->get('keep_adding_tracks')) {
@@ -198,7 +198,7 @@ sub initPrefs {
 		$prefs->set('song_min_duration', 90);
 	}
 	if (!defined($prefs->get('toprated_min_rating'))) {
-		$log->debug('Defaulting toprated_min_rating to 50');
+		$log->debug('Defaulting toprated_min_rating to 60');
 		$prefs->set('toprated_min_rating', 60);
 	}
 	if (!defined($prefs->get('period_recentlyadded'))) {
@@ -486,6 +486,13 @@ sub findAndAdd {
 
 	Slim::Utils::Timers::killTimers($client, \&findAndAdd);
 
+	my $playlistContentType = $playLists->{$type}->{'playlistcontenttype'};
+	$log->debug('PlaylistContentType = '.Dumper($playlistContentType));
+
+	# override max. no. of unplayed tracks added if users wants to add complete albums
+	if (defined($playlistContentType) && $playlistContentType eq 'album' && $prefs->get('completealbums')) {
+		$limit = 1000;
+	}
 	if (!defined($limit)) {
 		$limit = $prefs->get('max_number_of_unplayed_tracks');
 	}
@@ -518,16 +525,22 @@ sub findAndAdd {
 		$totalItems = [grep {!$seen->{$_}++} @{$totalItems}];
 		$log->debug('total items found so far = '.scalar(@{$totalItems}));
 
-		# if fetching tracks takes a long time but we already have more than the minimum number of tracks
-		# let's start playback and get the rest of the tracks later
-		if (time()-$iterationStartTime > 5 && scalar(@{$totalItems}) > $minUnplayedTracks && scalar(@{$totalItems}) < $limit) {
-			Slim::Utils::Timers::setTimer($client, Time::HiRes::time() + 15, \&findAndAdd, $type, $offset, $limit-scalar(@{$totalItems}), 1, 0);
-			last;
+		if (defined($playlistContentType) && $playlistContentType eq 'album' && $prefs->get('completealbums')) {
+			if (scalar(@{$totalItems}) > $minUnplayedTracks) {
+				last;
+			}
+		} else {
+			# if fetching tracks takes a long time but we already have more than the minimum number of tracks
+			# let's start playback and get the rest of the tracks later
+			if (time()-$iterationStartTime > 5 && scalar(@{$totalItems}) > $minUnplayedTracks && scalar(@{$totalItems}) < $limit) {
+				Slim::Utils::Timers::setTimer($client, Time::HiRes::time() + 15, \&findAndAdd, $type, $offset, $limit-scalar(@{$totalItems}), 1, 0);
+				last;
+			}
+			last if (defined $totalItems && scalar(@{$totalItems}) >= $limit);
 		}
-		last if (defined $totalItems && scalar(@{$totalItems}) >= $limit);
 	}
 	if (!defined $totalItems || scalar(@{$totalItems}) == 0) {
-		$log->info('found no tracks matching your search parameter or playist definition for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
+		$log->info('found no tracks matching your search parameter or playlist definition for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
 		return 0;
 	}
 	if (scalar(@{$totalItems}) > $limit) {
@@ -606,7 +619,7 @@ sub playRandom {
 	}
 
 	# Strings for non-track modes could be long so need some time to scroll
-	my $showTime = 13;
+	my $showTime = 10;
 
 	$log->debug('playRandom called with type '.$type);
 
@@ -739,8 +752,7 @@ sub playRandom {
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 					my $materialMsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'NOW_PLAYING').': '.$string;
-					$log->info($materialMsg);
-					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg]);
+					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client]);
 				}
 			}
 		} elsif ($showFeedback) {
@@ -750,8 +762,7 @@ sub playRandom {
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 					my $materialMsg = string('PLUGIN_DYNAMICPLAYLIST_NOW_PLAYING_FAILED_LONG').' '.$string;
-					$log->info($materialMsg);
-					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg]);
+					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client]);
 				}
 		}
 		# Never show random as modified, since its a living playlist
@@ -771,8 +782,7 @@ sub playRandom {
 		}
 		if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 			my $materialMsg = string('PLUGIN_DYNAMICPLAYLIST_DISABLED');
-			$log->info($materialMsg);
-			Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg]);
+			Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client]);
 		}
 		stateStop($masterClient);
 		my @players = Slim::Player::Sync::slaves($masterClient);
@@ -3360,6 +3370,7 @@ sub getDynamicPlayLists {
 				'name' => $current->{'name'},
 				'menulisttype' => $current->{'menulisttype'},
 				'playlistcategory' => $current->{'playlistcategory'},
+				'playlistcontenttype' => $current->{'playlistcontenttype'},
  				'url' => ''
 			);
 			if (defined($current->{'parameters'})) {
@@ -3398,6 +3409,7 @@ sub getNextDynamicPlayListTracks {
 	my @result = ();
 	my $dynamicplaylistID = $dynamicplaylist->{'dynamicplaylistid'};
 	my $localDynamicPlaylistID = $dynamicplaylist->{'id'};
+	my $playlistContentType = $dynamicplaylist->{'playlistcontenttype'};
 
 	if ((starts_with($dynamicplaylistID, 'dpldefault_') == 0) || (starts_with($dynamicplaylistID, 'dplusercustom_') == 0)) {
 		$log->debug('Getting tracks for dynamic playlist: \''.$dynamicplaylist->{'name'}.'\' with ID: '.$dynamicplaylist->{'id'});
@@ -3416,10 +3428,14 @@ sub getNextDynamicPlayListTracks {
 			'id' => 'Offset',
 			'value' => $offset
 		);
-		if (!defined($limit)) {$limit = 99999999};
+		if (!defined($limit)) {$limit = -1};
 		my %limitParameter = (
 			'id' => 'Limit',
 			'value' => $limit
+		);
+		my %completeAlbums = (
+			'id' => 'CompleteAlbums',
+			'value' => $prefs->get('completealbums')? 1 : 0,
 		);
 		my %VAstring = (
 			'id' => 'VariousArtistsString',
@@ -3469,6 +3485,7 @@ sub getNextDynamicPlayListTracks {
 		$predefinedParameters->{'PlaylistPlayer'} = \%player;
 		$predefinedParameters->{'PlaylistOffset'} = \%offsetParameter;
 		$predefinedParameters->{'PlaylistLimit'} = \%limitParameter;
+		$predefinedParameters->{'PlaylistCompleteAlbums'} = \%completeAlbums;
 		$predefinedParameters->{'PlaylistVariousArtistsString'} = \%VAstring;
 		$predefinedParameters->{'PlaylistVariousArtistsID'} = \%VAid;
 		$predefinedParameters->{'PlaylistTrackMinDuration'} = \%minTrackDuration;
@@ -3499,7 +3516,9 @@ sub getNextDynamicPlayListTracks {
 						my $track = Slim::Schema->resultset('Track')->objectForUrl($trackURL);
 						push @tracks, $track;
 					}
-					fisher_yates_shuffle(\@tracks);
+					unless (defined($playlistContentType) && $playlistContentType eq 'album' && $prefs->get('completealbums')) {
+						fisher_yates_shuffle(\@tracks);
+					}
 					push @result, @tracks;
 				}
 				$sth->finish();
@@ -3542,7 +3561,9 @@ sub getNextDynamicPlayListTracks {
 					}
 					if (scalar(@trackIds) > 0) {
 						@tracks = Slim::Schema->resultset('Track')->search({'id' => {'in' => \@trackIds}});
-						fisher_yates_shuffle(\@tracks);
+						unless (defined($playlistContentType) && $playlistContentType eq 'album' && $prefs->get('completealbums')) {
+							fisher_yates_shuffle(\@tracks);
+						}
 					}
 				}
 				$sth->finish();
@@ -3671,6 +3692,7 @@ sub parseContent {
 		my %parameters = ();
 		my $menuListType = '';
 		my $playlistCategory = '';
+		my $playlistContentType = '';
 		my %startactions = ();
 		my %stopactions = ();
 		for my $line (@playlistDataArray) {
@@ -3696,6 +3718,7 @@ sub parseContent {
 			my $action = parseAction($line);
 			my $listType = parseMenuListType($line);
 			my $category = parseCategory($line);
+			my $contentType = parseContentType($line);
 			if ($line =~ /^\s*--\s*PlaylistGroups\s*[:=]\s*/) {
 				$line =~ s/^\s*--\s*PlaylistGroups\s*[:=]\s*//io;
 				if ($line) {
@@ -3725,6 +3748,9 @@ sub parseContent {
 			}
 			if ($category) {
 				$playlistCategory = $category;
+			}
+			if ($contentType) {
+				$playlistContentType = $contentType;
 			}
 
 			# skip and strip comments & empty lines
@@ -3788,6 +3814,9 @@ sub parseContent {
 			if (defined $playlistCategory && $playlistCategory ne '') {
 				$playlist{'playlistcategory'} = $playlistCategory;
 			}
+			if (defined $playlistContentType && $playlistContentType ne '') {
+				$playlist{'playlistcontenttype'} = $playlistContentType;
+			}
 			if (%startactions) {
 				my @actionArray = ();
 				for my $key (keys %startactions) {
@@ -3828,8 +3857,8 @@ sub parsePlaylistName {
 		if ($name) {
 			return $name;
 		} else {
-			$log->info("No name found in: $line");
-			$log->info("Value: name=$name");
+			$log->debug("No name found in: $line");
+			$log->debug("Value: name = $name");
 			return undef;
 		}
 	}
@@ -3917,8 +3946,8 @@ sub parseMenuListType {
 		if ($MenuListType) {
 			return $MenuListType;
 		} else {
-			$log->info("No value or error in MenuListType: $line");
-			$log->info("Option values: MenuListType=$MenuListType");
+			$log->debug("No value or error in MenuListType: $line");
+			$log->debug("Option values: MenuListType = $MenuListType");
 			return undef;
 		}
 	}
@@ -3936,8 +3965,27 @@ sub parseCategory {
 		if ($category) {
 			return $category;
 		} else {
-			$log->info("No value or error in category: $line");
-			$log->info("Option values: category=$category");
+			$log->debug("No value or error in category: $line");
+			$log->debug("Option values: category = $category");
+			return undef;
+		}
+	}
+	return undef;
+}
+
+sub parseContentType {
+	my $line = shift;
+	if ($line =~ /^\s*--\s*PlaylistContentType\s*[:=]\s*/) {
+		$line =~ m/^\s*--\s*PlaylistContentType\s*[:=]\s*([^:]+)\s*(.*)$/;
+		my $contentType = $1;
+		$contentType =~ s/\s+$//;
+		$contentType =~ s/^\s+//;
+
+		if ($contentType) {
+			return $contentType;
+		} else {
+			$log->debug("No value or error in ContentType: $line");
+			$log->debug("Option values: ContentType = $contentType");
 			return undef;
 		}
 	}

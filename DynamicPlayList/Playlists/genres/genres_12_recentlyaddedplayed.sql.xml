@@ -1,13 +1,13 @@
--- PlaylistName:Genres - (not) recently added or played
+-- PlaylistName:Genres - recently added or played songs
 -- PlaylistGroups:Genres
 -- PlaylistCategory:genres
 -- PlaylistParameter1:list:Limit to genres that contain recently PLAYED songs?:0:all genres,1:genres with recently played songs,2:genres without recently played songs
 -- PlaylistParameter2:list:Limit to genres with recently ADDED songs?:0:all genres,1:genres with recently added songs,2:genres without recently added songs
-create temporary table dynamicplaylist_random_genres as 
+create temporary table dynamicplaylist_random_genres as
 	select genre_track.genre as genre from genre_track
 		join tracks on
 			genre_track.track=tracks.id
-		join library_track on
+		left join library_track on
 			library_track.track = tracks.id
 		join tracks_persistent on
 			tracks_persistent.urlmd5 = tracks.urlmd5
@@ -19,19 +19,17 @@ create temporary table dynamicplaylist_random_genres as
 			and not exists (select * from tracks t2,genre_track,genres
 							where
 								t2.id=tracks.id and
-								tracks.id=genre_track.track and 
+								tracks.id=genre_track.track and
 								genre_track.genre=genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 			and
 				case
 					when 'PlaylistParameter1'=1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyPlayed' DAY'))-ifnull(tracks_persistent.lastPlayed,0)) < 0)
-					when 'PlaylistParameter1'=2 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyPlayed' DAY'))-ifnull(tracks_persistent.lastPlayed,0)) > 0)
 					else 1
 				end
 			and
 				case
 					when 'PlaylistParameter2'=1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-tracks_persistent.added) < 0)
-					when 'PlaylistParameter2'=2 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-tracks_persistent.added) > 0)
 					else 1
 				end
 			and
@@ -42,17 +40,15 @@ create temporary table dynamicplaylist_random_genres as
 				end
 		group by genre_track.genre
 			having
-				case
-					when 'PlaylistParameter1'=1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyPlayed' DAY'))-ifnull(tracks_persistent.lastPlayed,0)) < 0)
-					when 'PlaylistParameter1'=2 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyPlayed' DAY'))-ifnull(tracks_persistent.lastPlayed,0)) > 0)
-					else 1
-				end
-			and
-				case
-					when 'PlaylistParameter2'=1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-tracks_persistent.added) < 0)
-					when 'PlaylistParameter2'=2 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-tracks_persistent.added) > 0)
-					else 1
-				end
+					case
+						when 'PlaylistParameter1'=2 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyPlayed' DAY'))-max(ifnull(tracks_persistent.lastPlayed,0))) > 0)
+						else 1
+					end
+				and
+					case
+						when 'PlaylistParameter2'=2 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-max(tracks_persistent.added)) > 0)
+						else 1
+					end
 		order by random()
 		limit 1;
 select distinct tracks.url from tracks
@@ -60,7 +56,7 @@ select distinct tracks.url from tracks
 		genre_track.track=tracks.id
 	join dynamicplaylist_random_genres on
 		dynamicplaylist_random_genres.genre=genre_track.genre
-	join library_track on
+	left join library_track on
 		library_track.track = tracks.id
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'

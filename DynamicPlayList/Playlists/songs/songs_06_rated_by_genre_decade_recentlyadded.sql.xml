@@ -3,14 +3,14 @@
 -- PlaylistCategory:songs
 -- PlaylistParameter1:customgenrechained:Select genre:select id, name, substr(namesort,1,1) from genres order by namesort
 -- PlaylistParameter2:customdecadechained:Select decade:select cast(((ifnull(tracks.year,0)/10)*10) as int),case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else 'Unknown' end from tracks where tracks.audio=1 group by cast(((ifnull(tracks.year,0)/10)*10) as int) order by tracks.year desc
--- PlaylistParameter3:list:Limit to PLAYED songs:0:all songs,1:unplayed,2:played
+-- PlaylistParameter3:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
 -- PlaylistParameter4:list:Limit to recently ADDED songs?:0:all songs,1:recently added songs,2:not with recently added songs
 select distinct tracks.url from tracks
 	join tracks_persistent on
 		tracks_persistent.urlmd5 = tracks.urlmd5 and tracks_persistent.rating > 0
 	join genre_track on
 		genre_track.track = tracks.id
-	join library_track on
+	left join library_track on
 		library_track.track = tracks.id
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
@@ -49,7 +49,7 @@ select distinct tracks.url from tracks
 		and not exists (select * from tracks t2,genre_track,genres
 						where
 							t2.id=tracks.id and
-							tracks.id=genre_track.track and 
+							tracks.id=genre_track.track and
 							genre_track.genre=genres.id and
 							genres.name in ('PlaylistExcludedGenres'))
 	group by tracks.id

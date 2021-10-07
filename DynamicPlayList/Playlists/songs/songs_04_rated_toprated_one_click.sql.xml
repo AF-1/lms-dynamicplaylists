@@ -2,7 +2,7 @@
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
 select distinct tracks.url from tracks
-	join library_track on
+	left join library_track on
 		library_track.track = tracks.id
 	join tracks_persistent on
 		tracks_persistent.urlmd5 = tracks.urlmd5 and tracks_persistent.rating >= 'PlaylistTopRatedMinRating'

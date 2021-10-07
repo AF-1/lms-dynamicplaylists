@@ -2,11 +2,13 @@
 -- PlaylistGroups:Context menu lists/ year
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:years
+-- PlaylistContentType:album
 -- PlaylistParameter1:year:Select year:
+-- PlaylistParameter2:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
 create temporary table dynamicplaylist_random_albums as
 	select leastplayed.album as album from
 		(select distinct tracks.album as album, sum(ifnull(tracks_persistent.playCount,0)) as sumcount, count(distinct tracks.id) as totaltrackcount from tracks
-		join library_track on
+		left join library_track on
 			library_track.track = tracks.id
 		join tracks_persistent on
 			tracks_persistent.urlmd5 = tracks.urlmd5
@@ -25,19 +27,21 @@ create temporary table dynamicplaylist_random_albums as
 			and not exists (select * from tracks t2,genre_track,genres
 							where
 								t2.id=tracks.id and
-								tracks.id=genre_track.track and 
+								tracks.id=genre_track.track and
 								genre_track.genre=genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 		group by tracks.album
 			having totaltrackcount > 'PlaylistMinAlbumTracks'
-		order by sumcount asc, random() 
+		order by sumcount asc, random()
 		limit 30) as leastplayed
 	order by random()
 	limit 1;
 select distinct tracks.url from tracks
 	join dynamicplaylist_random_albums on
 		dynamicplaylist_random_albums.album = tracks.album
-	join library_track on
+	join tracks_persistent on
+		tracks_persistent.urlmd5 = tracks.urlmd5
+	left join library_track on
 		library_track.track = tracks.id
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
@@ -47,6 +51,12 @@ select distinct tracks.url from tracks
 		and dynamicplaylist_history.id is null
 		and
 			case
+				when 'PlaylistParameter2'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
+				when 'PlaylistParameter2'=2 then tracks_persistent.playCount > 0
+				else 1
+			end
+		and
+			case
 				when ('PlaylistCurrentVirtualLibraryForClient'!='' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
@@ -54,10 +64,21 @@ select distinct tracks.url from tracks
 		and not exists (select * from tracks t2,genre_track,genres
 						where
 							t2.id=tracks.id and
-							tracks.id=genre_track.track and 
+							tracks.id=genre_track.track and
 							genre_track.genre=genres.id and
 							genres.name in ('PlaylistExcludedGenres'))
 	group by tracks.id
-	order by dynamicplaylist_random_albums.album, random()
-	limit 'PlaylistLimit';
+	order by
+		case
+			when 'PlaylistCompleteAlbums' = 1 then "dynamicplaylist_random_albums.album, tracks.disc, tracks.tracknum"
+		else
+			"dynamicplaylist_random_albums.album, random()"
+		end
+	limit
+		case
+			when 'PlaylistCompleteAlbums' = 1 then -1
+		else
+			'PlaylistLimit'
+		end
+		;
 drop table dynamicplaylist_random_albums;

@@ -7,7 +7,7 @@ select mostplayed.url from
 	(select distinct tracks.url from tracks
 	join contributor_track on
 		contributor_track.track = tracks.id and contributor_track.contributor='PlaylistParameter1'
-	join library_track on
+	left join library_track on
 		library_track.track = tracks.id
 	join tracks_persistent on
 		tracks_persistent.urlmd5 = tracks.urlmd5

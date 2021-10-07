@@ -2,9 +2,9 @@
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
 -- PlaylistParameter1:virtuallibrary:Select virtuallibrary:
--- PlaylistParameter2:list:Limit to PLAYED songs:0:all songs,1:unplayed songs,2:played songs
+-- PlaylistParameter2:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
 select distinct tracks.url from tracks
-	join library_track on
+	left join library_track on
 		library_track.track = tracks.id
 	join tracks_persistent on
 		tracks_persistent.urlmd5 = tracks.urlmd5
@@ -12,6 +12,12 @@ select distinct tracks.url from tracks
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 	where
 		tracks.audio = 1
+		and
+			case
+				when ('PlaylistParameter1'!='' and 'PlaylistParameter1' is not null)
+				then library_track.library = 'PlaylistParameter1'
+				else 1
+			end
 		and tracks.secs >= 'PlaylistTrackMinDuration'
 		and dynamicplaylist_history.id is null
 		and
@@ -23,7 +29,7 @@ select distinct tracks.url from tracks
 		and not exists (select * from tracks t2,genre_track,genres
 						where
 							t2.id=tracks.id and
-							tracks.id=genre_track.track and 
+							tracks.id=genre_track.track and
 							genre_track.genre=genres.id and
 							genres.name in ('PlaylistExcludedGenres'))
 	order by random()

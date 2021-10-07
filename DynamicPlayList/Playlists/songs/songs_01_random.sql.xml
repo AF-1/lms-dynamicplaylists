@@ -1,9 +1,9 @@
 -- PlaylistName:Songs - random
 -- PlaylistGroups:Songs
--- PlaylistParameter1:list:Limit to PLAYED songs:0:all songs,1:unplayed songs,2:played songs
+-- PlaylistParameter1:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
 -- PlaylistCategory:songs
 select distinct tracks.url from tracks
-	join library_track on
+	left join library_track on
 		library_track.track = tracks.id
 	join tracks_persistent on
 		tracks_persistent.urlmd5 = tracks.urlmd5
@@ -28,7 +28,7 @@ select distinct tracks.url from tracks
 		and not exists (select * from tracks t2,genre_track,genres
 						where
 							t2.id=tracks.id and
-							tracks.id=genre_track.track and 
+							tracks.id=genre_track.track and
 							genre_track.genre=genres.id and
 							genres.name in ('PlaylistExcludedGenres'))
 	order by random()
