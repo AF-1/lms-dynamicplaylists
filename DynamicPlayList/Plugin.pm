@@ -747,7 +747,7 @@ sub playRandom {
 			if (!$addOnly || $type ne $mixInfo{$masterClient}->{'type'}) {
 				# Don't do showBrieflys if visualiser screensavers are running as the display messes up
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-					$client->showBriefly({'line' => [string($addOnly ? 'ADDING_TO_PLAYLIST' : 'NOW_PLAYING'),
+					$client->showBriefly({'line' => [string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLIST_NOW_PLAYING'),
 										 $string]}, $showTime);
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
