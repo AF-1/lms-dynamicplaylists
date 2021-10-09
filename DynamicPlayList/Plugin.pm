@@ -752,7 +752,7 @@ sub playRandom {
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 					my $materialMsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'NOW_PLAYING').': '.$string;
-					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client]);
+					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 				}
 			}
 		} elsif ($showFeedback) {
@@ -762,7 +762,7 @@ sub playRandom {
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 					my $materialMsg = string('PLUGIN_DYNAMICPLAYLIST_NOW_PLAYING_FAILED_LONG').' '.$string;
-					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client]);
+					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 				}
 		}
 		# Never show random as modified, since its a living playlist
@@ -782,7 +782,7 @@ sub playRandom {
 		}
 		if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 			my $materialMsg = string('PLUGIN_DYNAMICPLAYLIST_DISABLED');
-			Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client]);
+			Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 		}
 		stateStop($masterClient);
 		my @players = Slim::Player::Sync::slaves($masterClient);
