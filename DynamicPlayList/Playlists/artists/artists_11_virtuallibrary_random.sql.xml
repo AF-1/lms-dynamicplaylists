@@ -3,6 +3,7 @@
 -- PlaylistCategory:artists
 -- PlaylistParameter1:virtuallibrary:Select virtuallibrary:
 -- PlaylistParameter2:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+drop table if exists dynamicplaylist_random_contributors;
 create temporary table dynamicplaylist_random_contributors as
 	select distinct contributor_track.contributor as contributor, count(distinct tracks.id) as totaltrackcount from tracks
 		join contributor_track on

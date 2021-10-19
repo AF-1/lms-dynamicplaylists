@@ -2,6 +2,7 @@
 -- PlaylistGroups:Years
 -- PlaylistCategory:years
 -- PlaylistParameter1:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+drop table if exists dynamicplaylist_random_years;
 create temporary table dynamicplaylist_random_years as
 	select leastavgplayed.year as year from
 		(select tracks.year as year, avg(ifnull(tracks_persistent.playCount,0)) as avgcount from tracks

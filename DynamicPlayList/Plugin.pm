@@ -486,15 +486,17 @@ sub findAndAdd {
 
 	Slim::Utils::Timers::killTimers($client, \&findAndAdd);
 
-	my $playlistContentType = $playLists->{$type}->{'playlistcontenttype'};
-	$log->debug('PlaylistContentType = '.Dumper($playlistContentType));
+	my $playlistLimitOption = $playLists->{$type}->{'playlistlimitoption'};
+	$log->debug('playlistLimitOption = '.Dumper($playlistLimitOption));
 
-	# override max. no. of unplayed tracks added if users wants to add complete albums
-	if (defined($playlistContentType) && $playlistContentType eq 'album' && $prefs->get('completealbums')) {
-		$limit = 1000;
-	}
 	if (!defined($limit)) {
 		$limit = $prefs->get('max_number_of_unplayed_tracks');
+	}
+
+	# sanity check if number of new songs added is set to 'unlimited'
+	# prevents faulty playlist definitions from accidentally adding complete libraries
+	if (defined($playlistLimitOption) && $playlistLimitOption eq 'unlimited') {
+		$limit = 2000;
 	}
 
 	my $masterClient = masterOrSelf($client);
@@ -515,7 +517,7 @@ sub findAndAdd {
 		next if (!defined $items || scalar(@{$items}) == 0);
 		$log->debug("iteration $i returned ".(scalar @{$items}).' unfiltered '.((scalar @{$items}) == 1 ? 'item' : 'items'));
 
- 		$items = filterTracks($masterClient, $items, $totalItems);
+		$items = filterTracks($masterClient, $items, $totalItems);
 		$log->debug("iteration $i returned ".(scalar @{$items}).((scalar @{$items}) == 1 ? ' item' : ' items').' after filtering');
 
 		$noOfFoundItems = $noOfFoundItems + (scalar @{$items});
@@ -525,7 +527,7 @@ sub findAndAdd {
 		$totalItems = [grep {!$seen->{$_}++} @{$totalItems}];
 		$log->debug('total items found so far = '.scalar(@{$totalItems}));
 
-		if (defined($playlistContentType) && $playlistContentType eq 'album' && $prefs->get('completealbums')) {
+		if ($limit == 2000) {
 			if (scalar(@{$totalItems}) > $minUnplayedTracks) {
 				last;
 			}
@@ -1025,7 +1027,7 @@ sub addParameterValues {
 				$log->warn("Error, invalid parameter value: $value");
 			}
 		}
- 	} elsif (lc($parameter->{'type'}) eq 'virtuallibrary') {
+	} elsif (lc($parameter->{'type'}) eq 'virtuallibrary') {
 
 			my $VLs = getVirtualLibraries();
 			foreach my $thisVL (@{$VLs}) {
@@ -1347,7 +1349,7 @@ sub setModeMixer {
 				$client->bumpRight();
 			}
 		},
-		onFavorites	=> sub {
+		onFavorites => sub {
 			my ($client, $item, $arg) = @_;
 			if (defined $arg && $arg =~ /^add$|^add(\d+)/) {
 				addFavorite($client, $item, $1);
@@ -1621,7 +1623,7 @@ sub getSetModeDataForSubItems {
 				$client->bumpRight();
 			}
 		},
-		onFavorites	=> sub {
+		onFavorites => sub {
 			my ($client, $item, $arg) = @_;
 			if (defined $arg && $arg =~ /^add$|^add(\d+)/) {
 				addFavorite($client, $item, $1);
@@ -3370,8 +3372,11 @@ sub getDynamicPlayLists {
 				'name' => $current->{'name'},
 				'menulisttype' => $current->{'menulisttype'},
 				'playlistcategory' => $current->{'playlistcategory'},
-				'playlistcontenttype' => $current->{'playlistcontenttype'},
- 				'url' => ''
+				'playlisttrackorder' => $current->{'playlisttrackorder'},
+				'playlistlimitoption' => $current->{'playlistlimitoption'},
+				'playlistvirtuallibrarynames' => $current->{'playlistvirtuallibrarynames'},
+				'playlistvirtuallibraryids' => $current->{'playlistvirtuallibraryids'},
+				'url' => ''
 			);
 			if (defined($current->{'parameters'})) {
 				my $parameters = $current->{'parameters'};
@@ -3409,11 +3414,20 @@ sub getNextDynamicPlayListTracks {
 	my @result = ();
 	my $dynamicplaylistID = $dynamicplaylist->{'dynamicplaylistid'};
 	my $localDynamicPlaylistID = $dynamicplaylist->{'id'};
-	my $playlistContentType = $dynamicplaylist->{'playlistcontenttype'};
 
 	if ((starts_with($dynamicplaylistID, 'dpldefault_') == 0) || (starts_with($dynamicplaylistID, 'dplusercustom_') == 0)) {
 		$log->debug('Getting tracks for dynamic playlist: \''.$dynamicplaylist->{'name'}.'\' with ID: '.$dynamicplaylist->{'id'});
 		$log->debug("limit = $limit, offset = $offset, parameters = ".Dumper($parameters));
+
+		my $playlistTrackOrder = $dynamicplaylist->{'playlisttrackorder'};
+		$log->debug('playlistTrackOrder = '.Dumper($playlistTrackOrder));
+		my $playlistLimitOption = $dynamicplaylist->{'playlistlimitoption'};
+		$log->debug('playlistLimitOption = '.Dumper($playlistLimitOption));
+		my $playlistVLnames = $dynamicplaylist->{'playlistvirtuallibrarynames'};
+		$log->debug('playlistVLnames = '.Dumper($playlistVLnames));
+		my $playlistVLids = $dynamicplaylist->{'playlistvirtuallibraryids'};
+		$log->debug('playlistVLids = '.Dumper($playlistVLnames));
+
 		my $playlist = getPlayList($client, $dynamicplaylistID);
 		my $localDynamicPlaylistSQLstatement = $localDynamicPlaylists->{$localDynamicPlaylistID}->{'sql'};
 		my $sqlstatement = replaceParametersInSQL($localDynamicPlaylistSQLstatement, $parameters);
@@ -3428,14 +3442,14 @@ sub getNextDynamicPlayListTracks {
 			'id' => 'Offset',
 			'value' => $offset
 		);
-		if (!defined($limit)) {$limit = -1};
+		if (!defined($limit) || $playlistLimitOption eq 'unlimited') {$limit = -1};
 		my %limitParameter = (
 			'id' => 'Limit',
 			'value' => $limit
 		);
-		my %completeAlbums = (
-			'id' => 'CompleteAlbums',
-			'value' => $prefs->get('completealbums')? 1 : 0,
+		my %trackOrder = (
+			'id' => 'TrackOrder',
+			'value' => $playlistTrackOrder? 1 : 0,
 		);
 		my %VAstring = (
 			'id' => 'VariousArtistsString',
@@ -3482,10 +3496,29 @@ sub getNextDynamicPlayListTracks {
 			'value' => $dbh->quote(Slim::Music::VirtualLibraries->getLibraryIdForClient($client)),
 		);
 
+		if (keys %{$playlistVLnames}) {
+			foreach my $thisKey (sort keys %{$playlistVLnames}) {
+				my %thisVirtualLibraryNameItem = (
+					'id' => 'VirtualLibraryName'.$thisKey,
+					'value' => $dbh->quote(Slim::Music::VirtualLibraries->getIdForName($playlistVLnames->{$thisKey})),
+				);
+				$predefinedParameters->{'PlaylistVirtualLibraryName'.$thisKey} = \%thisVirtualLibraryNameItem;
+			}
+		}
+		if (keys %{$playlistVLids}) {
+			foreach my $thisKey (sort keys %{$playlistVLids}) {
+				my %thisVirtualLibraryIDItem = (
+					'id' => 'VirtualLibraryID'.$thisKey,
+					'value' => $dbh->quote(Slim::Music::VirtualLibraries->getRealId($playlistVLids->{$thisKey})),
+				);
+				$predefinedParameters->{'PlaylistVirtualLibraryID'.$thisKey} = \%thisVirtualLibraryIDItem;
+			}
+		}
+
 		$predefinedParameters->{'PlaylistPlayer'} = \%player;
 		$predefinedParameters->{'PlaylistOffset'} = \%offsetParameter;
 		$predefinedParameters->{'PlaylistLimit'} = \%limitParameter;
-		$predefinedParameters->{'PlaylistCompleteAlbums'} = \%completeAlbums;
+		$predefinedParameters->{'PlaylistTrackOrder'} = \%trackOrder;
 		$predefinedParameters->{'PlaylistVariousArtistsString'} = \%VAstring;
 		$predefinedParameters->{'PlaylistVariousArtistsID'} = \%VAid;
 		$predefinedParameters->{'PlaylistTrackMinDuration'} = \%minTrackDuration;
@@ -3516,7 +3549,7 @@ sub getNextDynamicPlayListTracks {
 						my $track = Slim::Schema->resultset('Track')->objectForUrl($trackURL);
 						push @tracks, $track;
 					}
-					unless (defined($playlistContentType) && $playlistContentType eq 'album' && $prefs->get('completealbums')) {
+					unless ($prefs->get('disableextrashuffle') || (defined($playlistTrackOrder) && $playlistTrackOrder eq 'ordered')) {
 						fisher_yates_shuffle(\@tracks);
 					}
 					push @result, @tracks;
@@ -3536,7 +3569,7 @@ sub getNextDynamicPlayListTracks {
 		$log->debug('Getting tracks for standard playlist: '.$dynamicplaylist->{'name'});
 		my $playlist = objectForId('playlist', $dynamicplaylist->{'id'});
 		my @tracks = ();
-		if (!$prefs->get('randomsavedplaylists')) {
+		if ($prefs->get('randomsavedplaylists') == 0) {
 			my $iterator = $playlist->tracks;
 			@tracks = $iterator->slice(0, $iterator->count);
 		} else {
@@ -3561,9 +3594,7 @@ sub getNextDynamicPlayListTracks {
 					}
 					if (scalar(@trackIds) > 0) {
 						@tracks = Slim::Schema->resultset('Track')->search({'id' => {'in' => \@trackIds}});
-						unless (defined($playlistContentType) && $playlistContentType eq 'album' && $prefs->get('completealbums')) {
-							fisher_yates_shuffle(\@tracks);
-						}
+						fisher_yates_shuffle(\@tracks);
 					}
 				}
 				$sth->finish();
@@ -3692,7 +3723,10 @@ sub parseContent {
 		my %parameters = ();
 		my $menuListType = '';
 		my $playlistCategory = '';
-		my $playlistContentType = '';
+		my $playlistTrackOrder = '';
+		my $playlistLimitOption = '';
+		my $playlistVLnames = ();
+		my $playlistVLids = ();
 		my %startactions = ();
 		my %stopactions = ();
 		for my $line (@playlistDataArray) {
@@ -3718,7 +3752,10 @@ sub parseContent {
 			my $action = parseAction($line);
 			my $listType = parseMenuListType($line);
 			my $category = parseCategory($line);
-			my $contentType = parseContentType($line);
+			my $trackOrder = parseTrackOrder($line);
+			my $limitOption = parseLimitOption($line);
+			my $VLnameItem = parseVirtualLibraryName($line);
+			my $VLidItem = parseVirtualLibraryID($line);
 			if ($line =~ /^\s*--\s*PlaylistGroups\s*[:=]\s*/) {
 				$line =~ s/^\s*--\s*PlaylistGroups\s*[:=]\s*//io;
 				if ($line) {
@@ -3749,8 +3786,17 @@ sub parseContent {
 			if ($category) {
 				$playlistCategory = $category;
 			}
-			if ($contentType) {
-				$playlistContentType = $contentType;
+			if ($trackOrder) {
+				$playlistTrackOrder = $trackOrder;
+			}
+			if ($limitOption) {
+				$playlistLimitOption = $limitOption;
+			}
+			if (keys %{$VLnameItem}) {
+				$$playlistVLnames{$VLnameItem->{'number'}} = $VLnameItem->{'name'};
+			}
+			if (keys %{$VLidItem}) {
+				$$playlistVLids{$VLidItem->{'number'}} = $VLidItem->{'id'};
 			}
 
 			# skip and strip comments & empty lines
@@ -3814,9 +3860,19 @@ sub parseContent {
 			if (defined $playlistCategory && $playlistCategory ne '') {
 				$playlist{'playlistcategory'} = $playlistCategory;
 			}
-			if (defined $playlistContentType && $playlistContentType ne '') {
-				$playlist{'playlistcontenttype'} = $playlistContentType;
+			if (defined $playlistTrackOrder && $playlistTrackOrder ne '') {
+				$playlist{'playlisttrackorder'} = $playlistTrackOrder;
 			}
+			if (defined $playlistLimitOption && $playlistLimitOption ne '') {
+				$playlist{'playlistlimitoption'} = $playlistLimitOption;
+			}
+			if (keys %{$playlistVLnames}) {
+				$playlist{'playlistvirtuallibrarynames'} = $playlistVLnames;
+			}
+			if (keys %{$playlistVLids}) {
+				$playlist{'playlistvirtuallibraryids'} = $playlistVLids;
+			}
+
 			if (%startactions) {
 				my @actionArray = ();
 				for my $key (keys %startactions) {
@@ -3894,7 +3950,7 @@ sub parseParameter {
 			return \%parameter;
 		} else {
 			$log->warn("Error in parameter: $line");
-			$log->warn("Parameter values: Id=$parameterId, Type=$parameterType, Name=$parameterName, Definition=$parameterDefinition");
+			$log->warn("Parameter values: Id = $parameterId, Type = $parameterType, Name = $parameterName, Definition = $parameterDefinition");
 			return undef;
 		}
 	}
@@ -3973,19 +4029,96 @@ sub parseCategory {
 	return undef;
 }
 
-sub parseContentType {
+sub parseTrackOrder {
 	my $line = shift;
-	if ($line =~ /^\s*--\s*PlaylistContentType\s*[:=]\s*/) {
-		$line =~ m/^\s*--\s*PlaylistContentType\s*[:=]\s*([^:]+)\s*(.*)$/;
-		my $contentType = $1;
-		$contentType =~ s/\s+$//;
-		$contentType =~ s/^\s+//;
+	if ($line =~ /^\s*--\s*PlaylistTrackOrder\s*[:=]\s*/) {
+		$line =~ m/^\s*--\s*PlaylistTrackOrder\s*[:=]\s*([^:]+)\s*(.*)$/;
+		my $trackOrder = $1;
+		$trackOrder =~ s/\s+$//;
+		$trackOrder =~ s/^\s+//;
 
-		if ($contentType) {
-			return $contentType;
+		if ($trackOrder) {
+			return $trackOrder;
 		} else {
-			$log->debug("No value or error in ContentType: $line");
-			$log->debug("Option values: ContentType = $contentType");
+			$log->debug("No value or error in trackOrder: $line");
+			$log->debug("Option values: trackOrder = $trackOrder");
+			return undef;
+		}
+	}
+	return undef;
+}
+
+sub parseLimitOption {
+	my $line = shift;
+	if ($line =~ /^\s*--\s*PlaylistLimitOption\s*[:=]\s*/) {
+		$line =~ m/^\s*--\s*PlaylistLimitOption\s*[:=]\s*([^:]+)\s*(.*)$/;
+		my $limitOption = $1;
+		$limitOption =~ s/\s+$//;
+		$limitOption =~ s/^\s+//;
+
+		if ($limitOption) {
+			return $limitOption;
+		} else {
+			$log->debug("No value or error in limitOption: $line");
+			$log->debug("Option values: limitOption = $limitOption");
+			return undef;
+		}
+	}
+	return undef;
+}
+
+sub parseVirtualLibraryName {
+	my $line = shift;
+
+	if ($line =~ /^\s*--\s*PlaylistVirtualLibraryName\s*\d\s*[:=]\s*/) {
+		$line =~ m/^\s*--\s*PlaylistVirtualLibraryName\s*(\d)\s*[:=]\s*([^:]+)\s*(.*)$/;
+		my $VLnumber = $1;
+		my $VLname = $2;
+
+		$VLnumber =~ s/^\s+//;
+		$VLnumber =~ s/\s+$//;
+
+		$VLname =~ s/^\s+//;
+		$VLname =~ s/\s+$//;
+
+		if ($VLnumber && $VLname) {
+			my %VLnameItem = (
+				'number' => $VLnumber,
+				'name' => $VLname,
+			);
+			return \%VLnameItem;
+		} else {
+			$log->warn("Error in parameter: $line");
+			$log->warn("Parameter values: number = $VLnumber, name = $VLname");
+			return undef;
+		}
+	}
+	return undef;
+}
+
+sub parseVirtualLibraryID {
+	my $line = shift;
+
+	if ($line =~ /^\s*--\s*PlaylistVirtualLibraryID\s*\d\s*[:=]\s*/) {
+		$line =~ m/^\s*--\s*PlaylistVirtualLibraryID\s*(\d)\s*[:=]\s*([^:]+)\s*(.*)$/;
+		my $VLnumber = $1;
+		my $VLid = $2;
+
+		$VLnumber =~ s/^\s+//;
+		$VLnumber =~ s/\s+$//;
+
+		$VLid =~ s/^\s+//;
+		$VLid =~ s/\s+$//;
+
+		if ($VLnumber && $VLid) {
+			my %VLidItem = (
+				'number' => $VLnumber,
+				'id' => $VLid,
+			);
+			return \%VLidItem;
+		} else {
+			$log->warn("Error in parameter: $line");
+			$log->warn("Parameter values: number = $VLnumber, id = $VLid");
 			return undef;
 		}
 	}

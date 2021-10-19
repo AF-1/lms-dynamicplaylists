@@ -3,6 +3,7 @@
 -- PlaylistCategory:genres
 -- PlaylistParameter1:list:Limit to genres that contain recently PLAYED songs?:0:all genres,1:genres with recently played songs,2:genres without recently played songs
 -- PlaylistParameter2:list:Limit to genres with recently ADDED songs?:0:all genres,1:genres with recently added songs,2:genres without recently added songs
+drop table if exists dynamicplaylist_random_genres;
 create temporary table dynamicplaylist_random_genres as
 	select genre_track.genre as genre from genre_track
 		join tracks on

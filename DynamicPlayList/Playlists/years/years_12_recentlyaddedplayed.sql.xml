@@ -3,6 +3,7 @@
 -- PlaylistCategory:years
 -- PlaylistParameter1:list:Limit to years that contain recently PLAYED songs?:0:all years,1:years with recently played songs,2:years without recently played songs
 -- PlaylistParameter2:list:Limit to years with recently ADDED songs?:0:all years,1:years with recently added songs,2:years without recently added songs
+drop table if exists dynamicplaylist_random_years;
 create temporary table dynamicplaylist_random_years as
 	select tracks.year as year from tracks
 		left join library_track on

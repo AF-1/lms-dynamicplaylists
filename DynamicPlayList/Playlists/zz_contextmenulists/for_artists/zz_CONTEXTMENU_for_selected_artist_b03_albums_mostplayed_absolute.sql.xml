@@ -2,9 +2,11 @@
 -- PlaylistGroups:Context menu lists/ artist
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:artists
--- PlaylistContentType:album
+-- PlaylistTrackOrder:ordered
+-- PlaylistLimitOption:unlimited
 -- PlaylistParameter1:artist:Select artist:
 -- PlaylistParameter2:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select distinct tracks.album as album, sum(ifnull(tracks_persistent.playCount,0)) as sumcount, count(distinct tracks.id) as totaltrackcount from tracks
 	join contributor_track on
@@ -68,15 +70,9 @@ select distinct tracks.url from tracks
 	group by tracks.id
 	order by
 		case
-			when 'PlaylistCompleteAlbums' = 1 then "dynamicplaylist_random_albums.album, tracks.disc, tracks.tracknum"
+			when 'PlaylistTrackOrder' = 1 then "dynamicplaylist_random_albums.album, tracks.disc, tracks.tracknum"
 		else
 			"dynamicplaylist_random_albums.album, random()"
 		end
-	limit
-		case
-			when 'PlaylistCompleteAlbums' = 1 then -1
-		else
-			'PlaylistLimit'
-		end
-		;
+	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_albums;

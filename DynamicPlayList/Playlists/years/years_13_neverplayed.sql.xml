@@ -1,6 +1,7 @@
 -- PlaylistName:Years - never played
 -- PlaylistGroups:Years
 -- PlaylistCategory:years
+drop table if exists dynamicplaylist_random_years;
 create temporary table dynamicplaylist_random_years as
 	select tracks.year as year, sum(ifnull(tracks_persistent.playCount,0)) as sumplaycount from tracks
 		left join library_track on
@@ -17,7 +18,7 @@ create temporary table dynamicplaylist_random_years as
 			and not exists (select * from tracks t2,genre_track,genres
 							where
 								t2.id=tracks.id and
-								tracks.id=genre_track.track and 
+								tracks.id=genre_track.track and
 								genre_track.genre=genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 			and
@@ -51,7 +52,7 @@ select distinct tracks.url from tracks
 		and not exists (select * from tracks t2, genre_track, genres
 						where
 							t2.id = tracks.id and
-							tracks.id = genre_track.track and 
+							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.name in ('PlaylistExcludedGenres'))
 	group by tracks.id

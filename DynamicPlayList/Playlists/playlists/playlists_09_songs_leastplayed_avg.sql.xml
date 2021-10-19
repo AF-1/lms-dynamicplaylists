@@ -2,6 +2,7 @@
 -- PlaylistGroups:Playlists
 -- PlaylistCategory:playlists
 -- PlaylistParameter1:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+drop table if exists dynamicplaylist_random_playlists;
 create temporary table dynamicplaylist_random_playlists as
 	select leastavgplayed.playlist as playlist from
 		(select playlist_track.playlist as playlist, avg(ifnull(tracks_persistent.playCount,0)) as avgcount from playlist_track

@@ -3,6 +3,7 @@
 -- PlaylistCategory:years
 -- PlaylistParameter1:virtuallibrary:Select virtuallibrary:
 -- PlaylistParameter2:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+drop table if exists dynamicplaylist_random_years;
 create temporary table dynamicplaylist_random_years as
 	select tracks.year as year from tracks
 		left join library_track on

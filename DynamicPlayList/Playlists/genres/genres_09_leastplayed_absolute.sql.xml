@@ -2,6 +2,7 @@
 -- PlaylistGroups:Genres
 -- PlaylistCategory:genres
 -- PlaylistParameter1:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+drop table if exists dynamicplaylist_random_genres;
 create temporary table dynamicplaylist_random_genres as
 	select leastplayed.genre as genre from
 		(select genre_track.genre as genre, sum(ifnull(tracks_persistent.playCount,0)) as sumcount from genre_track

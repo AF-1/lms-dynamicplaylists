@@ -3,6 +3,7 @@
 -- PlaylistCategory:genres
 -- PlaylistParameter1:virtuallibrary:Select virtuallibrary:
 -- PlaylistParameter1:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+drop table if exists dynamicplaylist_random_genres;
 create temporary table dynamicplaylist_random_genres as
 	select genre_track.genre as genre from genre_track
 		join tracks on

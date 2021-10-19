@@ -60,7 +60,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLIST_MAX_NUMBER_OF_UNPLAYED_TRACKS
 	EN	<i>Max.</i> number of <u>un</u>played songs
 
 SETTINGS_PLUGIN_DYNAMICPLAYLIST_MAX_NUMBER_OF_UNPLAYED_TRACKS_DESC
-	EN	DPL will add new tracks to the end of your dynamic playlist up to <b>this</b> number of <b>total unplayed tracks</b> in your dynamic playlist (provided it finds enough tracks matching your search criteria).
+	EN	DPL will add new tracks to the end of your dynamic playlist up to <b>this</b> number of <b>total unplayed tracks</b> in your dynamic playlist (provided it finds enough tracks matching your search criteria).<br><br>To add an <b>unlimited</b> number of tracks (only recommended for playlists that add complete albums) add this playlist parameter to the beginning of your playlist definition:<br><i>-- PlaylistLimitOption:unlimited</i>
 
 SETTINGS_PLUGIN_DYNAMICPLAYLIST_MIN_NUMBER_OF_UNPLAYED_TRACKS
 	EN	<i>Min.</i> number of <u>un</u>played songs
@@ -92,11 +92,11 @@ SETTINGS_PLUGIN_DYNAMICPLAYLIST_TOPRATED_MINRATING
 SETTINGS_PLUGIN_DYNAMICPLAYLIST_TOPRATED_MINRATING_DESC
 	EN	Minimum rating for tracks to be considered <b>top</b> rated in dynamic playlists that use the <i>TopRatedMinRating</i> parameter (some built-in playlists use this).
 
-SETTINGS_PLUGIN_DYNAMICPLAYLIST_COMPLETEALBUMS
-	EN	Use complete albums
+SETTINGS_PLUGIN_DYNAMICPLAYLIST_DISABLEEXTRASHUFFLE
+	EN	Disable extra shuffle
 
-SETTINGS_PLUGIN_DYNAMICPLAYLIST_COMPLETEALBUMS_DESC
-	EN	By default DPL keeps adding a <i>user-specified max. number of new (unplayed)</i> tracks in <i>random</i> order to the current playlist. <br>With this setting checked built-in dynamic <b><u>album</u></b> playlists will add <b>complete</b> albums (<i>no track limit</i>) in <i>album track order</i>. 
+SETTINGS_PLUGIN_DYNAMICPLAYLIST_DISABLEEXTRASHUFFLE_DESC
+	EN	By default DPL shuffles tracks of built-in and custom dynamic playlists to increase randomness unless told otherwise.<br><br>You have 2 options to disable this <i>extra</i> shuffling:<br><br>* disable extra shuffling <b>globally</b> for <b>all</b> playlists (by checking this preference) or<br><br>* disable track shuffling for <b>selected</b> (custom) dynamic playlists by adding this playlist parameter to your playlist definition:<br><i>-- PlaylistTrackOrder:ordered</i><br><br>Saved static playlists have a separate preference setting.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLIST_PERIOD_RECENTLYADDED
 	EN	Recently added period

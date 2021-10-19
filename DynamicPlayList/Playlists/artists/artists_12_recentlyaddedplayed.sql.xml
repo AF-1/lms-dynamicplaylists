@@ -3,6 +3,7 @@
 -- PlaylistCategory:artists
 -- PlaylistParameter1:list:Limit to artists with recently PLAYED songs?:0:all artists,1:artists with recently played songs,2:artists without recently played songs
 -- PlaylistParameter2:list:Limit to artists with recently ADDED songs?:0:all artists,1:artists with recently added songs,2:artists without recently added songs
+drop table if exists dynamicplaylist_random_contributors;
 create temporary table dynamicplaylist_random_contributors as
 	select distinct contributor_track.contributor as contributor, count(distinct tracks.id) as totaltrackcount from tracks
 		join contributor_track on

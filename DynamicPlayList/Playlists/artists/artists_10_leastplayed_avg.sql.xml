@@ -2,6 +2,7 @@
 -- PlaylistGroups:Artists
 -- PlaylistCategory:artists
 -- PlaylistParameter1:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+drop table if exists dynamicplaylist_random_contributors;
 create temporary table dynamicplaylist_random_contributors as
 	select leastavgplayed.contributor as contributor from
 		(select distinct contributor_track.contributor as contributor, avg(ifnull(tracks_persistent.playCount,0)) as avgcount, count(distinct tracks.id) as totaltrackcount from tracks

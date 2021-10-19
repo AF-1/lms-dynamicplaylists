@@ -2,8 +2,10 @@
 -- PlaylistGroups:Context menu lists/ decade
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:years
--- PlaylistContentType:album
+-- PlaylistTrackOrder:ordered
+-- PlaylistLimitOption:unlimited
 -- PlaylistParameter1:year:Select year:
+drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select distinct tracks.album as album, sum(ifnull(tracks_persistent.playCount,0)) as sumplaycount, count(distinct tracks.id) as totaltrackcount from tracks
 		left join library_track on
@@ -58,15 +60,9 @@ select distinct tracks.url from tracks
 	group by tracks.id
 	order by
 		case
-			when 'PlaylistCompleteAlbums' = 1 then "dynamicplaylist_random_albums.album, tracks.disc, tracks.tracknum"
+			when 'PlaylistTrackOrder' = 1 then "dynamicplaylist_random_albums.album, tracks.disc, tracks.tracknum"
 		else
 			"dynamicplaylist_random_albums.album, random()"
 		end
-	limit
-		case
-			when 'PlaylistCompleteAlbums' = 1 then -1
-		else
-			'PlaylistLimit'
-		end
-		;
+	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_albums;
