@@ -2,7 +2,7 @@ Dynamic Playlists
 ====
 
 This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>.<br>
-It comes with a number of ready-to-use dynamic playlists. In addition you can now <b>use your own custom dynamic playlist</b> definitions <b>directly</b> in this plugin, you don't need other plugins for that anymore. Based on Erland's <i>DynamicPlayList</i> plugin. *Dynamic Playlists* will keep adding small batches of tracks in random order to your current playlist (complete albums will be added in album order).<br>
+It comes with a number of ready-to-use dynamic playlists. In addition you can now <b>use your own custom dynamic playlist</b> definitions <b>directly</b> in this plugin, you don't need other plugins for that anymore.<br>*Dynamic Playlists* will keep adding small batches of tracks in random order to your current playlist (complete albums will be added in album order). Based on Erland's <i>DynamicPlayList</i> plugin.<br>
 Some preferences are not enabled by default. Please take a look at the preferences and their description on the plugin's settings page.
 <br><br>
 
@@ -42,7 +42,7 @@ If you updated to DPL version 3+ but for some reason prefer to continue using th
 ## Dynamic playlists: stand-alone and context menu
 By default all dynamic playlists that *don't* include the *context menulisttype* parameter will show up in the **Home > Dynamic Playlists** menu. Here you won't find any dynamic playlists that can be called from an item's context menu.<br>
 
-**Context menus** (= *More* menu in webUI or **press-hold** on jivelite players) will only show dynamic playlists for context menus. So there may be some overlap but this separation greatly helps reduce clutter.
+**Context menus** (= *More* menu in webUI or *click/touch-hold* on jivelite players) will only show dynamic playlists for context menus. So there may be some overlap but this separation greatly helps reduce clutter.
 <br><br>
 
 ## Custom dynamic playlists
@@ -51,13 +51,14 @@ DPL will still pick up dynamic playlists from other plugins. So you can still us
 Since the <i>new custom dynamic playlists definitions are based on the SQLPlayList format</i> you can also export your dynamic playlists from SQLPlayList and use them <b>directly</b> in DPL (without SQLPlayList):<br>
 just save them as <b>"Customized SQL"</b> files (file extension: .sql.xml) in SQLPlayList and place these files in the new <i>DynamicPlayList folder for custom files</i> (which you can change/set on the DPL plugin's settings page).
 <br><br>
-If you're **interested in creating your own custom dynamic playlists** (without SQLPlayList) **please read the [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)** for more information.
+If you're **interested in creating your own custom dynamic playlists** (without SQLPlayList)<br>
+**please read the [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)** for more information.
 <br><br>
 
 ## CustomSkip
 
-Filtering tracks should ideally happen in your <i>custom dynamic</i> playlist (sql) definition. If you have to use CustomSkip enable **enable global skipping** in its settings: set <i>Enable filtering on all playlists</i> to <b>yes</b>.
-
+Filtering tracks should ideally happen in your <i>custom dynamic</i> playlist (sql) definition. If you have to use CustomSkip enable **global skipping** in its settings: set <i>Enable filtering on all playlists</i> to <b>yes</b>.
+<br><br>
 
 ## Bug reports
 
