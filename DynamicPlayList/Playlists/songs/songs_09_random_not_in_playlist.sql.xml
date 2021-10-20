@@ -1,7 +1,8 @@
--- PlaylistName:Songs - random
+-- PlaylistName:Songs - random - ignore songs in selected playlist
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
--- PlaylistParameter1:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+-- PlaylistParameter1:playlist:Select playlist to ignore:
+-- PlaylistParameter2:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
 select distinct tracks.url from tracks
 	left join library_track on
 		library_track.track = tracks.id
@@ -21,15 +22,21 @@ select distinct tracks.url from tracks
 			end
 		and
 			case
-				when 'PlaylistParameter1'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
-				when 'PlaylistParameter1'=2 then tracks_persistent.playCount > 0
+				when 'PlaylistParameter2'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
+				when 'PlaylistParameter2'=2 then tracks_persistent.playCount > 0
 				else 1
 			end
+		and not exists (select * from tracks t3,playlist_track
+						where
+							t3.url=tracks.url and
+							tracks.url = playlist_track.track and
+							playlist_track.playlist != 'PlaylistParameter1')
 		and not exists (select * from tracks t2,genre_track,genres
 						where
 							t2.id=tracks.id and
 							tracks.id=genre_track.track and
 							genre_track.genre=genres.id and
 							genres.name in ('PlaylistExcludedGenres'))
+	group by tracks.url
 	order by random()
 	limit 'PlaylistLimit';
