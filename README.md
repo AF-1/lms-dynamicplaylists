@@ -57,8 +57,17 @@ If you're **interested in creating your own custom dynamic playlists** (without 
 
 ## CustomSkip
 
-Filtering tracks should ideally happen in your <i>custom dynamic</i> playlist (sql) definition. If you have to use CustomSkip enable **global skipping** in its settings: set <i>Enable filtering on all playlists</i> to <b>yes</b>.
+I recommend doing as much filtering as possible in your <i>custom dynamic</i> playlist (sql) definition. If you have to use CustomSkip please note that the last version of CustomSkip (2.5.8**3**) doesn't seem to properly skip tracks in dynamic playlists (DPLv3). If you don't want to revert to DynamicPlayList v2 you can try this:<br>
+- enable **global skipping** in *CustomSkip* settings: set <i>Enable filtering on all playlists</i> to <b>yes</b>
+- download & install the [**revised version of CustomSkip**](https://github.com/AF-1/lms-customskip) without the code that prevents it from properly working with *DynamicPlayList* v**3**
 <br><br>
+
+## Misc.
+Misc. notes:
+- You can only add dynamic playlists to LMS favorites that *don't request user input*. In other words only *one-click* dynamic playlists can be added as LMS favorites (same as in v2).
+- I recommend migrating from the deprecated MultiLibrary plugin to LMS **virtual libraries**. You can easily create new virtual libraries using saved **advanced search**es. DPL v3 supports playlist parameters (ID, name) and user input selection for virtual libraries.
+<br><br>
+
 
 ## Bug reports
 
