@@ -24,7 +24,10 @@ If you want to test a **new** patch that hasn't made it into a release version y
 * restart LMS
 <br><br>
 
-If you updated to DPL version 3+ but for some reason prefer to continue using the older deprecated version 2 then download the package with the [DPL v2 plugin](https://github.com/erland/lms-dynamicplaylist), unzip the archive, rename the folder *src* to *DynamicPlayList* and put it into the plugin folder mentioned in the description above, restart LMS. LMS should ignore DPL v3 if you install DPL 2.x this way.
+## Requirements
+
+- LMS version >= 7.9
+- LMS database = SQLite
 <br><br>
 
 ## Some changes<br>
@@ -35,7 +38,7 @@ If you updated to DPL version 3+ but for some reason prefer to continue using th
 - separation of stand-alone from context menu dynamic playlists to minimize clutter
 - added new playlist parameters like <i>virtuallibrary</i> (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format))
 - allow other plugins to check if a client is playing a DPL mix, no more clashes with DSTM
-- SQLite only, removed some deprecated code (MultiLibrary, CustomBrowse...), min. LMS version = 7.9
+- removed some deprecated code (MultiLibrary, CustomBrowse...)
 - …
 <br><br>
 
@@ -55,17 +58,31 @@ If you're **interested in creating your own custom dynamic playlists** (without 
 **please read the [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)** for more information.
 <br><br>
 
+## tl;dr: I have a custom sql definition. How do I add it to/ use it directly in DPLv3?
+
+- Open a plain text editor of your choice and copy&paste your sql code
+- Save it as "nameofyourchoice.sql.xml". The file extension **.sql.xml** is important.
+- Now put this file in DPL's *folder for custom dynamic playlists* called **DPL-custom-lists**. Unless you've changed its location in DPL's settings you'll find this folder in your *LMS playlist folder*.
+- The new dynamic playlist should now be listed in DPL, either in the *Not classified* group or in other groups according to what the *-- PlaylistGroups* parameter in your playlist definition says.
+<br><br>
+
+## Reverting to DynamicPlayList v2
+
+If you've updated to DPL version 3+ but for some reason prefer to continue using the older deprecated version 2 then download the package with the [DPL v2 plugin](https://github.com/erland/lms-dynamicplaylist), unzip the archive, rename the folder *src* to *DynamicPlayList* and put it into your local plugin folder (see *Installation* above), restart LMS. LMS should ignore DPL v3 if you install DPL 2.x this way.
+<br><br>
+
 ## CustomSkip
 
-I recommend doing as much filtering as possible in your <i>custom dynamic</i> playlist (sql) definition. If you have to use CustomSkip please note that the last version of CustomSkip (2.5.8**3**) doesn't seem to properly skip tracks in dynamic playlists (DPLv3). If you don't want to revert to DynamicPlayList v2 you can try this:<br>
+I recommend doing as much filtering as possible in your <i>custom dynamic</i> playlist (sql) definition. If you have to use CustomSkip please note that the last version of CustomSkip (2.5.8**3**) doesn't seem to properly skip tracks in DPLv3 dynamic playlists. If you don't want to revert to DynamicPlayList v2 you can try this:<br>
 - enable **global skipping** in *CustomSkip* settings: set <i>Enable filtering on all playlists</i> to <b>yes</b>
 - download & install the [**revised version of CustomSkip**](https://github.com/AF-1/lms-customskip) without the code that prevents it from properly working with *DynamicPlayList* v**3**
 <br><br>
 
 ## Misc.
 Misc. notes:
-- You can only add dynamic playlists to LMS favorites that *don't request user input*. In other words only *one-click* dynamic playlists can be added as LMS favorites (same as in v2).
-- I recommend migrating from the deprecated MultiLibrary plugin to LMS **virtual libraries**. You can easily create new virtual libraries using saved **advanced search**es. DPL v3 supports playlist parameters (ID, name) and user input selection for virtual libraries.
+- You can only **add dynamic playlists to LMS favorites** that *don't request user input*. In other words only *one-click* dynamic playlists can be added as LMS favorites (same as in v2).
+- I recommend migrating from the deprecated *MultiLibrary* plugin to native LMS **virtual libraries**. You can easily create new virtual libraries using saved **advanced search**es. DPL v3 supports playlist parameters (ID, name) and user input selection for virtual libraries.
+- The *Not classified* group in the DPL (home) menu will only show if DPL found dynamic playlists that belong in this group, i.e. if it's not empty.
 <br><br>
 
 
