@@ -6,29 +6,57 @@ It comes with a number of ready-to-use dynamic playlists. In addition you can no
 Some preferences are not enabled by default. Please take a look at the preferences and their description on the plugin's settings page.
 <br><br>
 
-## Installation
-
-You should be able to install *Dynamic PlayLists* from *LMS* > *Settings* > *Plugins*<br>(It usually takes a couple of hours before released versions show up on the official LMS plugins page.)<br>
-
-Or you could download the latest (source code) zip from this repository and drop the folder called *DynamicPlayList* into your local LMS plugin folder.
-
-If you want to test a **new** patch that hasn't made it into a release version yet or if you need to install a **previous** version:
-
-* go to *settings > plugins* and uninstall the currently installed version of Dynamic PlayLists.
-* then go to *settings > information*. Near the bottom of the page you'll find several plugin folder paths. The *path* you're looking for does **not** include the word *Cache* and it's not the server plugin folder that contains built-in LMS plugins. Examples of correct paths:
-    * *piCorePlayer*: /usr/local/slimserver/Plugins
-    * *Mac*: /Users/yourusername/Library/Application Support/Squeezebox/Plugins
-* now download the version you need:
-    * the *latest* version of Dynamic PlayLists (incl. patches not yet released) is on github. Click the green Code button and download the zip archive. Move the folder called *DynamicPlayList* from that archive into the plugin folder mentioned above.
-	* *previously released* versions are available here for a *limited* time after the release of a new version. Download the source code zip archive and move the folder called *DynamicPlayList* from that archive into the plugin folder mentioned above.
-* restart LMS
-<br><br>
-
 ## Requirements
 
-- LMS version >= 7.9
-- LMS database = SQLite
+- LMS version >= 7.**9**
+- LMS database = **SQLite**
 <br><br>
+
+## Please read *before* switching from v2 to v3
+One of my objectives was to maintain as much backwards compatibility as possible while removing ties to other (deprecated) plugins or at least making them optional and non-essential in a way that they wouldn't break DPL if they stopped working properly at some point in the future. I cannot guarantee that deprecated plugins will continue to work completely or indefinitely with new versions of DPL v**3**. Since DPLv3 introduces new playlist parameters and functions *somebody else* would have to maintain, test, and update those deprecated plugins to make them fully compatible with newer versions of DPL.<br>
+In short:
+- **MultiLibrary**: MultiLibrary doesn't work with v3. I recommend migrating from the deprecated *MultiLibrary* plugin to native LMS **virtual libraries**. You can easily create new virtual libraries using saved **advanced search**es. DPL v3 supports playlist parameters (ID, name) and user input selection for virtual libraries.<br>
+
+- **CustomSkip**: I recommend doing as much filtering as possible in your <i>custom dynamic</i> playlist (sql) definition. If you have to use CustomSkip please note that the last version of CustomSkip (2.5.8**3**) doesn't seem to properly skip tracks in DPLv3 dynamic playlists. If you don't want to revert to DynamicPlayList v2 you can try this:<br>
+    - enable **global skipping** in *CustomSkip* settings: set <i>Enable filtering on all playlists</i> to <b>yes</b>
+    - download & install the [**revised version of CustomSkip**](https://github.com/AF-1/lms-customskip) without the code that prevents it from properly working with *DynamicPlayList* v**3**
+<br><br>
+
+## Installation
+
+### Using repo URL
+
+- Go to *LMS* > *Settings* > *Plugins* and uninstall the currently installed version of *Dynamic PlayLists*.
+- Add the repo URL below at the bottom of *LMS* > *Settings* > *Plugins*:<br>
+[https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/public.xml](https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/public.xml)
+- Install the new version
+<br><br>
+
+### Manual Install
+
+- Go to *LMS* > *Settings* > *Plugins* and uninstall the currently installed version of *Dynamic PlayLists*.
+- Then go to *LMS* > *Settings* > *Information*. Near the bottom of the page you'll find several plugin folder paths. The *path* you're looking for does **not** include the word *Cache* and it's not the server plugin folder that contains built-in LMS plugins. Examples of correct paths:
+    - *piCorePlayer*: /usr/local/slimserver/Plugins
+    - *Mac*: /Users/yourusername/Library/Application Support/Squeezebox/Plugins
+- now download the *latest* version of Dynamic PlayLists by clicking the green *Code* button and downloading the zip archive. Move the folder called *DynamicPlayList* from that archive into the plugin folder mentioned above.
+- restart LMS
+<br><br>
+
+## Uninstall
+
+### Using repo URL
+
+- Go to *LMS* > *Settings* > *Plugins* and uninstall the currently installed version of *Dynamic PlayLists*.
+- Delete the repo URL you added at the bottom of *LMS* > *Settings* > *Plugins* and click *Apply* (you may have to delete your browser cache too)
+- restart LMS
+<br><br>
+
+### Manual Uninstall
+
+- delete the folder **DynamicPlayList** from your local plugin folder
+- restart LMS
+<br><br>
+
 
 ## Some changes<br>
 - comes with ready-to-use dynamic playlists (stand-alone + for context menus)
@@ -50,12 +78,12 @@ By default all dynamic playlists that *don't* include the *context menulisttype*
 
 ## Custom dynamic playlists
 
-DPL will still pick up dynamic playlists from other plugins. So you can still use SQLPlayList to create your own dynamic playlists and use them in DPL, just like you did before.<br><br>
-Since the <i>new custom dynamic playlists definitions are based on the SQLPlayList format</i> you can also export your dynamic playlists from SQLPlayList and use them <b>directly</b> in DPL (without SQLPlayList):<br>
-just save them as <b>"Customized SQL"</b> files (file extension: .sql.xml) in SQLPlayList and place these files in the new <i>DynamicPlayList folder for custom files</i> (which you can change/set on the DPL plugin's settings page).
+One important new feature is the ability to use your own custom dynamic playlists definitions directly in DPLv3 - without any other intermediary plugin.<br>
+Dynamic playlists definitions are basically plain text files with a "**.sql.xml**" file extension that contain your sqlite code/playlist definition. This will give you a great deal of freedom in creating dynamic playlists tailored to your specific needs.<br>
+If you're not comfortable with SQLite code, it's good to know that the <i>new custom dynamic playlists definitions are based on the SQLPlayList format</i>. You could export your dynamic playlists from SQLPlayList as <b>"Customized SQL"</b> files (see next section on how to import them). Just make sure your sqlite code doesn't reference any unsupported deprecated plugins like MultiLibrary.
 <br><br>
-If you're **interested in creating your own custom dynamic playlists** (without SQLPlayList)<br>
-**please read the [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)** for more information.
+If you're **interested in creating your own custom dynamic playlists**<br>
+**please read the [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)**.
 <br><br>
 
 ## tl;dr: I have a custom sql definition. How do I add it to/ use it directly in DPLv3?
@@ -66,22 +94,9 @@ If you're **interested in creating your own custom dynamic playlists** (without 
 - The new dynamic playlist should now be listed in DPL, either in the *Not classified* group or in other groups according to what the *-- PlaylistGroups* parameter in your playlist definition says.
 <br><br>
 
-## Reverting to DynamicPlayList v2
-
-If you've updated to DPL version 3+ but for some reason prefer to continue using the older deprecated version 2 then download the package with the [DPL v2 plugin](https://github.com/erland/lms-dynamicplaylist), unzip the archive, rename the folder *src* to *DynamicPlayList* and put it into your local plugin folder (see *Installation* above), restart LMS. LMS should ignore DPL v3 if you install DPL 2.x this way.
-<br><br>
-
-## CustomSkip
-
-I recommend doing as much filtering as possible in your <i>custom dynamic</i> playlist (sql) definition. If you have to use CustomSkip please note that the last version of CustomSkip (2.5.8**3**) doesn't seem to properly skip tracks in DPLv3 dynamic playlists. If you don't want to revert to DynamicPlayList v2 you can try this:<br>
-- enable **global skipping** in *CustomSkip* settings: set <i>Enable filtering on all playlists</i> to <b>yes</b>
-- download & install the [**revised version of CustomSkip**](https://github.com/AF-1/lms-customskip) without the code that prevents it from properly working with *DynamicPlayList* v**3**
-<br><br>
-
 ## Misc.
 Misc. notes:
 - You can only **add dynamic playlists to LMS favorites** that *don't request user input*. In other words only *one-click* dynamic playlists can be added as LMS favorites (same as in v2).
-- I recommend migrating from the deprecated *MultiLibrary* plugin to native LMS **virtual libraries**. You can easily create new virtual libraries using saved **advanced search**es. DPL v3 supports playlist parameters (ID, name) and user input selection for virtual libraries.
 - The *Not classified* group in the DPL (home) menu will only show if DPL found dynamic playlists that belong in this group, i.e. if it's not empty.
 <br><br>
 
