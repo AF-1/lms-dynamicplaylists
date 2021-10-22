@@ -5,7 +5,7 @@ PLUGIN_DYNAMICPLAYLIST
 	EN	Dynamic Playlists
 
 PLUGIN_DYNAMICPLAYLIST_DESC
-	EN	This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>. Comes with a number of ready-to-use dynamic playlists. In addition you can now <b>use your own custom dynamic playlist</b> definitions <b>directly</b> in this plugin, you don't need other plugins for that anymore. More information on the github page.
+	EN	This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>. Comes with a number of ready-to-use dynamic playlists. In addition you can now <b>use your own custom dynamic playlist</b> definitions <b>directly</b> in DPL without any other intermediary plugins. More information on the github page.
 
 PLUGIN_DYNAMICPLAYLIST_SETTINGS
 	EN	Various Settings
@@ -20,10 +20,10 @@ PLUGIN_DYNAMICPLAYLIST_DISABLED
 	EN	Dynamic playlist stopped
 
 PLUGIN_DYNAMICPLAYLIST_CHOOSE_BELOW
-	EN	Choose a dynamic playlist: 
+	EN	Choose a dynamic playlist:
 
 PLUGIN_DYNAMICPLAYLIST_CONTEXT_CHOOSE_BELOW
-	EN	Choose a dynamic playlist related to: 
+	EN	Choose a dynamic playlist related to:
 
 SETTINGS_PLUGIN_DYNAMICPLAYLIST_SECTION
 	EN	Settings Section
@@ -46,7 +46,7 @@ PLUGIN_DYNAMICPLAYLIST_CONTINUOUS_MODE
 	EN	Add new items when old ones finish
 
 PLUGIN_DYNAMICPLAYLIST_NOW_PLAYING
-	EN	Starting dynamic playlist: 
+	EN	Starting dynamic playlist:
 
 PLUGIN_DYNAMICPLAYLIST_NOW_PLAYING_FAILED
 	EN	** No songs **
