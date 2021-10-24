@@ -2956,9 +2956,16 @@ sub cliJivePlaylistParametersHandler {
 		}
 		$cnt++;
 	}
-
+	if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC') {
+		$request->addResult('window', {textarea => $parameter->{'name'}});
+	} else {
+		$request->addResult('window', {text => $parameter->{'name'}});
+	}
 	$request->addResult('offset', $start);
 	$request->addResult('count', $cnt);
+	if (!exists $playlist->{'parameters'}->{($nextParameterId + 1)}) {
+		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
+	}
 
 	$request->setStatusDone();
 	$log->debug('Exiting cliJivePlaylistParametersHandler');
