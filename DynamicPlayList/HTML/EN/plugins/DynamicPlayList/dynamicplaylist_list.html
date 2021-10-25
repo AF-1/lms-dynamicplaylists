@@ -1,4 +1,4 @@
-<style>.boldtitle{font-weight:600;}</style>
+<style>.boldtitle{font-weight:600;}.repochangeinfo{text-align:center;background-color: red !important;color:white !important;padding:20px;}.infoheader{font-weight:bold;font-size:22px;}.infobody{font-size:16px;padding-top:10px;}.emphita{font-style:italic;}.emphdeco{text-decoration: underline;}</style>
 [% PROCESS plugins/DynamicPlayList/dpcomponents.html %]
 [%- pagetitle = 'PLUGIN_DYNAMICPLAYLIST' | string; pageicon = 'PLUGIN_DYNAMICPLAYLIST' -%]
 
@@ -61,5 +61,17 @@ href="[% webroot %]
 			[% END %]
 		[% END %]
 	[% END %]
+[% IF !hiderepoinfomsg %]
+<br><br>
+<div class="repochangeinfo">
+<p class="infoheader">IMPORTANT! PLEASE READ</p>
+<p class="infobody">Very soon version <span class="boldtitle">3</span> of this plugin (Dynamic Playlists) will no longer be available<br>in the LMS <span class="boldtitle emphdeco">main</span> repository.<br><br>
+<span class="boldtitle">To get future versions/updates</span> of Dynamic Playlists version <span class="boldtitle">3</span><br>please <span class="boldtitle">add the repo URL below at the bottom of <span class="emphita">LMS > Settings > Plugins</span></span><br><br>
+https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/public.xml
+<br><br>
+If you want to keep using this version<br>but do not want to get future updates for version <span class="boldtitle">3</span> (not recommended)<br>you can simply hide this info message in the Dynamic Playlists settings.<br>It's just a way to notify as many DPL users as possible.<br><br>
+Thank you for your understanding.
+</p>
+[% END %]
 [% END %]
 [% PROCESS pagefooter.html %]
