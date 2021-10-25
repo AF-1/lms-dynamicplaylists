@@ -4,10 +4,6 @@
 
 [% PROCESS plugins/DynamicPlayList/settings/subpage_chooser.html %]
 
-[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLIST_HIDEREPOINFOMSG" desc="SETTINGS_PLUGIN_DYNAMICPLAYLIST_HIDEREPOINFOMSG_DESC" %]
-	<input name="pref_hiderepoinfomsg" id="hiderepoinfomsg" type="checkbox" [% IF prefs.hiderepoinfomsg %] checked [% END %]>
-[% END %]
-
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLIST_MAX_NUMBER_OF_UNPLAYED_TRACKS" desc="SETTINGS_PLUGIN_DYNAMICPLAYLIST_MAX_NUMBER_OF_UNPLAYED_TRACKS_DESC" %]
 	<input type="text" class="stdedit sliderInput_1_50_1" name="pref_max_number_of_unplayed_tracks" id="max_number_of_unplayed_tracks" value="[% prefs.max_number_of_unplayed_tracks %]" size="2">
 [% END %]

@@ -233,8 +233,3 @@ PLUGIN_DYNAMICPLAYLIST_NEXT
 PLUGIN_DYNAMICPLAYLIST_PARAMETERS_TITLE
 	EN	Enter additional parameters for dynamic playlist
 
-SETTINGS_PLUGIN_DYNAMICPLAYLIST_HIDEREPOINFOMSG
-	EN	Hide repo update info message
-
-SETTINGS_PLUGIN_DYNAMICPLAYLIST_HIDEREPOINFOMSG_DESC
-	EN	If you want to keep using this plugin and <b>not</b> get any future updates for <i>Dynamic Playlists</i> version <b>3</b> (not recommended though) you can simply hide this message by checking this box.

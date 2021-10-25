@@ -2185,9 +2185,7 @@ sub handleWebList {
 			}
 		}
 	}
-	if ($prefs->get('hiderepoinfomsg')) {
-		$params->{'hiderepoinfomsg'} = 'hide';
-	}
+
 	$params->{'pluginDynamicPlayListContext'} = getPlayListContext($client, $params, $playListItems, 1);
 	$params->{'pluginDynamicPlayListGroups'} = getPlayListGroupsForContext($client, $params, $playListItems, 1);
 	$params->{'pluginDynamicPlayListPlayLists'} = getPlayListsForContext($client, $params, $playListItems, 1, $params->{'playlisttype'});
@@ -2830,17 +2828,6 @@ sub cliJiveHandler {
 			$request->addResultLoop('item_loop', $cnt, 'params', \%itemParams);
 			$request->addResultLoop('item_loop', $cnt, 'text', $name);
 			$cnt++;
-		}
-	}
-	unless ($prefs->get('hiderepoinfomsg')) {
-		if ($nextGroup == 1) {
-			my @infolines = ("***** IMPORTANT: To get future version 3 updates please add the new repo URL for this plugin! *****", "For more information please check out the Dynamic Playlists menu of the classic web UI.");
-			foreach my $line (@infolines) {
-				$request->addResultLoop('item_loop', $cnt, 'text', $line);
-				$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-				$request->addResultLoop('item_loop', $cnt, 'action', 'none');
-				$cnt++;
-			}
 		}
 	}
 
@@ -4336,7 +4323,7 @@ sub getCustomSkipFilterTypes {
 		'id' => 'dynamicplaylist_recentlyaddedalbum',
 		'name' => 'Recently added album',
 		'filtercategory' => 'album',
-		'description' => 'Skip songs from albums that have been recently added to current dynamic playlist',
+		'description' => 'Skip songs from albums that have been<br>recently added to the active dynamic playlist',
 		'parameters' => [
 			{
 				'id' => 'nooftracks',
@@ -4352,7 +4339,7 @@ sub getCustomSkipFilterTypes {
 		'id' => 'dynamicplaylist_recentlyaddedartist',
 		'name' => 'Recently added artist',
 		'filtercategory' => 'artist',
-		'description' => 'Skip songs by artists that have been recently added to current dynamic playlist',
+		'description' => 'Skip songs by artists that have been<br>recently added to the active dynamic playlist',
 		'parameters' => [
 			{
 				'id' => 'nooftracks',
