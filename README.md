@@ -18,16 +18,15 @@ In short:
 - **MultiLibrary**: MultiLibrary doesn't work with v3. I recommend migrating from the deprecated *MultiLibrary* plugin to native LMS **virtual libraries**. You can easily create new virtual libraries using saved **advanced search**es. DPL v3 supports playlist parameters (ID, name) and user input selection for virtual libraries.<br>
 
 - **CustomSkip**: I recommend doing as much filtering as possible in your <i>custom dynamic</i> playlist (sql) definition. If you have to use CustomSkip please note that the last version of CustomSkip (2.5.8**3**) doesn't seem to properly skip tracks in DPLv3 dynamic playlists. If you don't want to revert to DynamicPlayList v2 you can try this:<br>
-    - enable **global skipping** in *CustomSkip* settings: set <i>Enable filtering on all playlists</i> to <b>yes</b>
-    - download & install the [**revised version of CustomSkip**](https://github.com/AF-1/lms-customskip) without the code that prevents it from properly working with *DynamicPlayList* v**3**
+    - Download & install the [**revised version of CustomSkip**](https://github.com/AF-1/lms-customskip) without the code that prevents it from properly working with *DynamicPlayList* v**3**.
+    - Maybe read the CustomSkip [**wiki**](https://github.com/AF-1/lms-customskip/wiki) part on the difference between *primary* and *secondary* filter sets.
 <br><br>
 
 ## Installation
 
 ### Using repo URL
 
-- Go to *LMS* > *Settings* > *Plugins* and uninstall the currently installed version of *Dynamic PlayLists*.
-- Add the repo URL below at the bottom of *LMS* > *Settings* > *Plugins*:<br>
+- Add the repo URL below at the bottom of *LMS* > *Settings* > *Plugins* and click *Apply*:<br>
 [https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/public.xml](https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/public.xml)
 - Install the new version
 <br><br>
