@@ -1,3 +1,4 @@
+<style>.emphbold{font-weight:600;}</style>
 [% BLOCK contentanchor %]
 	<p>[% content %]</p>
 [% END %]
@@ -26,7 +27,7 @@
 [% END %]
 
 [% BLOCK dpcontentitemgroup %]
-	<a href="[% webroot %]plugins/DynamicPlayList/dynamicplaylist_list.html?[% group.url %]&player=[% player | uri %]">[% group.name %]/</a>
+	<a href="[% webroot %]plugins/DynamicPlayList/dynamicplaylist_list.html?[% group.url %]&player=[% player | uri %]">[% IF group.name != group.sortname %]<span class="emphbold">[% END %][% group.name %]/[% IF group.name != group.sortname %]</span>[% END %]</a>
 [% END %]
 
 [% BLOCK dpcontentitemplaylist %]

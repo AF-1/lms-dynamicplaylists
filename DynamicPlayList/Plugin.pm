@@ -82,9 +82,12 @@ my %choiceMapping;
 sub initPlugin {
 	my $class = shift;
 	$class->SUPER::initPlugin(@_);
-	Plugins::DynamicPlayList::Settings::Basic->new();
-	Plugins::DynamicPlayList::Settings::PlaylistSettings->new();
-	Plugins::DynamicPlayList::Settings::FavouriteSettings->new();
+
+	if (!$::noweb) {
+		Plugins::DynamicPlayList::Settings::Basic->new();
+		Plugins::DynamicPlayList::Settings::PlaylistSettings->new();
+		Plugins::DynamicPlayList::Settings::FavouriteSettings->new();
+	}
 
 	# playlist commands that will stop random play
 	%stopcommands = (
@@ -173,54 +176,28 @@ sub initPrefs {
 		'preset_6.hold' => 'favorites_add6',
 	);
 
-	if (!defined($prefs->get('max_number_of_unplayed_tracks'))) {
-		$log->debug('Defaulting max_number_of_unplayed_tracks to 15');
-		$prefs->set('max_number_of_unplayed_tracks', 15);
-	}
-	if (!defined($prefs->get('min_number_of_unplayed_tracks'))) {
-		$log->debug('Defaulting min_number_of_unplayed_tracks to 4');
-		$prefs->set('min_number_of_unplayed_tracks', 4);
-	}
-	if (!defined($prefs->get('number_of_played_tracks_to_keep'))) {
-		$log->debug('Defaulting to keep 3 tracks');
-		$prefs->set('number_of_played_tracks_to_keep', 3);
-	}
-	if (!defined $prefs->get('keep_adding_tracks')) {
-		$log->debug('Defaulting to continous mode');
-		$prefs->set('keep_adding_tracks', 1);
-	}
-	if (!defined($prefs->get('song_adding_check_delay'))) {
-		$log->debug('Defaulting song_adding_check_delay to 30');
-		$prefs->set('song_adding_check_delay', 30);
-	}
-	if (!defined($prefs->get('song_min_duration'))) {
-		$log->debug('Defaulting song_min_duration to 90');
-		$prefs->set('song_min_duration', 90);
-	}
-	if (!defined($prefs->get('toprated_min_rating'))) {
-		$log->debug('Defaulting toprated_min_rating to 60');
-		$prefs->set('toprated_min_rating', 60);
-	}
-	if (!defined($prefs->get('period_recentlyadded'))) {
-		$log->debug('Defaulting period_recentlyadded to 1 month');
-		$prefs->set('period_recentlyadded', 30);
-	}
-	if (!defined($prefs->get('period_recentlyplayed'))) {
-		$log->debug('Defaulting period_recentlyplayed to 2 weeks');
-		$prefs->set('period_recentlyplayed', 14);
-	}
-	if (!defined($prefs->get('period_playedlongago'))) {
-		$log->debug('Defaulting period_playedlongago to 2 years');
-		$prefs->set('period_playedlongago', 2);
-	}
-	if (!defined($prefs->get('minartisttracks'))) {
-		$log->debug('Defaulting minartisttracks to 3 tracks');
-		$prefs->set('minartisttracks', 3);
-	}
-	if (!defined($prefs->get('minalbumtracks'))) {
-		$log->debug('Defaulting minalbumtracks to 3 tracks');
-		$prefs->set('minalbumtracks', 3);
-	}
+	$prefs->init({
+		max_number_of_unplayed_tracks => 15,
+		min_number_of_unplayed_tracks => 4,
+		number_of_played_tracks_to_keep => 3,
+		keep_adding_tracks => 1,
+		song_adding_check_delay => 30,
+		song_min_duration => 90,
+		toprated_min_rating => 60,
+		period_recentlyadded => 30,
+		period_recentlyplayed => 14,
+		period_playedlongago => 2,
+		minartisttracks => 3,
+		minalbumtracks => 3,
+		customdirparentfolderpath => $serverPrefs->get('playlistdir'),
+		randomsavedplaylists => 0,
+		flatlist => 0,
+		structured_savedplaylists => 'on',
+		favouritesname => string('PLUGIN_DYNAMICPLAYLIST_FAVOURITES'),
+		max_number_of_unplayed_tracks => 15,
+		max_number_of_unplayed_tracks => 15,
+	});
+
 	if (!defined($prefs->get('_ts_rememberactiveplaylist'))) {
 		$log->debug('Defaulting to remember active playlist');
 		$prefs->set('rememberactiveplaylist', 'on');
@@ -228,26 +205,6 @@ sub initPrefs {
 	if (!defined($prefs->get('_ts_groupunclassifiedcustomplaylists'))) {
 		$log->debug('Defaulting to grouping unclassified playlists');
 		$prefs->set('groupunclassifiedcustomplaylists', 'on');
-	}
-	if (!defined($prefs->get('customdirparentfolderpath'))) {
-		my $playlistdir = $serverPrefs->get('playlistdir');
-		$prefs->set('customdirparentfolderpath', $playlistdir);
-	}
-	if (!defined($prefs->get('randomsavedplaylists'))) {
-		$log->debug('Defaulting to not playing songs in saved playlists in random order');
-		$prefs->set('randomsavedplaylists', 0);
-	}
-	if (!defined($prefs->get('flatlist'))) {
-		$log->debug('Defaulting to structured playlists');
-		$prefs->set('flatlist', 0);
-	}
-	if (!defined($prefs->get('structured_savedplaylists'))) {
-		$log->debug('Defaulting to structured playlists for saved playlists');
-		$prefs->set('structured_savedplaylists', 'on');
-	}
-	if (!defined($prefs->get('favouritesname'))) {
-		$log->debug('Defaulting favouritesname to '.string('PLUGIN_DYNAMICPLAYLIST_FAVOURITES'));
-		$prefs->set('favouritesname', string('PLUGIN_DYNAMICPLAYLIST_FAVOURITES'));
 	}
 
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 50}, 'max_number_of_unplayed_tracks');
@@ -394,6 +351,7 @@ sub initPlayLists {
 								my %currentItemGroup = (
 									'childs' => \%level,
 									'name' => $group,
+									'sortname' => $group,
 									'value' => $grouppath
 								);
 								if ($enabled) {
@@ -436,7 +394,7 @@ sub initPlayLists {
 
 	$playLists = \%localPlayLists;
 	$playListItems = \%localPlayListItems;
-	#$log->debug('localPlayListItems = '.Dumper(\%localPlayListItems));
+	$log->debug('localPlayListItems = '.Dumper(\%localPlayListItems));
 
 	return ($playLists, $playListItems, \%unclassifiedPlaylists, $savedstaticPlaylists);
 }
@@ -1147,7 +1105,7 @@ sub getVirtualLibraries {
 	}
 
 	if (scalar @items > 1) {
-		@items = sort {$a->{sortName} cmp $b->{sortName}} @items;
+		@items = sort {lc($a->{sortName}) cmp lc($b->{sortName})} @items;
 	}
 	return \@items;
 }
