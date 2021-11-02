@@ -80,7 +80,7 @@ If you're **interested in creating your own custom dynamic playlists**<br>
 
 - »**Is DPL v*3* compatible with my old plugins?**«<br>
 One of my objectives was to maintain as much backwards compatibility as possible while removing ties to other (deprecated) plugins or at least making them optional and non-essential in a way that they wouldn't break DPL if those plugins ever stopped working properly. I cannot guarantee that deprecated plugins will continue to work completely or indefinitely with new versions of DPL v**3**. Since DPLv3 introduces new playlist parameters and functions *somebody else* would have to maintain, test, and update those deprecated plugins to make them fully compatible with newer versions of DPL.
-<br>
+<br><br>
     - **MultiLibrary**: MultiLibrary doesn't work properly with v3. I recommend migrating from the deprecated *MultiLibrary* plugin to native LMS **virtual libraries**. You can easily create new virtual libraries using saved **advanced search**es. Then you can use DPL v3 *playlist parameters* for virtual libraries (ID, name and user input selection).<br>
 
     - **CustomSkip**: I recommend doing as much filtering as possible in your <i>custom dynamic</i> playlist (sql) definition. If you want to use CustomSkip please note that the last version v2 of CustomSkip (2.5.8**3**) doesn't seem to properly skip tracks in DPLv3 dynamic playlists. If you don't want to revert to DynamicPlayList v2 try this:<br>
