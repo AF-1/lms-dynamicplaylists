@@ -38,7 +38,7 @@ Some preferences are not enabled by default. Please take a look at the preferenc
 
 - Go to *LMS* > *Settings* > *Plugins* and uninstall the currently installed version of *Dynamic Playlists*.
 - Delete the repository URL you added at the bottom of *LMS* > *Settings* > *Plugins* and click *Apply* (you may have to delete your browser cache too)
-- restart LMS
+- Restart LMS
 <br><br>
 
 ### Manual Uninstall
@@ -49,25 +49,13 @@ Some preferences are not enabled by default. Please take a look at the preferenc
 
 
 ## Some changes<br>
-- comes with ready-to-use dynamic playlists (stand-alone + for context menus)
-- use your own custom dynamic playlist files/definitions directly in DPL - you don't have to install other plugins (like SQLPlayList or TrackStat) to get dynamic playlists
-- new playlist parameters like <i>virtuallibrary</i> (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format))
-- UI changes and new settings
-- separation of stand-alone from context menu dynamic playlists to minimize clutter
-- allow other plugins to check if a client is playing a DPL mix, no more clashes with DSTM
-- removed some deprecated code (MultiLibrary, CustomBrowse...)
+- Comes with ready-to-use dynamic playlists (stand-alone + for context menus).
+- Use **your own custom dynamic playlist files/definitions directly in DPL** without any other intermediary plugin - you don't have to install other plugins (like SQLPlayList or TrackStat) to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
+- New playlist parameters like <i>virtuallibrary</i> (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
+- UI changes and new settings.
+- Separation of stand-alone from context menu dynamic playlists to minimize clutter.
+- Allow other plugins to check if a client is playing a DPL mix, no more clashes with DSTM.
 - …
-<br><br>
-
-## Dynamic playlists: stand-alone and context menu
-By default all dynamic playlists that *don't* include the `-- PlaylistMenuListType:contextmenu` parameter will show up in the **Home > Dynamic Playlists** menu. Here you won't find any dynamic playlists that can be called from an item's context menu.<br>
-
-**Context menus** (= *More* menu in webUI or *click/touch-hold* on jivelite players) will only show dynamic playlists for context menus. So there may be some overlap but this separation greatly helps reduce clutter.
-<br><br>
-
-## Custom dynamic playlists
-
-One important new feature is the ability to use your own custom dynamic playlist definitions directly in DPLv3 - without any other intermediary plugin. This will give you a great deal of freedom in creating dynamic playlists tailored to your specific needs.<br> For more information on how to create your own custom dynamic playlists and use them directly in DPL please read the [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
 <br><br><br>
 
 
@@ -86,7 +74,7 @@ One of my objectives was to maintain as much backwards compatibility as possible
 
 - »**How do I create my own *custom* dynamic playlist?**«<br>
 Dynamic playlist definitions are basically plain text files with a "**.sql.xml**" file extension that contain your sqlite code/playlist definition. The dynamic playlist format is basically the same as the SQLPlayList format.<br><br>
-If you're not comfortable with creating your SQLite playlist definition *from scratch* you can use the *SQLPlayList* plugin (to assist you in creating your first draft). You can still let *SQLPayList* make your custom dynamic playlist available to DPL and that's it. But as the *SQLPlayList* plugin predates DPL v**3** it can't know/add any of the [new playlist parameters](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#playlist-parameters) and I can't guarantee that all dynamic playlists created with SQLPlayList will (continue to) work with DPL v**3**.<br><br>On the other hand, if you want to make sure that your custom dynamic playlists will still work - even if SQLPayList stops working or is no longer compatible - you should **export** your custom dynamic playlists from *SQLPlayList* **as "Customized SQL"** files (file extension: **.sql.xml**). You can edit them in any (plain text) editor and use new playlist parameters or create more complex sqlite definitions.<br><br>
+If you're not comfortable with creating your SQLite playlist definition *from scratch* you can use the *SQLPlayList* plugin (to assist you in creating your first draft). You can still let *SQLPayList* make your custom dynamic playlist available to DPL and that's it. But as the *SQLPlayList* plugin predates DPL v**3** it can't know/add any of the [new playlist parameters](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#playlist-parameters) and I can't guarantee that all dynamic playlists created with SQLPlayList will (continue to) work with DPL v**3**.<br><br>On the other hand, if you want to make sure that your custom dynamic playlists will still work - even if SQLPayList stops working or is no longer compatible - you should **export** your custom dynamic playlists from *SQLPlayList* **as "Customized SQL"** files (file extension: **.sql.xml**). You can edit them in any (plain text) editor and use new playlist parameters or create more complex sqlite definitions. This will give you a great deal of freedom in creating dynamic playlists tailored to your specific needs.<br><br>
 In any case **please read the [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)** for more information on the dynamic playlist **format**.<br><br>
 
 - »**I have a custom sql definition (file). How do I add it to/ use it directly in DPLv3?**«<br>
@@ -94,7 +82,11 @@ In any case **please read the [wiki](https://github.com/AF-1/lms-dynamicplaylist
     - Open a plain text editor of your choice and copy&paste (or edit) your sql code.
     - Save it as "nameofyourchoice.sql.xml". The file extension **.sql.xml** is important.
     - Now put this file in DPL's *folder for custom dynamic playlists* called **DPL-custom-lists**. Unless you've changed its location in DPL's settings you'll find this folder in your *LMS playlist folder*.
-    - The new dynamic playlist should now be listed in DPL, either in the *Not classified* group or in other groups according to what the *-- PlaylistGroups* parameter in your playlist definition says.<br><br>
+    - The new dynamic playlist should now be listed in DPL, either in the *Not classified* group or in other groups according to what the `-- PlaylistGroups` parameter in your playlist definition says.<br><br>
+
+- »**The *Home > Dynamic Playlists* menu doesn't show dynamic playlists for *context menus*. Why?**«<br><br>
+By default the **Home > Dynamic Playlists** menu will only show dynamic playlists that *don't* include the `-- PlaylistMenuListType:contextmenu` parameter. Here you won't find any dynamic playlists that can be called from an item's context menu.<br>
+And **context menus** (= *More* menu in webUI or *click/touch-hold* on jivelite players) will *only show dynamic playlists for context menus*. So there may be some overlap but this separation greatly helps reduce clutter.<br><br>
 
 - »**I can't add my dynamic playlist to my LMS favorites (menu)**.«<br>
 You can only add dynamic playlists to LMS favorites that **don't request user input**. In other words only *one-click* dynamic playlists can be added as LMS favorites (same as in v2).<br><br>
