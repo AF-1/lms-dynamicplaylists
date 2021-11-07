@@ -1,0 +1,40 @@
+<style>.boldtitle{font-weight:600;}</style>
+[%- pagetitle = 'PLUGIN_DYNAMICPLAYLISTS3' | string; pageicon = 'PLUGIN_DYNAMICPLAYLISTS3' -%]
+
+[%- pwd_list = BLOCK -%]/
+	<a href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_list.html?player=[% player | uri %]">
+		[% "PLUGIN_DYNAMICPLAYLISTS3" | string %]
+	</a>
+[% END -%]
+[% PROCESS pageheader.html %]
+
+[% BLOCK href %]
+href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?type=[% type %]&player=[% player | uri %]"
+		 onclick='document.editForm.type.value = "[% type %]";
+							document.editForm.submit();
+							return false;'
+[% END %]
+
+<br><p>[% "PLUGIN_DYNAMICPLAYLISTS3_PARAMETERS_TITLE" | string %]: <span class="boldtitle">[% pluginDynamicPlaylists3Playlist.name | html %]</span></p><br>
+<form action="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html" name="editForm" accept-charset="iso8859-1">
+	<input type="hidden" name="type" value="[% pluginDynamicPlaylists3PlaylistId %]">
+	<input type="hidden" name="addOnly" value="[% pluginDynamicPlaylists3AddOnly %]">
+	<input type="hidden" name="dynamicplaylist_parameter_changed" value="">
+	<table border="0">
+		[% FOREACH param IN pluginDynamicPlaylists3MixParameters %]
+			<tr>
+			<td>[% param.parameter.name %]</td>
+			<td>&nbsp;</td>
+			<td>
+				<select name="dynamicplaylist_parameter_[% param.parameter.id %]">
+				[%- FOREACH value = param.values %]
+					<option onClick='document.editForm.dynamicplaylist_parameter_changed.value="[% param.parameter.id %]";document.editForm.submit();return false;' value="[% value.id %]" [% IF param.value == value.id %]selected="selected"[% END %]>[% value.name | html %]</option>
+				[%- END %]
+				</select>
+			</td>
+			</tr>
+		[% END %]
+	</table>
+	<input type="submit" value="[% "PLUGIN_DYNAMICPLAYLISTS3_NEXT" | string %]">
+</form>
+[% PROCESS pagefooter.html %]

@@ -1,4 +1,4 @@
-# 				DynamicPlayList plugin
+# 				DynamicPlaylists3 plugin
 #
 # (c) 2021 AF
 #
@@ -19,7 +19,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-package Plugins::DynamicPlayList::ProtocolHandler;
+package Plugins::DynamicPlaylists3::ProtocolHandler;
 
 use strict;
 use base qw(FileHandle);
@@ -52,7 +52,7 @@ sub contentType {
 }
 
 sub getIcon {
-	return Plugins::DynamicPlayList::Plugin->_pluginDataFor('icon');
+	return Plugins::DynamicPlaylists3::Plugin->_pluginDataFor('icon');
 }
 
 1;

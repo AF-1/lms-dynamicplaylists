@@ -1,4 +1,4 @@
-# 				DynamicPlayList plugin
+# 				DynamicPlaylists3 plugin
 #
 # (c) 2021 AF
 #
@@ -19,7 +19,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-package Plugins::DynamicPlayList::Plugin;
+package Plugins::DynamicPlaylists3::Plugin;
 
 use strict;
 
@@ -44,22 +44,22 @@ use POSIX qw(floor);
 use Scalar::Util qw(blessed);
 use Time::HiRes qw(time);
 
-use Plugins::DynamicPlayList::Settings::Basic;
-use Plugins::DynamicPlayList::Settings::PlaylistSettings;
-use Plugins::DynamicPlayList::Settings::FavouriteSettings;
-use Plugins::DynamicPlayList::ProtocolHandler;
+use Plugins::DynamicPlaylists3::Settings::Basic;
+use Plugins::DynamicPlaylists3::Settings::PlaylistSettings;
+use Plugins::DynamicPlaylists3::Settings::FavouriteSettings;
+use Plugins::DynamicPlaylists3::ProtocolHandler;
 
-my $prefs = preferences('plugin.dynamicplaylist');
+my $prefs = preferences('plugin.dynamicplaylists3');
 my $serverPrefs = preferences('server');
 my $log = Slim::Utils::Log->addLogCategory({
-	'category' => 'plugin.dynamicplaylist',
+	'category' => 'plugin.dynamicplaylists3',
 	'defaultLevel' => 'WARN',
-	'description' => 'PLUGIN_DYNAMICPLAYLIST',
+	'description' => 'PLUGIN_DYNAMICPLAYLISTS3',
 });
 
 my %stopcommands = ();
 my %mixInfo = ();
-my $htmlTemplate = 'plugins/DynamicPlayList/dynamicplaylist_list.html';
+my $htmlTemplate = 'plugins/DynamicPlaylists3/dynamicplaylist_list.html';
 my ($playLists, $localDynamicPlaylists, $playListTypes, $playListItems, $jiveMenu);
 my $rescan = 0;
 
@@ -84,9 +84,9 @@ sub initPlugin {
 	$class->SUPER::initPlugin(@_);
 
 	if (!$::noweb) {
-		Plugins::DynamicPlayList::Settings::Basic->new();
-		Plugins::DynamicPlayList::Settings::PlaylistSettings->new();
-		Plugins::DynamicPlayList::Settings::FavouriteSettings->new();
+		Plugins::DynamicPlaylists3::Settings::Basic->new();
+		Plugins::DynamicPlaylists3::Settings::PlaylistSettings->new();
+		Plugins::DynamicPlaylists3::Settings::FavouriteSettings->new();
 	}
 
 	# playlist commands that will stop random play
@@ -103,11 +103,11 @@ sub initPlugin {
 	initPrefs();
 	initDatabase();
 	clearPlayListHistory();
-	Slim::Buttons::Common::addMode('PLUGIN.DynamicPlayList.ChooseParameters', getFunctions(), \&setModeChooseParameters);
-	Slim::Buttons::Common::addMode('PLUGIN.DynamicPlayList.Mixer', getFunctions(), \&setModeMixer);
+	Slim::Buttons::Common::addMode('PLUGIN.DynamicPlaylists3.ChooseParameters', getFunctions(), \&setModeChooseParameters);
+	Slim::Buttons::Common::addMode('PLUGIN.DynamicPlaylists3.Mixer', getFunctions(), \&setModeMixer);
 	my %choiceFunctions = %{Slim::Buttons::Input::Choice::getFunctions()};
 	$choiceFunctions{'favorites'} = sub {Slim::Buttons::Input::Choice::callCallback('onFavorites', @_)};
-	Slim::Buttons::Common::addMode('PLUGIN.DynamicPlayList.Choice', \%choiceFunctions, \&Slim::Buttons::Input::Choice::setMode);
+	Slim::Buttons::Common::addMode('PLUGIN.DynamicPlaylists3.Choice', \%choiceFunctions, \&Slim::Buttons::Input::Choice::setMode);
 	for my $buttonPressMode (qw{repeat hold hold_release single double}) {
 		if (!defined($choiceMapping{'play.'.$buttonPressMode})) {
 			$choiceMapping{'play.'.$buttonPressMode} = 'dead';
@@ -125,7 +125,7 @@ sub initPlugin {
 			$choiceMapping{'pause.'.$buttonPressMode} = 'passback';
 		}
 	}
-	Slim::Hardware::IR::addModeDefaultMapping('PLUGIN.DynamicPlayList.Choice', \%choiceMapping);
+	Slim::Hardware::IR::addModeDefaultMapping('PLUGIN.DynamicPlaylists3.Choice', \%choiceMapping);
 
 	# set up our subscription
 	Slim::Control::Request::subscribe(\&commandCallback65, [['playlist'], ['newsong', 'delete', keys %stopcommands]]);
@@ -142,7 +142,7 @@ sub initPlugin {
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'jiveplaylistparameters', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJivePlaylistParametersHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'mixjive'], [1, 1, 1, \&cliMixJiveHandler]);
 
-	Slim::Player::ProtocolHandlers->registerHandler(dynamicplaylist => 'Plugins::DynamicPlayList::ProtocolHandler');
+	Slim::Player::ProtocolHandlers->registerHandler(dynamicplaylists3 => 'Plugins::DynamicPlaylists3::ProtocolHandler');
 }
 
 sub weight {
@@ -189,23 +189,17 @@ sub initPrefs {
 		period_playedlongago => 2,
 		minartisttracks => 3,
 		minalbumtracks => 3,
+		rememberactiveplaylist => 1,
+		groupunclassifiedcustomplaylists => 1,
+		showactiveplaylistinmainmenu => 1,
 		customdirparentfolderpath => $serverPrefs->get('playlistdir'),
 		randomsavedplaylists => 0,
 		flatlist => 0,
 		structured_savedplaylists => 'on',
-		favouritesname => string('PLUGIN_DYNAMICPLAYLIST_FAVOURITES'),
+		favouritesname => string('PLUGIN_DYNAMICPLAYLISTS3_FAVOURITES'),
 		max_number_of_unplayed_tracks => 15,
 		max_number_of_unplayed_tracks => 15,
 	});
-
-	if (!defined($prefs->get('_ts_rememberactiveplaylist'))) {
-		$log->debug('Defaulting to remember active playlist');
-		$prefs->set('rememberactiveplaylist', 'on');
-	}
-	if (!defined($prefs->get('_ts_groupunclassifiedcustomplaylists'))) {
-		$log->debug('Defaulting to grouping unclassified playlists');
-		$prefs->set('groupunclassifiedcustomplaylists', 'on');
-	}
 
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 50}, 'max_number_of_unplayed_tracks');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 0, 'high' => 100}, 'number_of_played_tracks_to_keep');
@@ -252,9 +246,9 @@ sub initPlayLists {
 
 				my $pluginshortname = $plugin;
 				if (starts_with($item, 'dpldefault_') == 0) {
-					$pluginshortname = 'DynamicPlayList - built-in';
+					$pluginshortname = 'Dynamic Playlists v3 - built-in';
 				} elsif (starts_with($item, 'dplusercustom_') == 0) {
-					$pluginshortname = 'DynamicPlayList - custom/user-provided';
+					$pluginshortname = 'Dynamic Playlists v3 - custom/user-provided';
 				} elsif (starts_with($item, 'dplstandardpl_') == 0) {
 					$pluginshortname = 'Static LMS playlist';
 					$savedstaticPlaylists = 'found saved static playlists';
@@ -518,14 +512,14 @@ sub findAndAdd {
 		my $request = $client->execute(['playlist', ($addOnly || $continue) ? 'addtracks' : 'loadtracks', sprintf('%s=%d', getLinkAttribute('track'), $item->id)]);
 
 		# indicate request source
-		$request->source('PLUGIN_DYNAMICPLAYLIST');
+		$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 
 		# Add the remaining items to the end
 		if (! defined $limit || $limit > 1 || $totalItems > 1) {
 			$log->debug('Adding '.(scalar @{$totalItems}).' tracks to end of playlist');
 			if($totalItems > 1) {
 				$request = $client->execute(['playlist', 'addtracks', 'listRef', $totalItems]);
-				$request->source('PLUGIN_DYNAMICPLAYLIST');
+				$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 			}
 		}
 	}
@@ -630,7 +624,7 @@ sub playRandom {
 						$log->debug('Executing action: '.$action->{'type'}.', '.$action->{'data'});
 						my @parts = split(/ /, $action->{'data'});
 						my $request = $client->execute(\@parts);
-						$request->source('PLUGIN_DYNAMICPLAYLIST');
+						$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 					}
 				}
 			}
@@ -675,16 +669,16 @@ sub playRandom {
 					my $alarm = Slim::Utils::Alarm->getCurrentAlarm($client);
 					if (!defined($alarm) || !$alarm->active()) {
 						my $request = $client->execute(['stop']);
-						$request->source('PLUGIN_DYNAMICPLAYLIST');
+						$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 					}
 				} else {
 					my $request = $client->execute(['stop']);
-					$request->source('PLUGIN_DYNAMICPLAYLIST');
+					$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 				}
 			}
 			if (!$client->power()) {
 				my $request = $client->execute(['power', '1']);
-				$request->source('PLUGIN_DYNAMICPLAYLIST');
+				$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 			}
 		}
 		my $shuffle = Slim::Player::Playlist::shuffle($client);
@@ -707,7 +701,7 @@ sub playRandom {
 			if (!$addOnly || $type ne $mixInfo{$masterClient}->{'type'}) {
 				# Don't do showBrieflys if visualiser screensavers are running as the display messes up
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-					$client->showBriefly({'line' => [string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLIST_NOW_PLAYING'),
+					$client->showBriefly({'line' => [string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING'),
 										 $string]}, $showTime);
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
@@ -717,11 +711,11 @@ sub playRandom {
 			}
 		} elsif ($showFeedback) {
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-					$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLIST_NOW_PLAYING_FAILED'),
-										 string('PLUGIN_DYNAMICPLAYLIST_NOW_PLAYING_FAILED_LONG').' '.$string]}, $showTime);
+					$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED'),
+										 string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$string]}, $showTime);
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
-					my $materialMsg = string('PLUGIN_DYNAMICPLAYLIST_NOW_PLAYING_FAILED_LONG').' '.$string;
+					my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$string;
 					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 				}
 		}
@@ -731,17 +725,17 @@ sub playRandom {
 
 	if ($continue) {
 		my $request = $client->execute(['pause', '0']);
-		$request->source('PLUGIN_DYNAMICPLAYLIST');
+		$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 	}
 
 	if ($type eq 'disable') {
 		$log->debug('cyclic mode ended');
 		# Don't do showBrieflys if visualiser screensavers are running as the display messes up
 		if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLIST'), string('PLUGIN_DYNAMICPLAYLIST_DISABLED')]});
+			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3'), string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')]});
 		}
 		if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
-			my $materialMsg = string('PLUGIN_DYNAMICPLAYLIST_DISABLED');
+			my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED');
 			Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 		}
 		stateStop($masterClient);
@@ -777,7 +771,7 @@ sub playRandom {
 						$log->debug('Executing action: '.$action->{'type'}.', '.$action->{'data'});
 						my @parts = split(/ /, $action->{'data'});
 						my $request = $client->execute(\@parts);
-						$request->source('PLUGIN_DYNAMICPLAYLIST');
+						$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 					}
 				}
 			}
@@ -930,7 +924,7 @@ sub addAlarmPlaylists {
 		}
 		@alarmPlaylists = sort {lc($a->{'title'}) cmp lc($b->{'title'})} @alarmPlaylists;
 		$log->debug('Adding '.scalar(@alarmPlaylists).' playlists to alarm handler');
-		Slim::Utils::Alarm->addPlaylists('PLUGIN_DYNAMICPLAYLIST', \@alarmPlaylists);
+		Slim::Utils::Alarm->addPlaylists('PLUGIN_DYNAMICPLAYLISTS3', \@alarmPlaylists);
 	}
 }
 
@@ -1066,34 +1060,17 @@ sub getVirtualLibraries {
 	my $libraries = Slim::Music::VirtualLibraries->getLibraries();
 	$log->debug('ALL virtual libraries: '.Dumper($libraries));
 
-	my $localonlyname = Slim::Music::VirtualLibraries->getNameForId('localTracksOnly');
-	my $preferlocalname = Slim::Music::VirtualLibraries->getNameForId('preferLocalLibraryOnly');
-
-	my %hiddenVLs;
-	if ((defined $localonlyname) && ($localonlyname ne '') && (defined $preferlocalname) && ($preferlocalname ne '')) {
-		%hiddenVLs = map {
-		$_ => 1
-		} ('Ratings Light - Rated Tracks', 'Ratings Light - Top Rated Tracks', $preferlocalname, $localonlyname);
-	} else {
-		%hiddenVLs = map {
-		$_ => 1
-		} ('Ratings Light - Rated Tracks', 'Ratings Light - Top Rated Tracks');
-	}
-	$log->debug('hidden libraries: '.Dumper(\%hiddenVLs));
-
 	while (my ($k, $v) = each %{$libraries}) {
 		my $count = Slim::Utils::Misc::delimitThousands(Slim::Music::VirtualLibraries->getTrackCount($k)) + 0;
 		my $name = Slim::Music::VirtualLibraries->getNameForId($k);
 		$log->debug('VL: '.$name.' ('.$count.')');
 
-		unless ($hiddenVLs{$name}) {
-			push @items, {
-				name => Slim::Utils::Unicode::utf8decode($name, 'utf8').' ('.$count.($count == 1 ? ' track)' : ' tracks)'),
-				sortName => Slim::Utils::Unicode::utf8decode($name, 'utf8'),
-				value => qq('$k'),
-				id => qq('$k'),
-			};
-		}
+		push @items, {
+			name => Slim::Utils::Unicode::utf8decode($name, 'utf8').' ('.$count.($count == 1 ? ' track)' : ' tracks)'),
+			sortName => Slim::Utils::Unicode::utf8decode($name, 'utf8'),
+			value => qq('$k'),
+			id => qq('$k'),
+		};
 	}
 	if (scalar @items == 0) {
 		push @items, {
@@ -1239,13 +1216,13 @@ sub setModeMixer {
 		return lc($a->{'playlist'}->{'sortname'}) cmp lc($b->{'playlist'}->{'sortname'})
 	} @listRef;
 
-	# use PLUGIN.DynamicPlayList.Choice to display the list of feeds
+	# use PLUGIN.DynamicPlaylists3.Choice to display the list of feeds
 	my %params = (
-		header => '{PLUGIN_DYNAMICPLAYLIST} {count}',
+		header => '{PLUGIN_DYNAMICPLAYLISTS3} {count}',
 		listRef => \@listRef,
 		name => \&getDisplayText,
 		overlayRef => \&getOverlay,
-		modeName => 'PLUGIN.DynamicPlayList',
+		modeName => 'PLUGIN.DynamicPlaylists3',
 		onPlay => sub {
 			my ($client, $item) = @_;
 			if (defined($item->{'playlist'})) {
@@ -1291,7 +1268,7 @@ sub setModeMixer {
 			if (defined($item->{'playlist'}) && $item->{'playlist'}->{'dynamicplaylistid'} eq 'disable') {
 				handlePlayOrAdd($client, $item->{'playlist'}->{'dynamicplaylistid'}, 0);
 			} elsif (defined($item->{'childs'})) {
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlayList.Choice', getSetModeDataForSubItems($client, $item, $item->{'childs'}));
+				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Choice', getSetModeDataForSubItems($client, $item, $item->{'childs'}));
 			} elsif (defined($item->{'playlist'}) && defined($item->{'playlist'}->{'parameters'})) {
 				my %parameterValues = ();
 				my $i = 1;
@@ -1332,7 +1309,7 @@ sub setModeMixer {
 		push @{$params{listRef}}, \%disable;
 	}
 
-	Slim::Buttons::Common::pushMode($client, 'PLUGIN.DynamicPlayList.Choice', \%params);
+	Slim::Buttons::Common::pushMode($client, 'PLUGIN.DynamicPlaylists3.Choice', \%params);
 }
 
 sub addFavorite {
@@ -1392,7 +1369,7 @@ sub enterSelectedGroup {
 				}
 				return enterSelectedGroup($client, \@itemArray, $selectedGroups);
 			} else {
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlayList.Choice', getSetModeDataForSubItems($client, $item, $item->{'childs'}));
+				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Choice', getSetModeDataForSubItems($client, $item, $item->{'childs'}));
 				return 1;
 			}
 		}
@@ -1446,7 +1423,7 @@ sub setModeChooseParameters {
 		isSorted => $sorted,
 		name => \&getChooseParametersDisplayText,
 		overlayRef => \&getChooseParametersOverlay,
-		modeName => 'PLUGIN.DynamicPlayList.ChooseParameters',
+		modeName => 'PLUGIN.DynamicPlaylists3.ChooseParameters',
 		onRight => sub {
 			my ($client, $item) = @_;
 			requestNextParameter($client, $item, $parameterId, $playlist);
@@ -1517,11 +1494,11 @@ sub getSetModeDataForSubItems {
 	} @listRefSub;
 
 	my %params = (
-		header => '{PLUGIN_DYNAMICPLAYLIST} {count}',
+		header => '{PLUGIN_DYNAMICPLAYLISTS3} {count}',
 		listRef => \@listRefSub,
 		name => \&getDisplayText,
 		overlayRef => \&getOverlay,
-		modeName => 'PLUGIN.DynamicPlayList'.$currentItem->{'value'},
+		modeName => 'PLUGIN.DynamicPlaylists3'.$currentItem->{'value'},
 		onPlay => sub {
 			my ($client, $item) = @_;
 			if (defined($item->{'playlist'})) {
@@ -1565,7 +1542,7 @@ sub getSetModeDataForSubItems {
 		onRight => sub {
 			my ($client, $item) = @_;
 			if (defined($item->{'childs'})) {
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlayList.Choice', getSetModeDataForSubItems($client, $item, $item->{'childs'}));
+				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Choice', getSetModeDataForSubItems($client, $item, $item->{'childs'}));
 			} elsif (defined($item->{'playlist'}) && defined($item->{'playlist'}->{'parameters'})) {
 				my %parameterValues = ();
 				my $i=1;
@@ -1616,7 +1593,7 @@ sub requestNextParameter {
 		for($i = 1; $i <= $parameterId; $i++) {
 			$nextParameter{'dynamicplaylist_parameter_'.$i} = $client->modeParam('dynamicplaylist_parameter_'.$i);
 		}
-		Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlayList.ChooseParameters', \%nextParameter);
+		Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.ChooseParameters', \%nextParameter);
 	} else {
 		for(my $i = 1; $i <= $parameterId; $i++) {
 			$playlist->{'parameters'}->{$i}->{'value'} = $client->modeParam('dynamicplaylist_parameter_'.$i)->{'id'};
@@ -1651,7 +1628,7 @@ sub requestFirstParameter {
 	$nextParameters{'dynamicplaylist_nextparameter'}=$i;
 
 	if (defined($playlist->{'parameters'}) && defined($playlist->{'parameters'}->{$nextParameters{'dynamicplaylist_nextparameter'}})) {
-		Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlayList.ChooseParameters', \%nextParameters);
+		Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.ChooseParameters', \%nextParameters);
 	} else {
 		for($i=1; $i < $nextParameters{'dynamicplaylist_nextparameter'}; $i++) {
 			$playlist->{'parameters'}->{$i}->{'value'} = $params->{'dynamicplaylist_parameter_'.$i}->{'id'};
@@ -1692,11 +1669,11 @@ sub getDisplayText {
 
 	# if showing the current mode, show altered string
 	if ($mixInfo{$masterClient} && defined($mixInfo{$masterClient}->{'type'}) && $id eq $mixInfo{$masterClient}->{'type'}) {
-		return $name.' ('.string('PLUGIN_DYNAMICPLAYLIST_PLAYING').')';
+		return $name.' ('.string('PLUGIN_DYNAMICPLAYLISTS3_PLAYING').')';
 
 	# if a mode is active, handle the temporarily added disable option
 	} elsif ($id eq 'disable' && $mixInfo{$masterClient}) {
-		return string('PLUGIN_DYNAMICPLAYLIST_PRESS_RIGHT');
+		return string('PLUGIN_DYNAMICPLAYLISTS3_PRESS_RIGHT');
 	} else {
 		return $name;
 	}
@@ -1846,7 +1823,7 @@ sub commandCallback65 {
 	my $client = $request->client();
 	my $masterClient = masterOrSelf($client);
 
-	if (defined($request->source()) && $request->source() eq 'PLUGIN_DYNAMICPLAYLIST') {
+	if (defined($request->source()) && $request->source() eq 'PLUGIN_DYNAMICPLAYLISTS3') {
 		return;
 	} elsif (defined($request->source())) {
 		$log->debug('received command initiated by '.$request->source());
@@ -1891,7 +1868,7 @@ sub commandCallback65 {
 			# Delete tracks before this one on the playlist
 			for (my $i = 0; $i < $songIndex - $songsToKeep; $i++) {
 				my $request = $client->execute(['playlist', 'delete', 0]);
-				$request->source('PLUGIN_DYNAMICPLAYLIST');
+				$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 			}
 		}
 
@@ -1946,7 +1923,7 @@ sub mixerFunction {
 					'extrapopmode' => 1
 				);
 				$log->debug('Calling album playlists with '.$params{'dynamicplaylist_parameter_1'}->{'name'}.'('.$params{'dynamicplaylist_parameter_1'}->{'id'}.')');
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlayList.Mixer', \%params);
+				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Mixer', \%params);
 				$client->update();
 			} elsif ($mixerType eq 'year') {
 				my %p = (
@@ -1962,7 +1939,7 @@ sub mixerFunction {
 					'extrapopmode' => 1
 				);
 				$log->debug('Calling year playlists with '.$params{'dynamicplaylist_parameter_1'}->{'name'}.'('.$params{'dynamicplaylist_parameter_1'}->{'id'}.')');
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlayList.Mixer', \%params);
+				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Mixer', \%params);
 				$client->update();
 			} elsif ($mixerType eq 'artist') {
 				my %p = (
@@ -1976,7 +1953,7 @@ sub mixerFunction {
 					'extrapopmode' => 1
 				);
 				$log->debug('Calling artist playlists with '.$params{'dynamicplaylist_parameter_1'}->{'name'}.'('.$params{'dynamicplaylist_parameter_1'}->{'id'}.')');
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlayList.Mixer', \%params);
+				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Mixer', \%params);
 				$client->update();
 			} elsif ($mixerType eq 'genre') {
 				my %p = (
@@ -1990,7 +1967,7 @@ sub mixerFunction {
 					'extrapopmode' => 1
 				);
 				$log->debug('Calling album playlists with '.$params{'dynamicplaylist_parameter_1'}->{'name'}.'('.$params{'dynamicplaylist_parameter_1'}->{'id'}.')');
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlayList.Mixer', \%params);
+				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Mixer', \%params);
 				$client->update();
 			} elsif ($mixerType eq 'playlist') {
 				my %p = (
@@ -2004,7 +1981,7 @@ sub mixerFunction {
 					'extrapopmode' => 1
 				);
 				$log->debug('Calling playlist playlists with '.$params{'dynamicplaylist_parameter_1'}->{'name'}.'('.$params{'dynamicplaylist_parameter_1'}->{'id'}.')');
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlayList.Mixer', \%params);
+				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Mixer', \%params);
 				$client->update();
 			} elsif ($mixerType eq 'track') {
 				my %p = (
@@ -2018,7 +1995,7 @@ sub mixerFunction {
 					'extrapopmode' => 1
 				);
 				$log->debug('Calling track playlists with '.$params{'dynamicplaylist_parameter_1'}->{'name'}.'('.$params{'dynamicplaylist_parameter_1'}->{'id'}.')');
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlayList.Mixer', \%params);
+				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Mixer', \%params);
 				$client->update();
 			} else {
 				$log->warn('Unknown playlisttype = '.$mixerType);
@@ -2040,7 +2017,7 @@ sub mixerlink {
 	if (!$playListTypes) {
 		initPlayListTypes();
 	}
-	if ($form->{'noDynamicPlayListButton'}) {
+	if ($form->{'noDynamicPlaylists3Button'}) {
 	} else {
 		my $contextId = undef;
 		my $contextName = undef;
@@ -2106,8 +2083,8 @@ sub webPages {
 		Slim::Web::Pages->addPageFunction($page, $pages{$page});
 	}
 
-	Slim::Web::Pages->addPageLinks('browse', {'PLUGIN_DYNAMICPLAYLIST' => $value});
-	Slim::Web::Pages->addPageLinks('icons', {'PLUGIN_DYNAMICPLAYLIST' => 'plugins/DynamicPlayList/html/images/dpl_icon_svg.png'});
+	Slim::Web::Pages->addPageLinks('browse', {'PLUGIN_DYNAMICPLAYLISTS3' => $value});
+	Slim::Web::Pages->addPageLinks('icons', {'PLUGIN_DYNAMICPLAYLISTS3' => 'plugins/DynamicPlaylists3/html/images/dpl_icon_svg.png'});
 }
 
 sub handleWebList {
@@ -2117,7 +2094,7 @@ sub handleWebList {
 	# Pass on the current pref values and now playing info
 	initPlayLists($client);
 	initPlayListTypes();
-	registerJiveMenu('Plugins::DynamicPlayList::Plugin');
+	registerJiveMenu('Plugins::DynamicPlaylists3::Plugin');
 
 	my $playlist = undef;
 	if (defined($client) && defined($mixInfo{$masterClient}) && defined($mixInfo{$masterClient}->{'type'})) {
@@ -2144,9 +2121,9 @@ sub handleWebList {
 		}
 	}
 
-	$params->{'pluginDynamicPlayListContext'} = getPlayListContext($client, $params, $playListItems, 1);
-	$params->{'pluginDynamicPlayListGroups'} = getPlayListGroupsForContext($client, $params, $playListItems, 1);
-	$params->{'pluginDynamicPlayListPlayLists'} = getPlayListsForContext($client, $params, $playListItems, 1, $params->{'playlisttype'});
+	$params->{'pluginDynamicPlaylists3Context'} = getPlayListContext($client, $params, $playListItems, 1);
+	$params->{'pluginDynamicPlaylists3Groups'} = getPlayListGroupsForContext($client, $params, $playListItems, 1);
+	$params->{'pluginDynamicPlaylists3PlayLists'} = getPlayListsForContext($client, $params, $playListItems, 1, $params->{'playlisttype'});
 
 	return Slim::Web::HTTP::filltemplatefile($htmlTemplate, $params);
 }
@@ -2209,21 +2186,21 @@ sub handleWebMixParameters {
 			'values' => \@parameterValues
 		);
 		push @parameters, \%currentParameter;
-		$params->{'pluginDynamicPlayListPlaylist'} = $playlist;
-		$params->{'pluginDynamicPlayListPlaylistId'} = $params->{'type'};
-		$params->{'pluginDynamicPlayListAddOnly'} = $params->{'addOnly'};
-		$params->{'pluginDynamicPlayListMixParameters'} = \@parameters;
+		$params->{'pluginDynamicPlaylists3Playlist'} = $playlist;
+		$params->{'pluginDynamicPlaylists3PlaylistId'} = $params->{'type'};
+		$params->{'pluginDynamicPlaylists3AddOnly'} = $params->{'addOnly'};
+		$params->{'pluginDynamicPlaylists3MixParameters'} = \@parameters;
 		my $currentPlaylistId = getCurrentPlayList($client);
 		if (defined($currentPlaylistId)) {
 			$log->debug('Setting current playlist id to '.$currentPlaylistId);
 			my $currentPlaylist = getPlayList($client, $currentPlaylistId);
 			if (defined($currentPlaylist)) {
 				$log->debug('Setting current playlist to '.$currentPlaylist->{'name'});
-				$params->{'pluginDynamicPlayListNowPlaying'} = $currentPlaylist->{'name'};
+				$params->{'pluginDynamicPlaylists3NowPlaying'} = $currentPlaylist->{'name'};
 			}
 		}
 		$log->debug('Exiting handleWebMixParameters');
-		return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlayList/dynamicplaylist_mixparameters.html', $params);
+		return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html', $params);
 	} else {
 		for(my $i = 1; $i < $parameterId; $i++) {
 			$playlist->{'parameters'}->{$i}->{'value'} = $client->modeParam('dynamicplaylist_parameter_'.$i)->{'id'};
@@ -2247,12 +2224,12 @@ sub handleWebSelectPlaylists {
 		$name = $playlist->{'name'};
 	}
 
-	$params->{'pluginDynamicPlayListPlayLists'} = $playLists;
+	$params->{'pluginDynamicPlaylists3PlayLists'} = $playLists;
 	my @groupPath = ();
 	my @groupResult = ();
-	$params->{'pluginDynamicPlayListGroups'} = getPlayListGroups(\@groupPath, $playListItems, \@groupResult);
-	$params->{'pluginDynamicPlayListNowPlaying'} = $name;
-	return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlayList/dynamicplaylist_selectplaylists.html', $params);
+	$params->{'pluginDynamicPlaylists3Groups'} = getPlayListGroups(\@groupPath, $playListItems, \@groupResult);
+	$params->{'pluginDynamicPlaylists3NowPlaying'} = $name;
+	return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlaylists3/dynamicplaylist_selectplaylists.html', $params);
 }
 
 sub getPlayListContext {
@@ -2504,10 +2481,10 @@ sub registerJiveMenu {
 	my $client = shift;
 	my @menuItems = (
 		{
-			text => Slim::Utils::Strings::string('PLUGIN_DYNAMICPLAYLIST'),
+			text => Slim::Utils::Strings::string('PLUGIN_DYNAMICPLAYLISTS3'),
 			weight => 78,
 			id => 'dynamicplaylist',
-			menuIcon => 'plugins/DynamicPlayList/html/images/dpl_icon_svg.png',
+			menuIcon => 'plugins/DynamicPlaylists3/html/images/dpl_icon_svg.png',
 			window => {titleStyle => 'mymusic', 'icon-id' => $class->_pluginDataFor('icon')},
 			actions => {
 				go => {
@@ -2615,11 +2592,11 @@ sub objectInfoHandler {
 		return {
 			type => 'redirect',
 			jive => $jive,
-			name => $client->string('PLUGIN_DYNAMICPLAYLIST'),
+			name => $client->string('PLUGIN_DYNAMICPLAYLISTS3'),
 			favorites => 0,
 
 			player => {
-				mode => 'PLUGIN.DynamicPlayList.Mixer',
+				mode => 'PLUGIN.DynamicPlaylists3.Mixer',
 				modeParams => {
 					'dynamicplaylist_parameter_1' => $paramItem,
 					'playlisttype' => $objectType,
@@ -2629,7 +2606,7 @@ sub objectInfoHandler {
 			},
 			web => {
 				group => 'mixers',
-				url => 'plugins/DynamicPlayList/dynamicplaylist_list.html?playlisttype='.$objectType.'&flatlist=1&dynamicplaylist_parameter_1='.$objectId.'&iscontextmenu='.$iscontextmenu,
+				url => 'plugins/DynamicPlaylists3/dynamicplaylist_list.html?playlisttype='.$objectType.'&flatlist=1&dynamicplaylist_parameter_1='.$objectId.'&iscontextmenu='.$iscontextmenu,
 				item => mixerlink($obj),
 			},
 		};
@@ -3621,8 +3598,8 @@ sub getLocalDynamicPlaylists {
 	my @pluginDirs = Slim::Utils::OSDetect::dirsFor('Plugins');
 	$log->debug('pluginDirs = '.Dumper(\@pluginDirs));
 	for my $plugindir (@pluginDirs) {
-		if (-d catdir($plugindir, 'DynamicPlayList', 'Playlists')) {
-			$pluginPlaylistFolder = catdir($plugindir, 'DynamicPlayList', 'Playlists');
+		if (-d catdir($plugindir, 'DynamicPlaylists3', 'Playlists')) {
+			$pluginPlaylistFolder = catdir($plugindir, 'DynamicPlaylists3', 'Playlists');
 			$log->debug('pluginPlaylistFolder = '.Dumper($pluginPlaylistFolder));
 		}
 	}

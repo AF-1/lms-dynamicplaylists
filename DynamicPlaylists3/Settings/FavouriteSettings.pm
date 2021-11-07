@@ -1,4 +1,4 @@
-# 				DynamicPlayList plugin
+# 				DynamicPlaylists3 plugin
 #
 # (c) 2021 AF
 #
@@ -19,10 +19,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-package Plugins::DynamicPlayList::Settings::FavouriteSettings;
+package Plugins::DynamicPlaylists3::Settings::FavouriteSettings;
 
 use strict;
-use base qw(Plugins::DynamicPlayList::Settings::BaseSettings);
+use base qw(Plugins::DynamicPlaylists3::Settings::BaseSettings);
 
 use File::Basename;
 use File::Next;
@@ -31,8 +31,8 @@ use Slim::Utils::Log;
 use Slim::Utils::Prefs;
 use Slim::Utils::Misc;
 
-my $prefs = preferences('plugin.dynamicplaylist');
-my $log = logger('plugin.dynamicplaylist');
+my $prefs = preferences('plugin.dynamicplaylists3');
+my $log = logger('plugin.dynamicplaylists3');
 
 my $plugin;
 
@@ -43,7 +43,7 @@ sub new {
 }
 
 sub name {
-	return 'PLUGIN_DYNAMICPLAYLIST_FAVIOURITESETTINGS';
+	return 'PLUGIN_DYNAMICPLAYLISTS3_FAVIOURITESETTINGS';
 }
 
 sub prefs {
@@ -51,7 +51,7 @@ sub prefs {
 }
 
 sub page {
-	return 'plugins/DynamicPlayList/settings/favourites.html';
+	return 'plugins/DynamicPlaylists3/settings/favourites.html';
 }
 
 sub currentPage {
@@ -70,8 +70,8 @@ sub pages {
 sub handler {
 	my ($class, $client, $paramRef) = @_;
 
-	my ($playLists, $playListItems, $unclassifiedPlaylists, $savedstaticPlaylists) = Plugins::DynamicPlayList::Plugin::initPlayLists($client);
-	$paramRef->{'pluginDynamicPlayListPlayLists'} = $playLists;
+	my ($playLists, $playListItems, $unclassifiedPlaylists, $savedstaticPlaylists) = Plugins::DynamicPlaylists3::Plugin::initPlayLists($client);
+	$paramRef->{'pluginDynamicPlaylists3PlayLists'} = $playLists;
 	$paramRef->{'savedstaticPlaylists'} = $savedstaticPlaylists;
 	$paramRef->{'unclassifiedPlaylists'} = $unclassifiedPlaylists->{'unclassifiedPlaylists'};
 
@@ -86,8 +86,8 @@ sub handler {
 					$prefs->remove('playlist_'.$playlist.'_favourite');
 				}
 			}
-		($playLists, $playListItems) = Plugins::DynamicPlayList::Plugin::initPlayLists($client);
-		$paramRef->{'pluginDynamicPlayListPlayLists'} = $playLists;
+		($playLists, $playListItems) = Plugins::DynamicPlaylists3::Plugin::initPlayLists($client);
+		$paramRef->{'pluginDynamicPlaylists3PlayLists'} = $playLists;
 		}
 
 	return $class->SUPER::handler($client, $paramRef);

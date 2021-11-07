@@ -1,4 +1,4 @@
-# 				DynamicPlayList plugin
+# 				DynamicPlaylists3 plugin
 #
 # (c) 2021 AF
 #
@@ -19,10 +19,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-package Plugins::DynamicPlayList::Settings::PlaylistSettings;
+package Plugins::DynamicPlaylists3::Settings::PlaylistSettings;
 
 use strict;
-use base qw(Plugins::DynamicPlayList::Settings::BaseSettings);
+use base qw(Plugins::DynamicPlaylists3::Settings::BaseSettings);
 
 use File::Basename;
 use File::Next;
@@ -32,8 +32,8 @@ use Slim::Utils::Prefs;
 use Slim::Utils::Misc;
 use Data::Dumper;
 
-my $prefs = preferences('plugin.dynamicplaylist');
-my $log = logger('plugin.dynamicplaylist');
+my $prefs = preferences('plugin.dynamicplaylists3');
+my $log = logger('plugin.dynamicplaylists3');
 
 my $plugin;
 
@@ -44,11 +44,11 @@ sub new {
 }
 
 sub name {
-	return 'PLUGIN_DYNAMICPLAYLIST_PLAYLISTSETTINGS';
+	return 'PLUGIN_DYNAMICPLAYLISTS3_PLAYLISTSETTINGS';
 }
 
 sub page {
-	return 'plugins/DynamicPlayList/settings/playlists.html';
+	return 'plugins/DynamicPlaylists3/settings/playlists.html';
 }
 
 sub currentPage {
@@ -67,15 +67,15 @@ sub pages {
 sub handler {
 	my ($class, $client, $paramRef) = @_;
 
-	my ($playLists, $playListItems, $unclassifiedPlaylists, $savedstaticPlaylists) = Plugins::DynamicPlayList::Plugin::initPlayLists($client);
-	$paramRef->{'pluginDynamicPlayListPlayLists'} = $playLists;
+	my ($playLists, $playListItems, $unclassifiedPlaylists, $savedstaticPlaylists) = Plugins::DynamicPlaylists3::Plugin::initPlayLists($client);
+	$paramRef->{'pluginDynamicPlaylists3PlayLists'} = $playLists;
 	my @groupPath = ();
 	my @groupResult = ();
 
 	$paramRef->{'savedstaticPlaylists'} = $savedstaticPlaylists;
 	$paramRef->{'unclassifiedPlaylists'} = $unclassifiedPlaylists->{'unclassifiedPlaylists'};
 	$paramRef->{'unclassifiedContextMenuPlaylists'} = $unclassifiedPlaylists->{'unclassifiedContextMenuPlaylists'};
-	$paramRef->{'pluginDynamicPlayListGroups'} = Plugins::DynamicPlayList::Plugin::getPlayListGroups(\@groupPath, $playListItems, \@groupResult);
+	$paramRef->{'pluginDynamicPlaylists3Groups'} = Plugins::DynamicPlaylists3::Plugin::getPlayListGroups(\@groupPath, $playListItems, \@groupResult);
 
 	if ($paramRef->{'saveSettings'}) {
 		my $first = 1;
@@ -90,11 +90,11 @@ sub handler {
 		}
 
 		savePlayListGroups($playListItems, $paramRef, '');
-		($playLists, $playListItems) = Plugins::DynamicPlayList::Plugin::initPlayLists($client);
-		$paramRef->{'pluginDynamicPlayListPlayLists'} = $playLists;
+		($playLists, $playListItems) = Plugins::DynamicPlaylists3::Plugin::initPlayLists($client);
+		$paramRef->{'pluginDynamicPlaylists3PlayLists'} = $playLists;
 		my @groupPath = ();
 		my @groupResult = ();
-		$paramRef->{'pluginDynamicPlayListGroups'} = Plugins::DynamicPlayList::Plugin::getPlayListGroups(\@groupPath, $playListItems, \@groupResult);
+		$paramRef->{'pluginDynamicPlaylists3Groups'} = Plugins::DynamicPlaylists3::Plugin::getPlayListGroups(\@groupPath, $playListItems, \@groupResult);
 		}
 
 	return $class->SUPER::handler($client, $paramRef);

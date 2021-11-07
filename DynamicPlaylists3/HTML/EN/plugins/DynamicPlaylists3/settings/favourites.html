@@ -1,0 +1,59 @@
+<style>details summary{cursor:pointer;outline:none;margin-bottom:10px;}details summary > *{display:inline;}.dpllist_source{padding-left: 15px;}.categoryheader{font-weight:600;text-transform:capitalize;}.playlists td:first-child {padding-left:10px;min-width:360px;}</style>
+[% page = "PLUGIN_DYNAMICPLAYLISTS3" %]
+[% PROCESS settings/header.html %]
+
+[% PROCESS plugins/DynamicPlaylists3/settings/subpage_chooser.html %]
+	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_FAVOURITESNAME" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_FAVOURITESNAME_DESC" %]
+		<input type="text" class="stdedit" name="pref_favouritesname" id="favouritesname" value="[% prefs.favouritesname %]" size="40">
+	[% END %]
+
+	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SELECT_FAVOURITES" desc="" %]
+		[% FOREACH category = ['songs', 'artists', 'albums', 'genres', 'years', 'playlists'] %]
+			<details><summary><span class="categoryheader">[% category %]</span></summary>
+				<table border="0">
+					[%- FOREACH playlist IN pluginDynamicPlaylists3PlayLists.keys.sort %]
+						[% IF pluginDynamicPlaylists3PlayLists.$playlist.menulisttype != "contextmenu" && pluginDynamicPlaylists3PlayLists.$playlist.playlistcategory == category %]
+						<tr class="playlists">
+					[%- playlistfavouriteid = "playlistfavourite_" _ pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistid %]
+							<td><input type="checkbox" name="[% playlistfavouriteid %]" id="[% playlistfavouriteid %]" value="1" [% pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistfavourite ? "checked" : "" %] onclick="changeNumSelected(this)">
+							<label for="[% playlistfavouriteid %]">[% pluginDynamicPlaylists3PlayLists.$playlist.name | html %]</label></td><td class="dpllist_source"> (source: [% pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistpluginshortname | html %])</td>
+						</tr>
+						[% END %]
+					[%- END %]
+				</table>
+				<br>
+			</details>
+		[% END %]
+		[% IF savedstaticPlaylists %]
+			<details><summary><span class="categoryheader">Static playlists</span></summary>
+				<table border="0">
+					[%- FOREACH playlist IN pluginDynamicPlaylists3PlayLists.keys.sort %]
+						[% IF pluginDynamicPlaylists3PlayLists.$playlist.menulisttype != "contextmenu" && pluginDynamicPlaylists3PlayLists.$playlist.playlistcategory == 'static LMS playlists' %]
+						<tr class="playlists">
+					[%- playlistfavouriteid = "playlistfavourite_" _ pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistid %]
+							<td><input type="checkbox" name="[% playlistfavouriteid %]" id="[% playlistfavouriteid %]" value="1" [% pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistfavourite ? "checked" : "" %] onclick="changeNumSelected(this)">
+							<label for="[% playlistid %]">[% pluginDynamicPlaylists3PlayLists.$playlist.name | html %]</label></td><td class="dpllist_source"> (source: [% pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistpluginshortname | html %])</td>
+						</tr>
+						[% END %]
+					[%- END %]
+				</table>
+				<br>
+			</details>
+		[% END %]
+		[% IF unclassifiedPlaylists %]
+			<details><summary><span class="categoryheader">not</span> classified</summary>
+				<table border="0">
+					[%- FOREACH playlist IN pluginDynamicPlaylists3PlayLists.keys.sort %]
+						[% IF pluginDynamicPlaylists3PlayLists.$playlist.menulisttype != "contextmenu" && NOT pluginDynamicPlaylists3PlayLists.$playlist.playlistcategory %]
+						<tr class="playlists">
+					[%- playlistfavouriteid = "playlistfavourite_" _ pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistid %]
+							<td><input type="checkbox" name="[% playlistfavouriteid %]" id="[% playlistfavouriteid %]" value="1" [% pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistfavourite ? "checked" : "" %] onclick="changeNumSelected(this)">
+							<label for="[% playlistid %]">[% pluginDynamicPlaylists3PlayLists.$playlist.name | html %]</label></td><td class="dpllist_source"> (source: [% pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistpluginshortname | html %])</td>
+						</tr>
+						[% END %]
+					[%- END %]
+				</table>
+			</details>
+		[% END %]
+	[% END %]
+[% PROCESS settings/footer.html %]

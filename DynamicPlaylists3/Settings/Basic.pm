@@ -1,4 +1,4 @@
-# 				DynamicPlayList plugin
+# 				DynamicPlaylists3 plugin
 #
 # (c) 2021 AF
 #
@@ -19,10 +19,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-package Plugins::DynamicPlayList::Settings::Basic;
+package Plugins::DynamicPlaylists3::Settings::Basic;
 
 use strict;
-use base qw(Plugins::DynamicPlayList::Settings::BaseSettings);
+use base qw(Plugins::DynamicPlaylists3::Settings::BaseSettings);
 
 use File::Basename;
 use File::Next;
@@ -33,8 +33,8 @@ use Slim::Utils::Misc;
 use Slim::Utils::Strings;
 use Data::Dumper;
 
-my $prefs = preferences('plugin.dynamicplaylist');
-my $log = logger('plugin.dynamicplaylist');
+my $prefs = preferences('plugin.dynamicplaylists3');
+my $log = logger('plugin.dynamicplaylists3');
 
 my $plugin;
 
@@ -45,20 +45,20 @@ sub new {
 }
 
 sub name {
-	return 'PLUGIN_DYNAMICPLAYLIST';
+	return 'PLUGIN_DYNAMICPLAYLISTS3';
 }
 
 sub page {
-	return 'plugins/DynamicPlayList/settings/basic.html';
+	return 'plugins/DynamicPlaylists3/settings/basic.html';
 }
 
 sub currentPage {
-	return Slim::Utils::Strings::string('PLUGIN_DYNAMICPLAYLIST_SETTINGS');
+	return Slim::Utils::Strings::string('PLUGIN_DYNAMICPLAYLISTS3_SETTINGS');
 }
 
 sub pages {
 	my %page = (
-		'name' => Slim::Utils::Strings::string('PLUGIN_DYNAMICPLAYLIST_SETTINGS'),
+		'name' => Slim::Utils::Strings::string('PLUGIN_DYNAMICPLAYLISTS3_SETTINGS'),
 		'page' => page(),
 	);
 	my @pages = (\%page);
@@ -78,6 +78,10 @@ sub handler {
 			$prefs->set('min_number_of_unplayed_tracks', $paramRef->{'pref_max_number_of_unplayed_tracks'});
 			$paramRef->{'pref_min_number_of_unplayed_tracks'} = $paramRef->{'pref_max_number_of_unplayed_tracks'};
 		}
+
+		$paramRef->{'pref_rememberactiveplaylist'} = $paramRef->{'pref_rememberactiveplaylist'} || 0;
+		$paramRef->{'pref_showactiveplaylistinmainmenu'} = $paramRef->{'pref_showactiveplaylistinmainmenu'} || 0;
+		$paramRef->{'pref_groupunclassifiedcustomplaylists'} = $paramRef->{'pref_groupunclassifiedcustomplaylists'} || 0;
 
 		my $excludegenres_namelist;
 		my $genres = getGenres();

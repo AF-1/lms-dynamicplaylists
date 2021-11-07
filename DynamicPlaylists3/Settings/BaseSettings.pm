@@ -1,4 +1,4 @@
-# 				DynamicPlayList plugin
+# 				DynamicPlaylists3 plugin
 #
 # (c) 2021 AF
 #
@@ -19,7 +19,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-package Plugins::DynamicPlayList::Settings::BaseSettings;
+package Plugins::DynamicPlaylists3::Settings::BaseSettings;
 
 use strict;
 use base qw(Slim::Web::Settings);
@@ -31,8 +31,8 @@ use Slim::Utils::Log;
 use Slim::Utils::Prefs;
 use Slim::Utils::Misc;
 
-my $prefs = preferences('plugin.dynamicplaylist');
-my $log = logger('plugin.dynamicplaylist');
+my $prefs = preferences('plugin.dynamicplaylists3');
+my $log = logger('plugin.dynamicplaylists3');
 
 my $plugin;
 my %subPages = ();
