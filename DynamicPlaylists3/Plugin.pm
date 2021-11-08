@@ -201,6 +201,10 @@ sub initPrefs {
 		max_number_of_unplayed_tracks => 15,
 	});
 
+	my $customlistdir_parentfolderpath = $prefs->get('customdirparentfolderpath');
+	my $customlistdir = $customlistdir_parentfolderpath.'/DPL-custom-lists';
+	mkdir($customlistdir, 0755) unless (-d $customlistdir);
+
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 50}, 'max_number_of_unplayed_tracks');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 0, 'high' => 100}, 'number_of_played_tracks_to_keep');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 60}, 'song_adding_check_delay');
