@@ -3,13 +3,13 @@
 		<title lang="EN">AF-1 Repo - Dynamic Playlists</title>
 	</details>
 	<plugins>
-		<plugin name="InfoMessageOnly" version="0.0.1" minTarget="7.9" maxTarget="*">
+		<plugin name="InfoMessageOnly" version="0.1" minTarget="7.9" maxTarget="*">
 			<title lang="EN">Dynamic Playlists 3</title>
 			<desc lang="EN">PLEASE READ: Dynamic Playlists 3 uses a different name now.<br>Please *uninstall* any *previous* version of Dynamic Playlists *3* FIRST.<br>Then install the new version of 'Dynamic Playlist 3' from the LMS main repository: LMS > Settings > Plugins.<br>And don't forget to delete this repository url from LMS > Settings > Plugins. Sorry for the inconvenience.</desc>
-			<url>https://github.com/AF-1/lms-dynamicplaylists</url>
+			<url>https://github.com/AF-1/lms-dynamicplaylists/doesnotexist.zip</url>
 			<creator>AF</creator>
 			<link>https://github.com/AF-1/lms-dynamicplaylists</link>
-			<sha>234567890987654234567890098765434567</sha>
+			<sha>e836491bb32e2d8ef410da66c48c0a7e04a4324a</sha>
 		</plugin>
 	</plugins>
 </extensions>
