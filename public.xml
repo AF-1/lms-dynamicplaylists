@@ -5,7 +5,7 @@
 	<plugins>
 		<plugin name="DynamicPlaylists3" version="3.3.2" minTarget="7.9" maxTarget="*">
 			<title lang="EN">Dynamic Playlists 3</title>
-			<desc lang="EN">++++ PLEASE READ!!! ++++ Dynamic Playlists 3 uses a different name now.<br>Please *uninstall* any *previous* version of Dynamic Playlists *3* FIRST.<br>Then install the new version of 'Dynamic Playlist 3' from the LMS main repository: LMS > Settings > Plugins.<br>And don't forget to delete this repository URL from LMS > Settings > Plugins. Sorry for the inconvenience.</desc>
+			<desc lang="EN">++++ PLEASE READ!!! ++++ Dynamic Playlists 3 uses a different name now. Please *uninstall* any *previous* version of Dynamic Playlists *3* FIRST. Then install the new version of 'Dynamic Playlist 3' from the LMS main repository / plugin library (LMS - Settings - Plugins). And don't forget to delete this repository URL from LMS - Settings - Plugins. Sorry for the inconvenience.</desc>
 			<url>https://github.com/AF-1/lms-dynamicplaylists/releases/download/3.3.2/lms-dynamicplaylists-3.3.2.zip</url>
 			<creator>AF</creator>
 			<link>https://github.com/AF-1/lms-dynamicplaylists</link>
