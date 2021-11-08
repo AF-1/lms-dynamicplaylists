@@ -15,13 +15,8 @@ Some preferences are not enabled by default. Please take a look at the preferenc
 ## Installation
 ⚠️ **Please read the [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq) *before* installing this plugin.**<br>
 
-~~You should be able to install **Dynamic Playlists 3** from the LMS main repository (LMS plugin library): **LMS > Settings > Plugins**.~~<br><br>
+You should be able to install **Dynamic Playlists 3** from the LMS main repository (LMS plugin library): **LMS > Settings > Plugins**.<br><br>
 
-### Using the repository URL
-
-   - Add the repository URL below at the bottom of *LMS > Settings > Plugins*:<br>
-https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/public.xml
-<br><br>
 
 ### Manual Installation
 
@@ -52,6 +47,10 @@ https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/public.xml
 
 
 ## FAQ
+
+- »**I have 2 Dynamic Playlists v*3* plugins installed now.**«<br>
+»**The dynamic playlists I've added to LMS favorites don't work anymore.**«<br>
+*Dynamic Playlists 3* has changed its (internal) name. LMS considers it a different plugin now. Therefore you'll have to uninstall any previous version of DPL and then install the latest *Dynamic Playlists **3*** version from the LMS main repository (plugin library). And since it's a "different" plugin you'll have to remove any playlists you've added to LMS favorites and add them again. Sorry.<br><br>
 
 - »**Is DPL v*3* compatible with my old plugins?**«<br>
 *Dynamic Playlist 3* removes ties to other (unsupported) plugins in a way that they shouldn't break *Dynamic Playlists 3* if those plugins ever stopped working properly. And *within these limits* DPL v**3** tries to maintain as much backwards compatibility as possible.<br><br>So older plugins *might* work with DPL v**3** but I won't guarantee that they do or will continue to do so and I won't spend time on making DPL v**3** compatible with unsupported/older plugins (this is what **"not supported"** *below* refers to). *Somebody else* would have to maintain, test, and update those plugins to make/keep them fully compatible with newer versions of DPL v**3** and provide support for them.
@@ -93,6 +92,9 @@ The *Not classified* group in the DPL (home) menu and on settings pages will onl
 Explained in the [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/CLI-commands).
 <br><br>
 
+- »**Does DPL replace SQLPlayList and/or CustomSkip?**«<br>
+No. SQLPlayList and CustomSkip3 are **separate** plugins and there are no plans to integrate their features into DPL. You *can* use them but you *don't have to*.<br>Custom Skip **3** works with DPL **3** and SQLPlayList is reported to work (with some limitations and without any guarantees as to how long, see other FAQ).<br>If you're comfortable writing/editing SQLite using custom dynamic playlist definitions you can probably do without them.
+<br><br>
 
 ## Bug reports
 
