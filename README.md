@@ -48,9 +48,10 @@ You should be able to install **Dynamic Playlists 3** from the LMS main reposito
 
 ## FAQ
 
-- »**I have 2 Dynamic Playlists v*3* plugins installed now.**«<br>
+- »**How do I transition from the old Dynamic Playlists 3 version (before the name change) to the new one?**«<br>
+»**I have 2 Dynamic Playlists v*3* plugins installed now.**«<br>
 »**The dynamic playlists I've added to LMS favorites don't work anymore.**«<br>
-*Dynamic Playlists 3* has changed its (internal) name. LMS considers it a different plugin now. Therefore you'll have to uninstall any previous version of DPL and then install the latest *Dynamic Playlists **3*** version from the LMS main repository (plugin library). And since it's a "different" plugin you'll have to remove any playlists you've added to LMS favorites and add them again. Sorry.<br><br>
+*Dynamic Playlists 3* has changed its (internal) name. LMS considers it a different plugin now.<br>Therefore you'll have to uninstall any previous version of DPL and then install the latest *Dynamic Playlists **3*** version from the LMS main repository (plugin library).<br>Before uninstalling it I recommend taking a screenshot of your plugin settings to make restoring them easier afterwards.<br>And since it's a "different" plugin you'll have to remove any playlists you've added to LMS favorites and add them again. Sorry for the inconvenience.<br><br>
 
 - »**Is DPL v*3* compatible with my old plugins?**«<br>
 *Dynamic Playlist 3* removes ties to other (unsupported) plugins in a way that they shouldn't break *Dynamic Playlists 3* if those plugins ever stopped working properly. And *within these limits* DPL v**3** tries to maintain as much backwards compatibility as possible.<br><br>So older plugins *might* work with DPL v**3** but I won't guarantee that they do or will continue to do so and I won't spend time on making DPL v**3** compatible with unsupported/older plugins (this is what **"not supported"** *below* refers to). *Somebody else* would have to maintain, test, and update those plugins to make/keep them fully compatible with newer versions of DPL v**3** and provide support for them.
