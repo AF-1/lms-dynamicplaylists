@@ -54,13 +54,13 @@ You should be able to install **Dynamic Playlists 3** from the LMS main reposito
 *Dynamic Playlists 3* has changed its (internal) name. LMS considers it a different plugin now.<br>Therefore you'll have to uninstall any previous version of DPL and then install the latest *Dynamic Playlists **3*** version from the LMS main repository (plugin library).<br>Before uninstalling it I recommend taking a screenshot of your plugin settings to make restoring them easier afterwards.<br>And since it's a "different" plugin you'll have to remove any playlists you've added to LMS favorites and add them again. Sorry for the inconvenience.<br><br>
 
 - »**Is DPL v*3* compatible with my old plugins?**«<br>
-*Dynamic Playlist 3* removes ties to other (unsupported) plugins in a way that they shouldn't break *Dynamic Playlists 3* if those plugins ever stopped working properly. And **within these limits** DPL v**3** tries to maintain as much backwards compatibility as possible.<br><br>So older plugins *might* work with DPL v**3** but I won't guarantee that they do or will continue to do so and I won't spend time on making DPL v**3** compatible with unsupported/older plugins (this is what **"not supported"** *below* refers to). *Somebody else* would have to maintain, test, and update those plugins to make/keep them fully compatible with newer versions of DPL v**3** and provide support for them.
+*Dynamic Playlist 3* removes ties to other (unsupported) plugins in a way that they shouldn't break *Dynamic Playlists 3* if those plugins ever stopped working properly. And **within these limits** DPL v**3** tries to maintain as much backwards compatibility as possible.<br><br>So older plugins *might* work with DPL v**3** but **I won't guarantee that they do or will continue to do so and I won't spend time on making DPL v3 compatible with unsupported/older plugins** (this is what **"not supported"** *below* refers to). *Somebody else* would have to maintain, test, and update those plugins to make/keep them fully compatible with newer versions of DPL v**3** and provide support for them.
 <br><br>
-    - **CustomSkip**: DPL v**3** works with [**CustomSkip 3**](https://github.com/AF-1/lms-customskip). Please read the CustomSkip v3 [**FAQ**](https://github.com/AF-1/lms-customskip#faq) first before installing CS3.<br>
+    - **CustomSkip**: DPL v**3** works with [**CustomSkip 3**](https://github.com/AF-1/lms-customskip). If you use *SQLPlayList* to create dynamic playlists that include CustomSkip filter sets check if SQLPlayList still works with DPL3. But setting secondary Custom Skip filter sets will work without the *SQLPlayList* plugin if you set the correct playlist parameter in your dynamic playlist definition (as explained in the wiki). But **please read the CustomSkip v3 [FAQ](https://github.com/AF-1/lms-customskip#faq) first *before* installing CS3**.<br>
 
-    - **SQLPlayList**: not supported but reported to work so far. But: SQLPlayList (which predates DPL v3) doesn't know about the new playlist parameters and functions introduced with DPL v**3**. As long as it works you could use SQLPlayList to assist you in creating (a first draft of) your custom dynamic playlists. You *don't need SQLPayList anymore to make your dynamic playlists **available** to DPL* though. You can simply export your (custom) dynamic playlists from SQLPlayList and use them directly in DPL v3 (read FAQ below).<br>
+    - **SQLPlayList**: main features (creating dynamic playlists and making them available to DPL3) should work but not supported. Please remember: SQLPlayList (which predates DPL v3) doesn't know about the new playlist parameters and functions introduced with DPL v**3**. As long as it works you could use SQLPlayList to assist you in creating (a first draft of) your custom dynamic playlists. You *don't need SQLPayList anymore to make your dynamic playlists **available** to DPL* though. You can simply export your (custom) dynamic playlists from SQLPlayList and use them directly in DPL v3 (read FAQ below).<br>
 
-    - **TrackStat** / **CustomScan**: should work but not supported.<br>
+    - **TrackStat** / **CustomScan**: could work, not tested, not supported.<br>
 
     - **MultiLibrary**: not supported, unlikely to work without problems because DPL v3 no longer contains code for MultiLibrary. I recommend migrating from the *MultiLibrary* plugin to native LMS **virtual libraries**. You can easily create new virtual libraries using saved **advanced search**es. Then you can use DPL v3 *playlist parameters* for virtual libraries (ID, name and user input selection).<br><br>
 
@@ -107,8 +107,11 @@ No. SQLPlayList and CustomSkip3 are **separate** plugins and they have a differe
 
 - »**I want to my dynamic playlist to use one of CustomSkip3's filter sets.**«<br>
 You can either use the *SQLPlayList* plugin to do that (as long as it works - different plugin, not supported by me) or add the necessary **action/CLI playlist parameters** to the SQLite code of your custom dynamic playlist as described [**here**](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters).
-<br><br><br>
+<br><br>
 
+- »***SQLPlayList* 2.6.272 shows an error at the bottom of the page. Does this mean that *SQLPlayList* is no longer compatible with *Dynamic Playlists 3*?**«<br>
+I think SQLPlayList used to display the currently playing dynamic playlist at the bottom of that page. Since DPL3 uses a different plugin name the reference to the old DPL version 2 is broken. But so far I have no reports that this breaks SQLPlaylist's main features: assisting you in creating dynamic playlists and making them available to DPL3. Just ignore this error.
+<br><br><br>
 
 ## Bug reports
 
