@@ -1162,7 +1162,6 @@ sub toggleGenreSelectionState {
 	}
 
 	$prefs->client($client)->set('selected_genres', [@selected]);
-
 	$request->setStatusDone();
 }
 
@@ -1181,7 +1180,7 @@ sub toggleGenreSelectionStateVFD {
 		my $genres = getGenres($client);
 		if ($item->{'selectAll'}) {
 			$item->{'selected'} = ! $item->{'selected'};
-			# Enable/disable every genre
+			# Select/deselect every genre
 			foreach my $genre (keys %$genres) {
 				$genres->{$genre}->{'selected'} = $item->{'selected'};
 			}
@@ -1202,9 +1201,7 @@ sub toggleGenreSelectionStateVFD {
 
 sub genreSelectAllOrNone {
 	my $request = shift;
-
 	my $client = $request->client();
-	my $enable = $request->getParam('');
 	my $value = $request->getParam('_value');
 	my $genres = getGenres($client);
 
