@@ -1,7 +1,7 @@
 -- PlaylistName:Songs - RATED (by genre + decade)
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
--- PlaylistParameter1:customgenrechained:Select genre:select id, name, substr(namesort,1,1) from genres order by namesort
+-- PlaylistParameter1:multiplegenres:Select genres:
 -- PlaylistParameter2:customdecadechained:Select decade:select cast(((ifnull(tracks.year,0)/10)*10) as int),case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else 'Unknown' end from tracks where tracks.audio=1 group by cast(((ifnull(tracks.year,0)/10)*10) as int) order by tracks.year desc
 -- PlaylistParameter3:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
 -- PlaylistParameter4:list:Limit to recently ADDED songs?:0:all songs,1:recently added songs,2:not with recently added songs
@@ -9,7 +9,7 @@ select distinct tracks.url from tracks
 	join tracks_persistent on
 		tracks_persistent.urlmd5 = tracks.urlmd5 and tracks_persistent.rating > 0
 	join genre_track on
-		genre_track.track = tracks.id
+		genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter1')
 	left join library_track on
 		library_track.track = tracks.id
 	left join dynamicplaylist_history on
@@ -22,11 +22,6 @@ select distinct tracks.url from tracks
 			case
 				when ('PlaylistCurrentVirtualLibraryForClient'!='' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
-				else 1
-			end
-		and
-			case
-				when 'PlaylistParameter1'!=999999999 then genre_track.genre='PlaylistParameter1'
 				else 1
 			end
 		and

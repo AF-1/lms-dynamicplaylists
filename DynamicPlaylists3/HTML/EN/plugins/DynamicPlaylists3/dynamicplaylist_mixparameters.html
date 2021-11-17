@@ -1,11 +1,11 @@
-<style>.boldtitle{font-weight:600;}</style>
-[%- pagetitle = 'PLUGIN_DYNAMICPLAYLISTS3' | string; pageicon = 'PLUGIN_DYNAMICPLAYLISTS3' -%]
+<style>.boldtitle{font-weight:600;}.padleft{padding-left:20px;}</style>
+[% pagetitle = 'PLUGIN_DYNAMICPLAYLISTS3' | string; pageicon = 'PLUGIN_DYNAMICPLAYLISTS3' %]
 
-[%- pwd_list = BLOCK -%]/
+[% pwd_list = BLOCK %]/
 	<a href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_list.html?player=[% player | uri %]">
 		[% "PLUGIN_DYNAMICPLAYLISTS3" | string %]
 	</a>
-[% END -%]
+[% END %]
 [% PROCESS pageheader.html %]
 
 [% BLOCK href %]
@@ -20,21 +20,117 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 	<input type="hidden" name="type" value="[% pluginDynamicPlaylists3PlaylistId %]">
 	<input type="hidden" name="addOnly" value="[% pluginDynamicPlaylists3AddOnly %]">
 	<input type="hidden" name="dynamicplaylist_parameter_changed" value="">
-	<table border="0">
-		[% FOREACH param IN pluginDynamicPlaylists3MixParameters %]
+
+[% FOREACH param IN pluginDynamicPlaylists3MixParameters %]
+	[% IF param.parameter.type == "multiplegenres" %]
+
+	<span class="boldtitle">[% param.parameter.name %]:</span><br><br>
+	<table border="0" width="100%">[% USE table genrelistsorted, cols=3, pad=0 %]
+		[% FOREACH genrerow = table.rows %]
 			<tr>
-			<td>[% param.parameter.name %]</td>
-			<td>&nbsp;</td>
-			<td>
-				<select name="dynamicplaylist_parameter_[% param.parameter.id %]">
-				[%- FOREACH value = param.values %]
-					<option onClick='document.editForm.dynamicplaylist_parameter_changed.value="[% param.parameter.id %]";document.editForm.submit();return false;' value="[% value.id %]" [% IF param.value == value.id %]selected="selected"[% END %]>[% value.name | html %]</option>
-				[%- END %]
-				</select>
-			</td>
+				[% FOREACH genre = genrerow %]
+				[% genreid = genrelist.item("$genre").id %]
+				<td>
+					<input type="checkbox" name="[% genreid %]" id="[% genreid %]" [% genrelist.item("$genre").selected ? "checked" : "" %] onclick="changeNumSelected(this)" [% IF currentparam != "multiplegenres" %]disabled[% END %]>
+					<label style="font-weight: normal;" for="[% genreid %]">[% genrelist.item("$genre").name | html %]</label>
+				</td>
+				[% END %]
 			</tr>
 		[% END %]
+		<input type="hidden" id="dynamicplaylist_parameter_[% param.parameter.id %]" name="dynamicplaylist_parameter_[% param.parameter.id %]" value="[% param.value %]">
 	</table>
-	<input type="submit" value="[% "PLUGIN_DYNAMICPLAYLISTS3_NEXT" | string %]">
+	<br>
+
+	[% ELSE %]
+	<table border="0">
+		<tr>
+		<td>[% param.parameter.name %]</td>
+		<td>&nbsp;</td>
+		<td>
+			<select name="dynamicplaylist_parameter_[% param.parameter.id %]">
+			[% FOREACH value = param.values %]
+				<option onClick='document.editForm.dynamicplaylist_parameter_changed.value="[% param.parameter.id %]";document.editForm.submit();return false;' value="[% value.id %]" [% IF param.value == value.id %]selected="selected"[% END %]>[% value.name | html %]</option>
+			[% END %]
+			</select>
+		</td>
+		</tr>
+	</table>
+	[% END %]
+[% END %]
+
+	<script type="text/javascript">
+		var f = document.editForm;
+		var selectedGenres = [];
+		var numSelected = 0;
+		var numCheckBoxes = 0;
+		var selectAllString = '[% "PLUGIN_DYNAMICPLAYLISTS3_SELECT_ALL" | string %]';
+		var selectNoneString = '[% "PLUGIN_DYNAMICPLAYLISTS3_SELECT_NONE" | string %]';
+
+		// get number of checkboxes
+		for (var i=0; i < f.elements.length; i++) {
+			if (f.elements[i].type == 'checkbox') {
+				numCheckBoxes++;
+			}
+		}
+
+		// select all or none
+		function selectAll() {
+			var newState = numSelected != numCheckBoxes;
+
+			for (var i=0; i < f.elements.length; i++) {
+				if (f.elements[i].type == 'checkbox') {
+					f.elements[i].checked = newState;
+				}
+			}
+			if (newState) { // if numSelected < numCheckBoxes => select all
+				numSelected = numCheckBoxes;
+				f.selectAllButton.value = selectNoneString;
+				for (var i=0; i < f.elements.length; i++) {
+					if (f.elements[i].type == 'checkbox') {
+						if(!selectedGenres.some(el => el === f.elements[i].id)) selectedGenres.push(f.elements[i].id);
+					}
+				}
+			} else { // if numSelected = numCheckBoxes => select none
+				numSelected = 0;
+				f.selectAllButton.value = selectAllString;
+				for (var i=0; i < f.elements.length; i++) {
+					if (f.elements[i].type == 'checkbox') {
+						selectedGenres = selectedGenres.filter(function(item) {
+							return item !== f.elements[i].id
+						});
+					}
+				}
+			}
+			document.getElementById("dynamicplaylist_parameter_[% param.parameter.id %]").value = selectedGenres;
+		}
+
+		// increase/decrease numSelected every time a checkbox changes
+		function changeNumSelected(checkBox) {
+			if (checkBox.checked) {
+				numSelected++;
+				if(!selectedGenres.some(el => el === f.elements[i].id)) selectedGenres.push(checkBox.id);
+			} else {
+				numSelected--;
+				selectedGenres = selectedGenres.filter(function(item) {
+					return item !== checkBox.id
+				});
+			}
+			document.getElementById("dynamicplaylist_parameter_[% param.parameter.id %]").value = selectedGenres;
+
+			if (numSelected == numCheckBoxes) {
+				f.selectAllButton.value = selectNoneString;
+			} else {
+				f.selectAllButton.value = selectAllString;
+			}
+		}
+	</script>
+
+	<br>
+	<input type="submit" value="[% IF lastparameter == 1 %][% "PLUGIN_DYNAMICPLAYLISTS3_ADD" | string %][% ELSIF lastparameter == 0 %][% "PLUGIN_DYNAMICPLAYLISTS3_PLAY" | string %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS3_NEXT" | string %][% END %]">
+[% IF currentparam == "multiplegenres" %]
+	<script type="text/javascript">
+		document.write('<span class="padleft"><input type="button" value="' + (numSelected == numCheckBoxes ? selectNoneString : selectAllString) + '" id="selectAllButton" onclick="selectAll()"></span>');
+	</script>
+[% END %]
 </form>
 [% PROCESS pagefooter.html %]
