@@ -1154,7 +1154,6 @@ sub toggleGenreSelectionState {
 	my $genre = $request->getParam('_genre');
 	my $value = $request->getParam('_value');
 	my $genres = getGenres($client);
-
 	$genres->{$genre}->{'selected'} = $value;
 	my @selected = ();
 	for my $genre (keys %{$genres}) {
@@ -2084,36 +2083,10 @@ sub cliJivePlaylistParametersHandler {
 
 	if ($parameter->{'type'} eq 'multiplegenres') {
 		addParameterValues($client, \@listRef, $parameter, $parameters);
-
 		my $selectedGenres_IDString = getMultipleGenresSelIDString($client);
 
-		# create menu
-		my $count = scalar(@listRef);
-		my $itemsPerResponse = $request->getParam('_itemsPerResponse') || $count;
-
+		## first: add three items for continue/play, select all, select none
 		my $cnt = 0;
-		my $offsetCount = 3;
-		foreach my $item (@listRef) {
-			if ($cnt >= $start && $offsetCount < $itemsPerResponse) {
-				my $actions = {
-								on => {
-									player => 0,
-									cmd => ['dynamicplaylistselectgenre', $item->{'name'} , 1],
-								},
-								off => {
-									player => 0,
-									cmd => ['dynamicplaylistselectgenre', $item->{'name'}, 0],
-								}
-							};
-				$request->addResultLoop('item_loop', $offsetCount, 'text', $item->{'name'});
-				$request->addResultLoop('item_loop', $offsetCount, 'actions', $actions);
-				$request->addResultLoop('item_loop', $offsetCount, 'type', 'redirect');
-				$request->addResultLoop('item_loop', $offsetCount, 'nextWindow', 'refresh');
-				$request->addResultLoop('item_loop', $offsetCount, 'checkbox', $item->{'selected'} ? 1 : 0);
-				$offsetCount++;
-			}
-			$cnt++;
-		}
 
 		# continue or play
 		my %itemParams = (
@@ -2131,7 +2104,7 @@ sub cliJivePlaylistParametersHandler {
 					'itemsParams' => 'params',
 				},
 			};
-			$request->addResultLoop('item_loop', 0, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_CONTINUE'));
+			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_CONTINUE'));
 		} else {
 			$actions_continue = {
 				'do' => {
@@ -2140,14 +2113,14 @@ sub cliJivePlaylistParametersHandler {
 					'itemsParams' => 'params',
 				},
 			};
-			$request->addResultLoop('item_loop', 0, 'nextWindow', 'nowPlaying');
-			$request->addResultLoop('item_loop', 0, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_PLAY'));
+			$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
+			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_PLAY'));
 		}
 
-		$request->addResultLoop('item_loop', 0, 'type', 'redirect');
-		$request->addResultLoop('item_loop', 0, 'params', \%itemParams);
-		$request->addResultLoop('item_loop', 0, 'actions', $actions_continue);
-
+		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
+		$request->addResultLoop('item_loop', $cnt, 'params', \%itemParams);
+		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_continue);
+		$cnt++;
 
 		# select all
 		my $actions_selectall = {
@@ -2156,10 +2129,11 @@ sub cliJivePlaylistParametersHandler {
 				'cmd' => [ 'dynamicplaylistgenreselectall', 1 ],
 			},
 		};
-		$request->addResultLoop('item_loop', 1, 'type', 'redirect');
-		$request->addResultLoop('item_loop', 1, 'actions', $actions_selectall);
-		$request->addResultLoop('item_loop', 1, 'nextWindow', 'refresh');
-		$request->addResultLoop('item_loop', 1, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_SELECT_ALL'));
+		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
+		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_selectall);
+		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'refresh');
+		$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_SELECT_ALL'));
+		$cnt++;
 
 		# select none
 		my $actions_selectnone = {
@@ -2168,14 +2142,59 @@ sub cliJivePlaylistParametersHandler {
 				'cmd' => [ 'dynamicplaylistgenreselectall', 0 ],
 			},
 		};
-		$request->addResultLoop('item_loop', 2, 'type', 'redirect');
-		$request->addResultLoop('item_loop', 2, 'actions', $actions_selectnone);
-		$request->addResultLoop('item_loop', 2, 'nextWindow', 'refresh');
-		$request->addResultLoop('item_loop', 2, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_SELECT_NONE'));
+		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
+		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_selectnone);
+		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'refresh');
+		$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_SELECT_NONE'));
+		$cnt++;
 
 
+		## create genre items
+		my $count = scalar(@listRef);
+		my $itemsPerResponse = $request->getParam('_itemsPerResponse') || $count;
+		my $offsetCount = 3;
 
-		if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC') {
+		# Material does not display checkboxes in MyMusic. Use utf8 character name prefix instead.
+		my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
+		my $checkboxSelected = HTML::Entities::decode_entities('&#9724;&#xa0;&#xa0;');
+		my $checkboxEmpty = HTML::Entities::decode_entities('&#9723;&#xa0;&#xa0;');
+
+		foreach my $item (@listRef) {
+			if ($cnt >= $start && $offsetCount < $itemsPerResponse) {
+				my $actions;
+				if ($materialCaller) {
+					$actions = {
+								go => {
+									player => 0,
+									cmd => ['dynamicplaylistselectgenre', $item->{'name'}, $item->{'selected'} ? 0 : 1],
+								},
+							};
+					$request->addResultLoop('item_loop', $offsetCount, 'text', ($item->{'selected'} ? $checkboxSelected : $checkboxEmpty).$item->{'name'});
+				} else {
+					$actions = {
+								on => {
+									player => 0,
+									cmd => ['dynamicplaylistselectgenre', $item->{'name'}, 1],
+								},
+								off => {
+									player => 0,
+									cmd => ['dynamicplaylistselectgenre', $item->{'name'}, 0],
+								}
+							};
+					$request->addResultLoop('item_loop', $offsetCount, 'text', $item->{'name'});
+					$request->addResultLoop('item_loop', $offsetCount, 'checkbox', $item->{'selected'} ? 1 : 0);
+				}
+
+				$request->addResultLoop('item_loop', $offsetCount, 'actions', $actions);
+				$request->addResultLoop('item_loop', $offsetCount, 'type', 'redirect');
+				$request->addResultLoop('item_loop', $offsetCount, 'nextWindow', 'refresh');
+				$offsetCount++;
+			}
+			$cnt++;
+		}
+
+		# Material always displays last selection as window title. Add correct window title as textarea
+		if ($materialCaller) {
 			$request->addResult('window', {textarea => $parameter->{'name'}});
 		} else {
 			$request->addResult('window', {text => $parameter->{'name'}});
