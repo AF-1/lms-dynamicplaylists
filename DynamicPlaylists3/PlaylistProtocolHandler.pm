@@ -19,7 +19,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-package Plugins::DynamicPlaylists3::ProtocolHandler;
+package Plugins::DynamicPlaylists3::PlaylistProtocolHandler;
 
 use strict;
 use base qw(FileHandle);
@@ -31,7 +31,7 @@ my $log = logger('plugin.dynamicplaylists3');
 sub overridePlayback {
 	my ($class, $client, $url) = @_;
 
-	if ($url !~ m|^dynamicplaylist://(.*)$|) {
+	if ($url !~ m|^dynamicplaylistaddonly://(.*)$|) {
 		return undef;
 	}
 
@@ -39,12 +39,12 @@ sub overridePlayback {
 	my $playlistID = '';
 
 	if ($hasParams) {
-		($playlistID) = $url =~ /^dynamicplaylist:\/\/(.*?)\?/;
+		($playlistID) = $url =~ /^dynamicplaylistaddonly:\/\/(.*?)\?/;
 	} else {
 		$playlistID= $1;
 	}
 
-	my $command = ["dynamicplaylist", "playlist", "play", "playlistid:".$playlistID];	
+	my $command = ["dynamicplaylist", "playlist", "add", "playlistid:".$playlistID];
 
 	my $cnt = 1;
 	while ($hasParams) {
@@ -60,6 +60,7 @@ sub overridePlayback {
 	}
 
 	$log->debug('fav list client command = '.Dumper($command));
+	$client->execute(['playlist', 'clear']);
 	$client->execute($command);
 	return 1;
 }

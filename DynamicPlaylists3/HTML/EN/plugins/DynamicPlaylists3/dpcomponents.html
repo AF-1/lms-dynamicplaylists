@@ -1,4 +1,12 @@
-<style>.emphbold{font-weight:600;}</style>
+<style>.emphbold{font-weight:600;}.addtofavs_btn {
+	float: right;
+	background-image: url([% webroot %]plugins/RatingsLight/html/images/btn_addtofavs.png);
+	background-repeat: no-repeat;
+	width: 17px;
+	height: 17px;
+	padding-right: 5px;
+}
+</style>
 [% BLOCK contentanchor %]
 	<p>[% content %]</p>
 [% END %]
@@ -15,6 +23,8 @@
 			};
 			PROCESS favoritescontrol isFavorite = playlist.isFavorite
 		%]
+	[% ELSE %]
+		[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="2" parameters=playlist.parameters %]
 	[% END %]
 	[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="0" parameters=playlist.parameters %]
 	[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="1" parameters=playlist.parameters %]

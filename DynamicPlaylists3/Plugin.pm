@@ -47,7 +47,6 @@ use Time::HiRes qw(time);
 use Plugins::DynamicPlaylists3::Settings::Basic;
 use Plugins::DynamicPlaylists3::Settings::PlaylistSettings;
 use Plugins::DynamicPlaylists3::Settings::FavouriteSettings;
-use Plugins::DynamicPlaylists3::ProtocolHandler;
 
 my $prefs = preferences('plugin.dynamicplaylists3');
 my $serverPrefs = preferences('server');
@@ -127,7 +126,6 @@ sub initPlugin {
 	}
 	Slim::Hardware::IR::addModeDefaultMapping('PLUGIN.DynamicPlaylists3.Choice', \%choiceMapping);
 
-	# set up our subscription
 	Slim::Control::Request::subscribe(\&commandCallback65, [['playlist'], ['newsong', 'delete', keys %stopcommands]]);
 	Slim::Control::Request::subscribe(\&powerCallback, [['power']]);
 	Slim::Control::Request::subscribe(\&clientNewCallback, [['client'], ['new']]);
@@ -145,6 +143,7 @@ sub initPlugin {
 	Slim::Control::Request::addDispatch(['dynamicplaylistgenreselectall', '_value'], [1, 0, 0, \&genreSelectAllOrNone]);
 
 	Slim::Player::ProtocolHandlers->registerHandler(dynamicplaylist => 'Plugins::DynamicPlaylists3::ProtocolHandler');
+	Slim::Player::ProtocolHandlers->registerHandler(dynamicplaylistaddonly => 'Plugins::DynamicPlaylists3::PlaylistProtocolHandler');
 }
 
 sub weight {
@@ -860,7 +859,7 @@ sub stateStop {
 	$prefs->client($client)->remove('playlist_parameters');
 	$prefs->client($client)->remove('offset');
 	# delete previous multiple genre selection
-	$prefs->client($client)->set('selected_genres', []);
+	$client->pluginData('selected_genres' => []);
 	my $masterClient = masterOrSelf($client);
 	$masterClient->pluginData('type' => '');
 }
@@ -1160,7 +1159,7 @@ sub toggleGenreSelectionState {
 		push @selected, $genre if $genres->{$genre}->{'selected'} == 1;
 	}
 
-	$prefs->client($client)->set('selected_genres', [@selected]);
+	$client->pluginData('selected_genres' => [@selected]);
 	$request->setStatusDone();
 }
 
@@ -1193,7 +1192,7 @@ sub toggleGenreSelectionStateVFD {
 			push @selected, $genre if $genres->{$genre}->{'selected'} == 1;
 		}
 
-		$prefs->client($client)->set('selected_genres', [@selected]);
+		$client->pluginData('selected_genres' => [@selected]);
 		$client->update;
 	}
 }
@@ -1211,7 +1210,7 @@ sub genreSelectAllOrNone {
 			push @selected, $genre;
 		}
 	}
-	$prefs->client($client)->set('selected_genres', [@selected]);
+	$client->pluginData('selected_genres' => [@selected]);
 	$request->setStatusDone();
 }
 
@@ -1225,7 +1224,7 @@ sub getGenres {
 
 	my $request = Slim::Control::Request::executeRequest($client, $query);
 
-	my $selectedGenres = $prefs->client($client)->get('selected_genres') || [];
+	my $selectedGenres = $client->pluginData('selected_genres') || [];
 	my %selected = map { $_ => 1 } @{$selectedGenres};
 	my $i = 0;
 	foreach my $genre ( @{ $request->getResult('genres_loop') || [] } ) {
@@ -1249,7 +1248,8 @@ sub getSortedGenres {
 
 sub getMultipleGenresSelIDString {
 	my $client = shift;
-	my $selectedGenres = $prefs->client($client)->get('selected_genres');
+	my $selectedGenres = $client->pluginData('selected_genres') || [];
+
 	$log->debug('selectedGenres = '.Dumper($selectedGenres));
 	my @IDsSelectedGenres = ();
 	if (scalar (@{$selectedGenres}) > 0) {
@@ -1430,16 +1430,31 @@ sub handleWebMixParameters {
 			}
 		}
 		if (!exists $playlist->{'parameters'}->{($parameterId + 1)}) {
-			$params->{'lastparameter'} = $params->{'addOnly'};
-			$log->debug('Last parameter.');
+			$params->{'lastparameter'} = 'islastparam';
 		}
 		$log->debug('Exiting handleWebMixParameters');
 		return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html', $params);
 	} else {
-		for(my $i = 1; $i < $parameterId; $i++) {
-			$playlist->{'parameters'}->{$i}->{'value'} = $client->modeParam('dynamicplaylist_parameter_'.$i)->{'id'};
+		if ($params->{'addOnly'} == 2) {
+			my $title = $params->{'dpl_customfavtitle'} || $playlist->{'name'};
+			my $url = $params->{'dpl_favaddonly'} ? ('dynamicplaylistaddonly://'.$playlist->{'dynamicplaylistid'}.'?') : ('dynamicplaylist://'.$playlist->{'dynamicplaylistid'}.'?');
+			for (my $i = 1; $i < $parameterId; $i++) {
+				$url .= 'p'.$i.'='.$client->modeParam('dynamicplaylist_parameter_'.$i)->{'id'};
+				$url .= '&' unless $i == $parameterId - 1;
+			}
+			my $isFav = Slim::Utils::Favorites->new($client)->findUrl($url);
+			if ($isFav) {
+				$log->debug('Not adding dynamic playlist to LMS favorites. Is already favorite.')
+			} else {
+				$log->debug('Saving this url to LMS favorites: '.$url);
+				$client->execute(['favorites', 'add', 'url:'.$url, 'title:'.$title, 'type:audio']);
+			}
+		} else {
+			for (my $i = 1; $i < $parameterId; $i++) {
+				$playlist->{'parameters'}->{$i}->{'value'} = $client->modeParam('dynamicplaylist_parameter_'.$i)->{'id'};
+			}
+			playRandom($client, $params->{'type'}, $params->{'addOnly'}, 1, 1);
 		}
-		playRandom($client, $params->{'type'}, $params->{'addOnly'}, 1, 1);
 		$log->debug('Exiting handleWebMixParameters');
 		return handleWebList($client, $params);
 	}
@@ -1841,7 +1856,7 @@ sub objectInfoHandler {
 			web => {
 				group => 'mixers',
 				url => 'plugins/DynamicPlaylists3/dynamicplaylist_list.html?playlisttype='.$objectType.'&flatlist=1&dynamicplaylist_parameter_1='.$objectId.'&iscontextmenu='.$iscontextmenu,
-				item => mixerlink($obj),
+				item => $obj,
 			},
 		};
 	}
@@ -1878,7 +1893,7 @@ sub cliJiveHandler {
 	$log->debug('Executing CLI browsejive command');
 
 	# delete previous multiple genre selection
-	$prefs->client($client)->set('selected_genres', []);
+	$client->pluginData('selected_genres' => []);
 
 	my $menuGroupResult;
 	my $showFlat = $prefs->get('flatlist');
@@ -2154,7 +2169,7 @@ sub cliJivePlaylistParametersHandler {
 		my $itemsPerResponse = $request->getParam('_itemsPerResponse') || $count;
 		my $offsetCount = 3;
 
-		# Material does not display checkboxes in MyMusic. Use utf8 character name prefix instead.
+		# Material does not display checkboxes in MyMusic. Use unicode character name prefix instead.
 		my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
 		my $checkboxSelected = HTML::Entities::decode_entities('&#9724;&#xa0;&#xa0;');
 		my $checkboxEmpty = HTML::Entities::decode_entities('&#9723;&#xa0;&#xa0;');
@@ -2464,7 +2479,6 @@ sub cliPlayPlaylist {
 	}
 
 	my $params = $request->getParamsCopy();
-
 	for my $k (keys %{$params}) {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			my $parameterId = $1;
@@ -4009,7 +4023,7 @@ sub setModeChooseParameters {
 
 	if ($parameter->{'type'} eq 'multiplegenres') {
 		# delete previous multiple genre selection
-		$prefs->client($client)->set('selected_genres', []);
+		$client->pluginData('selected_genres' => []);
 
 		my $genres = getGenres($client);
 		my @listRef;
@@ -4561,182 +4575,6 @@ sub commandCallback65 {
 		$log->debug('cyclic mode ending due to playlist: '.($request->getRequestString()).' command');
 		playRandom($client, 'disable');
 	}
-}
-
-sub mixerFunction {
-	my ($client, $noSettings) = @_;
-	# look for parentParams (needed when multiple mixers have been used)
-	my $paramref = defined $client->modeParam('parentParams') ? $client->modeParam('parentParams') : $client->modeParameterStack(-1);
-	if (defined($paramref)) {
-		if (!$playListTypes) {
-			initPlayListTypes();
-		}
-
-		my $listIndex = $paramref->{'listIndex'};
-		my $items = $paramref->{'listRef'};
-		my $currentItem = $items->[$listIndex];
-		my $hierarchy = $paramref->{'hierarchy'};
-		my @levels = split(',', $hierarchy);
-		my $level = $paramref->{'level'} || 0;
-		my $mixerType = $levels[$level];
-		if ($mixerType eq 'contributor') {
-			$mixerType='artist';
-		}
-		if ($mixerType eq 'age') {
-			$mixerType='album';
-		}
-		if ($playListTypes->{$mixerType} && ($mixerType ne 'artist' || Slim::Schema->variousArtistsObject->id ne $currentItem->id)) {
-			if ($mixerType eq 'album') {
-				my %p = (
-					'id' => $currentItem->id,
-					'name' => $currentItem->title
-				);
-				my %params = (
-					'dynamicplaylist_parameter_1' => \%p,
-					'playlisttype' => 'album',
-					'flatlist' => 1,
-					'extrapopmode' => 1
-				);
-				$log->debug('Calling album playlists with '.$params{'dynamicplaylist_parameter_1'}->{'name'}.'('.$params{'dynamicplaylist_parameter_1'}->{'id'}.')');
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Mixer', \%params);
-				$client->update();
-			} elsif ($mixerType eq 'year') {
-				my %p = (
-					'id' => $currentItem,
-					'name' => $currentItem
-				);
-				$p{'id'} = $currentItem->id;
-				$p{'name'} = $currentItem->name;
-				my %params = (
-					'dynamicplaylist_parameter_1' => \%p,
-					'playlisttype' => 'year',
-					'flatlist' => 1,
-					'extrapopmode' => 1
-				);
-				$log->debug('Calling year playlists with '.$params{'dynamicplaylist_parameter_1'}->{'name'}.'('.$params{'dynamicplaylist_parameter_1'}->{'id'}.')');
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Mixer', \%params);
-				$client->update();
-			} elsif ($mixerType eq 'artist') {
-				my %p = (
-					'id' => $currentItem->id,
-					'name' => $currentItem->name
-				);
-				my %params = (
-					'dynamicplaylist_parameter_1' => \%p,
-					'playlisttype' => 'artist',
-					'flatlist' => 1,
-					'extrapopmode' => 1
-				);
-				$log->debug('Calling artist playlists with '.$params{'dynamicplaylist_parameter_1'}->{'name'}.'('.$params{'dynamicplaylist_parameter_1'}->{'id'}.')');
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Mixer', \%params);
-				$client->update();
-			} elsif ($mixerType eq 'genre') {
-				my %p = (
-					'id' => $currentItem->id,
-					'name' => $currentItem->name
-				);
-				my %params = (
-					'dynamicplaylist_parameter_1' => \%p,
-					'playlisttype' => 'genre',
-					'flatlist' => 1,
-					'extrapopmode' => 1
-				);
-				$log->debug('Calling album playlists with '.$params{'dynamicplaylist_parameter_1'}->{'name'}.'('.$params{'dynamicplaylist_parameter_1'}->{'id'}.')');
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Mixer', \%params);
-				$client->update();
-			} elsif ($mixerType eq 'playlist') {
-				my %p = (
-					'id' => $currentItem->id,
-					'name' => $currentItem->title
-				);
-				my %params = (
-					'dynamicplaylist_parameter_1' => \%p,
-					'playlisttype' => 'playlist',
-					'flatlist' => 1,
-					'extrapopmode' => 1
-				);
-				$log->debug('Calling playlist playlists with '.$params{'dynamicplaylist_parameter_1'}->{'name'}.'('.$params{'dynamicplaylist_parameter_1'}->{'id'}.')');
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Mixer', \%params);
-				$client->update();
-			} elsif ($mixerType eq 'track') {
-				my %p = (
-					'id' => $currentItem->id,
-					'name' => Slim::Music::Info::standardTitle(undef, $currentItem),
-				);
-				my %params = (
-					'dynamicplaylist_parameter_1' => \%p,
-					'playlisttype' => 'track',
-					'flatlist' => 1,
-					'extrapopmode' => 1
-				);
-				$log->debug('Calling track playlists with '.$params{'dynamicplaylist_parameter_1'}->{'name'}.'('.$params{'dynamicplaylist_parameter_1'}->{'id'}.')');
-				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.Mixer', \%params);
-				$client->update();
-			} else {
-				$log->warn('Unknown playlisttype = '.$mixerType);
-			}
-		} else {
-			$log->warn('No playlist found for '.$mixerType);
-		}
-	} else {
-		$log->warn('No parent parameter found');
-	}
-
-}
-
-sub mixerlink {
-	my $item = shift;
-	my $form = shift;
-	my $descend = shift;
-
-	if (!$playListTypes) {
-		initPlayListTypes();
-	}
-	if ($form->{'noDynamicPlaylists3Button'}) {
-	} else {
-		my $contextId = undef;
-		my $contextName = undef;
-		my $contextType = undef;
-		if (ref($item) eq 'Slim::Schema::Album' || ref($item) eq 'Slim::Schema::Age') {
-			$contextId = $item->id;
-			$contextName = $item->title;
-			$contextType = 'album';
-		} elsif (ref($item) eq 'Slim::Schema::Track') {
-			$contextId = $item->id;
-			$contextName = Slim::Music::Info::standardTitle(undef, $item);
-			$contextType = 'track';
-			$form->{'noitems'} = 1;
-		} elsif (ref($item) eq 'Slim::Schema::Contributor' && Slim::Schema->variousArtistsObject->id ne $item->id) {
-			$contextId = $item->id;
-			$contextName = $item->name;
-			$contextType = 'artist';
-		} elsif (ref($item) eq 'Slim::Schema::Genre') {
-			$contextId = $item->id;
-			$contextName = $item->name;
-			$contextType = 'genre';
-		} elsif (ref($item) eq 'Slim::Schema::Year') {
-			$contextId = $item->id;
-			if ($item->id) {
-				$contextName = $item->id;
-			} else {
-				$contextName = string('UNK');
-			}
-			$contextType = 'year';
-		} elsif (ref($item) eq 'Slim::Schema::Playlist') {
-			$contextId = $item->id;
-			$contextName = $item->title;
-			$contextType = 'playlist';
-		}
-
-		if ($playListTypes->{$contextType} && ($contextType ne 'artist' || Slim::Schema->variousArtistsObject->id ne $item->id)) {
-			if (defined($contextType) && defined($contextId)) {
-				$form->{'dplmixercontexttype'} = $contextType;
-				$form->{'dplmixercontextid'} = $contextId;
-				$form->{'dplmixercontextname'} = $contextName;
-			}
-		}
-	}
-	return $form;
 }
 
 sub cliIsActive {
