@@ -954,7 +954,7 @@ sub addParameterValues {
 	} elsif (lc($parameter->{'type'}) eq 'playlist') {
 		$sql = "select playlist_track.playlist, tracks.title, substr(tracks.titlesort,1,1) from tracks, playlist_track where tracks.id=playlist_track.playlist group by playlist_track.playlist order by titlesort";
 	} elsif (lc($parameter->{'type'}) eq 'track') {
-		$sql = "select tracks.id, concat(albums.title, ' ', tracks.tracknum, '. ', tracks.title), substr(tracks.titlesort,1,1) from tracks, albums where tracks.album=albums.id and audio=1 group by tracks.id order by albums.titlesort, albums.disc, tracks.tracknum";
+		$sql = "select tracks.id, case when (albums.title is null or albums.title = '') then '' else albums.title || ' -- '  end || case when tracks.tracknum is null then '' else tracks.tracknum || '. ' end || tracks.title, substr(tracks.titlesort,1,1) from tracks, albums where tracks.album=albums.id and audio=1 group by tracks.id order by albums.titlesort, albums.disc, tracks.tracknum";
 	} elsif (lc($parameter->{'type'}) eq 'list') {
 		my $value = $parameter->{'definition'};
 		if (defined($value) && $value ne '') {
