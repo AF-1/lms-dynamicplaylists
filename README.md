@@ -85,7 +85,12 @@ By default the **Home > Dynamic Playlists** menu will only show dynamic playlist
 And **context menus** (= *More* menu in webUI or *click/touch-hold* on jivelite players) will *only show dynamic playlists for context menus*. So there may be some overlap but this separation greatly helps reduce clutter.<br><br>
 
 - »**I can't add my dynamic playlist to my LMS favorites (menu)**.«<br>
-You can only add dynamic playlists to LMS favorites that **don't request user input**. In other words only *one-click* dynamic playlists can be added as LMS favorites (same as in v2).<br><br>
+»**DPL shows a favorite icon with a *p* (default skin) or an orange tint (classic skin) next to my dynamic playlists. Why?**«<br>
+The DPL's default setting has always been (even in v2) that you can only add dynamic playlists to LMS favorites that **don't request user input**. In other words only *one-click* dynamic playlists could be added as LMS favorites.<br>
+DPL v3.4 allows you to add dynamic playlists with playlist parameter values (= values from user input) to LMS favorites - with some **limitations**:<br>
+    - it's **limited to the LMS web UI** (**Default** and **Classic** skin). I don't plan to pursue this any further. So other skins or players won't see any support. That shouldn't be too tragic because this feature is experimental anyway. And how often do you really need to save a dynamic playlist as a favorite?<br><br>
+    - Saving dynamic playlists with user input values basically means you're saving a url with fixed playlist parameters as a one-click dynamic playlist. The value of some of these playlist parameters (esp. artist/album/genre/track IDs) might change after a (delete/wipe) rescan. <br>So please remember: **a (delete/wipe) rescan might invalidate some dynamic playlists favorites *with saved user input values***. You'll have to remove & readd them. Therefore I suggest you choose a good descriptive name so you'll remember what parameter values you chose (like "Alternative 80s rated").
+<br><br>
 
 - »**The *Not classified* group in the DPL (home) menu has disappeared / doesn't show.**«<br>
 The *Not classified* group in the DPL (home) menu and on settings pages will only be displayed if DPL found dynamic playlists that belong in this group, i.e. if it's not empty.<br><br>
@@ -101,7 +106,7 @@ Explained in the [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/CLI-co
 <br><br>
 
 - »**Does DPL replace SQLPlayList and/or CustomSkip?**«<br>
-No. SQLPlayList and CustomSkip3 are **separate** plugins and they have a different focus and job to do. DPL will never have the same features as any of these plugins. You *can* use them but you *don't have to*.<br>Custom Skip **3** works with DPL **3** and SQLPlayList is reported to work (with some limitations and without any guarantees as to how long, see other FAQ).<br>If you're comfortable writing/editing SQLite using custom dynamic playlist definitions you can probably do without them.
+No. SQLPlayList and CustomSkip3 are **separate** plugins and they have a different focus/job to do. DPL will never have the same features as any of these plugins. You *can* use them but you *don't have to*.<br>Custom Skip **3** works with DPL **3** and SQLPlayList is reported to work (with some limitations and without any guarantees as to how long, see other FAQ).<br>If you're comfortable writing/editing SQLite using custom dynamic playlist definitions you can probably do without them.
 <br><br>
 
 - »**How do Dynamic Playlists 3 and SQLPlayList work together?**«<br>
@@ -114,6 +119,12 @@ You can either use the *SQLPlayList* plugin to do that (as long as it works - di
 
 - »***SQLPlayList* 2.6.272 shows an error at the bottom of the page. Does this mean that *SQLPlayList* is no longer compatible with *Dynamic Playlists 3*?**«<br>
 I think SQLPlayList used to display the currently playing dynamic playlist at the bottom of that page. Since DPL3 uses a different plugin name the reference to the old DPL version 2 is broken. But so far I have no reports that this breaks SQLPlaylist's main features: assisting you in creating dynamic playlists and making them available to DPL3. Just ignore this error.
+<br><br>
+
+- »**There's more than DPL context menu item now. What's *preselection*? How does it work?**«<br>
+For **artists** and **albums** DPL will show a **second context menu** that allows you to **preselect** this artist/album while browsing your music library. After preselecting an artist or album you'll see a list of all currently preselected artists/album (and you can remove items from the list). DPL will remember your (pre)selection (*until the next LMS restart*/rescan).<br>Once you're finished preselecting artists/albums go to DPL's menu and use this selection with any dynamic playlist that makes use of the `PlaylistPreselectedArtists` or `PlaylistPreselectedAlbums` playlist parameter. There are some built-in dynamic playlists to get you started (in the *Songs* group). And it's very easy to add to your custom dynamic playlists. See [**wiki**](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#user-input-parameters) for more information.
+
+
 <br><br><br>
 
 ## Bug reports
