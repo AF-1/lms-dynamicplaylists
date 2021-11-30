@@ -24,7 +24,7 @@
 		[% FOREACH category = ['songs', 'artists', 'albums', 'genres', 'years', 'playlists'] %]
 			<details><summary><span class="categoryheader">[% category %]</span></summary>
 				<table border="0">
-					[%- FOREACH playlist IN pluginDynamicPlaylists3PlayLists.keys.sort %]
+					[%- FOREACH playlist IN pluginDynamicPlaylists3PlayLists.keys.sort(value) %]
 						[% IF pluginDynamicPlaylists3PlayLists.$playlist.menulisttype != "contextmenu" && pluginDynamicPlaylists3PlayLists.$playlist.playlistcategory == category %]
 						<tr class="playlists">
 							[%- playlistid = "playlist_" _ pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistid %]

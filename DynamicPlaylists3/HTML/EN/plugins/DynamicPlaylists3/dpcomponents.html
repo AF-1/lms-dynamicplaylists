@@ -13,7 +13,7 @@
 
 [% BLOCK controls %]
 	[% IF playlist.dynamicplaylistplugin == "Plugins::SQLPlayList::Plugin" %]
-		[% WRAPPER editlink noTarget=1 -%]href="[% webroot %][% playlist.url %]&player=[% player | uri %]"[%- END %]
+		[% WRAPPER editlink noTarget=1 -%]href="[% webroot %][% playlist.url %]&amp;player=[% player | uri %]"[%- END %]
 	[%- END %]
 	[% IF !playlist.parameters %]
 		[%
@@ -29,7 +29,9 @@
 	[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="0" parameters=playlist.parameters %]
 	[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="1" parameters=playlist.parameters %]
 [% END %]
-
+[% BLOCK controlspreselection %]
+	[% PROCESS dynamicPlayListPreselectionLink objectid=item.id %]
+[% END %]
 [% BLOCK dpcontentcontainer %]
 	[% WRAPPER contentcontainer %]
 		[% content %]
@@ -37,12 +39,12 @@
 [% END %]
 
 [% BLOCK dpcontentitemgroup %]
-	<a href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_list.html?[% group.url %]&player=[% player | uri %]">[% IF group.name != group.sortname %]<span class="emphbold">[% END %][% group.name %]/[% IF group.name != group.sortname %]</span>[% END %]</a>
+	<a href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_list.html?[% group.url %]&amp;player=[% player | uri %]">[% IF group.name != group.sortname %]<span class="emphbold">[% END %][% group.name %]/[% IF group.name != group.sortname %]</span>[% END %]</a>
 [% END %]
 
 [% BLOCK dpcontentitemplaylist %]
 	[% IF playlist.url %]
-		<a href="[% webroot %][% playlist.url %]&player=[% player | uri %][% playlist.urlcontext %]">[% playlist.name %]</a>
+		<a href="[% webroot %][% playlist.url %]&amp;player=[% player | uri %][% playlist.urlcontext %]">[% playlist.name %]</a>
 	[% ELSE %]
 		[% playlist.name %]
 	[% END %]

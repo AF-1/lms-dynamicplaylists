@@ -139,6 +139,7 @@ sub initPlugin {
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'browsejive', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJiveHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'jiveplaylistparameters', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJivePlaylistParametersHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'mixjive'], [1, 1, 1, \&cliMixJiveHandler]);
+	Slim::Control::Request::addDispatch(['dynamicplaylist', 'preselect'], [1, 1, 1, \&_preselectionMenuJive]);
 	Slim::Control::Request::addDispatch(['dynamicplaylistselectgenre', '_genre', '_value'], [1, 0, 0, \&toggleGenreSelectionState]);
 	Slim::Control::Request::addDispatch(['dynamicplaylistgenreselectall', '_value'], [1, 0, 0, \&genreSelectAllOrNone]);
 
@@ -954,7 +955,7 @@ sub addParameterValues {
 	} elsif (lc($parameter->{'type'}) eq 'playlist') {
 		$sql = "select playlist_track.playlist, tracks.title, substr(tracks.titlesort,1,1) from tracks, playlist_track where tracks.id=playlist_track.playlist group by playlist_track.playlist order by titlesort";
 	} elsif (lc($parameter->{'type'}) eq 'track') {
-		$sql = "select tracks.id, case when (albums.title is null or albums.title = '') then '' else albums.title || ' -- '  end || case when tracks.tracknum is null then '' else tracks.tracknum || '. ' end || tracks.title, substr(tracks.titlesort,1,1) from tracks, albums where tracks.album=albums.id and audio=1 group by tracks.id order by albums.titlesort, albums.disc, tracks.tracknum";
+		$sql = "select tracks.id, case when (albums.title is null or albums.title = '') then '' else albums.title || ' -- ' end || case when tracks.tracknum is null then '' else tracks.tracknum || '. ' end || tracks.title, substr(tracks.titlesort,1,1) from tracks, albums where tracks.album=albums.id and audio=1 group by tracks.id order by albums.titlesort, albums.disc, tracks.tracknum";
 	} elsif (lc($parameter->{'type'}) eq 'list') {
 		my $value = $parameter->{'definition'};
 		if (defined($value) && $value ne '') {
@@ -1163,7 +1164,7 @@ sub toggleGenreSelectionState {
 	$request->setStatusDone();
 }
 
-sub toggleGenreSelectionStateVFD {
+sub toggleGenreSelectionStateIP3k {
 	my ($client, $item) = @_;
 
 	if ($item->{'name'} eq 'Continue' || $item->{'name'} eq 'Play') {
@@ -1253,7 +1254,6 @@ sub getMultipleGenresSelIDString {
 	$log->debug('selectedGenres = '.Dumper($selectedGenres));
 	my @IDsSelectedGenres = ();
 	if (scalar (@{$selectedGenres}) > 0) {
-
 		foreach my $genreName (@{$selectedGenres}) {
 			my $genreID = Slim::Schema->resultset('Genre')->single( {'name' => $genreName })->id;
 			$log->debug('Selected genre: '.$genreName.' ('.$genreID.')');
@@ -1277,6 +1277,7 @@ sub webPages {
 		'dynamicplaylist_mixparameters\.html' => \&handleWebMixParameters,
 		'dynamicplaylist_selectplaylists\.html' => \&handleWebSelectPlaylists,
 		'dynamicplaylist_saveselectplaylists\.html' => \&handleWebSaveSelectPlaylists,
+		'dynamicplaylist_preselectionmenu\.html' => \&_preselectionMenuWeb,
 	);
 
 	my $value = $htmlTemplate;
@@ -1322,6 +1323,13 @@ sub handleWebList {
 			}
 		}
 	}
+
+	my $preselectionListArtists = $client->pluginData('cachedArtists') || {};
+	my $preselectionListAlbums = $client->pluginData('cachedAlbums') || {};
+	$log->debug("pluginData 'cachedArtists' (web) = ".Dumper($preselectionListArtists));
+	$log->debug("pluginData 'cachedAlbums' (web) = ".Dumper($preselectionListAlbums));
+	$params->{'pluginDynamicPlaylists3preselectionListArtists'} = 'display' if (keys %{$preselectionListArtists} > 0);
+	$params->{'pluginDynamicPlaylists3preselectionListAlbums'} = 'display' if (keys %{$preselectionListAlbums} > 0);
 
 	$params->{'pluginDynamicPlaylists3Context'} = getPlayListContext($client, $params, $playListItems, 1);
 	$params->{'pluginDynamicPlaylists3Groups'} = getPlayListGroupsForContext($client, $params, $playListItems, 1);
@@ -1723,7 +1731,7 @@ sub savePlayListGroups {
 }
 
 
-### jive menus ###
+### jive ###
 
 sub registerJiveMenu {
 	my $class = shift;
@@ -1784,6 +1792,23 @@ sub registerStandardContextMenus {
 		after => 'addgenre',
 		func => sub {
 			return objectInfoHandler(@_, undef, 'genre');
+		},
+	));
+
+	Slim::Menu::AlbumInfo->registerInfoProvider(dynamicplaylistcacheobj => (
+		after => 'dynamicplaylist',
+		func => sub {
+			if (scalar(@_) < 6) {
+				return registerPreselectionMenu(@_, undef, 'album');
+			} else {
+				return registerPreselectionMenu(@_, 'album');
+			}
+		},
+	));
+	Slim::Menu::ArtistInfo->registerInfoProvider(dynamicplaylistcacheobj => (
+		after => 'dynamicplaylist',
+		func => sub {
+			return registerPreselectionMenu(@_, undef, 'artist');
 		},
 	));
 }
@@ -1933,6 +1958,7 @@ sub cliJiveHandler {
 
 	my $cnt = 0;
 
+	# active dynamic playlist for client if any
 	if ($prefs->get('showactiveplaylistinmainmenu')) {
 		my $masterClient = masterOrSelf($client);
 		my $playlist = undef;
@@ -1949,6 +1975,44 @@ sub cliJiveHandler {
 		}
 	}
 
+	# currently preselected artists/albums list link
+	if ($nextGroup == 1) {
+		my $preselectionListArtists = $client->pluginData('cachedArtists') || {};
+		my $preselectionListAlbums = $client->pluginData('cachedAlbums') || {};
+		$log->debug("pluginData 'cachedArtists' (jive) = ".Dumper($preselectionListArtists));
+		$log->debug("pluginData 'cachedAlbums' (jive) = ".Dumper($preselectionListAlbums));
+
+		if (keys %{$preselectionListArtists} > 0) {
+			my $preselActions = {
+				'go' => {
+					player => 0,
+					cmd => ['dynamicplaylist', 'preselect'],
+					params => {
+						'objecttype' => 'artist',
+					},
+				},
+			};
+			$request->addResultLoop('item_loop', $cnt, 'actions', $preselActions);
+			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_CACHED_ARTISTS_LIST'));
+			$cnt++;
+		}
+		if (keys %{$preselectionListAlbums} > 0) {
+			my $preselActions = {
+				'go' => {
+					player => 0,
+					cmd => ['dynamicplaylist', 'preselect'],
+					params => {
+						'objecttype' => 'album',
+					},
+				},
+			};
+			$request->addResultLoop('item_loop', $cnt, 'actions', $preselActions);
+			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_CACHED_ALBUMS_LIST'));
+			$cnt++;
+		}
+	}
+
+	# dpl groups
 	foreach my $item (@{$menuGroupResult}) {
 		if ($item->{'dynamicplaylistenabled'}) {
 			my $name;
@@ -2385,6 +2449,181 @@ sub cliMixJiveHandler {
 
 	$request->setStatusDone();
 	$log->debug('Exiting cliJiveHandler');
+}
+
+
+## preselection ##
+
+sub registerPreselectionMenu {
+	my ($client, $url, $obj, $remoteMeta, $tags, $whatever, $objectType) = @_;
+	$tags ||= {};
+
+	unless ($objectType eq 'artist' || $objectType eq 'album') {
+		return undef;
+	}
+
+	my $objectName = $objectType eq 'artist' ? $obj->name : $obj->title;
+	my $objectID = $obj->id;
+	my $artistName = (Slim::Schema->find('Contributor', $obj->contributor->id))->name if $objectType eq 'album';
+	my $jive = {};
+
+	if ($tags->{menuMode}) {
+		my $actions = {
+			go => {
+				player => 0,
+				cmd => ['dynamicplaylist', 'preselect'],
+				params => {
+					'objectid' => $objectID,
+					'objecttype' => $objectType,
+					'objectname' => $objectName,
+					'artistname' => $artistName,
+				},
+			},
+		};
+		$jive->{actions} = $actions;
+	}
+
+	return {
+		type => 'text',
+		jive => $jive,
+		objecttype => $objectType,
+		objectid => $objectID,
+		objectname => $objectName,
+		artistname => $artistName,
+		action => 2,
+		name => $objectType eq 'artist' ? $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTARTISTS') : $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTALBUMS'),
+		favorites => 0,
+		web => {
+			'type' => 'htmltemplate',
+			'value' => 'plugins/DynamicPlaylists3/dynamicplaylist_preselectionlink.html'
+		},
+	};
+}
+
+sub _preselectionMenuWeb {
+	my ($client, $params) = @_;
+	my $objectType = $params->{'objecttype'};
+	my $objectId = $params->{'objectid'};
+	my $objectName = $params->{'objectname'};
+	my $artistName = $params->{'artistname'};
+	my $action = $params->{'action'};
+
+	my $listName = $objectType eq 'artist' ? 'cachedArtists' : 'cachedAlbums';
+	my $preselectionList = $client->pluginData($listName) || {};
+
+	if ($action == 1) {
+		delete $preselectionList->{$objectId};
+		$client->pluginData($listName, $preselectionList);
+	} elsif ($action == 2) {
+		$preselectionList->{$objectId}->{'name'} = $objectName if $objectName;
+		$preselectionList->{$objectId}->{'id'} = $objectId;
+		$preselectionList->{$objectId}->{'artistname'} = $artistName if $objectType eq 'album' && $artistName;
+		$client->pluginData($listName, $preselectionList);
+	}
+	my $preselectionList = $client->pluginData($listName) || {};
+	$log->debug("pluginData '$listName' (web) = ".Dumper($preselectionList));
+	$params->{'pluginDynamicPlaylists3preselectionList'} = $preselectionList if (keys %{$preselectionList} > 0);
+	$params->{'action'} = ();
+	return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlaylists3/dynamicplaylist_preselectionmenu.html', $params);
+}
+
+sub _preselectionMenuJive {
+	my $request = shift;
+	my $client = $request->client();
+	my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
+
+	if (!$request->isQuery([['dynamicplaylist'], ['preselect']])) {
+		$log->warn('Incorrect command');
+		$request->setStatusBadDispatch();
+		$log->debug('Exiting cliMixJiveHandler');
+		return;
+	}
+	if (!defined $client) {
+		$log->warn('Client required');
+		$request->setStatusNeedsClient();
+		$log->debug('Exiting cliMixJiveHandler');
+		return;
+	}
+
+	my $params = $request->getParamsCopy();
+	my $objectType = $params->{'objecttype'};
+	my $objectID = $params->{'objectid'};
+	my $objectName = $params->{'objectname'};
+	my $artistName = $params->{'artistname'};
+	my $removeID = $params->{'removeid'};
+
+	$log->debug('objectType = '.Dumper($objectType).'objectID = '.Dumper($objectID).'removeID = '.Dumper($removeID).'artistName = '.Dumper($artistName));
+	my $listName = $objectType eq 'artist' ? 'cachedArtists' : 'cachedAlbums';
+	my $preselectionList = $client->pluginData($listName) || {};
+
+	if ($removeID) {
+		delete $preselectionList->{$removeID};
+		$client->pluginData($listName, $preselectionList);
+	}
+	if ($objectID) {
+		$preselectionList->{$objectID}->{'name'} = $objectName if $objectName;
+		$preselectionList->{$objectID}->{'id'} = $objectID;
+		$preselectionList->{$objectID}->{'artistname'} = $artistName if $objectType eq 'album' && $artistName;
+		$client->pluginData($listName, $preselectionList);
+	}
+
+	my $preselectionList = $client->pluginData($listName) || {};
+
+	$log->debug("pluginData $listName (jive) = ".Dumper($preselectionList));
+	my $cnt = 0;
+	if (keys %{$preselectionList} > 0) {
+		$request->addResultLoop('item_loop', $cnt, 'type', 'text');
+		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
+		$request->addResultLoop('item_loop', $cnt, 'actions', 'none');
+		$request->addResultLoop('item_loop', $cnt, 'text', $objectType eq 'artist' ? $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_REMOVEINFO_ARTIST') : $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_REMOVEINFO_ALBUM'));
+		$cnt++;
+
+		foreach my $itemID (sort { $preselectionList->{$a}->{'name'} cmp $preselectionList->{$b}->{'name'}; } keys %{$preselectionList}) {
+			my $selectedItem = $preselectionList->{$itemID};
+			my $itemName = $selectedItem->{'name'};
+			my $itemArtistName = $selectedItem->{'artistname'};
+			my $text = $objectType eq 'artist' ? $itemName : $itemName.'  -- '.$client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_INFO_BY').'  '.$itemArtistName;
+			my %itemParams = (
+				'objecttype' => $objectType,
+				'removeid' => $itemID,
+			);
+
+			my $actions = {
+				'go' => {
+					'cmd' => ['dynamicplaylist', 'preselect'],
+					'params' => \%itemParams,
+					'itemsParams' => 'params',
+				},
+			};
+			$request->addResultLoop('item_loop', $cnt, 'type', 'text');
+			if ($objectID && $itemID == $objectID) {
+				$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'parent');
+			} else {
+				$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'refresh');
+			}
+			$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
+			$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
+			$request->addResultLoop('item_loop', $cnt, 'params', \%itemParams);
+			$request->addResultLoop('item_loop', $cnt, 'text', $text);
+			$cnt++;
+		}
+	} else {
+		$request->addResultLoop('item_loop', $cnt, 'type', 'text');
+		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
+		$request->addResultLoop('item_loop', $cnt, 'actions', 'none');
+		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_NONE'));
+		$cnt++;
+	}
+	# Material always displays last selection as window title. Add correct window title as textarea
+	my $windowTitle = $objectType eq 'artist' ? $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_CACHED_ARTISTS_LIST') : $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_CACHED_ALBUMS_LIST');
+	if ($materialCaller) {
+		$request->addResult('window', {textarea => $windowTitle});
+	} else {
+		$request->addResult('window', {text => $windowTitle});
+	}
+	$request->addResult('offset', 0);
+	$request->addResult('count', $cnt);
+	$request->setStatusDone();
 }
 
 
@@ -2830,6 +3069,25 @@ sub getNextDynamicPlayListTracks {
 				);
 				$predefinedParameters->{'PlaylistVirtualLibraryID'.$thisKey} = \%thisVirtualLibraryIDItem;
 			}
+		}
+
+		my $preselectionListArtists = $client->pluginData('cachedArtists') || {};
+		my $preselectionListAlbums = $client->pluginData('cachedAlbums') || {};
+		$log->debug("pluginData 'cachedArtists' = ".Dumper($preselectionListArtists));
+		$log->debug("pluginData 'cachedAlbums' = ".Dumper($preselectionListAlbums));
+		if (keys %{$preselectionListArtists} > 0) {
+			my %preselArtists= (
+				'id' => 'PreselectedArtists',
+				'value' => join(',', keys %{$preselectionListArtists}),
+			);
+			$predefinedParameters->{'PlaylistPreselectedArtists'} = \%preselArtists;
+		}
+		if (keys %{$preselectionListAlbums} > 0) {
+			my %preselAlbums= (
+				'id' => 'PreselectedAlbums',
+				'value' => join(',', keys %{$preselectionListAlbums}),
+			);
+			$predefinedParameters->{'PlaylistPreselectedAlbums'} = \%preselAlbums;
 		}
 
 		$predefinedParameters->{'PlaylistPlayer'} = \%player;
@@ -3742,7 +4000,7 @@ sub checkCustomSkipFilterType {
 
 
 
-## for VFD devices ##
+## for IP3k / VFD devices ##
 
 sub setModeMixer {
 	my $client = shift;
@@ -4060,9 +4318,9 @@ sub setModeChooseParameters {
 					listRef => \@listRef,
 					modeName => 'PLUGIN.DynamicPlaylists3.ChooseParameters',
 					overlayRef => \&getGenreOverlay,
-					onRight => \&toggleGenreSelectionStateVFD,
-					onPlay => \&toggleGenreSelectionStateVFD,
-					onAdd => \&toggleGenreSelectionStateVFD,
+					onRight => \&toggleGenreSelectionStateIP3k,
+					onPlay => \&toggleGenreSelectionStateIP3k,
+					onAdd => \&toggleGenreSelectionStateIP3k,
 
 			dynamicplaylist_nextparameter => $parameterId,
 			dynamicplaylist_selectedplaylist => $playlist,

@@ -9,7 +9,7 @@
 [% PROCESS pageheader.html %]
 
 [% BLOCK href %]
-href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?type=[% type %]&player=[% player | uri %]"
+href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?type=[% type %]&amp;player=[% player | uri %]"
 		 onclick='document.editForm.type.value = "[% type %]";
 							document.editForm.submit();
 							return false;'

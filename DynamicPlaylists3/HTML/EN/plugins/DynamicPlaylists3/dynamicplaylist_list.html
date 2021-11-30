@@ -1,4 +1,4 @@
-<style>.boldtitle{font-weight:600;}</style>
+<style>.boldtitle{font-weight:600;}.filler{height:3px;}</style>
 [% PROCESS plugins/DynamicPlaylists3/dpcomponents.html %]
 [%- pagetitle = 'PLUGIN_DYNAMICPLAYLISTS3' | string; pageicon = 'PLUGIN_DYNAMICPLAYLISTS3' -%]
 
@@ -8,7 +8,7 @@
 	</a>
 	[% FOREACH group IN pluginDynamicPlaylists3Context %]
 		[% IF group.dynamicplaylistenabled %]
-			&nbsp;/&nbsp;<a href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_list.html?[% group.url %]&player=[% player | uri %]">[% group.name %]</a>
+			&nbsp;/&nbsp;<a href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_list.html?[% group.url %]&amp;player=[% player | uri %]">[% group.name %]</a>
 		[% END %]
 	[% END %]
 [% END -%]
@@ -19,9 +19,9 @@
 [% BLOCK href %]
 href="[% webroot %]
 		[%- IF customurl -%]
-			[%- customurl -%]&player=[% player | uri %]"
+			[%- customurl -%]&amp;player=[% player | uri %]"
 		[%- ELSE -%]
-			plugins/DynamicPlaylists3/dynamicplaylist_mix.html?type=[% type %]&addOnly=[% addOnly %]&player=[% player | uri %][% IF playlisttype and dynamicplaylist_parameter_1 %]&dynamicplaylist_parameter_1=[% dynamicplaylist_parameter_1 %][% END %]"
+			plugins/DynamicPlaylists3/dynamicplaylist_mix.html?type=[% type %]&amp;addOnly=[% addOnly %]&amp;player=[% player | uri %][% IF playlisttype and dynamicplaylist_parameter_1 %]&amp;dynamicplaylist_parameter_1=[% dynamicplaylist_parameter_1 %][% END %]"
 		[%- END -%]
 [% END %]
 
@@ -33,11 +33,33 @@ href="[% webroot %]
 		[% IF activeClientMixName %]<span class="boldtitle">Active</span> dynamic playlist for client "[% activeClientName %]": <span class="boldtitle">[% activeClientMixName %]</span><br><br>
 		[% END %]
 
+		[% IF pluginDynamicPlaylists3preselectionListArtists %]
+			[%- WRAPPER contentitem %]
+				<span class="boldtitle">
+				<a style="text-decoration:none;" href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_preselectionmenu.html?objecttype=artist&amp;source=dplhome&amp;player=[% player | uri %]">
+					[% "PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_CACHED_ARTISTS_LIST" | string %]
+				</a>
+				</span>
+			[% END %]
+		[% END %]
+		[% IF pluginDynamicPlaylists3preselectionListAlbums %]
+			[%- WRAPPER contentitem %]
+				<span class="boldtitle">
+				<a style="text-decoration:none;" href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_preselectionmenu.html?objecttype=album&amp;source=dplhome&amp;player=[% player | uri %]">
+				[% "PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_CACHED_ALBUMS_LIST" | string %]
+				</a>
+				</span>
+			[% END %]
+		[% END %]
+		[% IF pluginDynamicPlaylists3preselectionListAlbums || pluginDynamicPlaylists3preselectionListArtists %]<br>[% END %]
+		<div class="filler"></div>
+
 		[% IF pluginDynamicPlaylists3ContextName %]
 			[% WRAPPER contentitem %][% "PLUGIN_DYNAMICPLAYLISTS3_CONTEXT_CHOOSE_BELOW" | string %] <span class="boldtitle">[% pluginDynamicPlaylists3ContextName %]</span>[% END %]
 		[% ELSE %]
 			[% WRAPPER contentanchor %][% "PLUGIN_DYNAMICPLAYLISTS3_CHOOSE_BELOW" | string %][% END %]
 		[% END %]
+		<div class="filler"></div>
 
 		[% odd = 1 %]
 		[% FOREACH group IN pluginDynamicPlaylists3Groups %]
