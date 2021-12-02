@@ -1167,7 +1167,7 @@ sub toggleGenreSelectionState {
 sub toggleGenreSelectionStateIP3k {
 	my ($client, $item) = @_;
 
-	if ($item->{'name'} eq 'Continue' || $item->{'name'} eq 'Play') {
+	if ($item->{'name'} eq 'Next' || $item->{'name'} eq 'Play') {
 		my $parameterId = $client->modeParam('dynamicplaylist_nextparameter');
 		my $playlist = $client->modeParam('dynamicplaylist_selectedplaylist');
 		my $selectedGenres_IDString = getMultipleGenresSelIDString($client);
@@ -2183,7 +2183,7 @@ sub cliJivePlaylistParametersHandler {
 					'itemsParams' => 'params',
 				},
 			};
-			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_CONTINUE'));
+			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_NEXT'));
 		} else {
 			$actions_continue = {
 				'do' => {
@@ -2519,9 +2519,12 @@ sub _preselectionMenuWeb {
 		$preselectionList->{$objectId}->{'id'} = $objectId;
 		$preselectionList->{$objectId}->{'artistname'} = $artistName if $objectType eq 'album' && $artistName;
 		$client->pluginData($listName, $preselectionList);
+	} elsif ($action == 3) {
+		$client->pluginData($listName, {});
 	}
 	my $preselectionList = $client->pluginData($listName) || {};
 	$log->debug("pluginData '$listName' (web) = ".Dumper($preselectionList));
+	$params->{'preselitemcount'} = keys %{$preselectionList};
 	$params->{'pluginDynamicPlaylists3preselectionList'} = $preselectionList if (keys %{$preselectionList} > 0);
 	$params->{'action'} = ();
 	return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlaylists3/dynamicplaylist_preselectionmenu.html', $params);
@@ -2557,8 +2560,12 @@ sub _preselectionMenuJive {
 	my $preselectionList = $client->pluginData($listName) || {};
 
 	if ($removeID) {
-		delete $preselectionList->{$removeID};
-		$client->pluginData($listName, $preselectionList);
+		if ($removeID eq 'clearlist') {
+			$client->pluginData($listName, {});
+		} else {
+			delete $preselectionList->{$removeID};
+			$client->pluginData($listName, $preselectionList);
+		}
 	}
 	if ($objectID) {
 		$preselectionList->{$objectID}->{'name'} = $objectName if $objectName;
@@ -2577,6 +2584,28 @@ sub _preselectionMenuJive {
 		$request->addResultLoop('item_loop', $cnt, 'actions', 'none');
 		$request->addResultLoop('item_loop', $cnt, 'text', $objectType eq 'artist' ? $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_REMOVEINFO_ARTIST') : $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_REMOVEINFO_ALBUM'));
 		$cnt++;
+
+		if (keys %{$preselectionList} > 1) {
+			my %itemParams = (
+				'objecttype' => $objectType,
+				'removeid' => 'clearlist',
+			);
+
+			my $actions = {
+				'go' => {
+					'cmd' => ['dynamicplaylist', 'preselect'],
+					'params' => \%itemParams,
+					'itemsParams' => 'params',
+				},
+			};
+
+			$request->addResultLoop('item_loop', $cnt, 'type', 'text');
+			$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
+			$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
+			$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'parent');
+			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_CLEAR_LIST'));
+			$cnt++;
+		}
 
 		foreach my $itemID (sort { $preselectionList->{$a}->{'name'} cmp $preselectionList->{$b}->{'name'}; } keys %{$preselectionList}) {
 			my $selectedItem = $preselectionList->{$itemID};
@@ -4289,7 +4318,7 @@ sub setModeChooseParameters {
 		# Continue or play
 		if (exists $playlist->{'parameters'}->{($parameterId + 1)}) {
 			@listRef = ({
-				name => $client->string('PLUGIN_DYNAMICPLAYLISTS3_CONTINUE'),
+				name => $client->string('PLUGIN_DYNAMICPLAYLISTS3_NEXT'),
 				value => 0,
 			});
 		} else {
@@ -4638,7 +4667,7 @@ sub getOverlay {
 sub getGenreOverlay {
 	my ($client, $item) = @_;
 
-	if ($item->{'name'} eq 'Continue' || $item->{'name'} eq 'Play') {
+	if ($item->{'name'} eq 'Next' || $item->{'name'} eq 'Play') {
 		return [undef, $client->symbols('rightarrow')];
 	} else {
 		my $value = 0;

@@ -14,8 +14,8 @@
 [% END %]
 
 [% BLOCK dynamicPlayListPreselectionLink %]
-	[% link='cmdlink' cmdimage='b_delete.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_REMOVE_TITLE' %]
+	[% link='cmdlink' cmdimage='b_delete.gif';IF objectid; cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_REMOVE_TITLE';ELSE;cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_CLEAR_LIST';END %]
 		[% WRAPPER $link noTarget=1 %]
-			href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_preselectionmenu.html?objecttype=[% objecttype %]&amp;objectid=[% objectid %]&amp;action=1&amp;player=[% player |uri%]" onClick="setTimeout('document.location.reload(true)',500)"
+			href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_preselectionmenu.html?objecttype=[% objecttype %]&amp;objectid=[% objectid %]&amp;action=[% IF objectid %]1[% ELSE %]3[% END %]&amp;player=[% player |uri%]" onClick="setTimeout('document.location.reload(true)',500)"
 		[% END %]
 [% END %]

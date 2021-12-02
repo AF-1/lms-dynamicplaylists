@@ -26,6 +26,13 @@
 		<br>
 		[% odd = 1 %]
 		[% IF pluginDynamicPlaylists3preselectionList %]
+			[% IF preselitemcount > 1 %]
+				[%- WRAPPER contentitem controls='controlspreselection' %]
+					[% "PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_CLEAR_LIST" | string %]
+					[% odd = (not odd) %]
+				[% END %]
+			<br>
+			[% END %]
 			[% FOREACH item IN pluginDynamicPlaylists3preselectionList.values.sort('name') %]
 				[%- WRAPPER contentitem controls='controlspreselection' %]
 					[% item.name %][% IF objecttype == 'album' && item.artistname %]&nbsp;&nbsp;- by -&nbsp;&nbsp;[% item.artistname %][% END %]
