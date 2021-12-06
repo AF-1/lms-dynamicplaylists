@@ -27,12 +27,6 @@ create temporary table dynamicplaylist_random_albums as
 					then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 					else 1
 				end
-			and not exists (select * from tracks t2,genre_track,genres
-							where
-								t2.id=tracks.id and
-								tracks.id=genre_track.track and
-								genre_track.genre=genres.id and
-								genres.name in ('PlaylistExcludedGenres'))
 		group by tracks.album
 			having totaltrackcount > 'PlaylistMinAlbumTracks'
 		order by avgrating desc, random()
@@ -42,6 +36,8 @@ create temporary table dynamicplaylist_random_albums as
 select distinct tracks.url from tracks
 	join dynamicplaylist_random_albums on
 		dynamicplaylist_random_albums.album = tracks.album
+	join genre_track on
+		genre_track.track = tracks.id and genre_track.genre='PlaylistParameter1'
 	join tracks_persistent on
 		tracks_persistent.urlmd5 = tracks.urlmd5
 	left join library_track on
@@ -64,12 +60,6 @@ select distinct tracks.url from tracks
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
-		and not exists (select * from tracks t2,genre_track,genres
-						where
-							t2.id=tracks.id and
-							tracks.id=genre_track.track and
-							genre_track.genre=genres.id and
-							genres.name in ('PlaylistExcludedGenres'))
 	group by tracks.id
 	order by
 		case

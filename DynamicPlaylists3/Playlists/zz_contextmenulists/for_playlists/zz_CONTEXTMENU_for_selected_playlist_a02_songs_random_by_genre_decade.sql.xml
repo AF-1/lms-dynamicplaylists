@@ -3,18 +3,18 @@
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:playlists
 -- PlaylistParameter1:playlist:Select playlist:
--- PlaylistParameter2:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
--- PlaylistParameter3:customgenrechained:Select genre:select id, name, substr(namesort,1,1) from genres order by namesort
--- PlaylistParameter4:customdecadechained:Select decade:select cast(((ifnull(tracks.year,0)/10)*10) as int),case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else 'Unknown' end from tracks where tracks.audio=1 group by cast(((ifnull(tracks.year,0)/10)*10) as int) order by tracks.year desc
+-- PlaylistParameter2:multiplegenres:Select genres:
+-- PlaylistParameter3:customdecadechained:Select decade:select cast(((ifnull(tracks.year,0)/10)*10) as int),case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else 'Unknown' end from tracks where tracks.audio=1 group by cast(((ifnull(tracks.year,0)/10)*10) as int) order by tracks.year desc
+-- PlaylistParameter4:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
 select distinct playlist_track.track from playlist_track
 	join tracks on
 		tracks.url = playlist_track.track
 	left join library_track on
 		library_track.track = tracks.id
-	join genre_track on
-		genre_track.track = tracks.id
 	join tracks_persistent on
 		tracks_persistent.urlmd5 = tracks.urlmd5
+	join genre_track on
+		genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter2')
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 	where
@@ -24,12 +24,7 @@ select distinct playlist_track.track from playlist_track
 		and dynamicplaylist_history.id is null
 		and
 			case
-				when 'PlaylistParameter3'!=999999999 then genre_track.genre='PlaylistParameter3'
-				else 1
-			end
-		and
-			case
-				when 'PlaylistParameter4'!=999999999 then tracks.year>='PlaylistParameter4' and tracks.year<('PlaylistParameter4'+10)
+				when 'PlaylistParameter3'!=999999999 then tracks.year>='PlaylistParameter3' and tracks.year<('PlaylistParameter3'+10)
 				else 1
 			end
 		and
@@ -40,16 +35,10 @@ select distinct playlist_track.track from playlist_track
 			end
 		and
 			case
-				when 'PlaylistParameter2'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
-				when 'PlaylistParameter2'=2 then tracks_persistent.playCount > 0
+				when 'PlaylistParameter4'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
+				when 'PlaylistParameter4'=2 then tracks_persistent.playCount > 0
 				else 1
 			end
-		and not exists (select * from tracks t2,genre_track,genres
-						where
-							t2.id=tracks.id and
-							tracks.id=genre_track.track and
-							genre_track.genre=genres.id and
-							genres.name in ('PlaylistExcludedGenres'))
 	group by playlist_track.track
 	order by random()
 	limit 'PlaylistLimit';

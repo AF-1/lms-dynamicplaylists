@@ -1,17 +1,17 @@
--- PlaylistName:Songs - rated by genre   (from selected year)
+-- PlaylistName:Songs - by genre   (from selected year)
 -- PlaylistGroups:Context menu lists/ year
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:years
 -- PlaylistParameter1:year:Select year:
--- PlaylistParameter2:customgenrechained:Select genre:select id, name, substr(namesort,1,1) from genres order by namesort
+-- PlaylistParameter2:multiplegenres:Select genres:
 -- PlaylistParameter3:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
 select distinct tracks.url from tracks
 	join genre_track on
-		genre_track.track = tracks.id
+		genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter2')
 	left join library_track on
 		library_track.track = tracks.id
 	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5 and tracks_persistent.rating > 0
+		tracks_persistent.urlmd5 = tracks.urlmd5
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 	where
@@ -27,20 +27,9 @@ select distinct tracks.url from tracks
 			end
 		and
 			case
-				when 'PlaylistParameter2'!=999999999 then genre_track.genre='PlaylistParameter2'
-				else 1
-			end
-		and
-			case
 				when 'PlaylistParameter3'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
 				when 'PlaylistParameter3'=2 then tracks_persistent.playCount > 0
 				else 1
 			end
-		and not exists (select * from tracks t2,genre_track,genres
-						where
-							t2.id=tracks.id and
-							tracks.id=genre_track.track and
-							genre_track.genre=genres.id and
-							genres.name in ('PlaylistExcludedGenres'))
 	order by random()
 	limit 'PlaylistLimit';
