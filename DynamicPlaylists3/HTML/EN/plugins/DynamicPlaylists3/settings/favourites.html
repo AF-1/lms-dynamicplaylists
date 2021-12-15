@@ -11,12 +11,12 @@
 		[% FOREACH category = ['songs', 'artists', 'albums', 'genres', 'years', 'playlists'] %]
 			<details><summary><span class="categoryheader">[% category %]</span></summary>
 				<table border="0">
-					[%- FOREACH playlist IN pluginDynamicPlaylists3PlayLists.keys.sort %]
-						[% IF pluginDynamicPlaylists3PlayLists.$playlist.menulisttype != "contextmenu" && pluginDynamicPlaylists3PlayLists.$playlist.playlistcategory == category %]
+					[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
+						[% IF item.menulisttype != "contextmenu" && item.playlistcategory == category %]
 						<tr class="playlists">
-					[%- playlistfavouriteid = "playlistfavourite_" _ pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistid %]
-							<td><input type="checkbox" name="[% playlistfavouriteid %]" id="[% playlistfavouriteid %]" value="1" [% pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistfavourite ? "checked" : "" %] onclick="changeNumSelected(this)">
-							<label for="[% playlistfavouriteid %]">[% pluginDynamicPlaylists3PlayLists.$playlist.name | html %]</label></td><td class="dpllist_source"> (source: [% pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistpluginshortname | html %])</td>
+					[%- playlistfavouriteid = "playlistfavourite_" _ item.dynamicplaylistid %]
+							<td><input type="checkbox" name="[% playlistfavouriteid %]" id="[% playlistfavouriteid %]" value="1" [% item.dynamicplaylistfavourite ? "checked" : "" %] onclick="changeNumSelected(this)">
+							<label for="[% playlistfavouriteid %]">[% item.name | html %]</label></td><td class="dpllist_source"> (source: [% item.dynamicplaylistpluginshortname | html %])</td>
 						</tr>
 						[% END %]
 					[%- END %]
@@ -27,12 +27,12 @@
 		[% IF savedstaticPlaylists %]
 			<details><summary><span class="categoryheader">Static playlists</span></summary>
 				<table border="0">
-					[%- FOREACH playlist IN pluginDynamicPlaylists3PlayLists.keys.sort %]
-						[% IF pluginDynamicPlaylists3PlayLists.$playlist.menulisttype != "contextmenu" && pluginDynamicPlaylists3PlayLists.$playlist.playlistcategory == 'static LMS playlists' %]
+					[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
+						[% IF item.menulisttype != "contextmenu" && item.playlistcategory == 'static LMS playlists' %]
 						<tr class="playlists">
-					[%- playlistfavouriteid = "playlistfavourite_" _ pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistid %]
-							<td><input type="checkbox" name="[% playlistfavouriteid %]" id="[% playlistfavouriteid %]" value="1" [% pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistfavourite ? "checked" : "" %] onclick="changeNumSelected(this)">
-							<label for="[% playlistid %]">[% pluginDynamicPlaylists3PlayLists.$playlist.name | html %]</label></td><td class="dpllist_source"> (source: [% pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistpluginshortname | html %])</td>
+					[%- playlistfavouriteid = "playlistfavourite_" _ item.dynamicplaylistid %]
+							<td><input type="checkbox" name="[% playlistfavouriteid %]" id="[% playlistfavouriteid %]" value="1" [% item.dynamicplaylistfavourite ? "checked" : "" %] onclick="changeNumSelected(this)">
+							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> (source: [% item.dynamicplaylistpluginshortname | html %])</td>
 						</tr>
 						[% END %]
 					[%- END %]
@@ -43,12 +43,12 @@
 		[% IF unclassifiedPlaylists %]
 			<details><summary><span class="categoryheader">not</span> classified</summary>
 				<table border="0">
-					[%- FOREACH playlist IN pluginDynamicPlaylists3PlayLists.keys.sort %]
-						[% IF pluginDynamicPlaylists3PlayLists.$playlist.menulisttype != "contextmenu" && NOT pluginDynamicPlaylists3PlayLists.$playlist.playlistcategory %]
+					[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
+						[% IF item.menulisttype != "contextmenu" && NOT item.playlistcategory %]
 						<tr class="playlists">
-					[%- playlistfavouriteid = "playlistfavourite_" _ pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistid %]
-							<td><input type="checkbox" name="[% playlistfavouriteid %]" id="[% playlistfavouriteid %]" value="1" [% pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistfavourite ? "checked" : "" %] onclick="changeNumSelected(this)">
-							<label for="[% playlistid %]">[% pluginDynamicPlaylists3PlayLists.$playlist.name | html %]</label></td><td class="dpllist_source"> (source: [% pluginDynamicPlaylists3PlayLists.$playlist.dynamicplaylistpluginshortname | html %])</td>
+					[%- playlistfavouriteid = "playlistfavourite_" _ item.dynamicplaylistid %]
+							<td><input type="checkbox" name="[% playlistfavouriteid %]" id="[% playlistfavouriteid %]" value="1" [% item.dynamicplaylistfavourite ? "checked" : "" %] onclick="changeNumSelected(this)">
+							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> (source: [% item.dynamicplaylistpluginshortname | html %])</td>
 						</tr>
 						[% END %]
 					[%- END %]

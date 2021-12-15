@@ -302,6 +302,12 @@ sub initPlayLists {
 						$unclassifiedPlaylists{'unclassifiedPlaylists'} = 'found unclassified PL';
 					}
 				}
+
+				if (!$playlist->{'playlistsortname'}) {
+					my $playlistSortPrefix = lc($pluginshortname);
+					$playlist->{'playlistsortname'} = $playlistSortPrefix.'_'.$playlist->{'name'};
+				}
+
 				my $groups = $playlist->{'groups'};
 				if (!defined($groups)) {
 					my $groupunclassifiedcustomplaylists = $prefs->get('groupunclassifiedcustomplaylists');
@@ -351,7 +357,7 @@ sub initPlayLists {
 								my %currentItemGroup = (
 									'childs' => \%level,
 									'name' => $group,
-									'sortname' => $group,
+									'groupsortname' => $group,
 									'value' => $grouppath
 								);
 								if ($enabled) {
@@ -1495,7 +1501,7 @@ sub getPlayListContext {
 	my $currentItems = shift;
 	my $level = shift;
 	my @result = ();
-	$log->debug("Get playlist context for level=$level");
+	$log->debug("Get playlist context for level: $level");
 	if (defined($params->{'group'.$level})) {
 		my $group = unescape($params->{'group'.$level});
 		$log->debug('Getting group: '.$group);
@@ -1566,7 +1572,7 @@ sub getPlayListGroupsForContext {
 				my %resultItem = (
 					'url' => $currentUrl,
 					'name' => $item->{'name'},
-					'sortname' => $sortname,
+					'groupsortname' => $sortname,
 					'dynamicplaylistenabled' => $item->{'dynamicplaylistenabled'}
 				);
 				$log->debug('Adding group: '.$itemKey);
@@ -1574,7 +1580,7 @@ sub getPlayListGroupsForContext {
 			}
 		}
 	}
-	@result = sort {lc($a->{'sortname'}) cmp lc($b->{'sortname'})} @result;
+	@result = sort {lc($a->{'groupsortname'}) cmp lc($b->{'groupsortname'})} @result;
 	return \@result;
 }
 
@@ -1619,7 +1625,7 @@ sub getPlayListsForContext {
 			}
 		}
 	}
-	@result = sort {lc($a->{'dynamicplaylistid'}) cmp lc($b->{'dynamicplaylistid'})} @result;
+	@result = sort {lc($a->{'playlistsortname'}) cmp lc($b->{'playlistsortname'})} @result;
 	return \@result;
 }
 
@@ -1658,7 +1664,7 @@ sub getPlayListGroups {
 			my %resultItem = (
 				'id' => escape($groupId.'_'.$item->{'name'}),
 				'name' => $groupName.$item->{'name'}.'/',
-				'sortname' => $sortname,
+				'groupsortname' => $sortname,
 				'dynamicplaylistenabled' => $item->{'dynamicplaylistenabled'}
 			);
 			push @{$result}, \%resultItem;
@@ -1674,7 +1680,7 @@ sub getPlayListGroups {
 		}
 	}
 	if ($result) {
-		my @temp = sort {lc($a->{'sortname'}) cmp lc($b->{'sortname'})} @{$result};
+		my @temp = sort {lc($a->{'groupsortname'}) cmp lc($b->{'groupsortname'})} @{$result};
 		$result = \@temp;
 		$log->debug('Got sorted array: '.$result);
 	}
@@ -2918,6 +2924,7 @@ sub getDynamicPlayLists {
 			my %currentResult = (
 				'id' => $id,
 				'name' => $name,
+				'playlistsortname' => $name,
 				'playlistcategory' => 'static LMS playlists',
 				'url' => $playlisturl,
 				'groups' => [['Static Playlists']]
@@ -2946,15 +2953,18 @@ sub getDynamicPlayLists {
 	if ($localDynamicPlaylists) {
 		foreach my $playlist (sort keys %{$localDynamicPlaylists}) {
 			my $current = $localDynamicPlaylists->{$playlist};
-			my $playlistid;
+			my ($playlistid, $playlistsortname);
 			if ($current->{'defaultplaylist'}) {
 				$playlistid = 'dpldefault_'.$playlist;
+				$playlistsortname = '0000001_'.$playlistid;
 			} else {
 				$playlistid = 'dplusercustom_'.$playlist;
+				$playlistsortname = '0000002_dplusercustom_'.$current->{'name'};
 			}
 			my %currentResult = (
 				'id' => $playlist,
 				'name' => $current->{'name'},
+				'playlistsortname' => $playlistsortname,
 				'menulisttype' => $current->{'menulisttype'},
 				'playlistcategory' => $current->{'playlistcategory'},
 				'playlisttrackorder' => $current->{'playlisttrackorder'},
@@ -3298,6 +3308,7 @@ sub getLocalDynamicPlaylists {
 					my $parsedContent = parseContent($client, $item, $content);
 					if ($localDefDir eq $pluginPlaylistFolder) {
 						$parsedContent->{'defaultplaylist'} = 1;
+						$parsedContent->{'playlistsortname'} = ''.$parsedContent->{'name'};
 					} else {
 						$parsedContent->{'customplaylist'} = 1;
 					}
@@ -4048,7 +4059,7 @@ sub setModeMixer {
 	my $playlisttype = $client->modeParam('playlisttype');
 	my $showFlat = $prefs->get('flatlist');
 	if ($showFlat || defined($client->modeParam('flatlist'))) {
-		foreach my $flatItem (sort keys %{$playLists}) {
+		foreach my $flatItem (sort { $playLists->{$a}->{'playlistsortname'} cmp $playLists->{$b}->{'playlistsortname'}; } keys %{$playLists}) {
 			my $playlist = $playLists->{$flatItem};
 			if ($playlist->{'dynamicplaylistenabled'}) {
 				my %flatPlaylistItem = (
@@ -4066,13 +4077,13 @@ sub setModeMixer {
 			}
 		}
 	} else {
-		foreach my $menuItemKey (sort keys %{$playListItems}) {
+		foreach my $menuItemKey (sort { $playListItems->{$a}->{'playlistsortname'} cmp $playListItems->{$b}->{'playlistsortname'}; } keys %{$playListItems}) {
 			if ($playListItems->{$menuItemKey}->{'dynamicplaylistenabled'}) {
 				if (!defined($playlisttype)) {
 					if (!defined $playListItems->{$menuItemKey}->{'playlist'} && $customsortnames{$playListItems->{$menuItemKey}->{'name'}}) {
-						$playListItems->{$menuItemKey}->{'sortname'} = $customsortnames{$playListItems->{$menuItemKey}->{'name'}};
+						$playListItems->{$menuItemKey}->{'groupsortname'} = $customsortnames{$playListItems->{$menuItemKey}->{'name'}};
 					} else {
-						$playListItems->{$menuItemKey}->{'playlist'}->{'sortname'} = $playListItems->{$menuItemKey}->{'playlist'}->{'name'};
+						$playListItems->{$menuItemKey}->{'playlist'}->{'groupsortname'} = $playListItems->{$menuItemKey}->{'playlist'}->{'name'};
 					}
 					push @listRef, $playListItems->{$menuItemKey};
 			} else {
@@ -4080,13 +4091,13 @@ sub setModeMixer {
 						my $playlist = $playListItems->{$menuItemKey}->{'playlist'};
 						if (defined($playlist->{'parameters'}) && defined($playlist->{'parameters'}->{'1'}) && ($playlist->{'parameters'}->{'1'}->{'type'} eq $playlisttype || ($playlist->{'parameters'}->{'1'}->{'type'} =~ /^custom(.+)$/ && $1 eq $playlisttype))) {
 							if ($playlist->{'name'}) {
-								$playlist->{'sortname'} = $playlist->{'name'};
+								$playlist->{'groupsortname'} = $playlist->{'name'};
 							}
 							push @listRef, $playListItems->{$menuItemKey};
 						}
 					} else {
 						if ($customsortnames{$playListItems->{$menuItemKey}->{'name'}}) {
-							$playListItems->{$menuItemKey}->{'sortname'} = $customsortnames{$playListItems->{$menuItemKey}->{'name'}};
+							$playListItems->{$menuItemKey}->{'groupsortname'} = $customsortnames{$playListItems->{$menuItemKey}->{'name'}};
 						}
 						push @listRef, $playListItems->{$menuItemKey};
 					}
@@ -4103,16 +4114,16 @@ sub setModeMixer {
 	}
 
 	@listRef = sort {
-		if (defined($a->{'sortname'}) && defined($b->{'sortname'})) {
-			return lc($a->{'sortname'}) cmp lc($b->{'sortname'});
+		if (defined($a->{'groupsortname'}) && defined($b->{'groupsortname'})) {
+			return lc($a->{'groupsortname'}) cmp lc($b->{'groupsortname'});
 		}
-		if (defined($a->{'sortname'}) && !defined($b->{'sortname'})) {
-			return lc($a->{'sortname'}) cmp lc($b->{'playlist'}->{'sortname'});
+		if (defined($a->{'groupsortname'}) && !defined($b->{'groupsortname'})) {
+			return lc($a->{'groupsortname'}) cmp lc($b->{'playlist'}->{'groupsortname'});
 		}
-		if (!defined($a->{'sortname'}) && defined($b->{'sortname'})) {
-			return lc($a->{'playlist'}->{'sortname'}) cmp lc($b->{'sortname'});
+		if (!defined($a->{'groupsortname'}) && defined($b->{'groupsortname'})) {
+			return lc($a->{'playlist'}->{'groupsortname'}) cmp lc($b->{'groupsortname'});
 		}
-		return lc($a->{'playlist'}->{'sortname'}) cmp lc($b->{'playlist'}->{'sortname'})
+		return lc($a->{'playlist'}->{'groupsortname'}) cmp lc($b->{'playlist'}->{'groupsortname'})
 	} @listRef;
 
 	# use PLUGIN.DynamicPlaylists3.Choice to display the list of feeds
@@ -4425,11 +4436,11 @@ sub getSetModeDataForSubItems {
 	}
 
 	@listRefSub = sort {
-		if (defined($a->{'dynamicplaylistid'}) && defined($b->{'dynamicplaylistid'})) {
-			return lc($a->{'dynamicplaylistid'}) cmp lc($b->{'dynamicplaylistid'});
+		if (defined($a->{'playlistsortname'}) && defined($b->{'playlistsortname'})) {
+			return lc($a->{'playlistsortname'}) cmp lc($b->{'playlistsortname'});
 		}
-		if (defined($a->{'playlist'}->{'dynamicplaylistid'}) && defined($b->{'playlist'}->{'dynamicplaylistid'})) {
-			return lc($a->{'playlist'}->{'dynamicplaylistid'}) cmp lc($b->{'playlist'}->{'dynamicplaylistid'});
+		if (defined($a->{'playlist'}->{'playlistsortname'}) && defined($b->{'playlist'}->{'playlistsortname'})) {
+			return lc($a->{'playlist'}->{'playlistsortname'}) cmp lc($b->{'playlist'}->{'playlistsortname'});
 		}
 		if (defined($a->{'name'}) && defined($b->{'name'})) {
 			return lc($a->{'name'}) cmp lc($b->{'name'});
