@@ -2959,7 +2959,11 @@ sub getDynamicPlayLists {
 				$playlistsortname = '0000001_'.$playlistid;
 			} else {
 				$playlistid = 'dplusercustom_'.$playlist;
-				$playlistsortname = '0000002_dplusercustom_'.$current->{'name'};
+				if ((!$current->{'playlistcategory'} || $current->{'playlistcategory'} eq '') && $prefs->get('unclassified_sortbyid')) {
+					$playlistsortname = '0000002_dplusercustom_'.$playlistid;
+				} else {
+					$playlistsortname = '0000002_dplusercustom_'.$current->{'name'};
+				}
 			}
 			my %currentResult = (
 				'id' => $playlist,
