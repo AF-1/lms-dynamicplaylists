@@ -106,6 +106,10 @@ The *Not classified* group is a *catch-all group* for all dynamic playlist that 
 Explained in the [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/CLI-commands).
 <br><br>
 
+- »**Some dynamic playlist are not sorted in alphabetical order.**«<br>
+In general *dynamic playlists* will **always** be listed in this order: 1. built-in  2. custom/user-provided  3. provided by other plugins. Dynamic playlists in the last two groups should be listed in *alphabetical* order.<br>**Built-in** dynamic playlists are listed in a '*content-based*' order created by me. For example, I try to group dynamic playlists together that are about ratings, play count or genre/decade selection. If you don't like that don't forget that you can clone these playlists and even put them in a custom playlist group just by adding the corresponding parameter (see [**wiki**](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters)).<br>Static (saved) playlists will always be ordered alphabetically.
+<br><br>
+
 - »**Does DPL replace SQLPlayList and/or CustomSkip?**«<br>
 No. SQLPlayList and CustomSkip3 are **separate** plugins and they have a different focus/job to do. DPL will never have the same features as any of these plugins. You *can* use them but you *don't have to*.<br>Custom Skip **3** works with DPL **3** and SQLPlayList is reported to work (with some limitations and without any guarantees as to how long, see other FAQ).<br>If you're comfortable writing/editing SQLite using custom dynamic playlist definitions you can probably do without them.
 <br><br>
