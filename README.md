@@ -15,23 +15,11 @@ Some preferences are not enabled by default. Please take a look at the preferenc
 ## Installation
 ⚠️ **Please read the [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq) *before* installing this plugin.**<br>
 
-You should be able to install **Dynamic Playlists 3** from the LMS main repository (LMS plugin library): **LMS > Settings > Plugins**.<br><br>
+You should be able to install **Dynamic Playlists 3** from the LMS main repository (LMS plugin library): **LMS > Settings > Plugins**.<br>
 
+If you want to test a new patch that hasn't made it into a release version yet or you need to install a previous version you'll have to [install the plugin manually](https://github.com/AF-1/sobras/wiki/Manual-installation-of-LMS-plugins).
 
-### Manual Installation
-
-- Go to *LMS* > *Settings* > *Plugins* and uninstall the currently installed version of *Dynamic Playlists*.
-- Then go to *LMS* > *Settings* > *Information*. Near the bottom of the page you'll find several plugin folder paths. The *path* you're looking for does **not** include the word *Cache* and it's not the server plugin folder that contains built-in LMS plugins. Examples of correct paths:
-    - *piCorePlayer*: /usr/local/slimserver/Plugins
-    - *Mac*: /Users/yourusername/Library/Application Support/Squeezebox/Plugins
-- now download the *latest* version of *Dynamic Playlists 3* by clicking the green *Code* button and downloading the zip archive. Move the folder called *DynamicPlaylists3* from that archive into the plugin folder mentioned above.
-- restart LMS
-<br><br>
-
-### Manual Uninstall
-
-- delete the folder **DynamicPlaylists3** from your local plugin folder
-- restart LMS
+*Previously released* versions are available here for a *limited* time after the release of a new version. The official LMS plugins page is updated about twice a day so it usually takes a couple of hours before new released versions are listed.
 <br><br><br>
 
 
