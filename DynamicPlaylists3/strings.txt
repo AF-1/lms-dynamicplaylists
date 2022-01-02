@@ -5,7 +5,7 @@ PLUGIN_DYNAMICPLAYLISTS3
 	EN	Dynamic Playlists
 
 PLUGIN_DYNAMICPLAYLISTS3_DESC
-	EN	This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>. Comes with a number of ready-to-use dynamic playlists. In addition you can now <b>use your own custom dynamic playlist</b> definitions <b>directly</b> in DPL without any other intermediary plugins. More information on the github page.
+	EN	This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>. Comes with a number of ready-to-use dynamic playlists. In addition you can now <b>use your own custom dynamic playlist</b> definitions <b>directly</b> in DPL without intermediary plugins. More information on the github page.
 
 PLUGIN_DYNAMICPLAYLISTS3_SETTINGS
 	EN	Various Settings
