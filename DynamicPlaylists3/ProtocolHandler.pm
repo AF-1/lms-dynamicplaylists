@@ -1,6 +1,6 @@
 # 				DynamicPlaylists3 plugin
 #
-# (c) 2021 AF
+# (c) 2021-2022 AF
 #
 # Based on the DynamicPlayList plugin by (c) 2006 Erland Isaksson
 #
@@ -44,7 +44,7 @@ sub overridePlayback {
 		$playlistID= $1;
 	}
 
-	my $command = ["dynamicplaylist", "playlist", "play", "playlistid:".$playlistID];	
+	my $command = ["dynamicplaylist", "playlist", "play", "playlistid:".$playlistID];
 
 	my $cnt = 1;
 	while ($hasParams) {

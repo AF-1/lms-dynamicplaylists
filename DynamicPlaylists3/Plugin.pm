@@ -1,6 +1,6 @@
 #					DynamicPlaylists3 plugin
 #
-# (c) 2021 AF
+# (c) 2021-2022 AF
 #
 # Based on the DynamicPlayList plugin by (c) 2006 Erland Isaksson
 #
