@@ -36,8 +36,6 @@ If you want to test a new patch that hasn't made it into a release version yet o
 
 ## FAQ
 
-# Test
-
 <details><summary>»<b>How do I transition from the old Dynamic Playlists 3 version (before the name change) to the new one?</b>«<br> »<b>I have 2 Dynamic Playlists v<i>3</i> plugins installed now.</b>«<br> »<b>The dynamic playlists I've added to LMS favorites don't work anymore.</b>«</summary><br><p><i>Dynamic Playlists 3</i> has changed its (internal) name. LMS considers it a different plugin now.<br>
 Therefore you'll have to uninstall any previous version of DPL and then install the latest <i>Dynamic Playlists <b>3</b></i> version from the LMS main repository (plugin library).<br>
 Before uninstalling it I recommend taking a screenshot of your plugin settings to make restoring them easier afterwards.<br>
