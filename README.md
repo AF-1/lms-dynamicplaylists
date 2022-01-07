@@ -51,7 +51,7 @@ And since it's a "different" plugin you'll have to remove any playlists you've a
 
 - <b>TrackStat</b> / <b>CustomScan</b>: could work, not tested, not supported.<br>
 
-- <b>MultiLibrary</b>: not supported, unlikely to work without problems because DPL v3 no longer contains code for MultiLibrary. I recommend migrating from the <i>MultiLibrary</i> plugin to native LMS <b>virtual libraries</b>. You can easily create new virtual libraries using saved <b>advanced search</b>es. Then you can use DPL v3 <i>playlist parameters</i> for virtual libraries (ID, name and user input selection).
+- <b>MultiLibrary</b>: might work, not tested, not supported. DPL v3 no longer contains code for MultiLibrary. I recommend migrating from the <i>MultiLibrary</i> plugin to native LMS <b>virtual libraries</b>. You can easily create new virtual libraries using saved <b>advanced search</b>es. Then you can use DPL v3 <i>playlist parameters</i> for virtual libraries (ID, name and user input selection).
 </p></details><br>
 
 <details><summary>»<b>This <i>built-in</i> dynamic playlist is missing a feature that I really want.</b>«</summary><br><p>
