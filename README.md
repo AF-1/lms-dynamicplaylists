@@ -26,7 +26,7 @@ If you want to test a new patch that hasn't made it into a release version yet o
 ## Some changes<br>
 - Comes with ready-to-use dynamic playlists (stand-alone + for context menus).
 - Use **your own custom dynamic playlist files/definitions directly in DPL** without any other intermediary plugin - you don't have to install other plugins (like SQLPlayList or TrackStat) to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
-- New playlist parameters for *virtual libraries*, *multiple genre selection* or *preselecting artists/albums for later use* (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
+- New playlist parameters for **virtual libraries**, **multiple genre selection** or **preselecting artists/albums for later use** (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
 - UI changes and new settings.
 - Separation of stand-alone from context menu dynamic playlists to minimize clutter.
 - Allow other plugins to check if a client is playing a DPL mix, no more clashes with DSTM.
