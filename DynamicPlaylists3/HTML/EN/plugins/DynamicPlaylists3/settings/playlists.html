@@ -22,14 +22,14 @@
 
 	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SELECT_PLAYLISTS" desc="" %]
 		[% FOREACH category = ['songs', 'artists', 'albums', 'genres', 'years', 'playlists'] %]
-			<details><summary><span class="categoryheader">[% category %]</span></summary>
+			<details><summary><span class="categoryheader">[% categorylangstrings.$category %]</span></summary>
 				<table border="0">
 					[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
 						[% IF item.menulisttype != "contextmenu" && item.playlistcategory == category %]
 						<tr class="playlists">
 							[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
 							<td><input type="checkbox" name="[% playlistid %]" id="[% playlistid %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
-							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> (source: [% item.dynamicplaylistpluginshortname | html %])</td>
+							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> ([% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SOURCE" | string %]: [% item.dynamicplaylistpluginshortname | html %])</td>
 						</tr>
 						[% END %]
 					[%- END %]
@@ -38,14 +38,14 @@
 			</details>
 		[% END %]
 		[% IF savedstaticPlaylists %]
-			<details><summary><span class="categoryheader">Static playlists</span></summary>
+			<details><summary><span class="categoryheader">[% "PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS" | string %]</span></summary>
 				<table border="0">
 					[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
 						[% IF item.menulisttype != "contextmenu" && item.playlistcategory == 'static LMS playlists' %]
 						<tr class="playlists">
 							[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
 							<td><input type="checkbox" name="[% playlistid %]" id="[% playlistid %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
-							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> (source: [% item.dynamicplaylistpluginshortname | html %])</td>
+							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> ([% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SOURCE" | string %]: [% item.dynamicplaylistpluginshortname | html %])</td>
 						</tr>
 						[% END %]
 					[%- END %]
@@ -54,14 +54,14 @@
 			</details>
 		[% END %]
 		[% IF unclassifiedPlaylists %]
-			<details><summary><span class="categoryheader">not</span> classified</summary>
+			<details><summary>[% "PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_NOTCLASSIFIED" | string %]</summary>
 				<table border="0">
 					[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
 						[% IF item.menulisttype != "contextmenu" && NOT item.playlistcategory %]
 						<tr class="playlists">
 							[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
 							<td><input type="checkbox" name="[% playlistid %]" id="[% playlistid %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
-							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> (source: [% item.dynamicplaylistpluginshortname | html %])</td>
+							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> ([% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SOURCE" | string %]: [% item.dynamicplaylistpluginshortname | html %])</td>
 						</tr>
 						[% END %]
 					[%- END %]
@@ -72,14 +72,14 @@
 
 	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SELECT_PLAYLISTS_CONTEXTMENU" desc="" %]
 		[% FOREACH category = ['artists', 'albums', 'genres', 'years', 'playlists'] %]
-			<details><summary><span class="categoryheader">[% category %]</span></summary>
+			<details><summary><span class="categoryheader">[% categorylangstrings.$category %]</span></summary>
 				<table border="0">
 					[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
 						[% IF item.menulisttype == "contextmenu" && item.playlistcategory == category %]
 						<tr class="playlists">
 							[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
 							<td><input type="checkbox" name="[% playlistid %]" id="[% playlistid %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
-							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> (source: [% item.dynamicplaylistpluginshortname | html %])</td>
+							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> ([% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SOURCE" | string %]: [% item.dynamicplaylistpluginshortname | html %])</td>
 						</tr>
 						[% END %]
 					[%- END %]
@@ -88,14 +88,14 @@
 			</details>
 		[% END %]
 		[% IF unclassifiedContextMenuPlaylists %]
-			<details><summary><span class="categoryheader">not</span> classified</summary>
+			<details><summary>[% "PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_NOTCLASSIFIED" | string %]</summary>
 				<table border="0">
 				[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
 					[% IF item.menulisttype == "contextmenu" && NOT item.playlistcategory %]
 					<tr class="playlists">
 						[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
 						<td><input type="checkbox" name="[% playlistid %]" id="[% playlistid %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
-						<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> (source: [% item.dynamicplaylistpluginshortname | html %])</td>
+						<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> ([% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SOURCE" | string %]: [% item.dynamicplaylistpluginshortname | html %])</td>
 					</tr>
 					[% END %]
 				[%- END %]

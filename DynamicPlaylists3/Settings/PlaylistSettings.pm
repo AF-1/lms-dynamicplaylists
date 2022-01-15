@@ -30,6 +30,7 @@ use File::Next;
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
 use Slim::Utils::Misc;
+use Slim::Utils::Strings qw(string);
 use Data::Dumper;
 
 my $prefs = preferences('plugin.dynamicplaylists3');
@@ -71,6 +72,16 @@ sub handler {
 	$paramRef->{'pluginDynamicPlaylists3PlayLists'} = $playLists;
 	my @groupPath = ();
 	my @groupResult = ();
+
+	my $categorylangstrings = {
+		'songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_TRACKS"),
+		'artists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ARTISTS"),
+		'albums' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ALBUMS"),
+		'genres' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_GENRES"),
+		'years' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_YEARS"),
+		'playlists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_PLAYLISTS")
+	};
+	$paramRef->{'categorylangstrings'} = $categorylangstrings;
 
 	$paramRef->{'savedstaticPlaylists'} = $savedstaticPlaylists;
 	$paramRef->{'unclassifiedPlaylists'} = $unclassifiedPlaylists->{'unclassifiedPlaylists'};

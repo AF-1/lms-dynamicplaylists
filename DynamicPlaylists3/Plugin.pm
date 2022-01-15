@@ -252,9 +252,9 @@ sub initPlayLists {
 
 				my $pluginshortname = $plugin;
 				if (starts_with($item, 'dpldefault_') == 0) {
-					$pluginshortname = 'Dynamic Playlists v3 - built-in';
+					$pluginshortname = 'Dynamic Playlists v3 - '.string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLBUILTIN");
 				} elsif (starts_with($item, 'dplusercustom_') == 0) {
-					$pluginshortname = 'Dynamic Playlists v3 - custom/user-provided';
+					$pluginshortname = 'Dynamic Playlists v3 - '.string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLCUSTOM");
 				} elsif (starts_with($item, 'dplstandardpl_') == 0) {
 					$pluginshortname = 'Static LMS playlist';
 					$savedstaticPlaylists = 'found saved static playlists';
@@ -1088,7 +1088,7 @@ sub getVirtualLibraries {
 		$log->debug('VL: '.$name.' ('.$count.')');
 
 		push @items, {
-			name => Slim::Utils::Unicode::utf8decode($name, 'utf8').' ('.$count.($count == 1 ? ' track)' : ' tracks)'),
+			name => Slim::Utils::Unicode::utf8decode($name, 'utf8').' ('.$count.($count == 1 ? ' '.string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_TRACK").')' : ' '.string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_TRACKS").')'),
 			sortName => Slim::Utils::Unicode::utf8decode($name, 'utf8'),
 			value => qq('$k'),
 			id => qq('$k'),
@@ -1096,7 +1096,7 @@ sub getVirtualLibraries {
 	}
 	if (scalar @items == 0) {
 		push @items, {
-			name => 'complete library',
+			name => string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_COMPLETELIB"),
 			sortName => 'complete library',
 			value => qq(''),
 			id => qq(''),
@@ -1563,7 +1563,7 @@ sub getPlayListGroupsForContext {
 			my $item = $currentItems->{$itemKey};
 			if (!defined($item->{'playlist'}) && defined($item->{'name'})) {
 				my $currentUrl = $url.'&group'.$level.'='.escape($item->{'name'});
-				my $sortname;
+				my ($sortname, $displayname);
 				if (($level == 1) && ($customsortnames{$item->{'name'}})) {
 					$sortname = $customsortnames{$item->{'name'}};
 				} else {

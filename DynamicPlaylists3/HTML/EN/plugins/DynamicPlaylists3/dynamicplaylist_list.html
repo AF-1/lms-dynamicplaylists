@@ -30,7 +30,7 @@ href="[% webroot %]
 		[% "NO_PLAYER_FOUND" | string %]
 	[% ELSE %]
 		<br>
-		[% IF activeClientMixName %]<span class="boldtitle">Active</span> dynamic playlist for client "[% activeClientName %]": <span class="boldtitle">[% activeClientMixName %]</span><br><br>
+		[% IF activeClientMixName %][% "PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_ACTIVEDPL" | string %] "[% activeClientName %]": <span class="boldtitle">[% activeClientMixName %]</span><br><br>
 		[% END %]
 
 		[% IF pluginDynamicPlaylists3preselectionListArtists %]
