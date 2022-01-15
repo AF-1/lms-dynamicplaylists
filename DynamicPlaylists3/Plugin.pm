@@ -1563,7 +1563,7 @@ sub getPlayListGroupsForContext {
 			my $item = $currentItems->{$itemKey};
 			if (!defined($item->{'playlist'}) && defined($item->{'name'})) {
 				my $currentUrl = $url.'&group'.$level.'='.escape($item->{'name'});
-				my ($sortname, $displayname);
+				my $sortname;
 				if (($level == 1) && ($customsortnames{$item->{'name'}})) {
 					$sortname = $customsortnames{$item->{'name'}};
 				} else {
