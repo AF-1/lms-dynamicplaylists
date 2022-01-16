@@ -1155,10 +1155,10 @@ sub getTracksForPlaylist {
 
 sub toggleGenreSelectionState {
 	my $request = shift;
-
 	my $client = $request->client();
 	my $genre = $request->getParam('_genre');
 	my $value = $request->getParam('_value');
+
 	my $genres = getGenres($client);
 	$genres->{$genre}->{'selected'} = $value;
 	my @selected = ();
@@ -1173,7 +1173,7 @@ sub toggleGenreSelectionState {
 sub toggleGenreSelectionStateIP3k {
 	my ($client, $item) = @_;
 
-	if ($item->{'name'} eq 'Next' || $item->{'name'} eq 'Play') {
+	if ($item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_NEXT') || $item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_PLAY')) {
 		my $parameterId = $client->modeParam('dynamicplaylist_nextparameter');
 		my $playlist = $client->modeParam('dynamicplaylist_selectedplaylist');
 		my $selectedGenres_IDString = getMultipleGenresSelIDString($client);
@@ -1541,6 +1541,16 @@ sub getPlayListGroupsForContext {
 	}
 
 	my %customsortnames = ($prefs->get('favouritesname') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
+	my %categorylangstrings = (
+		'Songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_TRACKS"),
+		'Artists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ARTISTS"),
+		'Albums' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ALBUMS"),
+		'Genres' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_GENRES"),
+		'Years' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_YEARS"),
+		'Playlists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_PLAYLISTS"),
+		'Static Playlists' => string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS"),
+		'Not classified' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_NOTCLASSIFIED")
+	);
 
 	if (defined($params->{'group'.$level})) {
 		my $group = unescape($params->{'group'.$level});
@@ -1563,15 +1573,21 @@ sub getPlayListGroupsForContext {
 			my $item = $currentItems->{$itemKey};
 			if (!defined($item->{'playlist'}) && defined($item->{'name'})) {
 				my $currentUrl = $url.'&group'.$level.'='.escape($item->{'name'});
-				my $sortname;
+				my ($sortname, $displayname);
 				if (($level == 1) && ($customsortnames{$item->{'name'}})) {
 					$sortname = $customsortnames{$item->{'name'}};
 				} else {
 					$sortname = $item->{'name'};
 				}
+				if (($level == 1) && ($categorylangstrings{$item->{'name'}})) {
+					$displayname = $categorylangstrings{$item->{'name'}};
+				} else {
+					$displayname = $item->{'name'};
+				}
 				my %resultItem = (
 					'url' => $currentUrl,
 					'name' => $item->{'name'},
+					'displayname' => $displayname,
 					'groupsortname' => $sortname,
 					'dynamicplaylistenabled' => $item->{'dynamicplaylistenabled'}
 				);
@@ -1654,16 +1670,42 @@ sub getPlayListGroups {
 			}
 
 			my %customsortnames = ($prefs->get('favouritesname') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
-			my $sortname;
+			my %categorylangstrings = (
+				'Songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_TRACKS"),
+				'Artists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ARTISTS"),
+				'Albums' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ALBUMS"),
+				'Genres' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_GENRES"),
+				'Years' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_YEARS"),
+				'Playlists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_PLAYLISTS"),
+				'Static Playlists' => string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS"),
+				'Not classified' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_NOTCLASSIFIED")
+			);
+			my ($sortname, $displayname);
 			if (($groupName eq '') && ($customsortnames{$item->{'name'}})) {
 				$sortname = $customsortnames{$item->{'name'}}.'/';
 			} else {
-				$sortname = $groupName.$item->{'name'}.'/';
+				if (starts_with($groupName, 'Static Playlists/') == 0) {
+					my $groupSortName = $groupName;
+					$groupSortName =~ s/Static Playlists/00008_static_LMS_playlists/g;
+					$sortname = $groupSortName.$item->{'name'}.'/';
+				} else {
+					$sortname = $groupName.$item->{'name'}.'/';
+				}
+			}
+			if (($groupName eq '') && ($categorylangstrings{$item->{'name'}})) {
+				$displayname = $categorylangstrings{$item->{'name'}};
+			} else {
+				if (starts_with($groupName, 'Static Playlists/') == 0) {
+					my $statPL_localized = string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS");
+					$groupName =~ s/Static Playlists/$statPL_localized/g;
+				}
+				$displayname = $groupName.$item->{'name'};
 			}
 
 			my %resultItem = (
 				'id' => escape($groupId.'_'.$item->{'name'}),
 				'name' => $groupName.$item->{'name'}.'/',
+				'displayname' => $displayname,
 				'groupsortname' => $sortname,
 				'dynamicplaylistenabled' => $item->{'dynamicplaylistenabled'}
 			);
@@ -2023,7 +2065,11 @@ sub cliJiveHandler {
 		if ($item->{'dynamicplaylistenabled'}) {
 			my $name;
 			my $id;
-			$name = $item->{'name'};
+			if ($item->{'displayname'}) {
+				$name = $item->{'displayname'};
+			} else {
+				$name = $item->{'name'};
+			}
 			$id = escape($item->{'name'});
 
 			my %itemParams = ();
@@ -4056,7 +4102,16 @@ sub setModeMixer {
 	}
 	my $masterClient = masterOrSelf($client);
 	my %customsortnames = ($prefs->get('favouritesname') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
-
+	my %categorylangstrings = (
+		'Songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_TRACKS"),
+		'Artists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ARTISTS"),
+		'Albums' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ALBUMS"),
+		'Genres' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_GENRES"),
+		'Years' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_YEARS"),
+		'Playlists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_PLAYLISTS"),
+		'Static Playlists' => string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS"),
+		'Not classified' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_NOTCLASSIFIED")
+	);
 	my @listRef = ();
 	initPlayLists($client);
 	initPlayListTypes();
@@ -4086,6 +4141,11 @@ sub setModeMixer {
 				if (!defined($playlisttype)) {
 					if (!defined $playListItems->{$menuItemKey}->{'playlist'} && $customsortnames{$playListItems->{$menuItemKey}->{'name'}}) {
 						$playListItems->{$menuItemKey}->{'groupsortname'} = $customsortnames{$playListItems->{$menuItemKey}->{'name'}};
+						if ($categorylangstrings{$playListItems->{$menuItemKey}->{'name'}}) {
+							$playListItems->{$menuItemKey}->{'displayname'} = $categorylangstrings{$playListItems->{$menuItemKey}->{'name'}};
+						} else {
+							$playListItems->{$menuItemKey}->{'displayname'} = $playListItems->{$menuItemKey}->{'name'};
+						}
 					} else {
 						$playListItems->{$menuItemKey}->{'playlist'}->{'groupsortname'} = $playListItems->{$menuItemKey}->{'playlist'}->{'name'};
 					}
@@ -4625,7 +4685,12 @@ sub getDisplayText {
 	my $id = undef;
 	my $name = '';
 	if ($item) {
-		$name = $item->{'name'};
+		my $displayname;
+		if ($item->{'displayname'}) {
+			$name = $item->{'displayname'};
+		} else {
+			$name = $item->{'name'};
+		}
 		if ($name eq '' && defined($item->{'playlist'})) {
 			$name = $item->{'playlist'}->{'name'};
 			$id = $item->{'playlist'}->{'dynamicplaylistid'};
@@ -4682,7 +4747,7 @@ sub getOverlay {
 sub getGenreOverlay {
 	my ($client, $item) = @_;
 
-	if ($item->{'name'} eq 'Next' || $item->{'name'} eq 'Play') {
+	if ($item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_NEXT') || $item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_PLAY')) {
 		return [undef, $client->symbols('rightarrow')];
 	} else {
 		my $value = 0;

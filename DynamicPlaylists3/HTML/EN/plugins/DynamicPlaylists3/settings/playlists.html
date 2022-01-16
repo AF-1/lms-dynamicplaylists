@@ -11,7 +11,7 @@
 				<tr>
 					[%- groupid = "playlist_" _ group.id %]
 					<td colspan="3"><input type="checkbox" name="[% groupid %]" id="[% groupid %]" value="1" [% group.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
-					<label for="[% groupid %]">[% group.name | html %]</label></td>
+					<label for="[% groupid %]">[% group.displayname | html %]</label></td>
 				</tr>
 				[%- END %]
 				[% END %]

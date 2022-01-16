@@ -39,7 +39,7 @@
 [% END %]
 
 [% BLOCK dpcontentitemgroup %]
-	<a href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_list.html?[% group.url %]&amp;player=[% player | uri %]">[% IF group.name != group.groupsortname %]<span class="emphbold">[% END %][% group.name %]/[% IF group.name != group.groupsortname %]</span>[% END %]</a>
+	<a href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_list.html?[% group.url %]&amp;player=[% player | uri %]">[% IF group.name != group.groupsortname %]<span class="emphbold">[% END %][% group.displayname %]/[% IF group.name != group.groupsortname %]</span>[% END %]</a>
 [% END %]
 
 [% BLOCK dpcontentitemplaylist %]
