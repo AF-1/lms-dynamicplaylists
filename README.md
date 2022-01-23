@@ -34,6 +34,13 @@ If you want to test a new patch that hasn't made it into a release version yet o
 <br><br><br>
 
 
+## Translation
+The [**strings.txt**](https://github.com/AF-1/lms-dynamicplaylists/blob/main/DynamicPlaylists3/strings.txt) file contains all localizable strings. Once you're done testing the plugin with your translated strings just create a pull request on GitHub. If that doesn't work for you post the updated file as an attachment in the [forum](https://forums.slimdevices.com/showthread.php?115073-Announce-Dynamic-Playlists-3-(mod)).<br><br>
+It's probably not a bad idea to keep the translated sentences roughly as long as the original ones and to avoid special characters.<br>
+Please keep in mind that some of these strings are supposed to be displayed on different UIs. My tests usually cover the LMS default skin, piCorePlayer and maybe Boom if applicable.
+<br><br><br><br>
+
+
 ## FAQ
 
 <details><summary>»<b>How do I transition from the old Dynamic Playlists 3 version (before the name change) to the new one?</b>«<br> »<b>I have 2 Dynamic Playlists v<i>3</i> plugins installed now.</b>«<br> »<b>The dynamic playlists I've added to LMS favorites don't work anymore.</b>«</summary><br><p><i>Dynamic Playlists 3</i> has changed its (internal) name. LMS considers it a different plugin now.<br>
