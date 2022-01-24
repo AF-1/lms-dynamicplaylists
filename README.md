@@ -2,7 +2,7 @@ Dynamic Playlists 3
 ====
 
 This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>.<br>
-It comes with a number of ready-to-use dynamic playlists. In addition you can now <b>use your own custom dynamic playlist</b> definitions <b>directly</b> in this plugin, you don't need other intermediary plugins for that.<br>*Dynamic Playlists 3* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). Based on Erland's <i>DynamicPlayList</i> plugin.<br><br>
+*Dynamic Playlists 3* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order).<br>Based on Erland's <i>DynamicPlayList</i> plugin.<br><br>
 Some preferences are not enabled by default. Please take a look at the preferences and their description on the plugin's settings page.
 <br><br>
 
@@ -19,18 +19,18 @@ You should be able to install **Dynamic Playlists 3** from the LMS main reposito
 
 If you want to test a new patch that hasn't made it into a release version yet or you need to install a previous version you'll have to [install the plugin manually](https://github.com/AF-1/sobras/wiki/Manual-installation-of-LMS-plugins).
 
-*Previously released* versions are available here for a *limited* time after the release of a new version. The official LMS plugins page is updated about twice a day so it usually takes a couple of hours before new released versions are listed.
+*Previously released* versions are available here for a very *limited* time after the release of a new version. The official LMS plugins page is updated about twice a day so it usually takes a couple of hours before new released versions are listed.
 <br><br><br>
 
 
-## Some changes<br>
-- Comes with ready-to-use dynamic playlists (stand-alone + for context menus).
-- Use **your own custom dynamic playlist files/definitions directly in DPL** without any other intermediary plugin - you don't have to install other plugins (like SQLPlayList or TrackStat) to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
-- New playlist parameters for **virtual libraries**, **multiple genre selection** or **preselecting artists/albums for later use** (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
-- UI changes and new settings.
-- Separation of stand-alone from context menu dynamic playlists to minimize clutter.
-- Allow other plugins to check if a client is playing a DPL mix, no more clashes with DSTM.
-- …
+## Features:
+* Use **your own custom dynamic playlist files/definitions directly in DPL** without any other intermediary plugin - you don't have to install other plugins (like SQLPlayList or TrackStat) to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
+* Comes with 100+ ready-to-use dynamic playlists (stand-alone + for context menus).
+* New playlist parameters (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)). For example:
+    * use LMS **virtual libraries**
+    * **Multiple** genre selection
+    * **Pre**select multiple artists or albums from their context menu at your leisure. DPL remembers your **pre**selection so that you can easily use it later with dynamic playlists that feature this playlist parameter.
+* New preference options and UI changes.
 <br><br><br>
 
 
