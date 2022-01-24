@@ -2,7 +2,7 @@ Dynamic Playlists 3
 ====
 
 This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>.<br>
-*Dynamic Playlists 3* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order).<br>Based on Erland's <i>DynamicPlayList</i> plugin.<br><br>
+*Dynamic Playlists 3* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). Based on Erland's <i>DynamicPlayList</i> plugin.<br><br>
 Some preferences are not enabled by default. Please take a look at the preferences and their description on the plugin's settings page.
 <br><br>
 
@@ -24,13 +24,14 @@ If you want to test a new patch that hasn't made it into a release version yet o
 
 
 ## Features:
-* Use **your own custom dynamic playlist files/definitions directly in DPL** without any other intermediary plugin - you don't have to install other plugins (like SQLPlayList or TrackStat) to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
+* Use **your own custom dynamic playlist files/definitions directly in DPL** without intermediary plugins - you don't have to install other plugins (like SQLPlayList or TrackStat) to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
 * Comes with 100+ ready-to-use dynamic playlists (stand-alone + for context menus).
 * New playlist parameters (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)). For example:
     * use LMS **virtual libraries**
-    * **Multiple** genre selection
+    * **multiple** genre selection
     * **Pre**select multiple artists or albums from their context menu at your leisure. DPL remembers your **pre**selection so that you can easily use it later with dynamic playlists that feature this playlist parameter.
 * New preference options and UI changes.
+* …
 <br><br><br>
 
 
