@@ -27,7 +27,7 @@ create temporary table dynamicplaylist_random_albums as
 					else 1
 				end
 		group by tracks.album
-			having totaltrackcount > 'PlaylistMinAlbumTracks'
+			having totaltrackcount >= 'PlaylistMinAlbumTracks'
 		order by random()
 		limit 1;
 select distinct tracks.url from tracks

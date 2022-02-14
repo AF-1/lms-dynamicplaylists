@@ -31,7 +31,7 @@ create temporary table dynamicplaylist_random_contributors as
 				end
 		group by contributor_track.contributor
 			having
-				totaltrackcount > 'PlaylistMinArtistTracks'
+				totaltrackcount >= 'PlaylistMinArtistTracks'
 				and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-max(ifnull(tracks_persistent.lastPlayed,0))) > 0)
 		order by random()
 		limit 1;

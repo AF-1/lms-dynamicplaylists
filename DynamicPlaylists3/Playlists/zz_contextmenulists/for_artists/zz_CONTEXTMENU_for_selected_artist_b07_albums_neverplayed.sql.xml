@@ -32,7 +32,7 @@ create temporary table dynamicplaylist_random_albums as
 							genre_track.genre=genres.id and
 							genres.name in ('PlaylistExcludedGenres'))
 	group by tracks.album
-		having totaltrackcount > 'PlaylistMinArtistTracks' and sumplaycount = 0
+		having totaltrackcount >= 'PlaylistMinArtistTracks' and sumplaycount = 0
 	order by random()
 	limit 1;
 select distinct tracks.url from tracks

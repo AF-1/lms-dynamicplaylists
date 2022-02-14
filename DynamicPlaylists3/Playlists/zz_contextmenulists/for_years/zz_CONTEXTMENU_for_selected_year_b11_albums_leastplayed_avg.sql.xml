@@ -33,7 +33,7 @@ create temporary table dynamicplaylist_random_albums as
 								genre_track.genre=genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 		group by tracks.album
-			having totaltrackcount > 'PlaylistMinAlbumTracks'
+			having totaltrackcount >= 'PlaylistMinAlbumTracks'
 		order by avgcount asc, random()
 		limit 30) as leastavgplayed
 	order by random()

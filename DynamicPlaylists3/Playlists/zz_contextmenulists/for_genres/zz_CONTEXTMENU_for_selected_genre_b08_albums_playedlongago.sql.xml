@@ -27,7 +27,7 @@ create temporary table dynamicplaylist_random_albums as
 					else 1
 				end
 		group by tracks.album
-			having totaltrackcount > 'PlaylistMinAlbumTracks' and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-max(ifnull(tracks_persistent.lastPlayed,0))) > 0)
+			having totaltrackcount >= 'PlaylistMinAlbumTracks' and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-max(ifnull(tracks_persistent.lastPlayed,0))) > 0)
 		order by random()
 		limit 1;
 select distinct tracks.url from tracks
