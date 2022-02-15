@@ -31,7 +31,7 @@ create temporary table dynamicplaylist_random_contributors as
 									genre_track.genre = genres.id and
 									genres.name in ('PlaylistExcludedGenres'))
 			group by contributor_track.contributor
-				having totaltrackcount > 'PlaylistMinArtistTracks' and sumrating = 0
+				having totaltrackcount >= 'PlaylistMinArtistTracks' and sumrating = 0
 			order by sumrating asc, random()
 			limit 30) as notrated
 	where sumrating = 0

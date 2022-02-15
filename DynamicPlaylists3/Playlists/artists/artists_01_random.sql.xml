@@ -28,7 +28,7 @@ create temporary table dynamicplaylist_random_contributors as
 					else 1
 				end
 		group by contributor_track.contributor
-			having totaltrackcount > 'PlaylistMinArtistTracks'
+			having totaltrackcount >= 'PlaylistMinArtistTracks'
 		order by random()
 		limit 1;
 select distinct tracks.url from tracks

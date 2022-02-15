@@ -28,7 +28,7 @@ create temporary table dynamicplaylist_random_albums as
 					else 1
 				end
 		group by tracks.album
-			having totaltrackcount > 'PlaylistMinAlbumTracks'
+			having totaltrackcount >= 'PlaylistMinAlbumTracks'
 		order by avgrating desc, random()
 		limit 30) as topavgrated
 	order by random()

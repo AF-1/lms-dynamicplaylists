@@ -35,7 +35,7 @@ create temporary table dynamicplaylist_random_contributors as
 								genre_track.genre=genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 		group by contributor_track.contributor
-			having totaltrackcount > 'PlaylistMinArtistTracks'
+			having totaltrackcount >= 'PlaylistMinArtistTracks'
 		order by avgcount desc, random()
 		limit 30) as mostavgplayed
 	order by random()
