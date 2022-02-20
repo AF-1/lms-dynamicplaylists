@@ -78,6 +78,8 @@ my $deleteAllQueues = 0;
 my %empty = ();
 my %choiceMapping;
 
+my $dstm_enabled;
+
 sub initPlugin {
 	my $class = shift;
 	$class->SUPER::initPlugin(@_);
@@ -134,10 +136,12 @@ sub initPlugin {
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlists', '_all', '_start', '_itemsPerResponse'], [1, 1, 0, \&cliGetPlaylists]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'play'], [1, 0, 1, \&cliPlayPlaylist]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'add'], [1, 0, 1, \&cliAddPlaylist]);
+	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'dstmplay'], [1, 0, 1, \&cliDstmSeedListPlay]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'continue'], [1, 0, 1, \&cliContinuePlaylist]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'stop'], [1, 0, 0, \&cliStopPlaylist]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'browsejive', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJiveHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'jiveplaylistparameters', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJivePlaylistParametersHandler]);
+	Slim::Control::Request::addDispatch(['dynamicplaylist', 'actionsmenu'], [1, 1, 1, \&_cliJiveActionsMenuHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'mixjive'], [1, 1, 1, \&cliMixJiveHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'preselect'], [1, 1, 1, \&_preselectionMenuJive]);
 	Slim::Control::Request::addDispatch(['dynamicplaylistselectgenre', '_genre', '_value'], [1, 0, 0, \&toggleGenreSelectionState]);
@@ -157,6 +161,9 @@ sub postinitPlugin {
 	initPlayListTypes();
 	registerJiveMenu($class);
 	registerStandardContextMenus();
+	Slim::Utils::Timers::setTimer(undef, Time::HiRes::time() + 8, sub {
+		$dstm_enabled = Slim::Utils::PluginManager->isEnabled('Slim::Plugin::DontStopTheMusic::Plugin');
+	});
 }
 
 sub initPrefs {
@@ -191,6 +198,7 @@ sub initPrefs {
 		period_playedlongago => 2,
 		minartisttracks => 3,
 		minalbumtracks => 3,
+		dstmstartindex => 1,
 		rememberactiveplaylist => 1,
 		groupunclassifiedcustomplaylists => 1,
 		showactiveplaylistinmainmenu => 1,
@@ -401,6 +409,7 @@ sub initPlayLists {
 	$playLists = \%localPlayLists;
 	$playListItems = \%localPlayListItems;
 	$log->debug('localPlayListItems = '.Dumper(\%localPlayListItems));
+	#$log->debug('playLists = '.Dumper($playLists));
 
 	return ($playLists, $playListItems, \%unclassifiedPlaylists, $savedstaticPlaylists);
 }
@@ -517,8 +526,8 @@ sub findAndAdd {
 	my $item = shift @{$totalItems};
 
 	if ($item && ref($item)) {
-		my $string = $item->title;
-		$log->debug((($addOnly || $continue) ? 'Adding ' : 'Playing ')."$type: $string, ".($item->id));
+		my $itemTitle = $item->title;
+		$log->debug((($addOnly || $continue) ? 'Adding ' : 'Playing ')."$type: $itemTitle, ".($item->id));
 
 		# Replace the current playlist with the first item / track or add it to end
 		my $request = $client->execute(['playlist', ($addOnly || $continue) ? 'addtracks' : 'loadtracks', sprintf('%s=%d', getLinkAttribute('track'), $item->id)]);
@@ -577,11 +586,11 @@ sub playRandom {
 
 	Slim::Utils::Timers::killTimers($client, \&playRandom);
 
-	# String to show with showBriefly
-	my $string = '';
+	# Playlist name for (showBriefly) status message
+	my $playlistName = '';
 	my $playlist = getPlayList($client, $type);
 	if ($playlist) {
-		$string = $playlist->{'name'};
+		$playlistName = $playlist->{'name'};
 	}
 
 	# Strings for non-track modes could be long so need some time to scroll
@@ -712,22 +721,24 @@ sub playRandom {
 			# is added
 			if (!$addOnly || $type ne $mixInfo{$masterClient}->{'type'}) {
 				# Don't do showBrieflys if visualiser screensavers are running as the display messes up
+				my $statusmsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING');
+				$statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_STATUSMSG') if $addOnly == 3;
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-					$client->showBriefly({'line' => [string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING'),
-										 $string]}, $showTime);
+					$client->showBriefly({'line' => [$statusmsg,
+										 $playlistName]}, $showTime);
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
-					my $materialMsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'NOW_PLAYING').': '.$string;
+					my $materialMsg = $statusmsg.' '.$playlistName;
 					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 				}
 			}
 		} elsif ($showFeedback) {
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 					$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED'),
-										 string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$string]}, $showTime);
+										 string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName]}, $showTime);
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
-					my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$string;
+					my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName;
 					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 				}
 		}
@@ -795,14 +806,44 @@ sub playRandom {
 			}
 		}
 	}
-	# if mode = addonly and client playlist trackcount before adding = 0,
+	# if mode is addonly=1 and client playlist trackcount before adding = 0,
 	# you probably want to create a one-time static playlist instead of adding tracks to an existing one
 	# so let's not keep these tracks in DPL history
-	if ($addOnly && ($PlaylistTrackCount == 0)) {
+	if ($addOnly && $addOnly == 1 && ($PlaylistTrackCount == 0)) {
 		$masterClient->pluginData('type' => '');
 		my @players = Slim::Player::Sync::slaves($masterClient);
 		push @players, $masterClient;
 		clearPlayListHistory(\@players);
+	}
+	if ($addOnly && $addOnly == 3) {
+		my $dstmProvider = preferences('plugin.dontstopthemusic')->client($client)->get('provider') || '';
+		$log->debug('dstmProvider = '.$dstmProvider);
+
+		if ($dstmProvider && $dstmProvider ne '') {
+			my $clientPlaylistLength = Slim::Player::Playlist::count($client);
+
+			if ($clientPlaylistLength > 0) {
+				$masterClient->pluginData('type' => '');
+				my $dstmStartIndex = $prefs->get('dstmstartindex'); # 0 = last song, 1 = current or first song if no current song
+				my $firstSongIndex = (Slim::Player::Source::streamingSongIndex($client) || 0);
+				$firstSongIndex = $firstSongIndex + 1 if ($clientPlaylistLength > $firstSongIndex && $firstSongIndex > 0);
+
+				my $startSongIndex = $dstmStartIndex ? $firstSongIndex : $clientPlaylistLength - 1;
+				$log->debug('Adding tracks as DSTM seed list. Start playback of song with playlist index '.$startSongIndex);
+
+				$client->execute(['playlist', 'index', $startSongIndex]);
+			}
+		} else {
+			$log->debug("Can't start DSTM. No DSTM provider enabled.");
+			my $statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED_LONG');
+			if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+				$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED'),
+									 $statusmsg]}, $showTime);
+			}
+			if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
+				Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id]);
+			}
+		}
 	}
 }
 
@@ -1329,6 +1370,9 @@ sub handleWebList {
 			}
 		}
 	}
+
+	my $dstmProvider = preferences('plugin.dontstopthemusic')->client($client)->get('provider') || '';
+	$params->{'pluginDynamicPlaylists3dstmPlay'} = 'cando' if ($dstm_enabled && $dstmProvider && $dstmProvider ne '');
 
 	my $preselectionListArtists = $client->pluginData('cachedArtists') || {};
 	my $preselectionListAlbums = $client->pluginData('cachedAlbums') || {};
@@ -2120,12 +2164,15 @@ sub cliJiveHandler {
 				$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
 			} else {
 				my $actions = {
-					'do' => {
-						'cmd' => ['dynamicplaylist', 'playlist', 'play'],
+					'go' => {
+						'cmd' => ['dynamicplaylist', 'actionsmenu'],
 						'params' => \%itemParams,
 						'itemsParams' => 'params',
 					},
+					'play' => undef,
+					'add' => undef,
 				};
+				$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
 				$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
 				$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
 			}
@@ -2216,17 +2263,16 @@ sub cliJivePlaylistParametersHandler {
 		addParameterValues($client, \@listRef, $parameter, $parameters);
 		my $selectedGenres_IDString = getMultipleGenresSelIDString($client);
 
-		## first: add three items for continue/play, select all, select none
+		## first: add three items for next param/actionsmenu, select all, select none
 		my $cnt = 0;
 
-		# continue or play
+		# next param or actionsmenu
 		my %itemParams = (
 			'dynamicplaylist_parameter_'.$nextParameterId => $selectedGenres_IDString
 		);
 		%baseParams = (%baseParams, %itemParams);
 
 		my $actions_continue;
-		my $baseMenu;
 		if (exists $playlist->{'parameters'}->{($nextParameterId + 1)}) {
 			$actions_continue = {
 				'go' => {
@@ -2235,19 +2281,17 @@ sub cliJivePlaylistParametersHandler {
 					'itemsParams' => 'params',
 				},
 			};
-			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_NEXT'));
 		} else {
 			$actions_continue = {
-				'do' => {
-					'cmd' => ['dynamicplaylist', 'playlist', 'play'],
+				'go' => {
+					'cmd' => ['dynamicplaylist', 'actionsmenu'],
 					'params' => \%baseParams,
 					'itemsParams' => 'params',
 				},
 			};
-			$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
-			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_PLAY'));
 		}
 
+		$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_NEXT'));
 		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
 		$request->addResultLoop('item_loop', $cnt, 'params', \%itemParams);
 		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_continue);
@@ -2352,10 +2396,12 @@ sub cliJivePlaylistParametersHandler {
 			};
 			$request->addResult('base', $baseMenu);
 		} else {
+			$log->debug('ready to play, no more params to add');
+			$log->debug('baseParams = '.Dumper(\%baseParams));
 			my $baseMenu = {
 				'actions' => {
-					'do' => {
-						'cmd' => ['dynamicplaylist', 'playlist', 'play'],
+					'go' => {
+						'cmd' => ['dynamicplaylist', 'actionsmenu'],
 						'params' => \%baseParams,
 						'itemsParams' => 'params',
 					},
@@ -2378,8 +2424,8 @@ sub cliJivePlaylistParametersHandler {
 					$request->addResultLoop('item_loop', $offsetCount, 'textkey', $item->{'sortlink'});
 				}
 				if (!exists $playlist->{'parameters'}->{($nextParameterId + 1)}) {
+					$request->addResultLoop('item_loop', $offsetCount, 'type', 'redirect');
 					$request->addResultLoop('item_loop', $offsetCount, 'style', 'itemplay');
-					$request->addResultLoop('item_loop', $offsetCount, 'nextWindow', 'nowPlaying');
 				}
 				$offsetCount++;
 			}
@@ -2479,15 +2525,14 @@ sub cliMixJiveHandler {
 						$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
 					} else {
 						my $actions = {
-							'do' => {
-								'cmd' => ['dynamicplaylist', 'playlist', 'play'],
+							'go' => {
+								'cmd' => ['dynamicplaylist', 'actionsmenu'],
 								'params' => \%itemParams,
 								'itemsParams' => 'params',
 							},
 						};
 						$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
 						$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-						$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'parent');
 					}
 					$request->addResultLoop('item_loop', $cnt, 'params', \%itemParams);
 					$request->addResultLoop('item_loop', $cnt, 'text', $name);
@@ -2501,6 +2546,108 @@ sub cliMixJiveHandler {
 
 	$request->setStatusDone();
 	$log->debug('Exiting cliJiveHandler');
+}
+
+sub _cliJiveActionsMenuHandler {
+	$log->debug('Entering cliJiveActionsMenuHandler');
+	my $request = shift;
+	my $client = $request->client();
+
+	if (!$request->isQuery([['dynamicplaylist'], ['actionsmenu']])) {
+		$log->warn('Incorrect command');
+		$request->setStatusBadDispatch();
+		$log->debug('Exiting cliJiveActionsMenuHandler');
+		return;
+	}
+	if (!defined $client) {
+		$log->warn('Client required');
+		$request->setStatusNeedsClient();
+		$log->debug('Exiting cliJiveActionsMenuHandler');
+		return;
+	}
+
+	if (!$playLists || $rescan) {
+		initPlayLists($client);
+	}
+	my $params = $request->getParamsCopy();
+	$log->debug('params = '.Dumper($params));
+
+	$request->addResult('window', {
+		menustyle => 'album',
+		text => string('PLUGIN_DYNAMICPLAYLISTS3_PLAY_OR_ADD'),
+	});
+	my $cnt = 0;
+
+	# Play
+	my $actions_play = {
+		'do' => {
+			'cmd' => ['dynamicplaylist', 'playlist', 'play'],
+			'params' => $params,
+			'itemsParams' => 'params',
+		},
+		'play' => {
+			'cmd' => ['dynamicplaylist', 'playlist', 'play'],
+			'params' => $params,
+			'itemsParams' => 'params',
+		},
+	};
+	$request->addResultLoop('item_loop', $cnt, 'actions', $actions_play);
+	$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
+	$request->addResultLoop('item_loop', $cnt, 'params', $params);
+	$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
+	$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_PLAY'));
+	$cnt++;
+
+	# Add
+	my $actions_add = {
+		'do' => {
+			'cmd' => ['dynamicplaylist', 'playlist', 'add'],
+			'params' => $params,
+			'itemsParams' => 'params',
+		},
+		'add' => {
+			'cmd' => ['dynamicplaylist', 'playlist', 'add'],
+			'params' => $params,
+			'itemsParams' => 'params',
+		},
+
+	};
+	$request->addResultLoop('item_loop', $cnt, 'actions', $actions_add);
+	$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
+	$request->addResultLoop('item_loop', $cnt, 'params', $params);
+	$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
+	$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_ADD'));
+	$cnt++;
+
+	# Add playlist / DSTM seed list and play - if DSTM = enabled and DSTM provider selected
+	my $dstmProvider = preferences('plugin.dontstopthemusic')->client($client)->get('provider') || '';
+	$log->debug('dstmProvider = '.$dstmProvider);
+
+	if ($dstm_enabled && $dstmProvider && $dstmProvider ne '') {
+		my $actions_dstm_add = {
+			'do' => {
+				'cmd' => ['dynamicplaylist', 'playlist', 'dstmplay'],
+				'params' => $params,
+				'itemsParams' => 'params',
+			},
+			'play' => {
+				'cmd' => ['dynamicplaylist', 'playlist', 'dstmplay'],
+				'params' => $params,
+				'itemsParams' => 'params',
+			},
+		};
+		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_dstm_add);
+		$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
+		$request->addResultLoop('item_loop', $cnt, 'params', $params);
+		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
+		$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY'));
+		$cnt++;
+	}
+
+	$request->addResult('offset', 0);
+	$request->addResult('count', $cnt);
+	$log->debug('Exiting cliJiveActionsMenuHandler');
+	$request->setStatusDone();
 }
 
 
@@ -2590,13 +2737,13 @@ sub _preselectionMenuJive {
 	if (!$request->isQuery([['dynamicplaylist'], ['preselect']])) {
 		$log->warn('Incorrect command');
 		$request->setStatusBadDispatch();
-		$log->debug('Exiting cliMixJiveHandler');
+		$log->debug('Exiting preselectionMenuJiveHandler');
 		return;
 	}
 	if (!defined $client) {
 		$log->warn('Client required');
 		$request->setStatusNeedsClient();
-		$log->debug('Exiting cliMixJiveHandler');
+		$log->debug('Exiting preselectionMenuJiveHandler');
 		return;
 	}
 
@@ -2913,6 +3060,55 @@ sub cliAddPlaylist {
 
 	$request->setStatusDone();
 	$log->debug('Exiting cliAddPlaylist');
+}
+
+sub cliDstmSeedListPlay {
+	$log->debug('Entering cliDstmSeedListPlay');
+	my $request = shift;
+	my $client = $request->client();
+
+	if ($request->isNotCommand([['dynamicplaylist'], ['playlist'], ['dstmplay']])) {
+		$log->warn('Incorrect command');
+		$request->setStatusBadDispatch();
+		$log->debug('Exiting cliDstmSeedListPlay');
+		return;
+	}
+	if (!defined $client) {
+		$log->warn('Client required');
+		$request->setStatusNeedsClient();
+		$log->debug('Exiting cliDstmSeedListPlay');
+		return;
+	}
+
+	my $playlistId = $request->getParam('playlistid');
+	if (!defined($playlistId)) {
+		$playlistId = $request->getParam('_p3');
+		if (!defined($playlistId)) {
+			$playlistId = $request->getParam('_p0');
+		}
+	}
+	if ($playlistId =~ /^?playlistid:(.+)$/) {
+		$playlistId = $1;
+	}
+
+	my $params = $request->getParamsCopy();
+
+	for my $k (keys %{$params}) {
+		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
+			my $parameterId = $1;
+			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
+				$log->debug("Using: $k=".$params->{$k});
+				$playLists->{$playlistId}->{'parameters'}->{$1}->{'value'} = $params->{$k};
+			}
+		} else {
+			$log->debug("Got: $k=".$params->{$k});
+		}
+	}
+
+	playRandom($client, $playlistId, 3, 1, 1);
+
+	$request->setStatusDone();
+	$log->debug('Exiting cliDstmSeedListPlay');
 }
 
 sub cliStopPlaylist {

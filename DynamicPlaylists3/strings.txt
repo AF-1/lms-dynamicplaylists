@@ -42,10 +42,7 @@ PLUGIN_DYNAMICPLAYLISTS3_PRESS_RIGHT
 PLUGIN_DYNAMICPLAYLISTS3_DISABLE
 	EN	Stop adding songs
 
-PLUGIN_DYNAMICPLAYLISTS3_CONTINUOUS_MODE
-	EN	Add new items when old ones finish
-
-PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING
+sPLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING
 	EN	Starting dynamic playlist:
 
 PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED
@@ -235,6 +232,33 @@ PLUGIN_DYNAMICPLAYLISTS3_PLAY
 
 PLUGIN_DYNAMICPLAYLISTS3_ADD
 	EN	Add
+
+PLUGIN_DYNAMICPLAYLISTS3_PLAY_OR_ADD
+	EN	Play or add only
+
+PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY
+	EN	Create DSTM seed list and play
+
+PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_STATUSMSG
+	EN	Starting DSTM mix with seed list created from
+
+PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED
+	EN	DSTM disabled
+
+PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED_LONG
+	EN	Can't start DSTM. No DSTM provider enabled.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX
+	EN	Start DSTM mix with
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX_DESC
+	EN	After DPL has created a seed list for the <i>Don't Stop The Music</i> plugin, i.e. added tracks to the client's playlist choose if you want to start your DSTM mix with the <b>first</b> or the <b>last</b> song of that seed list.<br>Choosing the <i>last</i> song should trigger DSTM to add new tracks right away while skipping playback of all seed list tracks (but the last one).
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX_FIRST
+	EN	first song
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX_LAST
+	EN	last song
 
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_FAVOURITESNAME
