@@ -722,7 +722,7 @@ sub playRandom {
 			if (!$addOnly || $type ne $mixInfo{$masterClient}->{'type'}) {
 				# Don't do showBrieflys if visualiser screensavers are running as the display messes up
 				my $statusmsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING');
-				$statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_STATUSMSG') if $addOnly == 3;
+				$statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_STATUSMSG') if $addOnly == 2;
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 					$client->showBriefly({'line' => [$statusmsg,
 										 $playlistName]}, $showTime);
@@ -809,13 +809,13 @@ sub playRandom {
 	# if mode is addonly=1 and client playlist trackcount before adding = 0,
 	# you probably want to create a one-time static playlist instead of adding tracks to an existing one
 	# so let's not keep these tracks in DPL history
-	if ($addOnly && $addOnly == 1 && ($PlaylistTrackCount == 0)) {
+	if ($addOnly && ($addOnly == 1 || $addOnly == 99) && ($PlaylistTrackCount == 0)) {
 		$masterClient->pluginData('type' => '');
 		my @players = Slim::Player::Sync::slaves($masterClient);
 		push @players, $masterClient;
 		clearPlayListHistory(\@players);
 	}
-	if ($addOnly && $addOnly == 3) {
+	if ($addOnly && $addOnly == 2) {
 		my $dstmProvider = preferences('plugin.dontstopthemusic')->client($client)->get('provider') || '';
 		$log->debug('dstmProvider = '.$dstmProvider);
 
@@ -1493,7 +1493,7 @@ sub handleWebMixParameters {
 		$log->debug('Exiting handleWebMixParameters');
 		return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html', $params);
 	} else {
-		if ($params->{'addOnly'} == 2) {
+		if ($params->{'addOnly'} == 99) {
 			my $title = $params->{'dpl_customfavtitle'} || $playlist->{'name'};
 			my $url = $params->{'dpl_favaddonly'} ? ('dynamicplaylistaddonly://'.$playlist->{'dynamicplaylistid'}.'?') : ('dynamicplaylist://'.$playlist->{'dynamicplaylistid'}.'?');
 			for (my $i = 1; $i < $parameterId; $i++) {
@@ -3105,7 +3105,7 @@ sub cliDstmSeedListPlay {
 		}
 	}
 
-	playRandom($client, $playlistId, 3, 1, 1);
+	playRandom($client, $playlistId, 2, 1, 1);
 
 	$request->setStatusDone();
 	$log->debug('Exiting cliDstmSeedListPlay');

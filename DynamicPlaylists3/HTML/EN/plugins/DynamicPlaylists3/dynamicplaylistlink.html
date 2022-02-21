@@ -1,5 +1,5 @@
 [% BLOCK dynamicPlayListLink %]
-	[% IF addOnly==1;link='addlink';ELSIF addOnly==2;link='cmdlink' cmdimage='dpl_favoritewithparams.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_ADDTOLMSFAVORITES_TITLE';ELSIF addOnly==3;link='cmdlink' cmdimage='dpl_dstm_play.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY';ELSE;link='playlink';END %]
+	[% IF addOnly==1;link='addlink';ELSIF addOnly==99;link='cmdlink' cmdimage='dpl_favoritewithparams.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_ADDTOLMSFAVORITES_TITLE';ELSIF addOnly==2;link='cmdlink' cmdimage='dpl_dstm_play.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY';ELSE;link='playlink';END %]
 	[% IF type == 'disable' %]
 		<a href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_list.html?p0=dynamicplaylist&amp;p1=playlist&amp;p2=[% IF addOnly %]add[% ELSE %]play[% END %]&amp;p3=[% type %]&amp;player=[% player |uri%]" onClick="setTimeout('document.location.reload(true)',500)">[% "PLUGIN_DYNAMICPLAYLISTS3_DISABLE" | string %]</a>
 	[% ELSIF parameters %]
