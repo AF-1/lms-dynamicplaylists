@@ -4176,7 +4176,7 @@ sub getCustomSkipFilterTypes {
 	my %recentlyaddedalbums = (
 		'id' => 'dynamicplaylist_recentlyaddedalbum',
 		'name' => 'Recently added album',
-		'filtercategory' => 'album',
+		'filtercategory' => 'albums',
 		'description' => 'Skip songs from albums that have been<br>recently added to the active dynamic playlist',
 		'parameters' => [
 			{
@@ -4192,7 +4192,7 @@ sub getCustomSkipFilterTypes {
 	my %recentlyaddedartists = (
 		'id' => 'dynamicplaylist_recentlyaddedartist',
 		'name' => 'Recently added artist',
-		'filtercategory' => 'artist',
+		'filtercategory' => 'artists',
 		'description' => 'Skip songs by artists that have been<br>recently added to the active dynamic playlist',
 		'parameters' => [
 			{
