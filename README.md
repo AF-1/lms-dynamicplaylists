@@ -3,14 +3,14 @@ Dynamic Playlists 3
 
 This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>.<br>
 *Dynamic Playlists 3* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). Based on Erland's <i>DynamicPlayList</i> plugin.<br><br>
-Some preferences are not enabled by default. Please take a look at the preferences and their description on the plugin's settings page.
+Some preferences are not enabled by default. Please take a look at the preferences and their descriptions on the plugin's settings page.
 <br><br>
 
 ## Requirements
 
 - LMS version >= 7.**9**
 - LMS database = **SQLite**
-<br><br>
+<br><br><br>
 
 ## Installation
 ⚠️ **Please read the [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq) *before* installing this plugin.**<br>
@@ -20,7 +20,7 @@ You should be able to install **Dynamic Playlists 3** from the LMS main reposito
 If you want to test a new patch that hasn't made it into a release version yet or you need to install a previous version you'll have to [install the plugin manually](https://github.com/AF-1/sobras/wiki/Manual-installation-of-LMS-plugins).
 
 *Previously released* versions are available here for a very *limited* time after the release of a new version. The official LMS plugins page is updated about twice a day so it usually takes a couple of hours before new released versions are listed.
-<br><br><br>
+<br><br><br><br>
 
 
 ## Features:
@@ -31,9 +31,17 @@ If you want to test a new patch that hasn't made it into a release version yet o
 * **Multiple** genre selection
 * **Pre**select multiple artists or albums from their context menu at your leisure. DPL remembers your **pre**selection so that you can easily use it later with dynamic playlists that use **preselection**.
 * Save dynamic playlists with (user input) parameters to LMS favourites (web only, read FAQ).
-* Create a *Don't Stop the Music* seed list and auto-start your DSTM mix
+* Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
 * New preference options and UI changes.
 * …
+<br><br><br><br>
+
+## Translation
+The [**strings.txt**](https://github.com/AF-1/lms-dynamicplaylists/blob/main/DynamicPlaylists3/strings.txt) file contains all localizable strings. Once you're done **testing** the plugin with your translated strings just create a pull request on GitHub. If that doesn't work for you post the updated file as an attachment in the [forum](https://forums.slimdevices.com/showthread.php?115073-Announce-Dynamic-Playlists-3-(mod)).<br>
+* Please try not to use the [**single**](https://www.fileformat.info/info/unicode/char/27/index.htm) quote character (apostrophe) or the [**double**](https://www.fileformat.info/info/unicode/char/0022/index.htm) quote character (quotation mark) in your translated strings. They could cause problems. You can use the [*right single quotation mark*](https://www.fileformat.info/info/unicode/char/2019/index.htm) or the [*double quotation mark*](https://www.fileformat.info/info/unicode/char/201d/index.htm) instead. And if possible, avoid (special) characters that are used as [**metacharacters**](https://en.wikipedia.org/wiki/Metacharacter) in programming languages (Perl), regex or SQLite.
+* It's probably not a bad idea to keep the translated strings roughly as long as the original ones.<br>
+* Some of these strings are supposed to be used with different UIs: my tests usually cover the LMS *default* skin, *Material* skin, *piCorePlayer* (or any other jivelite player like *SqueezePlay*) and maybe some ip3k player like *Boom* if applicable.
+* Please leave *(multiple) blank lines* (used to visually delineate different parts) as they are.
 <br><br><br><br>
 
 
@@ -117,10 +125,6 @@ You can either use the <i>SQLPlayList</i> plugin to do that (as long as it works
 I think SQLPlayList used to display the currently playing dynamic playlist at the bottom of that page. Since DPL3 uses a different plugin name the reference to the old DPL version 2 is broken. But so far I have no reports that this breaks SQLPlaylist's main features: assisting you in creating dynamic playlists and making them available to DPL3. Just ignore this error.
 </p></details><br>
 
-<details><summary>»<b>I'd like a localized/translated version of DPL.</b>«</summary><br><p>
-Most of the strings in <i>Dynamic Playlists 3</i> are localizable. <b>But</b> the <b>built-in playlists</b> are <b>not</b> localizable. The translation would have to include not only the names of the now more than 180 built-in playlists but also the names of their playlist parameters and the strings for the different values they can take. In the end I don't think the benefit of localized/translated strings is really worth the added complexity and effort even if it could be done. And I wouldn't want to release a semi-translated plugin.
-</p></details><br>
-
 <details><summary>»<b>There's more than one DPL context menu item now. What's <i>preselection</i>? How does it work?</b>«</summary><br><p>
 For <b>artists</b> and <b>albums</b> DPL will show a <b>second context menu</b> that allows you to <b>preselect</b> this artist/album while browsing your music library. DPL will remember your (pre)selection (<i>until the next LMS restart</i>/rescan).<br>Once you're finished preselecting artists/albums go to DPL's menu and use this selection with any dynamic playlist that makes use of the <code>PlaylistPreselectedArtists</code> or <code>PlaylistPreselectedAlbums</code> playlist parameter. There are some built-in dynamic playlists to get you started (in the <i>Songs</i> group). And it's very easy to add to your custom dynamic playlists. See <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#user-input-parameters"><b>wiki</b></a> for more information.
 </p></details><br>
@@ -129,10 +133,10 @@ For <b>artists</b> and <b>albums</b> DPL will show a <b>second context menu</b> 
 The <i>Don't Stop the Music</i> (DSTM) plugin “will automatically add similar music to what you've been listening to ... once you've reached the end of your playlist“. DSTM takes a look at the existing tracks in your client's playlist (the <i>seed list</i>) to determine what kind of tracks to search for.<br>Now you can use <i>Dynamic Playlists 3</i> to create a DSTM seed list from any dynamic playlist and start a DSTM mix for you. There's a preference setting if you prefer to skip playback of all seed list tracks (but the last one).
 </p></details>
 
-<br><br><br>
+<br><br><br><br>
 
 ## Bug reports
 
-If you're **reporting a bug** please **include relevant server log entries and the version number of LMS and your OS**. You'll find all of that on the *LMS > Settings > Information* page.
+If you're **reporting a bug** please **include relevant server log entries and the version number of LMS, Perl and your OS**. You'll find all of that on the  *LMS* > *Settings* > *Information* page.
 
 Please post bug reports *only* [**here**](https://forums.slimdevices.com/showthread.php?115073-Announce-Dynamic-Playlists-3-(mod)).
