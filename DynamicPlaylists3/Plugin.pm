@@ -4191,15 +4191,15 @@ sub getCustomSkipFilterTypes {
 
 	my %recentlyaddedalbums = (
 		'id' => 'dynamicplaylist_recentlyaddedalbum',
-		'name' => 'Recently added album',
+		'name' => string('PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDALBUM_NAME'),
 		'filtercategory' => 'albums',
-		'description' => 'Skip songs from albums that have been<br>recently added to the active dynamic playlist',
+		'description' => string('PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDALBUM_DESC'),
 		'parameters' => [
 			{
 				'id' => 'nooftracks',
 				'type' => 'singlelist',
-				'name' => 'Don\'t add more songs from recently added albums for',
-				'data' => '1=1 song,2=2 songs,2=3 songs,4=4 songs,5=5 songs,10=10 songs,20=20 songs,30=30 songs,50=50 songs',
+				'name' => string('PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDALBUM_PARAM_NAME'),
+				'data' => '1=1 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONG').',2=2 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',2=3 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',4=4 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',5=5 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',10=10 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',20=20 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',30=30 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',50=50 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS'),
 				'value' => 10
 			}
 		]
@@ -4207,15 +4207,15 @@ sub getCustomSkipFilterTypes {
 	push @result, \%recentlyaddedalbums;
 	my %recentlyaddedartists = (
 		'id' => 'dynamicplaylist_recentlyaddedartist',
-		'name' => 'Recently added artist',
+		'name' => string('PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDARTIST_NAME'),
 		'filtercategory' => 'artists',
-		'description' => 'Skip songs by artists that have been<br>recently added to the active dynamic playlist',
+		'description' => string('PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDARTIST_DESC'),
 		'parameters' => [
 			{
 				'id' => 'nooftracks',
 				'type' => 'singlelist',
-				'name' => 'Don\'t add more songs from recently added artists for',
-				'data' => '1=1 song,2=2 songs,2=3 songs,4=4 songs,5=5 songs,10=10 songs,20=20 songs,30=30 songs,50=50 songs',
+				'name' => string('PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDARTIST_PARAM_NAME'),
+				'data' => '1=1 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONG').',2=2 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',2=3 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',4=4 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',5=5 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',10=10 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',20=20 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',30=30 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',50=50 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS'),
 				'value' => 10
 			}
 		]
