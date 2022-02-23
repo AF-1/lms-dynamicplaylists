@@ -1,10 +1,10 @@
--- PlaylistName:Songs - random with rated percentage   (from selected year)
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_RANDOM_PERCENTAGERATED
 -- PlaylistGroups:Context menu lists/ year
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:years
--- PlaylistParameter1:year:Select year:
--- PlaylistParameter2:list:Select percentage of rated songs:0:0%,10:10%,20:20%,30:30%,40:40%,50:50%,60:60%,70:70%,80:80%,90:90%,100:100%
--- PlaylistParameter3:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+-- PlaylistParameter1:year:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTYEAR:
+-- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTPERCENTAGERATED:0:0%,10:10%,20:20%,30:30%,40:40%,50:50%,60:60%,70:70%,80:80%,90:90%,100:100%
+-- PlaylistParameter3:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists randomweightedratingshigh;
 drop table if exists randomweightedratingslow;
 drop table if exists randomweightedratingscombined;

@@ -1,4 +1,4 @@
--- PlaylistName:Genres - never played
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_NEVERPLAYED
 -- PlaylistGroups:Genres
 -- PlaylistCategory:genres
 drop table if exists dynamicplaylist_random_genres;

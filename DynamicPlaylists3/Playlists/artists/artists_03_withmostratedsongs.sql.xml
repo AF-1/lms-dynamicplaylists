@@ -1,7 +1,7 @@
--- PlaylistName:Artists - with most rated songs
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_MOSTRATEDSONGS
 -- PlaylistGroups:Artists
 -- PlaylistCategory:artists
--- PlaylistParameter1:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+-- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists dynamicplaylist_random_contributors;
 create temporary table dynamicplaylist_random_contributors as
 	select mostrated.contributor as contributor from

@@ -1,8 +1,8 @@
--- PlaylistName:Artists - recently added or played songs
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_RECENTLYPLAYEDORADDEDSONGS
 -- PlaylistGroups:Artists
 -- PlaylistCategory:artists
--- PlaylistParameter1:list:Limit to artists with recently PLAYED songs?:0:all artists,1:artists with recently played songs,2:artists without recently played songs
--- PlaylistParameter2:list:Limit to artists with recently ADDED songs?:0:all artists,1:artists with recently added songs,2:artists without recently added songs
+-- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ARTISTS_RECENTLYPLAYED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_RECENTLYPLAYEDSONGS,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_NORECENTLYPLAYEDSONGS
+-- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ARTISTS_RECENTLYADDED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_RECENTLYADDEDSONGS,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_NORECENTLYADDEDSONGS
 drop table if exists dynamicplaylist_random_contributors;
 create temporary table dynamicplaylist_random_contributors as
 	select distinct contributor_track.contributor as contributor, count(distinct tracks.id) as totaltrackcount from tracks

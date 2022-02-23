@@ -1,9 +1,9 @@
--- PlaylistName:Songs - from preselected artists - choose minimum rating & decade
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PRESEL_ARTISTS_SONGS_MINRATING_DECADE
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
--- PlaylistParameter1:list:Select minimum rating (stars):0:unrated,20:*,40:**,60:***,80:****,100:*****
--- PlaylistParameter2:customdecadechained:Select decade:select cast(((ifnull(tracks.year,0)/10)*10) as int),case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else 'Unknown' end from tracks where tracks.audio=1 group by cast(((ifnull(tracks.year,0)/10)*10) as int) order by tracks.year desc
--- PlaylistParameter3:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+-- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTMINRATING:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_UNRATED,20:*,40:**,60:***,80:****,100:*****
+-- PlaylistParameter2:customdecadechained:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTDECADE:select cast(((ifnull(tracks.year,0)/10)*10) as int),case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else 'PlaylistDefinitionUnknownString' end from tracks where tracks.audio=1 group by cast(((ifnull(tracks.year,0)/10)*10) as int) order by tracks.year desc
+-- PlaylistParameter3:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_PLAYED
 select distinct tracks.url from tracks
 	join contributor_track on
 		contributor_track.track=tracks.id and contributor_track.role in (1,4,5,6) and contributor_track.contributor in ('PlaylistPreselectedArtists')

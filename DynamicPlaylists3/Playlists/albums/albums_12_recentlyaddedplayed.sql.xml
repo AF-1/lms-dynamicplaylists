@@ -1,10 +1,10 @@
--- PlaylistName:Albums - recently added or played songs
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_RECENTLYPLAYEDORADDEDSONGS
 -- PlaylistGroups:Albums
 -- PlaylistCategory:albums
 -- PlaylistTrackOrder:ordered
 -- PlaylistLimitOption:unlimited
--- PlaylistParameter1:list:Limit to albums that contain recently PLAYED songs?:0:all albums,1:albums with recently played songs,2:albums without recently played songs
--- PlaylistParameter2:list:Limit to recently ADDED albums?:0:all albums,1:recently added albums,2:albums not recently added
+-- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ALBUMS_RECENTLYPLAYED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_RECENTLYPLAYEDSONGS,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_NORECENTLYPLAYEDSONGS
+-- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ALBUMS_RECENTLYADDED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_RECENTLYADDED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_NOTRECENTLYADDED
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select distinct tracks.album as album, count(distinct tracks.id) as totaltrackcount from tracks

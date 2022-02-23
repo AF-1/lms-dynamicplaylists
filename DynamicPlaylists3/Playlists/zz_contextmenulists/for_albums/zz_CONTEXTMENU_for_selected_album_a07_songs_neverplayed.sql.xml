@@ -1,8 +1,8 @@
--- PlaylistName:Songs - never played   (from selected album)
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_NEVERPLAYED
 -- PlaylistGroups:Context menu lists/ album
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:albums
--- PlaylistParameter1:album:Select album:
+-- PlaylistParameter1:album:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTALBUM:
 select distinct tracks.url from tracks
 	left join library_track on
 		library_track.track = tracks.id

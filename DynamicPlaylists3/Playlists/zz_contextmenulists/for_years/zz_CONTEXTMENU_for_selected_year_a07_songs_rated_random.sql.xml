@@ -1,9 +1,9 @@
--- PlaylistName:Songs - rated   (from selected year)
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_RATED
 -- PlaylistGroups:Context menu lists/ year
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:years
--- PlaylistParameter1:year:Select year:
--- PlaylistParameter2:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+-- PlaylistParameter1:year:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTYEAR:
+-- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_PLAYED
 select distinct tracks.url from tracks
 	left join library_track on
 		library_track.track = tracks.id

@@ -79,6 +79,8 @@ my %empty = ();
 my %choiceMapping;
 
 my $dstm_enabled;
+my %categorylangstrings;
+my %customsortnames;
 
 sub initPlugin {
 	my $class = shift;
@@ -167,24 +169,6 @@ sub postinitPlugin {
 }
 
 sub initPrefs {
-	%choiceMapping = (
-		'arrow_left' => 'exit_left',
-		'arrow_right' => 'exit_right',
-		'knob_push' => 'exit_right',
-		'play' => 'play',
-		'add' => 'add',
-		'search' => 'passback',
-		'stop' => 'passback',
-		'pause' => 'passback',
-		'favorites.hold' => 'favorites_add',
-		'preset_1.hold' => 'favorites_add1',
-		'preset_2.hold' => 'favorites_add2',
-		'preset_3.hold' => 'favorites_add3',
-		'preset_4.hold' => 'favorites_add4',
-		'preset_5.hold' => 'favorites_add5',
-		'preset_6.hold' => 'favorites_add6',
-	);
-
 	$prefs->init({
 		max_number_of_unplayed_tracks => 15,
 		min_number_of_unplayed_tracks => 4,
@@ -229,6 +213,37 @@ sub initPrefs {
 		my $customlistdir = $customlistdir_parentfolderpath.'/DPL-custom-lists';
 		mkdir($customlistdir, 0755) unless (-d $customlistdir);
 		}, 'customdirparentfolderpath');
+
+	%choiceMapping = (
+		'arrow_left' => 'exit_left',
+		'arrow_right' => 'exit_right',
+		'knob_push' => 'exit_right',
+		'play' => 'play',
+		'add' => 'add',
+		'search' => 'passback',
+		'stop' => 'passback',
+		'pause' => 'passback',
+		'favorites.hold' => 'favorites_add',
+		'preset_1.hold' => 'favorites_add1',
+		'preset_2.hold' => 'favorites_add2',
+		'preset_3.hold' => 'favorites_add3',
+		'preset_4.hold' => 'favorites_add4',
+		'preset_5.hold' => 'favorites_add5',
+		'preset_6.hold' => 'favorites_add6',
+	);
+
+	%categorylangstrings = (
+		'Songs' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_TRACKS'),
+		'Artists' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ARTISTS'),
+		'Albums' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ALBUMS'),
+		'Genres' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_GENRES'),
+		'Years' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_YEARS'),
+		'Playlists' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_PLAYLISTS'),
+		'Static Playlists' => string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS'),
+		'Not classified' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_NOTCLASSIFIED')
+	);
+
+	%customsortnames = ($prefs->get('favouritesname') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
 }
 
 sub initPlayLists {
@@ -260,9 +275,9 @@ sub initPlayLists {
 
 				my $pluginshortname = $plugin;
 				if (starts_with($item, 'dpldefault_') == 0) {
-					$pluginshortname = 'Dynamic Playlists v3 - '.string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLBUILTIN");
+					$pluginshortname = 'Dynamic Playlists v3 - '.string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLBUILTIN');
 				} elsif (starts_with($item, 'dplusercustom_') == 0) {
-					$pluginshortname = 'Dynamic Playlists v3 - '.string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLCUSTOM");
+					$pluginshortname = 'Dynamic Playlists v3 - '.string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLCUSTOM');
 				} elsif (starts_with($item, 'dplstandardpl_') == 0) {
 					$pluginshortname = 'Static LMS playlist';
 					$savedstaticPlaylists = 'found saved static playlists';
@@ -991,6 +1006,7 @@ sub addParameterValues {
 
 	$log->debug('Getting values for '.$parameter->{'name'}.' of type '.$parameter->{'type'});
 	my $sql = undef;
+	my $unknownString = string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_UNKNOWN');
 	if (lc($parameter->{'type'}) eq 'album') {
 		$sql = "select id, title, substr(titlesort,1,1) from albums order by titlesort";
 	} elsif (lc($parameter->{'type'}) eq 'artist') {
@@ -998,7 +1014,7 @@ sub addParameterValues {
 	} elsif (lc($parameter->{'type'}) eq 'genre') {
 		$sql = "select id, name, substr(namesort,1,1) from genres order by namesort";
 	} elsif (lc($parameter->{'type'}) eq 'year') {
-		$sql = "select year, case when year > 0 then year else 'Unknown' end from tracks where year is not null group by year order by year desc";
+		$sql = "select year, case when year > 0 then year else '$unknownString' end from tracks where year is not null group by year order by year desc";
 	} elsif (lc($parameter->{'type'}) eq 'playlist') {
 		$sql = "select playlist_track.playlist, tracks.title, substr(tracks.titlesort,1,1) from tracks, playlist_track where tracks.id=playlist_track.playlist group by playlist_track.playlist order by titlesort";
 	} elsif (lc($parameter->{'type'}) eq 'track') {
@@ -1020,6 +1036,7 @@ sub addParameterValues {
 							'value' => $id
 						);
 						if (defined($name)) {
+							$name = string($name) || $name;
 							$listitem{'name'}=$name;
 						} else {
 							$listitem{'name'}=$id;
@@ -1106,7 +1123,7 @@ sub addParameterValues {
 					push @{$listRef}, \%listitem;
 				}
 				if (($paramType eq 'customdecadechained') || ($paramType eq 'customgenrechained')) {
-					unshift @{$listRef}, {'id' => '999999999', 'value' => 999999999, 'name' => 'any'};
+					unshift @{$listRef}, {'id' => '999999999', 'value' => 999999999, 'name' => string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_ANY')};
 				}
 				$log->debug('Added '.scalar(@{$listRef}).' items to value list');
 			}
@@ -1137,7 +1154,7 @@ sub getVirtualLibraries {
 	}
 	if (scalar @items == 0) {
 		push @items, {
-			name => string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_COMPLETELIB"),
+			name => string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_COMPLETELIB'),
 			sortName => 'complete library',
 			value => qq(''),
 			id => qq(''),
@@ -1545,16 +1562,24 @@ sub getPlayListContext {
 	my $currentItems = shift;
 	my $level = shift;
 	my @result = ();
+	my $displayname;
 	$log->debug("Get playlist context for level: $level");
+
 	if (defined($params->{'group'.$level})) {
 		my $group = unescape($params->{'group'.$level});
 		$log->debug('Getting group: '.$group);
 		my $item = $currentItems->{'dynamicplaylistgroup_'.$group};
 		if (defined($item) && !defined($item->{'playlist'})) {
 			my $currentUrl = '&group'.$level.'='.escape($group);
+			if (($level == 1) && ($categorylangstrings{$group})) {
+				$displayname = $categorylangstrings{$group};
+			} else {
+				$displayname = $group;
+			}
 			my %resultItem = (
 				'url' => $currentUrl,
 				'name' => $group,
+				'displayname' => $displayname,
 				'dynamicplaylistenabled' => $item->{'dynamicplaylistenabled'}
 			);
 			$log->debug('Adding context: '.$group);
@@ -1583,18 +1608,6 @@ sub getPlayListGroupsForContext {
 	if ($prefs->get('flatlist') || $params->{'flatlist'}) {
 		return \@result;
 	}
-
-	my %customsortnames = ($prefs->get('favouritesname') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
-	my %categorylangstrings = (
-		'Songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_TRACKS"),
-		'Artists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ARTISTS"),
-		'Albums' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ALBUMS"),
-		'Genres' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_GENRES"),
-		'Years' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_YEARS"),
-		'Playlists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_PLAYLISTS"),
-		'Static Playlists' => string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS"),
-		'Not classified' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_NOTCLASSIFIED")
-	);
 
 	if (defined($params->{'group'.$level})) {
 		my $group = unescape($params->{'group'.$level});
@@ -1713,17 +1726,6 @@ sub getPlayListGroups {
 				$groupName = '';
 			}
 
-			my %customsortnames = ($prefs->get('favouritesname') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
-			my %categorylangstrings = (
-				'Songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_TRACKS"),
-				'Artists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ARTISTS"),
-				'Albums' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ALBUMS"),
-				'Genres' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_GENRES"),
-				'Years' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_YEARS"),
-				'Playlists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_PLAYLISTS"),
-				'Static Playlists' => string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS"),
-				'Not classified' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_NOTCLASSIFIED")
-			);
 			my ($sortname, $displayname);
 			if (($groupName eq '') && ($customsortnames{$item->{'name'}})) {
 				$sortname = $customsortnames{$item->{'name'}}.'/';
@@ -1740,7 +1742,7 @@ sub getPlayListGroups {
 				$displayname = $categorylangstrings{$item->{'name'}};
 			} else {
 				if (starts_with($groupName, 'Static Playlists/') == 0) {
-					my $statPL_localized = string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS");
+					my $statPL_localized = string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS');
 					$groupName =~ s/Static Playlists/$statPL_localized/g;
 				}
 				$displayname = $groupName.$item->{'name'};
@@ -3368,7 +3370,7 @@ sub getNextDynamicPlayListTracks {
 			$predefinedParameters->{'PlaylistPreselectedArtists'} = \%preselArtists;
 		}
 		if (keys %{$preselectionListAlbums} > 0) {
-			my %preselAlbums= (
+			my %preselAlbums = (
 				'id' => 'PreselectedAlbums',
 				'value' => join(',', keys %{$preselectionListAlbums}),
 			);
@@ -3551,11 +3553,13 @@ sub getLocalDynamicPlaylists {
 						$log->debug("Loading $item without conversion with encoding ".$encoding);
 					}
 
-					my $parsedContent = parseContent($client, $item, $content);
+					my $parsedContent;
 					if ($localDefDir eq $pluginPlaylistFolder) {
+						$parsedContent = parseContent($client, $item, $content, undef, 'defaultplaylist');
 						$parsedContent->{'defaultplaylist'} = 1;
 						$parsedContent->{'playlistsortname'} = ''.$parsedContent->{'name'};
 					} else {
+						$parsedContent = parseContent($client, $item, $content);
 						$parsedContent->{'customplaylist'} = 1;
 					}
 					$localDynamicPlaylists->{$parsedContent->{'id'}} = $parsedContent;
@@ -3571,6 +3575,7 @@ sub parseContent {
 	my $item = shift;
 	my $content = shift;
 	my $items = shift;
+	my $defaultPlaylist = shift;
 
 	my $errorMsg = undef;
 	if ($content) {
@@ -3593,7 +3598,7 @@ sub parseContent {
 		for my $line (@playlistDataArray) {
 			#Lets add linefeed again, to make sure playlist looks ok when editing
 			if (!$name) {
-				$name = parsePlaylistName($line);
+				$name = $defaultPlaylist ? parsePlaylistName($line, 'defaultplaylist') : parsePlaylistName($line);
 				if (!$name) {
 					my $file = $item;
 					my $fileExtension = "\\.sql\\.xml\$";
@@ -3609,7 +3614,7 @@ sub parseContent {
 
 			# use "--PlaylistName:" as name of playlist
 			#$line =~ s/^\s*--\s*PlaylistName\s*[:=]\s*//io;
-			my $parameter = parseParameter($line);
+			my $parameter = $defaultPlaylist ? parseParameter($line, 'defaultplaylist') : parseParameter($line);
 			my $action = parseAction($line);
 			my $listType = parseMenuListType($line);
 			my $category = parseCategory($line);
@@ -3766,12 +3771,17 @@ sub parseContent {
 
 sub parsePlaylistName {
 	my $line = shift;
+	my $defaultplaylist = shift;
 	if ($line =~ /^\s*--\s*PlaylistName\s*[:=]\s*/) {
 		my $name = $line;
 		$name =~ s/^\s*--\s*PlaylistName\s*[:=]\s*//io;
 		$name =~ s/\s+$//;
 		$name =~ s/^\s+//;
+
 		if ($name) {
+			if ($defaultplaylist) {
+				$name = string($name) || $name;
+			}
 			return $name;
 		} else {
 			$log->debug("No name found in: $line");
@@ -3784,6 +3794,8 @@ sub parsePlaylistName {
 
 sub parseParameter {
 	my $line = shift;
+	my $defaultPlaylist = shift;
+	my $unknownString = string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_UNKNOWN');
 
 	if ($line =~ /^\s*--\s*PlaylistParameter\s*\d\s*[:=]\s*/) {
 		$line =~ m/^\s*--\s*PlaylistParameter\s*(\d)\s*[:=]\s*([^:]+):\s*([^:]*):\s*(.*)$/;
@@ -3797,9 +3809,13 @@ sub parseParameter {
 
 		$parameterName =~ s/^\s+//;
 		$parameterName =~ s/\s+$//;
+		if ($parameterName && $defaultPlaylist) {
+			$parameterName = string($parameterName) || $parameterName;
+		}
 
 		$parameterDefinition =~ s/^\s+//;
 		$parameterDefinition =~ s/\s+$//;
+		$parameterDefinition =~ s/PlaylistDefinitionUnknownString/$unknownString/ig;
 
 		if ($parameterId && $parameterName && $parameterType) {
 			my %parameter = (
@@ -4297,17 +4313,6 @@ sub setModeMixer {
 		return;
 	}
 	my $masterClient = masterOrSelf($client);
-	my %customsortnames = ($prefs->get('favouritesname') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
-	my %categorylangstrings = (
-		'Songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_TRACKS"),
-		'Artists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ARTISTS"),
-		'Albums' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ALBUMS"),
-		'Genres' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_GENRES"),
-		'Years' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_YEARS"),
-		'Playlists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_PLAYLISTS"),
-		'Static Playlists' => string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS"),
-		'Not classified' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_NOTCLASSIFIED")
-	);
 	my @listRef = ();
 	initPlayLists($client);
 	initPlayListTypes();

@@ -1,8 +1,8 @@
--- PlaylistName:Songs - least played   (from this DECADE)
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_LEASTPLAYED
 -- PlaylistGroups:Context menu lists/ decade
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:years
--- PlaylistParameter1:year:Select year:
+-- PlaylistParameter1:year:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTYEAR:
 select mostplayed.url from
 	(select distinct tracks.url from tracks
 		left join library_track on

@@ -1,10 +1,10 @@
--- PlaylistName:Albums - never played   (by selected artist)
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_NEVERPLAYED
 -- PlaylistGroups:Context menu lists/ artist
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:artists
 -- PlaylistTrackOrder:ordered
 -- PlaylistLimitOption:unlimited
--- PlaylistParameter1:artist:Select artist:
+-- PlaylistParameter1:artist:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTARTIST:
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select distinct tracks.album as album, sum(ifnull(tracks_persistent.playCount,0)) as sumplaycount, count(distinct tracks.id) as totaltrackcount from tracks

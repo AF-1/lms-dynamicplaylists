@@ -1,4 +1,4 @@
--- PlaylistName:Songs - Spotify library tacks random
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_SPOTIFY_RANDOM
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
 select distinct tracks.url from tracks

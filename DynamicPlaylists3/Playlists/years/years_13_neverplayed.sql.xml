@@ -1,4 +1,4 @@
--- PlaylistName:Years - never played
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_NEVERPLAYED
 -- PlaylistGroups:Years
 -- PlaylistCategory:years
 drop table if exists dynamicplaylist_random_years;

@@ -1,8 +1,8 @@
--- PlaylistName:Songs - most played   (by selected artist)
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_MOSTPLAYED
 -- PlaylistGroups:Context menu lists/ artist
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:artists
--- PlaylistParameter1:artist:Select artist:
+-- PlaylistParameter1:artist:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTARTIST:
 select mostplayed.url from
 	(select distinct tracks.url from tracks
 	join contributor_track on

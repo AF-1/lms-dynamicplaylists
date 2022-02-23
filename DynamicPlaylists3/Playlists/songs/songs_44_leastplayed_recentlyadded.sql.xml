@@ -1,7 +1,7 @@
--- PlaylistName:Songs - least played
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_LEASTPLAYED
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
--- PlaylistParameter1:list:Limit to recently ADDED songs?:0:all songs,1:recently added songs,2:not with recently added songs
+-- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SONGS_RECENTLYADDED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_RECENTLYADDED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_NORECENTLYADDEDSONGS
 select leastplayed.url from
 	(select distinct tracks.url from tracks
 		left join library_track on
