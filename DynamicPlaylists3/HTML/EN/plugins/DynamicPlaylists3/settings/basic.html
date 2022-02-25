@@ -56,6 +56,13 @@
 	<input type="text" class="stdedit sliderInput_1_10_1" name="pref_minalbumtracks" id="minalbumtracks" value="[% prefs.minalbumtracks %]" size="2">
 [% END %]
 
+[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX_DESC" %]
+	<select name="pref_dstmstartindex">
+		<option value="1" [% IF prefs.dstmstartindex %]selected[% END %]>[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX_FIRST" | string %]</option>
+		<option value="0" [% IF NOT prefs.dstmstartindex %]selected[% END %]>[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX_LAST" | string %]</option>
+	</select>
+[% END %]
+
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_REMEMBERACTIVEPLAYLIST" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_REMEMBERACTIVEPLAYLIST_DESC" %]
 	<input name="pref_rememberactiveplaylist" id="rememberactiveplaylist" type="checkbox" [% IF prefs.rememberactiveplaylist %]checked="checked" [% END %] value="1" class="stdedit">
 [% END %]
@@ -91,7 +98,7 @@
 <br>
 
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_EXCLUDEDGENRES" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_EXCLUDEDGENRES_DESC" %]
-<details><summary><span class="categoryheader">Choose genres to exclude</span>:</summary>
+<details><summary><span class="categoryheader">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CHOOSEEXLUDEGENRES" | string %]</span>:</summary>
 	<table border="0" width="100%">[% USE table genrelistsorted, cols=3, pad=0 %]
 		[%- FOREACH genrerow = table.rows %]
 			<tr>

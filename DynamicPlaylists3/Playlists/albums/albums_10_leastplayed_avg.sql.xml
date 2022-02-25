@@ -1,9 +1,9 @@
--- PlaylistName:Albums - least played (average count)
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_LEASTPLAYEDAVG
 -- PlaylistGroups:Albums
 -- PlaylistCategory:albums
 -- PlaylistTrackOrder:ordered
 -- PlaylistLimitOption:unlimited
--- PlaylistParameter1:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+-- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select leastavgplayed.album as album from
@@ -30,7 +30,7 @@ create temporary table dynamicplaylist_random_albums as
 								genre_track.genre = genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 		group by tracks.album
-			having totaltrackcount > 'PlaylistMinAlbumTracks'
+			having totaltrackcount >= 'PlaylistMinAlbumTracks'
 		order by avgcount asc, random()
 		limit 30) as leastavgplayed
 	order by random()

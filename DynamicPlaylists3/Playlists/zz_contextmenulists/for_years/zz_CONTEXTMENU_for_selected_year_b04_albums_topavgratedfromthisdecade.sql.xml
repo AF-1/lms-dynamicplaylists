@@ -1,11 +1,11 @@
--- PlaylistName:Albums - top rated (average)   (from this DECADE)
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_TOPRATEDAVG
 -- PlaylistGroups:Context menu lists/ decade
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:years
 -- PlaylistTrackOrder:ordered
 -- PlaylistLimitOption:unlimited
--- PlaylistParameter1:year:Select year:
--- PlaylistParameter2:list:Choose songs to include:0:all songs,1:unplayed songs,2:played songs
+-- PlaylistParameter1:year:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTYEAR:
+-- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select topavgrated.album as album from
@@ -33,7 +33,7 @@ create temporary table dynamicplaylist_random_albums as
 								genre_track.genre=genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 		group by tracks.album
-			having totaltrackcount > 'PlaylistMinAlbumTracks'
+			having totaltrackcount >= 'PlaylistMinAlbumTracks'
 		order by avgrating desc, random()
 		limit 30) as topavgrated
 	order by random()

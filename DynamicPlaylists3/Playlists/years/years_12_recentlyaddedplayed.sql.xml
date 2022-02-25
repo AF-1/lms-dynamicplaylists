@@ -1,8 +1,8 @@
--- PlaylistName:Years - recently added or played songs
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_RECENTLYPLAYEDORADDEDSONGS
 -- PlaylistGroups:Years
 -- PlaylistCategory:years
--- PlaylistParameter1:list:Limit to years that contain recently PLAYED songs?:0:all years,1:years with recently played songs,2:years without recently played songs
--- PlaylistParameter2:list:Limit to years with recently ADDED songs?:0:all years,1:years with recently added songs,2:years without recently added songs
+-- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_YEARS_RECENTLYPLAYED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_RECENTLYPLAYEDSONGS,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_NORECENTLYPLAYEDSONGS
+-- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_YEARS_RECENTLYADDED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_RECENTLYADDEDSONGS,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_NORECENTLYADDEDSONGS
 drop table if exists dynamicplaylist_random_years;
 create temporary table dynamicplaylist_random_years as
 	select tracks.year as year from tracks

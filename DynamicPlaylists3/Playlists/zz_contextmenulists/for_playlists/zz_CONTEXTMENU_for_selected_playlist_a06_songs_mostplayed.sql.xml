@@ -1,8 +1,8 @@
--- PlaylistName:Songs - most played   (from selected playlist)
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_MOSTPLAYED
 -- PlaylistGroups:Context menu lists/ playlist
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:playlists
--- PlaylistParameter1:playlist:Select playlist:
+-- PlaylistParameter1:playlist:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTPLAYLIST:
 select mostplayed.url from
 	(select distinct playlist_track.track as url from playlist_track
 	join tracks on

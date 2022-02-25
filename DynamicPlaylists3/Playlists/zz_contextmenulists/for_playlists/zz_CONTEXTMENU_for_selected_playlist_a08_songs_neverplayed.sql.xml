@@ -1,8 +1,8 @@
--- PlaylistName:Songs - never played   (from selected playlist)
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_NEVERPLAYED
 -- PlaylistGroups:Context menu lists/ playlist
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:playlists
--- PlaylistParameter1:playlist:Select playlist:
+-- PlaylistParameter1:playlist:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTPLAYLIST:
 select distinct playlist_track.track from playlist_track
 	join tracks on
 		tracks.url = playlist_track.track

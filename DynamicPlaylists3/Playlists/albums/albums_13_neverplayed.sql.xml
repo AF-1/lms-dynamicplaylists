@@ -1,4 +1,4 @@
--- PlaylistName:Albums - never played
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_NEVERPLAYED
 -- PlaylistGroups:Albums
 -- PlaylistCategory:albums
 -- PlaylistTrackOrder:ordered
@@ -28,7 +28,7 @@ create temporary table dynamicplaylist_random_albums as
 								genre_track.genre = genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 		group by tracks.album
-			having totaltrackcount > 'PlaylistMinAlbumTracks' and sumplaycount = 0
+			having totaltrackcount >= 'PlaylistMinAlbumTracks' and sumplaycount = 0
 		order by random()
 		limit 1;
 select distinct tracks.url from tracks

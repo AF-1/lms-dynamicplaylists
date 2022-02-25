@@ -1,8 +1,8 @@
--- PlaylistName:Artists - never played   (in selected genre)
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_NEVERPLAYED
 -- PlaylistGroups:Context menu lists/ genre
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:genres
--- PlaylistParameter1:genre:Select genre:
+-- PlaylistParameter1:genre:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTGENRE:
 drop table if exists dynamicplaylist_random_contributors;
 create temporary table dynamicplaylist_random_contributors as
 	select distinct contributor_track.contributor as contributor, sum(ifnull(tracks_persistent.playCount,0)) as sumplaycount, count(distinct tracks.id) as totaltrackcount from tracks
@@ -35,7 +35,7 @@ create temporary table dynamicplaylist_random_contributors as
 								genre_track.genre=genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
 		group by contributor_track.contributor
-			having totaltrackcount > 'PlaylistMinArtistTracks' and sumplaycount = 0
+			having totaltrackcount >= 'PlaylistMinArtistTracks' and sumplaycount = 0
 		order by random()
 		limit 1;
 select distinct tracks.url from tracks

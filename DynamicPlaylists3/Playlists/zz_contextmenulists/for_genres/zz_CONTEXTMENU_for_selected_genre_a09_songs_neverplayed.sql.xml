@@ -1,8 +1,8 @@
--- PlaylistName:Songs - never played   (in selected genre)
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_NEVERPLAYED
 -- PlaylistGroups:Context menu lists/ genre
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:genres
--- PlaylistParameter1:genre:Select genre:
+-- PlaylistParameter1:genre:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTGENRE:
 select distinct tracks.url from tracks
 	join genre_track on
 		genre_track.track = tracks.id and genre_track.genre='PlaylistParameter1'

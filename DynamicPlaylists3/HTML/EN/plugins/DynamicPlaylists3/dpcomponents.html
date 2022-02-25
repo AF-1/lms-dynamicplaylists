@@ -24,6 +24,9 @@
 			PROCESS favoritescontrol isFavorite = playlist.isFavorite
 		%]
 	[% ELSE %]
+		[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="99" parameters=playlist.parameters %]
+	[% END %]
+	[% IF pluginDynamicPlaylists3dstmPlay %]
 		[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="2" parameters=playlist.parameters %]
 	[% END %]
 	[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="0" parameters=playlist.parameters %]

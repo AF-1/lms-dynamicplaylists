@@ -78,6 +78,10 @@ my $deleteAllQueues = 0;
 my %empty = ();
 my %choiceMapping;
 
+my $dstm_enabled;
+my %categorylangstrings;
+my %customsortnames;
+
 sub initPlugin {
 	my $class = shift;
 	$class->SUPER::initPlugin(@_);
@@ -134,10 +138,12 @@ sub initPlugin {
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlists', '_all', '_start', '_itemsPerResponse'], [1, 1, 0, \&cliGetPlaylists]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'play'], [1, 0, 1, \&cliPlayPlaylist]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'add'], [1, 0, 1, \&cliAddPlaylist]);
+	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'dstmplay'], [1, 0, 1, \&cliDstmSeedListPlay]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'continue'], [1, 0, 1, \&cliContinuePlaylist]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'stop'], [1, 0, 0, \&cliStopPlaylist]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'browsejive', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJiveHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'jiveplaylistparameters', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJivePlaylistParametersHandler]);
+	Slim::Control::Request::addDispatch(['dynamicplaylist', 'actionsmenu'], [1, 1, 1, \&_cliJiveActionsMenuHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'mixjive'], [1, 1, 1, \&cliMixJiveHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'preselect'], [1, 1, 1, \&_preselectionMenuJive]);
 	Slim::Control::Request::addDispatch(['dynamicplaylistselectgenre', '_genre', '_value'], [1, 0, 0, \&toggleGenreSelectionState]);
@@ -157,27 +163,12 @@ sub postinitPlugin {
 	initPlayListTypes();
 	registerJiveMenu($class);
 	registerStandardContextMenus();
+	Slim::Utils::Timers::setTimer(undef, Time::HiRes::time() + 8, sub {
+		$dstm_enabled = Slim::Utils::PluginManager->isEnabled('Slim::Plugin::DontStopTheMusic::Plugin');
+	});
 }
 
 sub initPrefs {
-	%choiceMapping = (
-		'arrow_left' => 'exit_left',
-		'arrow_right' => 'exit_right',
-		'knob_push' => 'exit_right',
-		'play' => 'play',
-		'add' => 'add',
-		'search' => 'passback',
-		'stop' => 'passback',
-		'pause' => 'passback',
-		'favorites.hold' => 'favorites_add',
-		'preset_1.hold' => 'favorites_add1',
-		'preset_2.hold' => 'favorites_add2',
-		'preset_3.hold' => 'favorites_add3',
-		'preset_4.hold' => 'favorites_add4',
-		'preset_5.hold' => 'favorites_add5',
-		'preset_6.hold' => 'favorites_add6',
-	);
-
 	$prefs->init({
 		max_number_of_unplayed_tracks => 15,
 		min_number_of_unplayed_tracks => 4,
@@ -191,6 +182,7 @@ sub initPrefs {
 		period_playedlongago => 2,
 		minartisttracks => 3,
 		minalbumtracks => 3,
+		dstmstartindex => 1,
 		rememberactiveplaylist => 1,
 		groupunclassifiedcustomplaylists => 1,
 		showactiveplaylistinmainmenu => 1,
@@ -221,6 +213,37 @@ sub initPrefs {
 		my $customlistdir = $customlistdir_parentfolderpath.'/DPL-custom-lists';
 		mkdir($customlistdir, 0755) unless (-d $customlistdir);
 		}, 'customdirparentfolderpath');
+
+	%choiceMapping = (
+		'arrow_left' => 'exit_left',
+		'arrow_right' => 'exit_right',
+		'knob_push' => 'exit_right',
+		'play' => 'play',
+		'add' => 'add',
+		'search' => 'passback',
+		'stop' => 'passback',
+		'pause' => 'passback',
+		'favorites.hold' => 'favorites_add',
+		'preset_1.hold' => 'favorites_add1',
+		'preset_2.hold' => 'favorites_add2',
+		'preset_3.hold' => 'favorites_add3',
+		'preset_4.hold' => 'favorites_add4',
+		'preset_5.hold' => 'favorites_add5',
+		'preset_6.hold' => 'favorites_add6',
+	);
+
+	%categorylangstrings = (
+		'Songs' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_TRACKS'),
+		'Artists' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ARTISTS'),
+		'Albums' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ALBUMS'),
+		'Genres' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_GENRES'),
+		'Years' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_YEARS'),
+		'Playlists' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_PLAYLISTS'),
+		'Static Playlists' => string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS'),
+		'Not classified' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_NOTCLASSIFIED')
+	);
+
+	%customsortnames = ($prefs->get('favouritesname') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
 }
 
 sub initPlayLists {
@@ -252,9 +275,9 @@ sub initPlayLists {
 
 				my $pluginshortname = $plugin;
 				if (starts_with($item, 'dpldefault_') == 0) {
-					$pluginshortname = 'Dynamic Playlists v3 - '.string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLBUILTIN");
+					$pluginshortname = 'Dynamic Playlists v3 - '.string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLBUILTIN');
 				} elsif (starts_with($item, 'dplusercustom_') == 0) {
-					$pluginshortname = 'Dynamic Playlists v3 - '.string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLCUSTOM");
+					$pluginshortname = 'Dynamic Playlists v3 - '.string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLCUSTOM');
 				} elsif (starts_with($item, 'dplstandardpl_') == 0) {
 					$pluginshortname = 'Static LMS playlist';
 					$savedstaticPlaylists = 'found saved static playlists';
@@ -401,6 +424,7 @@ sub initPlayLists {
 	$playLists = \%localPlayLists;
 	$playListItems = \%localPlayListItems;
 	$log->debug('localPlayListItems = '.Dumper(\%localPlayListItems));
+	#$log->debug('playLists = '.Dumper($playLists));
 
 	return ($playLists, $playListItems, \%unclassifiedPlaylists, $savedstaticPlaylists);
 }
@@ -517,8 +541,8 @@ sub findAndAdd {
 	my $item = shift @{$totalItems};
 
 	if ($item && ref($item)) {
-		my $string = $item->title;
-		$log->debug((($addOnly || $continue) ? 'Adding ' : 'Playing ')."$type: $string, ".($item->id));
+		my $itemTitle = $item->title;
+		$log->debug((($addOnly || $continue) ? 'Adding ' : 'Playing ')."$type: $itemTitle, ".($item->id));
 
 		# Replace the current playlist with the first item / track or add it to end
 		my $request = $client->execute(['playlist', ($addOnly || $continue) ? 'addtracks' : 'loadtracks', sprintf('%s=%d', getLinkAttribute('track'), $item->id)]);
@@ -577,11 +601,11 @@ sub playRandom {
 
 	Slim::Utils::Timers::killTimers($client, \&playRandom);
 
-	# String to show with showBriefly
-	my $string = '';
+	# Playlist name for (showBriefly) status message
+	my $playlistName = '';
 	my $playlist = getPlayList($client, $type);
 	if ($playlist) {
-		$string = $playlist->{'name'};
+		$playlistName = $playlist->{'name'};
 	}
 
 	# Strings for non-track modes could be long so need some time to scroll
@@ -712,22 +736,24 @@ sub playRandom {
 			# is added
 			if (!$addOnly || $type ne $mixInfo{$masterClient}->{'type'}) {
 				# Don't do showBrieflys if visualiser screensavers are running as the display messes up
+				my $statusmsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING');
+				$statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_STATUSMSG') if $addOnly == 2;
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-					$client->showBriefly({'line' => [string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING'),
-										 $string]}, $showTime);
+					$client->showBriefly({'line' => [$statusmsg,
+										 $playlistName]}, $showTime);
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
-					my $materialMsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'NOW_PLAYING').': '.$string;
+					my $materialMsg = $statusmsg.' '.$playlistName;
 					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 				}
 			}
 		} elsif ($showFeedback) {
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 					$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED'),
-										 string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$string]}, $showTime);
+										 string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName]}, $showTime);
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
-					my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$string;
+					my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName;
 					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 				}
 		}
@@ -795,14 +821,44 @@ sub playRandom {
 			}
 		}
 	}
-	# if mode = addonly and client playlist trackcount before adding = 0,
+	# if mode is addonly=1 and client playlist trackcount before adding = 0,
 	# you probably want to create a one-time static playlist instead of adding tracks to an existing one
 	# so let's not keep these tracks in DPL history
-	if ($addOnly && ($PlaylistTrackCount == 0)) {
+	if ($addOnly && ($addOnly == 1 || $addOnly == 99) && ($PlaylistTrackCount == 0)) {
 		$masterClient->pluginData('type' => '');
 		my @players = Slim::Player::Sync::slaves($masterClient);
 		push @players, $masterClient;
 		clearPlayListHistory(\@players);
+	}
+	if ($addOnly && $addOnly == 2) {
+		my $dstmProvider = preferences('plugin.dontstopthemusic')->client($client)->get('provider') || '';
+		$log->debug('dstmProvider = '.$dstmProvider);
+
+		if ($dstmProvider && $dstmProvider ne '') {
+			my $clientPlaylistLength = Slim::Player::Playlist::count($client);
+
+			if ($clientPlaylistLength > 0) {
+				$masterClient->pluginData('type' => '');
+				my $dstmStartIndex = $prefs->get('dstmstartindex'); # 0 = last song, 1 = current or first song if no current song
+				my $firstSongIndex = (Slim::Player::Source::streamingSongIndex($client) || 0);
+				$firstSongIndex = $firstSongIndex + 1 if ($clientPlaylistLength > $firstSongIndex && $firstSongIndex > 0);
+
+				my $startSongIndex = $dstmStartIndex ? $firstSongIndex : $clientPlaylistLength - 1;
+				$log->debug('Adding tracks as DSTM seed list. Start playback of song with playlist index '.$startSongIndex);
+
+				$client->execute(['playlist', 'index', $startSongIndex]);
+			}
+		} else {
+			$log->debug("Can't start DSTM. No DSTM provider enabled.");
+			my $statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED_LONG');
+			if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+				$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED'),
+									 $statusmsg]}, $showTime);
+			}
+			if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
+				Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id]);
+			}
+		}
 	}
 }
 
@@ -950,6 +1006,7 @@ sub addParameterValues {
 
 	$log->debug('Getting values for '.$parameter->{'name'}.' of type '.$parameter->{'type'});
 	my $sql = undef;
+	my $unknownString = string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_UNKNOWN');
 	if (lc($parameter->{'type'}) eq 'album') {
 		$sql = "select id, title, substr(titlesort,1,1) from albums order by titlesort";
 	} elsif (lc($parameter->{'type'}) eq 'artist') {
@@ -957,7 +1014,7 @@ sub addParameterValues {
 	} elsif (lc($parameter->{'type'}) eq 'genre') {
 		$sql = "select id, name, substr(namesort,1,1) from genres order by namesort";
 	} elsif (lc($parameter->{'type'}) eq 'year') {
-		$sql = "select year, case when year > 0 then year else 'Unknown' end from tracks where year is not null group by year order by year desc";
+		$sql = "select year, case when year > 0 then year else '$unknownString' end from tracks where year is not null group by year order by year desc";
 	} elsif (lc($parameter->{'type'}) eq 'playlist') {
 		$sql = "select playlist_track.playlist, tracks.title, substr(tracks.titlesort,1,1) from tracks, playlist_track where tracks.id=playlist_track.playlist group by playlist_track.playlist order by titlesort";
 	} elsif (lc($parameter->{'type'}) eq 'track') {
@@ -979,6 +1036,7 @@ sub addParameterValues {
 							'value' => $id
 						);
 						if (defined($name)) {
+							$name = string($name) || $name;
 							$listitem{'name'}=$name;
 						} else {
 							$listitem{'name'}=$id;
@@ -1065,7 +1123,7 @@ sub addParameterValues {
 					push @{$listRef}, \%listitem;
 				}
 				if (($paramType eq 'customdecadechained') || ($paramType eq 'customgenrechained')) {
-					unshift @{$listRef}, {'id' => '999999999', 'value' => 999999999, 'name' => 'any'};
+					unshift @{$listRef}, {'id' => '999999999', 'value' => 999999999, 'name' => string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_ANY')};
 				}
 				$log->debug('Added '.scalar(@{$listRef}).' items to value list');
 			}
@@ -1096,7 +1154,7 @@ sub getVirtualLibraries {
 	}
 	if (scalar @items == 0) {
 		push @items, {
-			name => string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_COMPLETELIB"),
+			name => string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_COMPLETELIB'),
 			sortName => 'complete library',
 			value => qq(''),
 			id => qq(''),
@@ -1330,6 +1388,9 @@ sub handleWebList {
 		}
 	}
 
+	my $dstmProvider = preferences('plugin.dontstopthemusic')->client($client)->get('provider') || '';
+	$params->{'pluginDynamicPlaylists3dstmPlay'} = 'cando' if ($dstm_enabled && $dstmProvider && $dstmProvider ne '');
+
 	my $preselectionListArtists = $client->pluginData('cachedArtists') || {};
 	my $preselectionListAlbums = $client->pluginData('cachedAlbums') || {};
 	$log->debug("pluginData 'cachedArtists' (web) = ".Dumper($preselectionListArtists));
@@ -1449,7 +1510,7 @@ sub handleWebMixParameters {
 		$log->debug('Exiting handleWebMixParameters');
 		return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html', $params);
 	} else {
-		if ($params->{'addOnly'} == 2) {
+		if ($params->{'addOnly'} == 99) {
 			my $title = $params->{'dpl_customfavtitle'} || $playlist->{'name'};
 			my $url = $params->{'dpl_favaddonly'} ? ('dynamicplaylistaddonly://'.$playlist->{'dynamicplaylistid'}.'?') : ('dynamicplaylist://'.$playlist->{'dynamicplaylistid'}.'?');
 			for (my $i = 1; $i < $parameterId; $i++) {
@@ -1501,16 +1562,24 @@ sub getPlayListContext {
 	my $currentItems = shift;
 	my $level = shift;
 	my @result = ();
+	my $displayname;
 	$log->debug("Get playlist context for level: $level");
+
 	if (defined($params->{'group'.$level})) {
 		my $group = unescape($params->{'group'.$level});
 		$log->debug('Getting group: '.$group);
 		my $item = $currentItems->{'dynamicplaylistgroup_'.$group};
 		if (defined($item) && !defined($item->{'playlist'})) {
 			my $currentUrl = '&group'.$level.'='.escape($group);
+			if (($level == 1) && ($categorylangstrings{$group})) {
+				$displayname = $categorylangstrings{$group};
+			} else {
+				$displayname = $group;
+			}
 			my %resultItem = (
 				'url' => $currentUrl,
 				'name' => $group,
+				'displayname' => $displayname,
 				'dynamicplaylistenabled' => $item->{'dynamicplaylistenabled'}
 			);
 			$log->debug('Adding context: '.$group);
@@ -1539,18 +1608,6 @@ sub getPlayListGroupsForContext {
 	if ($prefs->get('flatlist') || $params->{'flatlist'}) {
 		return \@result;
 	}
-
-	my %customsortnames = ($prefs->get('favouritesname') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
-	my %categorylangstrings = (
-		'Songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_TRACKS"),
-		'Artists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ARTISTS"),
-		'Albums' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ALBUMS"),
-		'Genres' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_GENRES"),
-		'Years' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_YEARS"),
-		'Playlists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_PLAYLISTS"),
-		'Static Playlists' => string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS"),
-		'Not classified' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_NOTCLASSIFIED")
-	);
 
 	if (defined($params->{'group'.$level})) {
 		my $group = unescape($params->{'group'.$level});
@@ -1669,17 +1726,6 @@ sub getPlayListGroups {
 				$groupName = '';
 			}
 
-			my %customsortnames = ($prefs->get('favouritesname') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
-			my %categorylangstrings = (
-				'Songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_TRACKS"),
-				'Artists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ARTISTS"),
-				'Albums' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ALBUMS"),
-				'Genres' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_GENRES"),
-				'Years' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_YEARS"),
-				'Playlists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_PLAYLISTS"),
-				'Static Playlists' => string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS"),
-				'Not classified' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_NOTCLASSIFIED")
-			);
 			my ($sortname, $displayname);
 			if (($groupName eq '') && ($customsortnames{$item->{'name'}})) {
 				$sortname = $customsortnames{$item->{'name'}}.'/';
@@ -1696,7 +1742,7 @@ sub getPlayListGroups {
 				$displayname = $categorylangstrings{$item->{'name'}};
 			} else {
 				if (starts_with($groupName, 'Static Playlists/') == 0) {
-					my $statPL_localized = string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS");
+					my $statPL_localized = string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS');
 					$groupName =~ s/Static Playlists/$statPL_localized/g;
 				}
 				$displayname = $groupName.$item->{'name'};
@@ -2120,12 +2166,15 @@ sub cliJiveHandler {
 				$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
 			} else {
 				my $actions = {
-					'do' => {
-						'cmd' => ['dynamicplaylist', 'playlist', 'play'],
+					'go' => {
+						'cmd' => ['dynamicplaylist', 'actionsmenu'],
 						'params' => \%itemParams,
 						'itemsParams' => 'params',
 					},
+					'play' => undef,
+					'add' => undef,
 				};
+				$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
 				$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
 				$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
 			}
@@ -2216,17 +2265,16 @@ sub cliJivePlaylistParametersHandler {
 		addParameterValues($client, \@listRef, $parameter, $parameters);
 		my $selectedGenres_IDString = getMultipleGenresSelIDString($client);
 
-		## first: add three items for continue/play, select all, select none
+		## first: add three items for next param/actionsmenu, select all, select none
 		my $cnt = 0;
 
-		# continue or play
+		# next param or actionsmenu
 		my %itemParams = (
 			'dynamicplaylist_parameter_'.$nextParameterId => $selectedGenres_IDString
 		);
 		%baseParams = (%baseParams, %itemParams);
 
 		my $actions_continue;
-		my $baseMenu;
 		if (exists $playlist->{'parameters'}->{($nextParameterId + 1)}) {
 			$actions_continue = {
 				'go' => {
@@ -2235,19 +2283,17 @@ sub cliJivePlaylistParametersHandler {
 					'itemsParams' => 'params',
 				},
 			};
-			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_NEXT'));
 		} else {
 			$actions_continue = {
-				'do' => {
-					'cmd' => ['dynamicplaylist', 'playlist', 'play'],
+				'go' => {
+					'cmd' => ['dynamicplaylist', 'actionsmenu'],
 					'params' => \%baseParams,
 					'itemsParams' => 'params',
 				},
 			};
-			$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
-			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_PLAY'));
 		}
 
+		$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_NEXT'));
 		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
 		$request->addResultLoop('item_loop', $cnt, 'params', \%itemParams);
 		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_continue);
@@ -2352,10 +2398,12 @@ sub cliJivePlaylistParametersHandler {
 			};
 			$request->addResult('base', $baseMenu);
 		} else {
+			$log->debug('ready to play, no more params to add');
+			$log->debug('baseParams = '.Dumper(\%baseParams));
 			my $baseMenu = {
 				'actions' => {
-					'do' => {
-						'cmd' => ['dynamicplaylist', 'playlist', 'play'],
+					'go' => {
+						'cmd' => ['dynamicplaylist', 'actionsmenu'],
 						'params' => \%baseParams,
 						'itemsParams' => 'params',
 					},
@@ -2378,8 +2426,8 @@ sub cliJivePlaylistParametersHandler {
 					$request->addResultLoop('item_loop', $offsetCount, 'textkey', $item->{'sortlink'});
 				}
 				if (!exists $playlist->{'parameters'}->{($nextParameterId + 1)}) {
+					$request->addResultLoop('item_loop', $offsetCount, 'type', 'redirect');
 					$request->addResultLoop('item_loop', $offsetCount, 'style', 'itemplay');
-					$request->addResultLoop('item_loop', $offsetCount, 'nextWindow', 'nowPlaying');
 				}
 				$offsetCount++;
 			}
@@ -2479,15 +2527,14 @@ sub cliMixJiveHandler {
 						$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
 					} else {
 						my $actions = {
-							'do' => {
-								'cmd' => ['dynamicplaylist', 'playlist', 'play'],
+							'go' => {
+								'cmd' => ['dynamicplaylist', 'actionsmenu'],
 								'params' => \%itemParams,
 								'itemsParams' => 'params',
 							},
 						};
 						$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
 						$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-						$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'parent');
 					}
 					$request->addResultLoop('item_loop', $cnt, 'params', \%itemParams);
 					$request->addResultLoop('item_loop', $cnt, 'text', $name);
@@ -2501,6 +2548,108 @@ sub cliMixJiveHandler {
 
 	$request->setStatusDone();
 	$log->debug('Exiting cliJiveHandler');
+}
+
+sub _cliJiveActionsMenuHandler {
+	$log->debug('Entering cliJiveActionsMenuHandler');
+	my $request = shift;
+	my $client = $request->client();
+
+	if (!$request->isQuery([['dynamicplaylist'], ['actionsmenu']])) {
+		$log->warn('Incorrect command');
+		$request->setStatusBadDispatch();
+		$log->debug('Exiting cliJiveActionsMenuHandler');
+		return;
+	}
+	if (!defined $client) {
+		$log->warn('Client required');
+		$request->setStatusNeedsClient();
+		$log->debug('Exiting cliJiveActionsMenuHandler');
+		return;
+	}
+
+	if (!$playLists || $rescan) {
+		initPlayLists($client);
+	}
+	my $params = $request->getParamsCopy();
+	$log->debug('params = '.Dumper($params));
+
+	$request->addResult('window', {
+		menustyle => 'album',
+		text => string('PLUGIN_DYNAMICPLAYLISTS3_PLAY_OR_ADD'),
+	});
+	my $cnt = 0;
+
+	# Play
+	my $actions_play = {
+		'do' => {
+			'cmd' => ['dynamicplaylist', 'playlist', 'play'],
+			'params' => $params,
+			'itemsParams' => 'params',
+		},
+		'play' => {
+			'cmd' => ['dynamicplaylist', 'playlist', 'play'],
+			'params' => $params,
+			'itemsParams' => 'params',
+		},
+	};
+	$request->addResultLoop('item_loop', $cnt, 'actions', $actions_play);
+	$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
+	$request->addResultLoop('item_loop', $cnt, 'params', $params);
+	$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
+	$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_PLAY'));
+	$cnt++;
+
+	# Add
+	my $actions_add = {
+		'do' => {
+			'cmd' => ['dynamicplaylist', 'playlist', 'add'],
+			'params' => $params,
+			'itemsParams' => 'params',
+		},
+		'add' => {
+			'cmd' => ['dynamicplaylist', 'playlist', 'add'],
+			'params' => $params,
+			'itemsParams' => 'params',
+		},
+
+	};
+	$request->addResultLoop('item_loop', $cnt, 'actions', $actions_add);
+	$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
+	$request->addResultLoop('item_loop', $cnt, 'params', $params);
+	$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
+	$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_ADD'));
+	$cnt++;
+
+	# Add playlist / DSTM seed list and play - if DSTM = enabled and DSTM provider selected
+	my $dstmProvider = preferences('plugin.dontstopthemusic')->client($client)->get('provider') || '';
+	$log->debug('dstmProvider = '.$dstmProvider);
+
+	if ($dstm_enabled && $dstmProvider && $dstmProvider ne '') {
+		my $actions_dstm_add = {
+			'do' => {
+				'cmd' => ['dynamicplaylist', 'playlist', 'dstmplay'],
+				'params' => $params,
+				'itemsParams' => 'params',
+			},
+			'play' => {
+				'cmd' => ['dynamicplaylist', 'playlist', 'dstmplay'],
+				'params' => $params,
+				'itemsParams' => 'params',
+			},
+		};
+		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_dstm_add);
+		$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
+		$request->addResultLoop('item_loop', $cnt, 'params', $params);
+		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
+		$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY'));
+		$cnt++;
+	}
+
+	$request->addResult('offset', 0);
+	$request->addResult('count', $cnt);
+	$log->debug('Exiting cliJiveActionsMenuHandler');
+	$request->setStatusDone();
 }
 
 
@@ -2590,13 +2739,13 @@ sub _preselectionMenuJive {
 	if (!$request->isQuery([['dynamicplaylist'], ['preselect']])) {
 		$log->warn('Incorrect command');
 		$request->setStatusBadDispatch();
-		$log->debug('Exiting cliMixJiveHandler');
+		$log->debug('Exiting preselectionMenuJiveHandler');
 		return;
 	}
 	if (!defined $client) {
 		$log->warn('Client required');
 		$request->setStatusNeedsClient();
-		$log->debug('Exiting cliMixJiveHandler');
+		$log->debug('Exiting preselectionMenuJiveHandler');
 		return;
 	}
 
@@ -2915,6 +3064,55 @@ sub cliAddPlaylist {
 	$log->debug('Exiting cliAddPlaylist');
 }
 
+sub cliDstmSeedListPlay {
+	$log->debug('Entering cliDstmSeedListPlay');
+	my $request = shift;
+	my $client = $request->client();
+
+	if ($request->isNotCommand([['dynamicplaylist'], ['playlist'], ['dstmplay']])) {
+		$log->warn('Incorrect command');
+		$request->setStatusBadDispatch();
+		$log->debug('Exiting cliDstmSeedListPlay');
+		return;
+	}
+	if (!defined $client) {
+		$log->warn('Client required');
+		$request->setStatusNeedsClient();
+		$log->debug('Exiting cliDstmSeedListPlay');
+		return;
+	}
+
+	my $playlistId = $request->getParam('playlistid');
+	if (!defined($playlistId)) {
+		$playlistId = $request->getParam('_p3');
+		if (!defined($playlistId)) {
+			$playlistId = $request->getParam('_p0');
+		}
+	}
+	if ($playlistId =~ /^?playlistid:(.+)$/) {
+		$playlistId = $1;
+	}
+
+	my $params = $request->getParamsCopy();
+
+	for my $k (keys %{$params}) {
+		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
+			my $parameterId = $1;
+			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
+				$log->debug("Using: $k=".$params->{$k});
+				$playLists->{$playlistId}->{'parameters'}->{$1}->{'value'} = $params->{$k};
+			}
+		} else {
+			$log->debug("Got: $k=".$params->{$k});
+		}
+	}
+
+	playRandom($client, $playlistId, 2, 1, 1);
+
+	$request->setStatusDone();
+	$log->debug('Exiting cliDstmSeedListPlay');
+}
+
 sub cliStopPlaylist {
 	$log->debug('Entering cliStopPlaylist');
 	my $request = shift;
@@ -3172,7 +3370,7 @@ sub getNextDynamicPlayListTracks {
 			$predefinedParameters->{'PlaylistPreselectedArtists'} = \%preselArtists;
 		}
 		if (keys %{$preselectionListAlbums} > 0) {
-			my %preselAlbums= (
+			my %preselAlbums = (
 				'id' => 'PreselectedAlbums',
 				'value' => join(',', keys %{$preselectionListAlbums}),
 			);
@@ -3355,11 +3553,13 @@ sub getLocalDynamicPlaylists {
 						$log->debug("Loading $item without conversion with encoding ".$encoding);
 					}
 
-					my $parsedContent = parseContent($client, $item, $content);
+					my $parsedContent;
 					if ($localDefDir eq $pluginPlaylistFolder) {
+						$parsedContent = parseContent($client, $item, $content, undef, 'defaultplaylist');
 						$parsedContent->{'defaultplaylist'} = 1;
 						$parsedContent->{'playlistsortname'} = ''.$parsedContent->{'name'};
 					} else {
+						$parsedContent = parseContent($client, $item, $content);
 						$parsedContent->{'customplaylist'} = 1;
 					}
 					$localDynamicPlaylists->{$parsedContent->{'id'}} = $parsedContent;
@@ -3375,6 +3575,7 @@ sub parseContent {
 	my $item = shift;
 	my $content = shift;
 	my $items = shift;
+	my $defaultPlaylist = shift;
 
 	my $errorMsg = undef;
 	if ($content) {
@@ -3397,7 +3598,7 @@ sub parseContent {
 		for my $line (@playlistDataArray) {
 			#Lets add linefeed again, to make sure playlist looks ok when editing
 			if (!$name) {
-				$name = parsePlaylistName($line);
+				$name = $defaultPlaylist ? parsePlaylistName($line, 'defaultplaylist') : parsePlaylistName($line);
 				if (!$name) {
 					my $file = $item;
 					my $fileExtension = "\\.sql\\.xml\$";
@@ -3413,7 +3614,7 @@ sub parseContent {
 
 			# use "--PlaylistName:" as name of playlist
 			#$line =~ s/^\s*--\s*PlaylistName\s*[:=]\s*//io;
-			my $parameter = parseParameter($line);
+			my $parameter = $defaultPlaylist ? parseParameter($line, 'defaultplaylist') : parseParameter($line);
 			my $action = parseAction($line);
 			my $listType = parseMenuListType($line);
 			my $category = parseCategory($line);
@@ -3570,12 +3771,17 @@ sub parseContent {
 
 sub parsePlaylistName {
 	my $line = shift;
+	my $defaultplaylist = shift;
 	if ($line =~ /^\s*--\s*PlaylistName\s*[:=]\s*/) {
 		my $name = $line;
 		$name =~ s/^\s*--\s*PlaylistName\s*[:=]\s*//io;
 		$name =~ s/\s+$//;
 		$name =~ s/^\s+//;
+
 		if ($name) {
+			if ($defaultplaylist) {
+				$name = string($name) || $name;
+			}
 			return $name;
 		} else {
 			$log->debug("No name found in: $line");
@@ -3588,6 +3794,8 @@ sub parsePlaylistName {
 
 sub parseParameter {
 	my $line = shift;
+	my $defaultPlaylist = shift;
+	my $unknownString = string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_UNKNOWN');
 
 	if ($line =~ /^\s*--\s*PlaylistParameter\s*\d\s*[:=]\s*/) {
 		$line =~ m/^\s*--\s*PlaylistParameter\s*(\d)\s*[:=]\s*([^:]+):\s*([^:]*):\s*(.*)$/;
@@ -3601,9 +3809,13 @@ sub parseParameter {
 
 		$parameterName =~ s/^\s+//;
 		$parameterName =~ s/\s+$//;
+		if ($parameterName && $defaultPlaylist) {
+			$parameterName = string($parameterName) || $parameterName;
+		}
 
 		$parameterDefinition =~ s/^\s+//;
 		$parameterDefinition =~ s/\s+$//;
+		$parameterDefinition =~ s/PlaylistDefinitionUnknownString/$unknownString/ig;
 
 		if ($parameterId && $parameterName && $parameterType) {
 			my %parameter = (
@@ -3979,15 +4191,15 @@ sub getCustomSkipFilterTypes {
 
 	my %recentlyaddedalbums = (
 		'id' => 'dynamicplaylist_recentlyaddedalbum',
-		'name' => 'Recently added album',
-		'filtercategory' => 'album',
-		'description' => 'Skip songs from albums that have been<br>recently added to the active dynamic playlist',
+		'name' => string('PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDALBUM_NAME'),
+		'filtercategory' => 'albums',
+		'description' => string('PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDALBUM_DESC'),
 		'parameters' => [
 			{
 				'id' => 'nooftracks',
 				'type' => 'singlelist',
-				'name' => 'Don\'t add more songs from recently added albums for',
-				'data' => '1=1 song,2=2 songs,2=3 songs,4=4 songs,5=5 songs,10=10 songs,20=20 songs,30=30 songs,50=50 songs',
+				'name' => string('PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDALBUM_PARAM_NAME'),
+				'data' => '1=1 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONG').',2=2 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',2=3 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',4=4 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',5=5 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',10=10 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',20=20 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',30=30 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',50=50 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS'),
 				'value' => 10
 			}
 		]
@@ -3995,15 +4207,15 @@ sub getCustomSkipFilterTypes {
 	push @result, \%recentlyaddedalbums;
 	my %recentlyaddedartists = (
 		'id' => 'dynamicplaylist_recentlyaddedartist',
-		'name' => 'Recently added artist',
-		'filtercategory' => 'artist',
-		'description' => 'Skip songs by artists that have been<br>recently added to the active dynamic playlist',
+		'name' => string('PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDARTIST_NAME'),
+		'filtercategory' => 'artists',
+		'description' => string('PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDARTIST_DESC'),
 		'parameters' => [
 			{
 				'id' => 'nooftracks',
 				'type' => 'singlelist',
-				'name' => 'Don\'t add more songs from recently added artists for',
-				'data' => '1=1 song,2=2 songs,2=3 songs,4=4 songs,5=5 songs,10=10 songs,20=20 songs,30=30 songs,50=50 songs',
+				'name' => string('PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDARTIST_PARAM_NAME'),
+				'data' => '1=1 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONG').',2=2 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',2=3 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',4=4 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',5=5 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',10=10 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',20=20 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',30=30 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS').',50=50 '.string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS'),
 				'value' => 10
 			}
 		]
@@ -4101,17 +4313,6 @@ sub setModeMixer {
 		return;
 	}
 	my $masterClient = masterOrSelf($client);
-	my %customsortnames = ($prefs->get('favouritesname') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
-	my %categorylangstrings = (
-		'Songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_TRACKS"),
-		'Artists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ARTISTS"),
-		'Albums' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_ALBUMS"),
-		'Genres' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_GENRES"),
-		'Years' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_YEARS"),
-		'Playlists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CATNAME_PLAYLISTS"),
-		'Static Playlists' => string("PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS"),
-		'Not classified' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_NOTCLASSIFIED")
-	);
 	my @listRef = ();
 	initPlayLists($client);
 	initPlayListTypes();
