@@ -493,9 +493,11 @@ PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_TRACKS
 
 PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONG
 	EN	song
+	FR	chanson
 
 PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SONGS
 	EN	songs
+	FR	chansons
 
 PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_COMPLETELIB
 	EN	complete library
@@ -507,582 +509,771 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_NOTCLASSIFIED
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUPNAME_CONTEXTMENULISTS
 	EN	Context menu lists
+	FR	Listes du menu contextuel
 
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_RANDOM
 	EN	Albums - random
+	FR	Albums - aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_TOPRATEDAVG
 	EN	Albums - with top average rating
+	FR	Albums - avec les meilleures notes moyennes
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_MOSTRATEDSONGS
 	EN	Albums - with most rated songs
+	FR 	Albums - avec les morceaux les mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_RATEDSONGS
 	EN	Albums - that contain rated songs
+	FR	Albums - contenant les morceaux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_TOPRATEDSONGS
 	EN	Albums - that contain top rated songs
+	FR	Albums - contenant les morceaux les mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_UNRATED
 	EN	Albums - not rated
+	FR	Albums - non notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_MOSTPLAYED
 	EN	Albums - most played (absolute count)
+	FR	Albums - les plus joués (compte absolu)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_MOSTPLAYEDAVG
 	EN	Albums - most played (average count)
+	FR	Albums - les plus joués (compte moyen)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_LEASTPLAYED
 	EN	Albums - least played (absolute count)
+	FR	Albums - les moins joués (compte absolu)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_LEASTPLAYEDAVG
 	EN	Albums - least played (average count)
+	FR	Albums - les moins joués (compte moyen)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_VLIB_RANDOM
 	EN	Albums - random from selected virtual library
+	FR	Albums - aléatoire sur la bibliothèque virtuelle sélectionnée
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_RECENTLYPLAYEDORADDEDSONGS
 	EN	Albums - recently added or played songs
+	FR	Albums - morceaux récemment ajoutés ou joués
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_NEVERPLAYED
 	EN	Albums - never played
+	FR	Albums - jamais joués
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_PLAYEDLONGAGO
 	EN	Albums - played long ago
+	FR	Albums - joués il y a longtemps
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_RANDOM
 	EN	Artists - random
+	FR	Artistes - aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_TOPRATEDAVG
 	EN	Artists - with top average rating
+	FR	Artistes - avec les meilleures notes moyennes
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_MOSTRATEDSONGS
 	EN	Artists - with most rated songs
+	FR	Artistes - avec les morceaux les mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_RATED
 	EN	Artists - with rated songs
+	FR	Artistes - avec des morceaux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_TOPRATED
 	EN	Artists - with top rated songs
+	FR	Artistes -  avec les morceaux les mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_UNRATED
 	EN	Artists - not rated
+	FR	Artistes - non notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_MOSTPLAYED
 	EN	Artists - most played (absolute count)
+	FR	Artistes - les plus joués (compte absolu)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_MOSTPLAYEDAVG
 	EN	Artists - most played (average count)
+	FR	Artistes - les plus joués (compte moyen)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_LEASTPLAYED
 	EN	Artists - least played
+	FR	Artistes - les moins joués
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_LEASTPLAYEDAVG
 	EN	Artists - least played (average count)
+	FR	Artistes - les moins joués (compte moyen)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_VLIB_RANDOM
 	EN	Artists - random from selected virtual library
+	FR	Artistes - aléatoire sur la bibliothèque virtuelle sélectionnée
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_RECENTLYPLAYEDORADDEDSONGS
 	EN	Artists - recently added or played songs
+	FR	Artistes - morceaux récemment ajoutés ou joués
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_NEVERPLAYED
 	EN	Artists - never played
+	FR	Artistes - jamais joués
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_PLAYEDLONGAGO
 	EN	Artists - played long ago
+	FR	Artistes - joués il y a longtemps
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_RANDOM
 	EN	Genres - random
+	FR	Genres - aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_TOPRATEDAVG
 	EN	Genres - with top average rating
+	FR	Genres - avec les meilleures notes moyennes
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_MOSTRATEDSONGS
 	EN	Genres - with most rated songs
+	FR	Genres - avec les morceaux les mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_RATEDSONGS
 	EN	Genres - that contain rated songs
+	FR	Genres - contenant les morceaux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_TOPRATEDSONGS
 	EN	Genres - that contain top rated songs
+	FR	Genres - contenant les morceaux les mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_UNRATED
 	EN	Genres - not rated
+	FR	Genres - non notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_MOSTPLAYED
 	EN	Genres - most played (absolute count)
+	FR	Genres - les plus joués (compte absolu)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_MOSTPLAYEDAVG
 	EN	Genres - most played (average count)
+	FR	Genres - les plus joués (compte moyen)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_LEASTPLAYED
 	EN	Genres - least played (absolute count)
+	FR	Genres - les moins joués (compte absolu)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_LEASTPLAYEDAVG
 	EN	Genres - least played (average count)
+	FR	Genres - les moins joués (compte moyen)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_VLIB_RANDOM
 	EN	Genres - random from selected virtual library
+	FR	Genres - aléatoire sur la bibliothèque virtuelle sélectionnée
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_RECENTLYPLAYEDORADDEDSONGS
 	EN	Genres - recently added or played songs
+	FR	Genres - morceaux récemment ajoutés ou joués
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_NEVERPLAYED
 	EN	Genres - never played
+	FR	Genres - jamais joués
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_PLAYEDLONGAGO
 	EN	Genres - played long ago
+	FR	Genres - joués il y a longtemps
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_RANDOM
 	EN	Playlists - random
+	FR	Listes de lecture
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_TOPRATEDAVG
 	EN	Playlists - with top average rating
+	FR	Listes de lecture - avec les meilleures notes moyennes
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_RATEDSONGS
 	EN	Playlists - that contain rated songs
+	FR	Listes de lecture - contenant les morceaux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_TOPRATEDSONGS
 	EN	Playlists - that contain top rated songs
+	FR	Listes de lecture - contenant les morceaux les mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_UNRATED
 	EN	Playlists - not rated
+	FR	Listes de lecture - non notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_MOSTPLAYED
 	EN	Playlists - most played (absolute count)
+	FR	Listes de lecture - les plus jouées (compte absolu)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_MOSTPLAYEDAVG
 	EN	Playlists - most played (average count)
+	FR	Listes de lecture - les plus jouées (compte moyen)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_LEASTPLAYED
 	EN	Playlists - least played (absolute count)
+	FR	Listes de lecture - les moins jouées (compte absolu)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_LEASTPLAYEDAVG
 	EN	Playlists - least played (average count)
+	FR	Listes de lecture - les moins jouées (compte moyen)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_NEVERPLAYED
 	EN	Playlists - never played
+	FR	Listes de lecture - jamais jouées
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_PLAYEDLONGAGO
 	EN	Playlists - played long ago
+	FR	Listes de lecture - jouées il y a longtemps
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RANDOM
-	EN	Songs - Random
+	EN	Songs - random
+	FR	Morceaux - aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE
 	EN	Songs - random (by genre)
+	FR	Morceaux - aléatoire (par genre)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE_DECADE
 	EN	Songs - random (by genre + decade)
+	FR	Morceaux - aléatoire (par genre + décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED
 	EN	Songs - RATED
+	FR	Morceaux - notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_PLAYCOUNT
 	EN	Songs - RATED (un-/played)
+	FR	Morceaux - notés (non-/joués)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_MINRATING
 	EN	Songs - RATED (choose minimum rating)
+	FR	Morceaux - notés (choisir la note minimum)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_TOPRATED
 	EN	Songs - top RATED
+	FR	Morceaux - mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_TOPRATED_PLAYCOUNT
 	EN	Songs - top RATED (un-/played)
+	FR	Morceaux - mieux notés (non-/joués)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE
 	EN	Songs - RATED (by genre + decade)
+	FR	Morceaux - notés (par genre + décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGETOPRATED
 	EN	Songs - RATED (by genre + decade with % of top rated songs)
+	FR	Morceaux - notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGERATED
 	EN	Songs - not RATED (by genre + decade with % of rated songs)
+	FR	Morceaux - non notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RANDOM_IGNORE_SELECTEDPL
 	EN	Songs - random - ignore songs in selected playlist
+	FR	Morceaux - aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_VLIB_RANDOM
 	EN	Songs - random from selected virtual library
+	FR	Morceaux - aléatoire sur la bibliothèque virtuelle sélectionnée
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED
 	EN	Songs - most played
+	FR	Morceaux - les plus jouées
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_LEASTPLAYED
 	EN	Songs - least played
+	FR	Morceaux - les moins joués
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_NEVERPLAYED
 	EN	Songs - never played
+	FR	Morceaux - jamais joués
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PLAYEDLONGAGO
 	EN	Songs - played long ago
+	FR	Morceaux - joués il y a longtemps
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PRESEL_ARTISTS_SONGS_RANDOM
 	EN	Songs - from preselected artists - random
+	FR	Morceaux
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PRESEL_ARTISTS_SONGS_MINRATING_DECADE
 	EN	Songs - from preselected artists - choose minimum rating & decade
+	FR	Morceaux
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PRESEL_ALBUMS_SONGS_RANDOM
 	EN	Songs - from preselected albums - random
+	FR	Morceaux
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PRESEL_ALBUMS_SONGS_MINRATING_DECADE
 	EN	Songs - from preselected albums - choose minimum rating & decade
+	FR	Morceaux
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_SPOTIFY_RANDOM
-	EN	Songs - Spotify library tacks random
+	EN	Songs - Spotify library tracks random
+	FR	Morceaux - aléatoires de la bibliothèque Spotify
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_RANDOM
 	EN	Years - random
+	FR	Années - aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_TOPRATEDAVG
 	EN	Years - with top average rating
+	FR	Années - avec les meilleures notes moyennes
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_MOSTRATEDSONGS
 	EN	Years - with most rated songs
+	FR	Années - avec les morceaux les mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_RATEDSONGS
 	EN	Years - that contain rated songs
+	FR	Années - contenant les morceaux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_TOPRATEDSONGS
 	EN	Years - that contain top rated songs
+	FR	Années - contenant les morceaux les mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_UNRATED
 	EN	Years - not rated
+	FR	Années - non notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_MOSTPLAYED
 	EN	Years - most played (absolute count)
+	FR	Années - les plus jouées (compte absolu)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_MOSTPLAYEDAVG
 	EN	Years - most played (average count)
+	FR	Années - les plus jouées (compte moyen)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_LEASTPLAYED
 	EN	Years - least played (absolute count)
+	FR	Années - les moins jouées (compte absolu)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_LEASTPLAYEDAVG
 	EN	Years - least played (average count)
+	FR	Années - les moins jouées (compte moyen)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_VLIB_RANDOM
 	EN	Years - random from selected virtual library
+	FR	Années - aléatoire sur la bibliothèque virtuelle sélectionnée
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_RECENTLYPLAYEDORADDEDSONGS
 	EN	Years - recently added or played songs
+	FR	Années - morceaux récemment ajoutés ou joués
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_NEVERPLAYED
 	EN	Years - never played
+	FR	Années - jamais jouées
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_PLAYEDLONGAGO
 	EN	Years - played long ago
+	FR	Années - jouées il y a longtemps
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_RANDOM
 	EN	Songs - random   (from selected album)
+	FR	Morceaux - aléatoire   (de l'album sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_RATED
 	EN	Songs - rated   (from selected album)
+	FR	Morceaux - notés   (de l'album sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_TOPRATED
 	EN	Songs - top rated   (from selected album)
+	FR	Morceaux - mieux notés   (de l'album sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_UNRATED
 	EN	Songs - not rated   (from selected album)
+	FR	Morceaux - non notés   (de l'album sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_MOSTPLAYED
 	EN	Songs - most played   (from selected album)
+	FR	Morceaux - les plus joués   (de l'album sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_LEASTPLAYED
 	EN	Songs - least played   (from selected album)
+	FR	Morceaux - les moins joués   (de l'album sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_NEVERPLAYED
 	EN	Songs - never played   (from selected album)
+	FR	Morceaux - jamais jouées   (de l'album sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_PLAYEDLONGAGO
 	EN	Songs - played long ago   (from selected album)
+	FR	Morceaux - joués il y a longtemps   (de l'album sélectionné)
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_RANDOM
 	EN	Songs - random   (by selected artist)
+	FR	Morceaux - aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_PERCENTAGERATED
 	EN	Songs - random with rated percentage   (by selected artist)
+	FR	Morceaux - aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_RATED
 	EN	Songs - rated   (by selected artist)
+	FR	Morceaux - notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_TOPRATED
 	EN	Songs - top rated   (by selected artist)
+	FR	Morceaux - mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_UNRATED
 	EN	Songs - not rated   (by selected artist)
+	FR	Morceaux - non notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_MOSTPLAYED
 	EN	Songs - most played   (by selected artist)
+	FR	Morceaux - les plus jouées
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_LEASTPLAYED
 	EN	Songs - least played   (by selected artist)
+	FR	Morceaux - les moins joués
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_NEVERPLAYED
 	EN	Songs - never played   (by selected artist)
+	FR	Morceaux - jamais jouées
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_PLAYEDLONGAGO
 	EN	Songs - played long ago   (by selected artist)
+	FR	Morceaux - joués il y a longtemps   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_RANDOM
 	EN	Albums - random   (by selected artist)
+	FR	Albums - aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_TOPRATED
 	EN	Albums - top rated (average)   (by selected artist)
+	FR	Albums - mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYED
 	EN	Albums - most played (absolute count)   (by selected artist)
+	FR	Albums - les plus jouées
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYEDAVG
 	EN	Albums - most played (average count)   (by selected artist)
+	FR	Albums - les plus jouées
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYED
 	EN	Albums - least played (absolute count)   (by selected artist)
+	FR	Albums - les moins joués (compte absolu)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYEDAVG
 	EN	Albums - least played (average count)   (by selected artist)
+	FR	Albums - les moins joués
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_NEVERPLAYED
 	EN	Albums - never played   (by selected artist)
+	FR	Albums - jamais jouées
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_PLAYEDLONGAGO
 	EN	Albums - played long ago   (by selected artist)
+	FR	Albums - joués il y a longtemps   (de l'artiste sélectionné)
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_RANDOM
 	EN	Songs - random   (in selected genre)
+	FR	Morceaux - aléatoire   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_PERCENTAGERATED
 	EN	Songs - random with rated percentage   (in selected genre)
+	FR	Morceaux - aléatoire   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_RATED
 	EN	Songs - rated   (in selected genre)
+	FR	Morceaux - notés   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_RATED_DECADE
 	EN	Songs - rated by decade   (in selected genre)
+	FR	Morceaux - notés   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_TOPRATED
 	EN	Songs - top rated   (in selected genre)
+	FR	Morceaux - mieux notés   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_UNRATED
 	EN	Songs - not rated   (in selected genre)
+	FR	Morceaux - non notés   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_MOSTPLAYED
 	EN	Songs - most played   (in selected genre)
+	FR	Morceaux - les plus jouées   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_LEASTPLAYED
 	EN	Songs - least played   (in selected genre)
+	FR	Morceaux - les moins joués   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_NEVERPLAYED
 	EN	Songs - never played   (in selected genre)
+	FR	Morceaux - jamais jouées   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_PLAYEDLONGAGO
 	EN	Songs - played long ago   (in selected genre)
+	FR	Morceaux - joués il y a longtemps   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_RANDOM
 	EN	Albums - random   (in selected genre)
+	FR	Albums - aléatoire   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_TOPRATEDAVG
 	EN	Albums - top rated (average)   (in selected genre)
+	FR	Albums - mieux notés (moyenne)   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_MOSTPLAYED
 	EN	Albums - most played (absolute count)   (in selected genre)
+	FR	Albums - les plus jouées (compte absolu)   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_MOSTPLAYEDAVG
 	EN	Albums - most played (average count)   (in selected genre)
+	FR	Albums - les plus jouées (compte moyen)   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_LEASTPLAYED
 	EN	Albums - least played (absolute count)   (in selected genre)
+	FR	Albums - les moins joués (compte absolu)   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_LEASTPLAYEDAVG
 	EN	Albums - least played (average count)   (in selected genre)
+	FR	Albums - les moins joués (compte moyen)   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_NEVERPLAYED
 	EN	Albums - never played   (in selected genre)
+	FR	Albums - jamais jouées   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_PLAYEDLONGAGO
 	EN	Albums - played long ago   (in selected genre)
+	FR	Albums - joués il y a longtemps   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_RANDOM
 	EN	Artists - random   (in selected genre)
+	FR	Artistes - aléatoire   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_TOPRATEDAVG
 	EN	Artists - top rated (average)   (in selected genre)
+	FR	Artistes - mieux notés (moyenne)   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_MOSTPLAYED
 	EN	Artists - most played (absolute count)   (in selected genre)
+	FR	Artistes - les plus joués (compte absolu)   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_MOSTPLAYEDAVG
 	EN	Artists - most played (average count)   (in selected genre)
+	FR	Artistes - les plus joués (compte moyen)   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_LEASTPLAYED
 	EN	Artists - least played (absolute count)   (in selected genre)
+	FR	Artistes - les moins joués (compte absolu)   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_LEASTPLAYEDAVG
 	EN	Artists - least played (average count)   (in selected genre)
+	FR	Artistes - les moins joués (compte moyen)   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_NEVERPLAYED
 	EN	Artists - never played   (in selected genre)
+	FR	Artistes - jamais jouées   (dans le genre sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_PLAYEDLONGAGO
 	EN	Artists - played long ago   (in selected genre)
+	FR	Artistes - joués il y a longtemps   (dans le genre sélectionné)
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_RANDOM
 	EN	Songs - random   (from selected playlist)
+	FR	Morceaux - aléatoire   (de la liste de lecture sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_GENRE_DECADE
 	EN	Songs - random (by genre + decade)   (from selected playlist)
+	FR	Morceaux - aléatoire (par genre + décennie)   (de la liste de lecture sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_RATED
 	EN	Songs - rated   (from selected playlist)
+	FR	Morceaux - notés   (de la liste de lecture sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_TOPRATED
 	EN	Songs - top rated   (from selected playlist)
+	FR	Morceaux - mieux notés   (de la liste de lecture sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_UNRATED
 	EN	Songs - not rated   (from selected playlist)
+	FR	Morceaux - non notés   (de la liste de lecture sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_MOSTPLAYED
 	EN	Songs - most played   (from selected playlist)
+	FR	Morceaux - les plus jouées   (de la liste de lecture sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_LEASTPLAYED
 	EN	Songs - least played   (from selected playlist)
+	FR	Morceaux - les moins joués   (de la liste de lecture sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_NEVERPLAYED
 	EN	Songs - never played   (from selected playlist)
+	FR	Morceaux - jamais jouées   (de la liste de lecture sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_PLAYEDLONGAGO
 	EN	Songs - played long ago   (from selected playlist)
+	FR	Morceaux - joués il y a longtemps   (de la liste de lecture sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_ALBUMS_RANDOM
 	EN	Albums - random   (from selected playlist)
+	FR	Albums - aléatoire   (de la liste de lecture sélectionnée)
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_RANDOM
 	EN	Songs - random   (from selected year)
+	FR	Morceaux - aléatoire   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_RANDOM
 	EN	Songs - random   (from this DECADE)
+	FR	Morceaux - aléatoire   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_GENRE
 	EN	Songs - by genre   (from selected year)
+	FR	Morceaux - par genre   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_GENRE
 	EN	Songs - by genre   (from this DECADE)
+	FR	Morceaux - par genre   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_RANDOM_PERCENTAGERATED
 	EN	Songs - random with rated percentage   (from selected year)
+	FR	Morceaux - aléatoire avec un pourcentage de notés   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_RANDOM_PERCENTAGERATED
 	EN	Songs - random with rated percentage   (from this DECADE)
+	FR	Morceaux - aléatoire avec un pourcentage de notés   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_RATED
 	EN	Songs - rated   (from selected year)
+	FR	Morceaux - notés   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_RATED
 	EN	Songs - rated   (from this DECADE)
+	FR	Morceaux - notés   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_RATED_GENRE
 	EN	Songs - rated by genre   (from selected year)
+	FR	Morceaux - notés par genre   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_RATED_GENRE
 	EN	Songs - rated by genre   (from this DECADE)
+	FR	Morceaux - notés par genre   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_TOPRATED
 	EN	Songs - top rated   (from selected year)
+	FR	Morceaux - mieux notés   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_TOPRATED
 	EN	Songs - top rated   (from this DECADE)
+	FR	Morceaux - mieux notés   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_UNRATED
 	EN	Songs - not rated   (from selected year)
+	FR	Morceaux - non notés   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_UNRATED
 	EN	Songs - not rated   (from this DECADE)
+	FR	Morceaux - non notés   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_MOSTPLAYED
 	EN	Songs - most played   (from selected year)
+	FR	Morceaux - les plus jouées   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_MOSTPLAYED
 	EN	Songs - most played   (from this DECADE)
+	FR	Morceaux - les plus jouées   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_LEASTPLAYED
 	EN	Songs - least played   (from selected year)
+	FR	Morceaux - les moins joués   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_LEASTPLAYED
 	EN	Songs - least played   (from this DECADE)
+	FR	Morceaux - les moins joués   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_NEVERPLAYED
 	EN	Songs - never played   (from selected year)
+	FR	Morceaux - jamais jouées   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_NEVERPLAYED
 	EN	Songs - never played   (from this DECADE)
+	FR	Morceaux - jamais jouées   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_PLAYEDLONGAGO
 	EN	Songs - played long ago   (from selected year)
+	FR	Morceaux - joués il y a longtemps   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_PLAYEDLONGAGO
 	EN	Songs - played long ago   (from this DECADE)
+	FR	Morceaux - joués il y a longtemps   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_RANDOM
 	EN	Albums - random   (from selected year)
+	FR	Albums - aléatoire   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_RANDOM
 	EN	Albums - random   (from this DECADE)
+	FR	Albums - aléatoire   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_TOPRATEDAVG
 	EN	Albums - top rated (average)   (from selected year)
+	FR	Albums - mieux notés (moyen)   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_TOPRATEDAVG
 	EN	Albums - top rated (average)   (from this DECADE)
+	FR	Albums - mieux notés (moyenne)   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_MOSTPLAYED
 	EN	Albums - most played (absolute count)   (from selected year)
+	FR	Albums - les plus jouées (compte absolu)   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_MOSTPLAYED
 	EN	Albums - most played (absolute count)   (from this DECADE)
+	FR	Albums - les plus jouées (compte absolu)   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_MOSTPLAYEDAVG
 	EN	Albums - most played (average count)   (from selected year)
+	FR	Albums - les plus jouées (compte moyen)   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_MOSTPLAYEDAVG
 	EN	Albums - most played (average count)   (from this DECADE)
+	FR	Albums - les plus jouées (compte moyen)   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_LEASTPLAYED
 	EN	Albums - least played (absolute count)   (from selected year)
+	FR	Albums - les moins joués (compte absolu)   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_LEASTPLAYED
 	EN	Albums - least played (absolute count)   (from this DECADE)
+	FR	Albums - les moins joués (compte absolu)   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_LEASTPLAYEDAVG
 	EN	Albums - least played (average count)   (from selected year)
+	FR	Albums - les moins joués (compte moyen)   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_LEASTPLAYEDAVG
 	EN	Albums - least played (average count)   (from this DECADE)
+	FR	Albums - les moins joués (compte moyen)   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_NEVERPLAYED
 	EN	Albums - never played   (from selected year)
+	FR	Albums - jamais jouées   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_NEVERPLAYED
 	EN	Albums - never played   (from this DECADE)
+	FR	Albums - jamais jouées   (de cette décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_PLAYEDLONGAGO
 	EN	Albums - played long ago   (from selected year)
+	FR	Albums - joués il y a longtemps   (de l'année sélectionnée)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_PLAYEDLONGAGO
 	EN	Albums - played long ago   (from this DECADE)
+	FR	Albums - joués il y a longtemps   (de cette décennie)
 
 
 
@@ -1156,6 +1347,7 @@ PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTYEAR
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_ALL
 	EN	all albums
+	FR	tous les albums
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_RECENTLYADDED
 	EN	recently added albums
@@ -1201,24 +1393,31 @@ PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_NORECENTLYPLAYEDSONGS
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL
 	EN	all songs
+	FR	tous les morceaux
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_PLAYED
 	EN	played songs
+	FR	morceaux joués
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_UNPLAYED
 	EN	unplayed songs
+	FR	morceaux non joués
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_RECENTLYADDED
 	EN	recently added songs
+	FR	morceaux ajoutés récemment
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_NORECENTLYADDEDSONGS
 	EN	not with recently added songs
+	FR	sans morceaux ajoutés récemment
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_UNRATED
 	EN	unrated
+	FR	pas notés
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_ALL
 	EN	all years
+	FR	toutes les années
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_RECENTLYADDEDSONGS
 	EN	years with recently added songs
