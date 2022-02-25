@@ -42,6 +42,8 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_GROUP
 	EN	Dynamic Playlists
 	FR	Listes de lecture dynamiques
 
+
+
 PLUGIN_DYNAMICPLAYLISTS3_PLAYING
 	EN	Playing
 	FR	En lecture
@@ -65,6 +67,8 @@ PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED
 PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG
 	EN	Found no songs matching your criteria for dynamic playlist:
 	FR	Aucun morceaux trouvé qui corresponde à vos critères de liste de lecture dynamique :
+
+
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_MAX_NUMBER_OF_UNPLAYED_TRACKS
 	EN	<i>Max.</i> number of <u>un</u>played songs
@@ -234,6 +238,8 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_EXCLUDEDGENRES_DESC
 	EN	Choose genres to exclude from dynamic playlists that use the <i>ExcludedGenres</i> parameter (built-in playlists use this).
 	FR	Choisir les genres à exclure des listes de lecture dynamiques qui utilisent le paramètre <i>ExcludedGenres</i> (les listes de lecture intégrées l'utilise)
 
+
+
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SELECT_PLAYLISTS
 	EN	Enabled dynamic playlists
 	FR	Listes de lecture dynamiques activées
@@ -274,6 +280,7 @@ PLUGIN_DYNAMICPLAYLISTS3_SELECT_PLAYLISTS_ALL
 	EN	Select ALL Playlists
 	FR	Sélectionner TOUTES les listes de lecture
 
+
 PLUGIN_DYNAMICPLAYLISTS3_SELECT_ALL
 	EN	Select all
 	FR	Sélectionner tous
@@ -289,6 +296,8 @@ PLUGIN_DYNAMICPLAYLISTS3_SELECT_ALLORNONE
 PLUGIN_DYNAMICPLAYLISTS3_CHOOSE_GENRES
 	EN	Select genres
 	FR	Sélectionner les genres
+
+
 
 PLUGIN_DYNAMICPLAYLISTS3_NEXT
 	EN	Next
@@ -365,6 +374,7 @@ PLUGIN_DYNAMICPLAYLISTS3_FAVADDONLY
 	EN	Only <u>add</u> tracks
 	FR	<u>Ajouter</u> seulement les morceaux
 
+
 PLUGIN_DYNAMICPLAYLISTS3_PRESELECTARTISTS
 	EN	Dynamic Playlists - preselect artist
 	FR	Listes de lecture dynamiques - préselectionner l'artiste
@@ -404,6 +414,7 @@ PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_INFO_BY
 PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_NONE
 	EN	None
 	FR	Aucun
+
 
 PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SECS
 	EN	seconds
