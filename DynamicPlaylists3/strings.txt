@@ -779,15 +779,15 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGETOPRATED
 	EN	Songs - RATED (by genre + decade with % of top rated songs)
-	FR	Morceaux - notés
+	FR	Morceaux - notés (par genre + décennie avec un % de morceaux bien notés)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGERATED
 	EN	Songs - not RATED (by genre + decade with % of rated songs)
-	FR	Morceaux - non notés
+	FR	Morceaux - non notés (par genre + décennie avec un % de morceaux notés)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RANDOM_IGNORE_SELECTEDPL
 	EN	Songs - random - ignore songs in selected playlist
-	FR	Morceaux - aléatoire
+	FR	Morceaux - aléatoire - ignorer les morceaux dans la liste de lecture sélectionnée
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_VLIB_RANDOM
 	EN	Songs - random from selected virtual library
@@ -811,19 +811,19 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PLAYEDLONGAGO
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PRESEL_ARTISTS_SONGS_RANDOM
 	EN	Songs - from preselected artists - random
-	FR	Morceaux
+	FR	Morceaux - des artistes présélectionnés - aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PRESEL_ARTISTS_SONGS_MINRATING_DECADE
 	EN	Songs - from preselected artists - choose minimum rating & decade
-	FR	Morceaux
+	FR	Morceaux - des artistes présélectionnés - choisir la note minimum et la décennie
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PRESEL_ALBUMS_SONGS_RANDOM
 	EN	Songs - from preselected albums - random
-	FR	Morceaux
+	FR	Morceaux - des albums présélectionnés - aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PRESEL_ALBUMS_SONGS_MINRATING_DECADE
 	EN	Songs - from preselected albums - choose minimum rating & decade
-	FR	Morceaux
+	FR	Morceaux - des albums présélectionnés - choisir la note minimum et la décennie
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_SPOTIFY_RANDOM
 	EN	Songs - Spotify library tracks random
@@ -922,35 +922,35 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_PLAYEDLONGAGO
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_RANDOM
 	EN	Songs - random   (by selected artist)
-	FR	Morceaux - aléatoire
+	FR	Morceaux - aléatoire   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_PERCENTAGERATED
 	EN	Songs - random with rated percentage   (by selected artist)
-	FR	Morceaux - aléatoire
+	FR	Morceaux - aléatoire avec un pourcentage de notés   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_RATED
 	EN	Songs - rated   (by selected artist)
-	FR	Morceaux - notés
+	FR	Morceaux - notés  (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_TOPRATED
 	EN	Songs - top rated   (by selected artist)
-	FR	Morceaux - mieux notés
+	FR	Morceaux - mieux notés   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_UNRATED
 	EN	Songs - not rated   (by selected artist)
-	FR	Morceaux - non notés
+	FR	Morceaux - non notés   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_MOSTPLAYED
 	EN	Songs - most played   (by selected artist)
-	FR	Morceaux - les plus jouées
+	FR	Morceaux - les plus jouées   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_LEASTPLAYED
 	EN	Songs - least played   (by selected artist)
-	FR	Morceaux - les moins joués
+	FR	Morceaux - les moins joués   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_NEVERPLAYED
 	EN	Songs - never played   (by selected artist)
-	FR	Morceaux - jamais jouées
+	FR	Morceaux - jamais jouées   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_PLAYEDLONGAGO
 	EN	Songs - played long ago   (by selected artist)
@@ -958,31 +958,31 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_PLAYEDLONGAGO
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_RANDOM
 	EN	Albums - random   (by selected artist)
-	FR	Albums - aléatoire
+	FR	Albums - aléatoire   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_TOPRATED
 	EN	Albums - top rated (average)   (by selected artist)
-	FR	Albums - mieux notés
+	FR	Albums - mieux notés (moyenne)   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYED
 	EN	Albums - most played (absolute count)   (by selected artist)
-	FR	Albums - les plus jouées
+	FR	Albums - les plus jouées (compte absolu)   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYEDAVG
 	EN	Albums - most played (average count)   (by selected artist)
-	FR	Albums - les plus jouées
+	FR	Albums - les plus jouées (compte moyen)   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYED
 	EN	Albums - least played (absolute count)   (by selected artist)
-	FR	Albums - les moins joués (compte absolu)
+	FR	Albums - les moins joués (compte absolu)   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYEDAVG
 	EN	Albums - least played (average count)   (by selected artist)
-	FR	Albums - les moins joués
+	FR	Albums - les moins joués (compte moyen)   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_NEVERPLAYED
 	EN	Albums - never played   (by selected artist)
-	FR	Albums - jamais jouées
+	FR	Albums - jamais jouées   (de l'artiste sélectionné)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_PLAYEDLONGAGO
 	EN	Albums - played long ago   (by selected artist)
@@ -1291,69 +1291,91 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_PLAYEDLONGAGO
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS
 	EN	Choose songs to include
+	FR	Choisir les morceaux à inclure
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ALBUMS_RECENTLYADDED
 	EN	Limit to recently ADDED albums?
+	FR	Limiter aux albums récemment ajoutés ?
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ALBUMS_RECENTLYPLAYED
 	EN	Limit to albums that contain recently PLAYED songs?
+	FR	Limiter aux albums qui contiennent des morceaux récemment joués ?
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ARTISTS_RECENTLYADDED
 	EN	Limit to artists with recently ADDED songs?
+	FR	Limiter aux artistes avec des morceaux récemment ajoutés ?
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ARTISTS_RECENTLYPLAYED
 	EN	Limit to artists with recently PLAYED songs?
+	FR	Limiter aux artistes avec des morceaux récemment joués ?
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_GENRES_RECENTLYADDED
 	EN	Limit to genres with recently ADDED songs?
+	FR	Limiter aux genres avec des morceaux récemment ajoutés ?
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_GENRES_RECENTLYPLAYED
 	EN	Limit to genres that contain recently PLAYED songs?
+	FR	Limiter aux genres qui contiennent des morceaux récemment joués ?
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SONGS_RECENTLYADDED
 	EN	Limit to recently ADDED songs?
+	FR	Limiter aux morceaux récemment ajoutés ?
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_YEARS_RECENTLYADDED
 	EN	Limit to years with recently ADDED songs?
+	FR	Limiter aux années avec des morceaux récemment ajoutés ?
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_YEARS_RECENTLYPLAYED
 	EN	Limit to years that contain recently PLAYED songs?
+	FR	Limiter aux années qui contiennent des morceaux récemment joués ?
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTALBUM
 	EN	Select album
+	FR	Sélectionner l'album
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTARTIST
 	EN	Select artist
+	FR	Sélectionner l'artiste
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTDECADE
 	EN	Select decade
+	FR	Sélectionner la décennie
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTGENRE
 	EN	Select genre
+	FR	Sélectionner le genre
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTGENRES
 	EN	Select genres
+	FR	Sélectionner les genres
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTMINRATING
 	EN	Select minimum rating (stars)
+	FR	Sélectionner la note minimum (étoiles)
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTPERCENTAGERATED
 	EN	Select percentage of rated songs
+	FR	Sélectionner le pourcentage de morceaux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTPERCENTAGETOPRATED
 	EN	Select percentage of top rated songs
+	FR	Sélectionner le pourcentage de morceaux bien notés
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTPLAYLIST
 	EN	Select playlist
+	FR	Sélectionner la liste de lecture
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTPLAYLIST_IGNORE
 	EN	Select playlist to ignore
+	FR	Sélectionner la liste de lecture à ignorer
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTVLIB
 	EN	Select virtuallibrary
+	FR	Sélectionner la bibliothèque virtuelle
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTYEAR
 	EN	Select year
+	FR	Sélectionner l'année
 
 
 
@@ -1363,45 +1385,59 @@ PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_ALL
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_RECENTLYADDED
 	EN	recently added albums
+	FR	albums ajoutés récemment
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_NOTRECENTLYADDED
 	EN	albums not recently added
+	FR	albums ajoutés pas récemment
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_RECENTLYPLAYEDSONGS
 	EN	albums with recently played songs
+	FR	albums avec des morceaux récemment joués
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_NORECENTLYPLAYEDSONGS
 	EN	albums without recently played songs
+	FR	albums sans morceaux récemment joués
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_ALL
 	EN	all artists
+	FR	tous les artistes
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_RECENTLYADDEDSONGS
 	EN	artists with recently added songs
+	FR	artistes avec des morceaux récemment ajoutés
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_NORECENTLYADDEDSONGS
 	EN	artists without recently added songs
+	FR	artistes sans morceaux récemment ajoutés
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_RECENTLYPLAYEDSONGS
 	EN	artists with recently played songs
+	FR	artistes avec des morceaux récemment ajoutés
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_NORECENTLYPLAYEDSONGS
 	EN	artists without recently played songs
+	FR	artistes sans morceaux récemment joués
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_ALL
 	EN	all genres
+	FR	tous les genres
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_RECENTLYADDEDSONGS
 	EN	genres with recently added songs
+	FR	genre avec des morceaux récemment ajoutés
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_NORECENTLYADDEDSONGS
 	EN	genres without recently added songs
+	FR	genre sans morceaux récemment ajoutés
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_RECENTLYPLAYEDSONGS
 	EN	genres with recently played songs
+	FR	genre avec des morceaux récemment joués
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_NORECENTLYPLAYEDSONGS
 	EN	genres without recently played songs
+	FR	genre sans morceaux récemment joués
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL
 	EN	all songs
@@ -1433,31 +1469,41 @@ PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_ALL
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_RECENTLYADDEDSONGS
 	EN	years with recently added songs
+	FR	années avec des morceaux récemment ajoutés
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_NORECENTLYADDEDSONGS
 	EN	years without recently added songs
+	FR	annnées sans morceaux récemment ajoutés
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_RECENTLYPLAYEDSONGS
 	EN	years with recently played songs
+	FR	années avec des morceaux récemment joués
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_NORECENTLYPLAYEDSONGS
 	EN	years without recently played songs
+	FR	années sans morceaux récemment joués
 
 
 PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDALBUM_NAME
 	EN	Recently added album
+	FR	Albums ajoutés récemment
 
 PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDALBUM_DESC
 	EN	Skip songs from albums that have been<br>recently added to the active dynamic playlist
+	FR	Eviter les morceaux d'albums qui ont été<br>récemment ajoutés à la liste de lecture dynamique
 
 PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDALBUM_PARAM_NAME
 	EN	Don’t add more songs from recently added albums for
+	FR	Ne pas ajouter plus de morceaux d'albums récemment ajoutés pour
 
 PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDARTIST_NAME
 	EN	Recently added artist
+	FR	Artistes ajoutés récemment
 
 PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDARTIST_DESC
 	EN	Skip songs by artists that have been<br>recently added to the active dynamic playlist
+	FR	Eviter les morceaux d'artistes qui ont été<br>récemment ajoutés à la liste de lecture dynamique
 
 PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDARTIST_PARAM_NAME
 	EN	Don’t add more songs from recently added artists for
+	FR	Ne pas ajouter plus de morceaux d'artistes ajoutés récemment pour
