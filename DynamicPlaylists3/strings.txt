@@ -42,7 +42,7 @@ PLUGIN_DYNAMICPLAYLISTS3_PRESS_RIGHT
 PLUGIN_DYNAMICPLAYLISTS3_DISABLE
 	EN	Stop adding songs
 
-sPLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING
+PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING
 	EN	Starting dynamic playlist:
 
 PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED
@@ -75,7 +75,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SONG_ADDING_CHECK_DELAY
 	EN	New songs check delay
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SONG_ADDING_CHECK_DELAY_DESC
-	EN	Sets the delay in <i>seconds</i> after a song change event before checking if new songs have to be added to the playlist.
+	EN	Set the delay in <i>seconds</i> after a song change event before checking if new songs have to be added to the playlist.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_MIN_TRACK_DURATION
 	EN	Minimum track duration
@@ -197,7 +197,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SELECT_PLAYLISTS_CONTEXTMENU
 	EN	Enabled dynamic playlists <wbr>for&nbsp;<u>context&nbsp;menus</u>
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SELECT_PLAYLISTS_CONTEXTMENU_DESC
-	EN	Select enabled dynamic playlists for <b>context menu</b>s
+	EN	Select enabled dynamic playlists for <b>context menus</b>
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SELECT_FAVOURITES
 	EN	Favourites
@@ -272,8 +272,6 @@ PLUGIN_DYNAMICPLAYLISTS3_FAVOURITES
 
 
 
-PLUGIN_DYNAMICPLAYLISTS3_NEXT
-	EN	Next
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMETERS_TITLE
 	EN	Enter additional parameters for dynamic playlist
@@ -569,7 +567,7 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_PLAYEDLONGAGO
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RANDOM
-	EN	Songs - Random
+	EN	Songs - random
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE
 	EN	Songs - random (by genre)
@@ -632,7 +630,7 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PRESEL_ALBUMS_SONGS_MINRATING_DE
 	EN	Songs - from preselected albums - choose minimum rating & decade
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_SPOTIFY_RANDOM
-	EN	Songs - Spotify library tacks random
+	EN	Songs - Spotify library tracks random
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_RANDOM
