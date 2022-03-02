@@ -64,7 +64,6 @@ If you're not comfortable with creating your SQLite playlist definition <i>from 
 In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format">wiki</b></a> for more information on the dynamic playlist <b>format</b>.</p></details><br>
 
 <details><summary>»<b>I have a custom sql definition (file). How do I add it to/ use it directly in DPLv3?</b>«</summary><br><p>
-
 - If you already have a sql.xml <b>file</b> you can skip the next 2 steps.<br>
 
 - Open a plain text editor of your choice and copy&paste (or edit) your sql code.<br>
