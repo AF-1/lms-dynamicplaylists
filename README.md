@@ -64,10 +64,15 @@ If you're not comfortable with creating your SQLite playlist definition <i>from 
 In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format">wiki</b></a> for more information on the dynamic playlist <b>format</b>.</p></details><br>
 
 <details><summary>»<b>I have a custom sql definition (file). How do I add it to/ use it directly in DPLv3?</b>«</summary><br><p>
+
 - If you already have a sql.xml <b>file</b> you can skip the next 2 steps.<br>
+
 - Open a plain text editor of your choice and copy&paste (or edit) your sql code.<br>
+
 - Save it as "nameofyourchoice.sql.xml". The file extension <b>.sql.xml</b> is important.<br>
+
 - Now put this file in DPL's <i>folder for custom dynamic playlists</i> called <b>DPL-custom-lists</b>. Unless you've changed its location in DPL's settings you'll find this folder in your <i>LMS playlist folder</i>.<br>
+
 - The new dynamic playlist should now be listed in DPL, either in the <i>Not classified</i> group or in other groups according to what the <code>-- PlaylistGroups</code> parameter in your playlist definition says.</p></details><br>
 
 <details><summary>»<b>The <i>Home > Dynamic Playlists</i> menu doesn't show dynamic playlists for <i>context menus</i>. Why?</b>«</summary><br><p>
