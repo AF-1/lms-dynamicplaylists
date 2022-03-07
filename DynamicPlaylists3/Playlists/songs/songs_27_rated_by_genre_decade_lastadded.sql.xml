@@ -4,7 +4,7 @@
 -- PlaylistParameter1:multiplegenres:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTGENRES:
 -- PlaylistParameter2:customdecadechained:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTDECADE:select cast(((ifnull(tracks.year,0)/10)*10) as int),case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else 'PlaylistDefinitionUnknownString' end from tracks where tracks.audio=1 group by cast(((ifnull(tracks.year,0)/10)*10) as int) order by tracks.year desc
 -- PlaylistParameter3:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_PLAYED
--- PlaylistParameter4:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SONGS_RECENTLYADDED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_RECENTLYADDED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_NORECENTLYADDEDSONGS
+-- PlaylistParameter4:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTLASTADDEDPERIOD_SONGS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_ALL,604800:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_1WEEK,1209600:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_2WEEKS,2419200:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_4WEEKS,7257600:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_3MONTHS,14515200:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_6MONTHS,29030399:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_12MONTHS
 select distinct tracks.url from tracks
 	join tracks_persistent on
 		tracks_persistent.urlmd5 = tracks.urlmd5 and tracks_persistent.rating > 0
@@ -37,8 +37,7 @@ select distinct tracks.url from tracks
 			end
 		and
 			case
-				when 'PlaylistParameter4'=1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-tracks_persistent.added) < 0)
-				when 'PlaylistParameter4'=2 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-tracks_persistent.added) > 0)
+				when 'PlaylistParameter4'>0 then (tracks_persistent.added >= (select max(ifnull(tracks_persistent.added,0)) from tracks_persistent) - 'PlaylistParameter4')
 				else 1
 			end
 		and not exists (select * from tracks t2,genre_track,genres

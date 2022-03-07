@@ -177,8 +177,6 @@ sub initPrefs {
 		song_adding_check_delay => 30,
 		song_min_duration => 90,
 		toprated_min_rating => 60,
-		period_recentlyadded => 30,
-		period_recentlyplayed => 14,
 		period_playedlongago => 2,
 		minartisttracks => 3,
 		minalbumtracks => 3,
@@ -204,7 +202,6 @@ sub initPrefs {
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 60}, 'song_adding_check_delay');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 10}, 'min_number_of_unplayed_tracks');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 1800}, 'song_min_duration');
-	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 365}, qw(period_recentlyadded period_recentlyplayed));
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 20}, 'period_playedlongago');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 10}, qw(minartisttracks minalbumtracks));
 	$prefs->setValidate('dir', 'customdirparentfolderpath');
@@ -3310,14 +3307,6 @@ sub getNextDynamicPlayListTracks {
 			'id' => 'TopRatedMinRating',
 			'value' => $prefs->get('toprated_min_rating'),
 		);
-		my %periodRecentlyAdded = (
-			'id' => 'PeriodRecentlyAdded',
-			'value' => $prefs->get('period_recentlyadded'),
-		);
-		my %periodRecentlyPlayed = (
-			'id' => 'PeriodRecentlyPlayed',
-			'value' => $prefs->get('period_recentlyplayed'),
-		);
 		my %periodPlayedLongAgo = (
 			'id' => 'PeriodPlayedLongAgo',
 			'value' => $prefs->get('period_playedlongago'),
@@ -3385,8 +3374,6 @@ sub getNextDynamicPlayListTracks {
 		$predefinedParameters->{'PlaylistVariousArtistsID'} = \%VAid;
 		$predefinedParameters->{'PlaylistTrackMinDuration'} = \%minTrackDuration;
 		$predefinedParameters->{'PlaylistTopRatedMinRating'} = \%topratedMinRating;
-		$predefinedParameters->{'PlaylistPeriodRecentlyAdded'} = \%periodRecentlyAdded;
-		$predefinedParameters->{'PlaylistPeriodRecentlyPlayed'} = \%periodRecentlyPlayed;
 		$predefinedParameters->{'PlaylistPeriodPlayedLongAgo'} = \%periodPlayedLongAgo;
 		$predefinedParameters->{'PlaylistMinArtistTracks'} = \%minArtistTracks;
 		$predefinedParameters->{'PlaylistMinAlbumTracks'} = \%minAlbumTracks;

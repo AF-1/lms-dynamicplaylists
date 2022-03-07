@@ -36,14 +36,6 @@
 	<input name="pref_disableextrashuffle" id="disableextrashuffle" type="checkbox" [% IF prefs.disableextrashuffle %] checked [% END %]>
 [% END %]
 
-[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_PERIOD_RECENTLYADDED" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_PERIOD_RECENTLYADDED_DESC" %]
-	<input type="text" class="stdedit sliderInput_1_365_1" name="pref_period_recentlyadded" id="period_recentlyadded" value="[% prefs.period_recentlyadded %]" size="2"> [% "PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_DAYS" | string %]
-[% END %]
-
-[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_PERIOD_RECENTLYPLAYED" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_PERIOD_RECENTLYPLAYED_DESC" %]
-	<input type="text" class="stdedit sliderInput_1_365_1" name="pref_period_recentlyplayed" id="period_recentlyplayed" value="[% prefs.period_recentlyplayed %]" size="5"> [% "PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_DAYS" | string %]
-[% END %]
-
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_PERIOD_PLAYEDLONGAGO" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_PERIOD_PLAYEDLONGAGO_DESC" %]
 	<input type="text" class="stdedit sliderInput_1_20_1" name="pref_period_playedlongago" id="period_playedlongago" value="[% prefs.period_playedlongago %]" size="2"> [% "PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_YEARS" | string %]
 [% END %]

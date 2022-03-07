@@ -5,7 +5,7 @@
 -- PlaylistTrackOrder:ordered
 -- PlaylistLimitOption:unlimited
 -- PlaylistParameter1:year:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTYEAR:
--- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ALBUMS_RECENTLYPLAYED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_ALL,1:albums with recently played songs
+-- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ALBUMS_RECENTLYPLAYED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_ALL,604800:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_1WEEK,1209600:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_2WEEKS,2419200:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_4WEEKS,7257600:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_3MONTHS,14515200:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_6MONTHS
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select distinct tracks.album as album, count(distinct tracks.id) as totaltrackcount from tracks
@@ -27,7 +27,7 @@ create temporary table dynamicplaylist_random_albums as
 				end
 			and
 				case
-					when 'PlaylistParameter2' = 1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyPlayed' DAY'))-ifnull(tracks_persistent.lastPlayed,0)) < 0)
+					when 'PlaylistParameter2'>0 then (ifnull(tracks_persistent.lastPlayed,0) >= (strftime('%s',DATE('NOW')) - 'PlaylistParameter2'))
 					else 1
 				end
 			and not exists (select * from tracks t2,genre_track,genres

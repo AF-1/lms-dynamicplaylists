@@ -1,8 +1,8 @@
--- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_LEASTPLAYED
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
--- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SONGS_RECENTLYADDED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_RECENTLYADDED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_NORECENTLYADDEDSONGS
-select leastplayed.url from
+-- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTLASTADDEDPERIOD_SONGS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_ALL,604800:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_1WEEK,1209600:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_2WEEKS,2419200:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_4WEEKS,7257600:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_3MONTHS,14515200:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_6MONTHS,29030399:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_12MONTHS
+select mostplayed.url from
 	(select distinct tracks.url from tracks
 		left join library_track on
 			library_track.track = tracks.id
@@ -16,8 +16,7 @@ select leastplayed.url from
 			and tracks.secs >= 'PlaylistTrackMinDuration'
 			and
 				case
-					when 'PlaylistParameter1'=1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-tracks_persistent.added) < 0)
-					when 'PlaylistParameter1'=2 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-tracks_persistent.added) > 0)
+					when 'PlaylistParameter1'>0 then (tracks_persistent.added >= (select max(ifnull(tracks_persistent.added,0)) from tracks_persistent) - 'PlaylistParameter1')
 					else 1
 				end
 			and not exists (select * from tracks t2,genre_track,genres
@@ -33,6 +32,6 @@ select leastplayed.url from
 					else 1
 				end
 		group by tracks.id
-		order by tracks_persistent.playCount asc, random()
-		limit 'PlaylistLimit') as leastplayed
+		order by tracks_persistent.playCount desc, random()
+		limit 'PlaylistLimit') as mostplayed
 	order by random();
