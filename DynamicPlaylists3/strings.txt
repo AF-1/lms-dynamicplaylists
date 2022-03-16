@@ -107,7 +107,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_MIN_TRACK_DURATION
 	FR	Durée minimum du morceau
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_MIN_TRACK_DURATION_DESC
-	EN	Sets the <b>minimum track duration</b> in seconds for tracks in dynamic playlists that use the <i>TrackMinDuration</i> parameter (some built-in playlists use this).
+	EN	Set the <b>minimum track duration</b> in seconds for tracks in dynamic playlists that use the <i>TrackMinDuration</i> parameter (some built-in playlists use this).
 	FR	Définit la <b>durée minimale du morceau</b> en secondes pour les morceaux dans les listes de lecture dynamiques qui utilisent le paramètre <i>TrackMinDuration</i> (certaines listes de lecture intégrées l'utilisent)
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_TOPRATED_MINRATING
