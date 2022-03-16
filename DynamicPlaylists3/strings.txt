@@ -99,7 +99,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SONG_ADDING_CHECK_DELAY
 	FR	Délai de recherche de nouveaux morceaux
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SONG_ADDING_CHECK_DELAY_DESC
-	EN	Sets the delay in <i>seconds</i> after a song change event before checking if new songs have to be added to the playlist.
+	EN	Set the delay in <i>seconds</i> after a song change event before checking if new songs have to be added to the playlist.
 	FR	Définit le delai en <i>secondes</i> après un changement de morceaux avant de vérifier si de nouveaux morceaux doivent être ajoutées à la liste de lecture.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_MIN_TRACK_DURATION
@@ -125,22 +125,6 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DISABLEEXTRASHUFFLE
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DISABLEEXTRASHUFFLE_DESC
 	EN	By default DPL shuffles tracks of built-in and custom dynamic playlists to increase randomness unless told otherwise.<br><br>You have 2 options to disable this <i>extra</i> shuffling:<br><br>* disable extra shuffling <b>globally</b> for <b>all</b> playlists (by checking this preference) or<br><br>* disable track shuffling for <b>selected</b> (custom) dynamic playlists by adding this playlist parameter to your playlist definition:<br><i>-- PlaylistTrackOrder:ordered</i><br><br>Saved static playlists have a separate preference setting.
 	FR	Par défaut DPL mélange les morceaux des listes de lecture dynamiques pour améliorer le hasard sauf si défini autrement. <br><br>Vous avez 2 options pour désactiver ce mélange <i>extra</i> :<br><br>* désactiver le mélange supplémentaire <b>globalement</b> for <b>toutes</b> les listes de lecture (en cochant cette préférence) ou<br><br>* désactiver le mélange de morceaux pour une liste de lecture personnalisée <b>sélectionnée</b> en ajoutant le paramètre suivant dans la définition de la liste de lecture :<br><i>-- PlaylistTrackOrder:ordered</i><br><br>Les listes de lecture statiques ont un réglage séparé.
-
-SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_PERIOD_RECENTLYADDED
-	EN	Recently added period
-	FR	Période des ajouts récents
-
-SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_PERIOD_RECENTLYADDED_DESC
-	EN	Set the time period for tracks to be considered <b>recently added</b> in dynamic playlists that use the <i>PeriodRecentlyAdded</i> parameter (some built-in playlists use this).
-	FR	Définit la période pour que les morceaux soient considérés <b>ajoutés récemment</b> dans les listes de lecture qui utilisent le paramètre <i>PeriodRecentlyAdded</i> (certaines listes de lecture intégrées l'utilisent)
-
-SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_PERIOD_RECENTLYPLAYED
-	EN	Recently played period
-	FR	Période des morceaux joués récemment
-
-SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_PERIOD_RECENTLYPLAYED_DESC
-	EN	Set the time period for tracks to be considered <b>recently played</b> in dynamic playlists that use the <i>PeriodRecentlyPlayed</i> parameter (some built-in playlists use this).
-	FR	Définit la période pour que les morceaux soient considérés <b>joués récemment</b> dans les listes de lecture qui utilisent le paramètre <i>PeriodRecentlyPlayed</i> (certaines listes de lecture intégrées l'utilisent)
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_PERIOD_PLAYEDLONGAGO
 	EN	Played long ago period
@@ -350,10 +334,6 @@ PLUGIN_DYNAMICPLAYLISTS3_FAVOURITES
 
 
 
-# NOTE this key is used twice
-PLUGIN_DYNAMICPLAYLISTS3_NEXT
-	EN	Next
-	FR	Suivant
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMETERS_TITLE
 	EN	Enter additional parameters for dynamic playlist
@@ -418,16 +398,10 @@ PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_NONE
 
 
 PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_SECS
-	EN	seconds
-	FR	secondes
-
-PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_DAYS
-	EN	days
-	FR	jours
+	EN	second(s)
 
 PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_YEARS
-	EN	years
-	FR	années
+	EN	year(s)
 
 PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_UNKNOWN
 	EN	Unknown
@@ -569,9 +543,8 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_VLIB_RANDOM
 	EN	Albums - random from selected virtual library
 	FR	Albums - aléatoire sur la bibliothèque virtuelle sélectionnée
 
-PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_RECENTLYPLAYEDORADDEDSONGS
-	EN	Albums - recently added or played songs
-	FR	Albums - morceaux récemment ajoutés ou joués
+PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_RECENTLYPLAYEDORLASTADDEDSONGS
+	EN	Albums - recently played or lasted added songs
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_NEVERPLAYED
 	EN	Albums - never played
@@ -626,9 +599,8 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_VLIB_RANDOM
 	EN	Artists - random from selected virtual library
 	FR	Artistes - aléatoire sur la bibliothèque virtuelle sélectionnée
 
-PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_RECENTLYPLAYEDORADDEDSONGS
-	EN	Artists - recently added or played songs
-	FR	Artistes - morceaux récemment ajoutés ou joués
+PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_RECENTLYPLAYEDORLASTADDEDSONGS
+	EN	Artists - recently played or lasted added songs
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_NEVERPLAYED
 	EN	Artists - never played
@@ -683,9 +655,8 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_VLIB_RANDOM
 	EN	Genres - random from selected virtual library
 	FR	Genres - aléatoire sur la bibliothèque virtuelle sélectionnée
 
-PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_RECENTLYPLAYEDORADDEDSONGS
-	EN	Genres - recently added or played songs
-	FR	Genres - morceaux récemment ajoutés ou joués
+PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_RECENTLYPLAYEDORLASTADDEDSONGS
+	EN	Genres - recently played or lasted added songs
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_NEVERPLAYED
 	EN	Genres - never played
@@ -743,7 +714,6 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_PLAYEDLONGAGO
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RANDOM
 	EN	Songs - random
-	FR	Morceaux - aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE
 	EN	Songs - random (by genre)
@@ -784,6 +754,9 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGETOP
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGERATED
 	EN	Songs - not RATED (by genre + decade with % of rated songs)
 	FR	Morceaux - non notés (par genre + décennie avec un % de morceaux notés)
+
+PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_LASTADDED_GENRE_MINRATING
+	EN	Songs - last added (by genre + min. rating)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RANDOM_IGNORE_SELECTEDPL
 	EN	Songs - random - ignore songs in selected playlist
@@ -827,7 +800,6 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_PRESEL_ALBUMS_SONGS_MINRATING_DE
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_SPOTIFY_RANDOM
 	EN	Songs - Spotify library tracks random
-	FR	Morceaux - aléatoires de la bibliothèque Spotify
 
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_RANDOM
@@ -874,9 +846,8 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_VLIB_RANDOM
 	EN	Years - random from selected virtual library
 	FR	Années - aléatoire sur la bibliothèque virtuelle sélectionnée
 
-PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_RECENTLYPLAYEDORADDEDSONGS
-	EN	Years - recently added or played songs
-	FR	Années - morceaux récemment ajoutés ou joués
+PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_RECENTLYPLAYEDORLASTADDEDSONGS
+	EN	Years - recently played or lasted added songs
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_NEVERPLAYED
 	EN	Years - never played
@@ -1289,46 +1260,6 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_PLAYEDLONGAGO
 
 
 
-PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS
-	EN	Choose songs to include
-	FR	Choisir les morceaux à inclure
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ALBUMS_RECENTLYADDED
-	EN	Limit to recently ADDED albums?
-	FR	Limiter aux albums récemment ajoutés ?
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ALBUMS_RECENTLYPLAYED
-	EN	Limit to albums that contain recently PLAYED songs?
-	FR	Limiter aux albums qui contiennent des morceaux récemment joués ?
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ARTISTS_RECENTLYADDED
-	EN	Limit to artists with recently ADDED songs?
-	FR	Limiter aux artistes avec des morceaux récemment ajoutés ?
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ARTISTS_RECENTLYPLAYED
-	EN	Limit to artists with recently PLAYED songs?
-	FR	Limiter aux artistes avec des morceaux récemment joués ?
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_GENRES_RECENTLYADDED
-	EN	Limit to genres with recently ADDED songs?
-	FR	Limiter aux genres avec des morceaux récemment ajoutés ?
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_GENRES_RECENTLYPLAYED
-	EN	Limit to genres that contain recently PLAYED songs?
-	FR	Limiter aux genres qui contiennent des morceaux récemment joués ?
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SONGS_RECENTLYADDED
-	EN	Limit to recently ADDED songs?
-	FR	Limiter aux morceaux récemment ajoutés ?
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_YEARS_RECENTLYADDED
-	EN	Limit to years with recently ADDED songs?
-	FR	Limiter aux années avec des morceaux récemment ajoutés ?
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_YEARS_RECENTLYPLAYED
-	EN	Limit to years that contain recently PLAYED songs?
-	FR	Limiter aux années qui contiennent des morceaux récemment joués ?
-
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTALBUM
 	EN	Select album
 	FR	Sélectionner l'album
@@ -1377,67 +1308,37 @@ PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTYEAR
 	EN	Select year
 	FR	Sélectionner l'année
 
+PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS
+	EN	Choose songs to include
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ALBUMS_RECENTLYPLAYED
+	EN	Limit to albums that contain recently PLAYED songs?
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ARTISTS_RECENTLYPLAYED
+	EN	Limit to artists with recently PLAYED songs?
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_GENRES_RECENTLYPLAYED
+	EN	Limit to genres that contain recently PLAYED songs?
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_YEARS_RECENTLYPLAYED
+	EN	Limit to years that contain recently PLAYED songs?
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTLASTADDEDPERIOD_SONGS
+	EN	Limit to last ADDED songs?
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTLASTADDEDPERIOD_ALBUMS
+	EN	Limit to last ADDED albums?
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTLASTADDEDPERIOD_ARTISTS
+	EN	Limit to artists with last ADDED songs?
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTLASTADDEDPERIOD_GENRES
+	EN	Limit to genres with last ADDED songs?
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTLASTADDEDPERIOD_YEARS
+	EN	Limit to years with last ADDED songs?
 
 
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_ALL
-	EN	all albums
-	FR	tous les albums
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_RECENTLYADDED
-	EN	recently added albums
-	FR	albums ajoutés récemment
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_NOTRECENTLYADDED
-	EN	albums not recently added
-	FR	albums ajoutés pas récemment
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_RECENTLYPLAYEDSONGS
-	EN	albums with recently played songs
-	FR	albums avec des morceaux récemment joués
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_NORECENTLYPLAYEDSONGS
-	EN	albums without recently played songs
-	FR	albums sans morceaux récemment joués
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_ALL
-	EN	all artists
-	FR	tous les artistes
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_RECENTLYADDEDSONGS
-	EN	artists with recently added songs
-	FR	artistes avec des morceaux récemment ajoutés
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_NORECENTLYADDEDSONGS
-	EN	artists without recently added songs
-	FR	artistes sans morceaux récemment ajoutés
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_RECENTLYPLAYEDSONGS
-	EN	artists with recently played songs
-	FR	artistes avec des morceaux récemment ajoutés
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ARTISTS_NORECENTLYPLAYEDSONGS
-	EN	artists without recently played songs
-	FR	artistes sans morceaux récemment joués
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_ALL
-	EN	all genres
-	FR	tous les genres
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_RECENTLYADDEDSONGS
-	EN	genres with recently added songs
-	FR	genre avec des morceaux récemment ajoutés
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_NORECENTLYADDEDSONGS
-	EN	genres without recently added songs
-	FR	genre sans morceaux récemment ajoutés
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_RECENTLYPLAYEDSONGS
-	EN	genres with recently played songs
-	FR	genre avec des morceaux récemment joués
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_NORECENTLYPLAYEDSONGS
-	EN	genres without recently played songs
-	FR	genre sans morceaux récemment joués
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL
 	EN	all songs
@@ -1451,37 +1352,82 @@ PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_UNPLAYED
 	EN	unplayed songs
 	FR	morceaux non joués
 
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_RECENTLYADDED
-	EN	recently added songs
-	FR	morceaux ajoutés récemment
-
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_NORECENTLYADDEDSONGS
-	EN	not with recently added songs
-	FR	sans morceaux ajoutés récemment
-
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_UNRATED
 	EN	unrated
 	FR	pas notés
 
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_ALL
-	EN	all years
-	FR	toutes les années
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_ALL
+	EN	Don’t limit
+	FR	Ne pas limiter
 
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_RECENTLYADDEDSONGS
-	EN	years with recently added songs
-	FR	années avec des morceaux récemment ajoutés
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_1WEEK
+	EN	Played in the last week
+	FR	Joués dans la dernière semaine
 
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_NORECENTLYADDEDSONGS
-	EN	years without recently added songs
-	FR	annnées sans morceaux récemment ajoutés
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_1WEEK_NOT
+	EN	NOT played in the last week
+	FR	NON joués dans la dernière semaine
 
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_RECENTLYPLAYEDSONGS
-	EN	years with recently played songs
-	FR	années avec des morceaux récemment joués
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_2WEEKS
+	EN	Played in the last 2 weeks
+	FR	Joués dans les 4 dernières semaines
 
-PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_YEARS_NORECENTLYPLAYEDSONGS
-	EN	years without recently played songs
-	FR	années sans morceaux récemment joués
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_2WEEKS_NOT
+	EN	NOT played in the last 2 weeks
+	FR	NON joués dans les 2 dernières semaines
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_4WEEKS
+	EN	Played in the last 4 weeks
+	FR	Joués dans les 4 dernières semaines
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_4WEEKS_NOT
+	EN	NOT played in the last 4 weeks
+	FR	NON joués dans les 4 dernières semaines
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_3MONTHS
+	EN	Played in the last 3 months
+	FR	Joués dans les 3 derniers mois
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_3MONTHS_NOT
+	EN	NOT played in the last 3 months
+	FR	NON joués dans les 3 derniers mois
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_6MONTHS
+	EN	Played in the last 6 months
+	FR	Joués dans les 6 derniers mois
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_6MONTHS_NOT
+	EN	NOT played in the last 6 months
+	FR	NON joués dans les 6 derniers mois
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_ALL
+	EN	Don’t limit
+	FR	Ne pas limiter
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_1WEEK
+	EN	Added in the week before the last library import
+	FR	Ajoutés dans la semaine avant le dernier import de la bibliothèque
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_2WEEKS
+	EN	Added in the 2 weeks before the last library import
+	FR	Ajoutés dans les 2 semaines avant le dernier import de la bibliothèque
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_4WEEKS
+	EN	Added in the 4 weeks before the last library import
+	FR	Ajoutés dans les 4 semaines avant le dernier import de la bibliothèque
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_3MONTHS
+	EN	Added in the 3 months before the last library import
+	FR	Ajoutés dans les 3 mois avant le dernier import de la bibliothèque
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_6MONTHS
+	EN	Added in the 6 months before the last library import
+	FR	Ajoutés dans les 6 mois avant le dernier import de la bibliothèque
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_12MONTHS
+	EN	Added in the 12 months before the last library import
+	FR	Ajoutés dans les 12 mois avant le dernier import de la bibliothèque
+
 
 
 PLUGIN_DYNAMICPLAYLISTS3_CUSTOMSKIP_RECENTLYADDEDALBUM_NAME

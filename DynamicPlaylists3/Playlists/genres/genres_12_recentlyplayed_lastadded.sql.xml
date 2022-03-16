@@ -1,8 +1,8 @@
--- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_RECENTLYPLAYEDORADDEDSONGS
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_GENRES_RECENTLYPLAYEDORLASTADDEDSONGS
 -- PlaylistGroups:Genres
 -- PlaylistCategory:genres
 -- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_GENRES_RECENTLYPLAYED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_RECENTLYPLAYEDSONGS,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_NORECENTLYPLAYEDSONGS
--- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_GENRES_RECENTLYADDED:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_RECENTLYADDEDSONGS,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_GENRES_NORECENTLYADDEDSONGS
+-- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTLASTADDEDPERIOD_GENRES:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_ALL,604800:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_1WEEK,1209600:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_2WEEKS,2419200:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_4WEEKS,7257600:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_3MONTHS,14515200:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_6MONTHS,29030399:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_12MONTHS
 drop table if exists dynamicplaylist_random_genres;
 create temporary table dynamicplaylist_random_genres as
 	select genre_track.genre as genre from genre_track
@@ -30,7 +30,7 @@ create temporary table dynamicplaylist_random_genres as
 				end
 			and
 				case
-					when 'PlaylistParameter2'=1 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-tracks_persistent.added) < 0)
+					when 'PlaylistParameter2'>0 then (tracks_persistent.added >= (select max(ifnull(tracks_persistent.added,0)) from tracks_persistent) - 'PlaylistParameter2')
 					else 1
 				end
 			and
@@ -43,11 +43,6 @@ create temporary table dynamicplaylist_random_genres as
 			having
 					case
 						when 'PlaylistParameter1'=2 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyPlayed' DAY'))-max(ifnull(tracks_persistent.lastPlayed,0))) > 0)
-						else 1
-					end
-				and
-					case
-						when 'PlaylistParameter2'=2 then ((strftime('%s',DATE('NOW','-'PlaylistPeriodRecentlyAdded' DAY'))-max(tracks_persistent.added)) > 0)
 						else 1
 					end
 		order by random()
