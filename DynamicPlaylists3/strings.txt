@@ -91,7 +91,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_NUMBER_OF_PLAYED_TRACKS_TO_KEEP
 	FR	Nombre de morceaux joués à conserver
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_NUMBER_OF_PLAYED_TRACKS_TO_KEEP_DESC
-	EN	Sets the number of <b>played</b> tracks to keep in a dynamic playlist when <i>new</i> tracks are added.
+	EN	Set the number of <b>played</b> tracks to keep in a dynamic playlist when <i>new</i> tracks are added.
 	FR	Définit le nombre de morceaux <b>joués</b> à garder dans une liste de lecture dynamique quand des <i>nouveaux</i> morceaux sont ajoutés. 
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SONG_ADDING_CHECK_DELAY
