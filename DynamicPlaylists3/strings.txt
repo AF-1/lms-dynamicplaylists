@@ -523,7 +523,7 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_TOPRATEDAVG
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_MOSTRATEDSONGS
 	EN	Albums - with most rated songs
-	FR 	Albums - avec les morceaux les mieux notés
+	FR	Albums - avec les morceaux les mieux notés
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_RATEDSONGS
 	EN	Albums - that contain rated songs
