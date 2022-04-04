@@ -1,6 +1,7 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_NEVERPLAYED
 -- PlaylistGroups:Playlists
 -- PlaylistCategory:playlists
+-- PlaylistAPCdupe:yes
 drop table if exists dynamicplaylist_random_playlists;
 create temporary table dynamicplaylist_random_playlists as
 	select playlist_track.playlist as playlist, sum(ifnull(tracks_persistent.playCount,0)) as sumplaycount from playlist_track

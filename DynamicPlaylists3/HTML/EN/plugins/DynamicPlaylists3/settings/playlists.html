@@ -1,4 +1,4 @@
-<style>details summary{cursor:pointer;outline:none;margin-bottom:10px;}details summary > *{display:inline;}.dpllist_source{padding-left: 15px;}.categoryheader{font-weight:600;text-transform:capitalize;}.playlists td:first-child {padding-left:10px;min-width:360px;}</style>
+<style>details summary{cursor:pointer;outline:none;margin-bottom:10px;}details summary > *{display:inline;}.dpllist_source{padding-left: 15px;}.categoryheader{font-weight:600;text-transform:capitalize;}.playlists td:first-child {padding-left:10px;min-width:360px;}.apcsection{[% IF !apcenabled %]display:none;[% END %]}.apcbutton{padding-left:2px;padding-right:10px;}</style>
 [% page = "PLUGIN_DYNAMICPLAYLISTS3" %]
 [% PROCESS settings/header.html %]
 
@@ -18,8 +18,15 @@
 			</table>
 		[% END %]
 	[% END %]
+<div class="apcsection">
 <br>
-
+	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APC_PLAYLISTS_BATCH" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APC_PLAYLISTS_BATCH_DESC" %]
+	<span class="apcbutton"><input style="margin-top:-1px;" name="apc_dpl3only" type="submit" class="stdclick" value="[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APCDUPES_ENABLE_BUTTON_DPL3ONLY" | string %]"></span>
+	<span class="apcbutton"><input style="margin-top:-1px;" name="apc_apconly" type="submit" class="stdclick" value="[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APCDUPES_ENABLE_BUTTON_APCONLY" | string %]"></span>
+	<span class="apcbutton"><input style="margin-top:-1px;" name="apc_both" type="submit" class="stdclick" value="[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APCDUPES_ENABLE_BUTTON_BOTH" | string %]"></span>
+	[% END %]
+</div>
+<br>
 	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SELECT_PLAYLISTS" desc="" %]
 		[% FOREACH category = ['songs', 'artists', 'albums', 'genres', 'years', 'playlists'] %]
 			<details><summary><span class="categoryheader">[% categorylangstrings.$category %]</span></summary>

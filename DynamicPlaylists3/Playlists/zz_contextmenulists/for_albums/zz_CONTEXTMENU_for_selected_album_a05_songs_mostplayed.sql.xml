@@ -2,6 +2,7 @@
 -- PlaylistGroups:Context menu lists/ album
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:albums
+-- PlaylistAPCdupe:yes
 -- PlaylistParameter1:album:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTALBUM:
 select mostplayed.url from
 	(select distinct tracks.url from tracks

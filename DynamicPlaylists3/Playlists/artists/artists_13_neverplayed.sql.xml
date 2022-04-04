@@ -1,6 +1,7 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_NEVERPLAYED
 -- PlaylistGroups:Artists
 -- PlaylistCategory:artists
+-- PlaylistAPCdupe:yes
 drop table if exists dynamicplaylist_random_contributors;
 create temporary table dynamicplaylist_random_contributors as
 	select distinct contributor_track.contributor as contributor, sum(ifnull(tracks_persistent.playCount,0)) as sumplaycount, count(distinct tracks.id) as totaltrackcount from tracks

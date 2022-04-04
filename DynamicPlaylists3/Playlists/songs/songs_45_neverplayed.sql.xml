@@ -1,6 +1,7 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_NEVERPLAYED
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
+-- PlaylistAPCdupe:yes
 select distinct tracks.url from tracks
 	left join library_track on
 		library_track.track = tracks.id

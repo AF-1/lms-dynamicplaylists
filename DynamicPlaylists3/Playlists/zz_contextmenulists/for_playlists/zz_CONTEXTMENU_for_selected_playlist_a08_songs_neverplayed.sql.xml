@@ -2,6 +2,7 @@
 -- PlaylistGroups:Context menu lists/ playlist
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:playlists
+-- PlaylistAPCdupe:yes
 -- PlaylistParameter1:playlist:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTPLAYLIST:
 select distinct playlist_track.track from playlist_track
 	join tracks on

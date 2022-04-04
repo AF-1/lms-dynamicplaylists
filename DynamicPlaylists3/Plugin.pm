@@ -79,6 +79,7 @@ my %empty = ();
 my %choiceMapping;
 
 my $dstm_enabled;
+my $apc_enabled;
 my %categorylangstrings;
 my %customsortnames;
 
@@ -159,11 +160,12 @@ sub weight {
 
 sub postinitPlugin {
 	my $class = shift;
+	$apc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::AlternativePlayCount::Plugin');
 	initPlayLists();
 	initPlayListTypes();
 	registerJiveMenu($class);
 	registerStandardContextMenus();
-	Slim::Utils::Timers::setTimer(undef, Time::HiRes::time() + 8, sub {
+	Slim::Utils::Timers::setTimer(undef, Time::HiRes::time() + 3, sub {
 		$dstm_enabled = Slim::Utils::PluginManager->isEnabled('Slim::Plugin::DontStopTheMusic::Plugin');
 	});
 }
@@ -248,6 +250,7 @@ sub initPlayLists {
 	$log->debug('Searching for playlists');
 
 	getLocalDynamicPlaylists($client);
+	#$log->debug('localDynamicPlaylists = '.Dumper($localDynamicPlaylists));
 
 	my %localPlayLists = ();
 	my %localPlayListItems = ();
@@ -289,7 +292,6 @@ sub initPlayLists {
 				} else {
 					$playlist->{'dynamicplaylistenabled'} = 0;
 				}
-
 				my $favourite = $prefs->get('playlist_'.$item.'_favourite');
 				if (defined($favourite) && $favourite) {
 					$playlist->{'dynamicplaylistfavourite'} = 1;
@@ -3212,6 +3214,8 @@ sub getDynamicPlayLists {
 				'playlistsortname' => $playlistsortname,
 				'menulisttype' => $current->{'menulisttype'},
 				'playlistcategory' => $current->{'playlistcategory'},
+				'apcplaylist' => $current->{'apcplaylist'},
+				'playlistapcdupe' => $current->{'playlistapcdupe'},
 				'playlisttrackorder' => $current->{'playlisttrackorder'},
 				'playlistlimitoption' => $current->{'playlistlimitoption'},
 				'playlistvirtuallibrarynames' => $current->{'playlistvirtuallibrarynames'},
@@ -3527,6 +3531,7 @@ sub getLocalDynamicPlaylists {
 				next unless $item =~ /$fileExtension/;
 				next if -d $item;
 				my $content = eval {read_file($item)};
+				my $plDirName = dirname($item);
 				$item = basename($item);
 				if ($content) {
 					# If necessary convert the file data to utf8
@@ -3542,9 +3547,15 @@ sub getLocalDynamicPlaylists {
 
 					my $parsedContent;
 					if ($localDefDir eq $pluginPlaylistFolder) {
+						if ($plDirName =~ /extplugin_APC/) {
+							next unless $apc_enabled;
+						}
 						$parsedContent = parseContent($client, $item, $content, undef, 'defaultplaylist');
 						$parsedContent->{'defaultplaylist'} = 1;
 						$parsedContent->{'playlistsortname'} = ''.$parsedContent->{'name'};
+						if (($plDirName =~ /extplugin_APC/) && $apc_enabled) {
+								$parsedContent->{'apcplaylist'} = 1;
+						}
 					} else {
 						$parsedContent = parseContent($client, $item, $content);
 						$parsedContent->{'customplaylist'} = 1;
@@ -3576,6 +3587,7 @@ sub parseContent {
 		my %parameters = ();
 		my $menuListType = '';
 		my $playlistCategory = '';
+		my $playlistAPCdupe = '';
 		my $playlistTrackOrder = '';
 		my $playlistLimitOption = '';
 		my $playlistVLnames = ();
@@ -3605,6 +3617,7 @@ sub parseContent {
 			my $action = parseAction($line);
 			my $listType = parseMenuListType($line);
 			my $category = parseCategory($line);
+			my $APCdupe = parseAPCdupe($line);
 			my $trackOrder = parseTrackOrder($line);
 			my $limitOption = parseLimitOption($line);
 			my $VLnameItem = parseVirtualLibraryName($line);
@@ -3638,6 +3651,9 @@ sub parseContent {
 			}
 			if ($category) {
 				$playlistCategory = $category;
+			}
+			if ($APCdupe) {
+				$playlistAPCdupe = $APCdupe;
 			}
 			if ($trackOrder) {
 				$playlistTrackOrder = $trackOrder;
@@ -3712,6 +3728,9 @@ sub parseContent {
 			}
 			if (defined $playlistCategory && $playlistCategory ne '') {
 				$playlist{'playlistcategory'} = $playlistCategory;
+			}
+			if (defined $playlistAPCdupe && $playlistAPCdupe ne '') {
+				$playlist{'playlistapcdupe'} = $playlistAPCdupe;
 			}
 			if (defined $playlistTrackOrder && $playlistTrackOrder ne '') {
 				$playlist{'playlisttrackorder'} = $playlistTrackOrder;
@@ -3887,6 +3906,25 @@ sub parseCategory {
 		} else {
 			$log->debug("No value or error in category: $line");
 			$log->debug("Option values: category = $category");
+			return undef;
+		}
+	}
+	return undef;
+}
+
+sub parseAPCdupe {
+	my $line = shift;
+	if ($line =~ /^\s*--\s*PlaylistAPCdupe\s*[:=]\s*/) {
+		$line =~ m/^\s*--\s*PlaylistAPCdupe\s*[:=]\s*([^:]+)\s*(.*)$/;
+		my $APCdupe = $1;
+		$APCdupe =~ s/\s+$//;
+		$APCdupe =~ s/^\s+//;
+
+		if ($APCdupe) {
+			return $APCdupe;
+		} else {
+			$log->debug("No value or error in APCdupe: $line");
+			$log->debug("Option values: APCdupe = $APCdupe");
 			return undef;
 		}
 	}

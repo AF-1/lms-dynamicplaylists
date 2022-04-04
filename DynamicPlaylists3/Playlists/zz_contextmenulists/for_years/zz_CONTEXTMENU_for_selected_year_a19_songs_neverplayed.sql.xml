@@ -2,6 +2,7 @@
 -- PlaylistGroups:Context menu lists/ year
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:years
+-- PlaylistAPCdupe:yes
 -- PlaylistParameter1:year:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTYEAR:
 select distinct tracks.url from tracks
 	left join library_track on

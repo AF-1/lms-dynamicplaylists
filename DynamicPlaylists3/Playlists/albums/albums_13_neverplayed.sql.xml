@@ -1,6 +1,7 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_NEVERPLAYED
 -- PlaylistGroups:Albums
 -- PlaylistCategory:albums
+-- PlaylistAPCdupe:yes
 -- PlaylistTrackOrder:ordered
 -- PlaylistLimitOption:unlimited
 drop table if exists dynamicplaylist_random_albums;

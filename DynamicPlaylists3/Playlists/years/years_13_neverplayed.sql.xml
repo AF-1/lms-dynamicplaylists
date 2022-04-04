@@ -1,6 +1,7 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_YEARS_NEVERPLAYED
 -- PlaylistGroups:Years
 -- PlaylistCategory:years
+-- PlaylistAPCdupe:yes
 drop table if exists dynamicplaylist_random_years;
 create temporary table dynamicplaylist_random_years as
 	select tracks.year as year, sum(ifnull(tracks_persistent.playCount,0)) as sumplaycount from tracks

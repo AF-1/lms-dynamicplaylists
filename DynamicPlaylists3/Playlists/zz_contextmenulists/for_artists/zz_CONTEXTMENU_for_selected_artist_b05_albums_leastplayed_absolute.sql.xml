@@ -2,6 +2,7 @@
 -- PlaylistGroups:Context menu lists/ artist
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:artists
+-- PlaylistAPCdupe:yes
 -- PlaylistTrackOrder:ordered
 -- PlaylistLimitOption:unlimited
 -- PlaylistParameter1:artist:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTARTIST:
