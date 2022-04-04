@@ -1491,7 +1491,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APC_PLAYLISTS_BATCH
 	EN	Batch enable/disable<br>APC (duplicate) playlists
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APC_PLAYLISTS_BATCH_DESC
-	EN	The APC dynamic playlists have the same purpose as some of DPL's built-in dynamic playlists. They just use different values.<br>You can choose which version of these "duplicate" playlists you want to enable: only DPL, only APC or both (default).
+	EN	The APC dynamic playlists have the same purpose as some of DPL's built-in dynamic playlists. They just use different values.<br>These buttons allow you to enable <b>all</b> dynamic playlists of both versions (default) or just one version <i>in one go</i>.<br><b>You can still enable or disable individual lists in the section below.</b>
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APCDUPES_ENABLE_BUTTON_DPL3ONLY
 	EN	Only DPL playlists

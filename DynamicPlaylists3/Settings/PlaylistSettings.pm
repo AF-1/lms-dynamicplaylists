@@ -184,11 +184,8 @@ sub savePlayListGroups {
 
 sub beforeRender {
 	my ($class, $paramRef) = @_;
-
 	my $apc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::AlternativePlayCount::Plugin');
-	if ($apc_enabled) {
-		$paramRef->{'apcenabled'} = 'yes';
-	}
+	$paramRef->{'apcenabled'} = 'yes' if $apc_enabled;
 }
 
 *escape = \&URI::Escape::uri_escape_utf8;
