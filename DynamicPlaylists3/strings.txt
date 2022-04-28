@@ -741,8 +741,8 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_PLAYEDLONGAGO
 	FR	Listes de lecture - jouées il y a longtemps
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_MULTIPLE_GENRE_DECADE_MINRATING
-	EN	Playlists - select multiple playlists (by genre, decade + min. rating)
-	FR	Listes de lecture - sélectionner plusieurs listes (par genre, décennie + note min.)
+	EN	Playlists - songs from multiple playlists (by genre, decade + min. rating)
+	FR	Listes de lecture - morceaux de plusieurs listes (par genre, décennie + note min.)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RANDOM
 	EN	Songs - random
