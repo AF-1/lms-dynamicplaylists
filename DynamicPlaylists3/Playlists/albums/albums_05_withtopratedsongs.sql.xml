@@ -8,7 +8,7 @@ drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select distinct tracks.album as album, count(distinct tracks.id) as totaltrackcount from tracks
 		join tracks_persistent on
-			tracks_persistent.urlmd5 = tracks.urlmd5 and tracks_persistent.rating >= 'PlaylistTopRatedMinRating'
+			tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) >= 'PlaylistTopRatedMinRating'
 		left join library_track on
 			library_track.track = tracks.id
 		left join dynamicplaylist_history on

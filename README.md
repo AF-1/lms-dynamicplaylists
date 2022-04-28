@@ -27,10 +27,10 @@ If you want to test a new patch that hasn't made it into a release version yet o
 * Use **your own custom dynamic playlist files/definitions directly in DPL** without intermediary plugins - you don't have to install other plugins (like SQLPlayList or TrackStat) to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
 * Comes with 180+ ready-to-use dynamic playlists (stand-alone + for context menus).
 * New playlist parameters (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
+* **Multiple** selection of *genres*, *decades*, *years* and *static playlists*
+* **Pre**select multiple *artists* or *albums* from their context menu at your leisure. DPL remembers your **pre**selection so that you can easily use it later with dynamic playlists that use **preselection**.
 * Use LMS **virtual libraries**.
-* **Multiple** genre selection
-* **Pre**select multiple artists or albums from their context menu at your leisure. DPL remembers your **pre**selection so that you can easily use it later with dynamic playlists that use **preselection**.
-* Save dynamic playlists with (user input) parameters to LMS favourites (web only, read FAQ).
+* Save dynamic playlists with (user input) parameters to LMS **favourites** (web only, read FAQ).
 * Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
 * New preference options and UI changes.
 * …

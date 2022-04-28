@@ -8,7 +8,7 @@ create temporary table dynamicplaylist_random_genres as
 		join tracks on
 			genre_track.track=tracks.id
 		join tracks_persistent on
-			tracks_persistent.urlmd5 = tracks.urlmd5 and tracks_persistent.rating >= 'PlaylistTopRatedMinRating'
+			tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) >= 'PlaylistTopRatedMinRating'
 		left join library_track on
 			library_track.track = tracks.id
 		left join dynamicplaylist_history on

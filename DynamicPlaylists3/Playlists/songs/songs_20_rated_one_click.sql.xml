@@ -3,7 +3,7 @@
 -- PlaylistCategory:songs
 select distinct tracks.url from tracks
 	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5 and tracks_persistent.rating > 0
+		tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) > 0
 	left join library_track on
 		library_track.track = tracks.id
 	left join dynamicplaylist_history on

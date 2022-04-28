@@ -18,7 +18,6 @@ create temporary table dynamicplaylist_random_years as
 			and dynamicplaylist_history.id is null
 			and tracks.year is not null
 			and tracks.year!=0
-			and tracks_persistent.rating > 0
 			and not exists (select * from tracks t2,genre_track,genres
 							where
 								t2.id=tracks.id and
