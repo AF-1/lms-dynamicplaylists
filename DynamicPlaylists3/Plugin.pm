@@ -1,4 +1,5 @@
-#					DynamicPlaylists3 plugin
+#
+# DynamicPlaylists3 plugin
 #
 # (c) 2021-2022 AF
 #
@@ -1436,7 +1437,7 @@ sub getGenres {
 	my $query = ['genres', 0, 999_999];
 
 	my $library_id = Slim::Music::VirtualLibraries->getLibraryIdForClient($client);
-	push @$query, 'library_id:'.$library_id if $library_id;
+	push @{$query}, 'library_id:'.$library_id if $library_id;
 	my $request = Slim::Control::Request::executeRequest($client, $query);
 
 	my $selectedGenres = $client->pluginData('selected_genres') || [];
@@ -1525,7 +1526,7 @@ sub getYears {
 	my $query = ['years', 0, 999_999];
 
 	my $library_id = Slim::Music::VirtualLibraries->getLibraryIdForClient($client);
-	push @$query, 'library_id:'.$library_id if $library_id;
+	push @{$query}, 'library_id:'.$library_id if $library_id;
 
 	my $request = Slim::Control::Request::executeRequest($client, $query);
 
@@ -1555,7 +1556,7 @@ sub getStaticPlaylists {
 	my $query = ['playlists', '0', '999_999', 'tags:x'];
 
 	my $library_id = Slim::Music::VirtualLibraries->getLibraryIdForClient($client);
-	push @$query, 'library_id:'.$library_id if $library_id;
+	push @{$query}, 'library_id:'.$library_id if $library_id;
 	my $request = Slim::Control::Request::executeRequest($client, $query);
 
 	my $selectedStaticPlaylists = $client->pluginData('selected_staticplaylists') || [];
