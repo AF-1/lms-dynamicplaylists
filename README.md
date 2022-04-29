@@ -73,7 +73,7 @@ In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplayl
 
 - Now put this file in DPL's <i>folder for custom dynamic playlists</i> called <b>DPL-custom-lists</b>. Unless you've changed its location in DPL's settings you'll find this folder in your <i>LMS playlist folder</i>.<br>
 
-- The new dynamic playlist should now be listed in DPL, either in the <i>Not classified</i> group or in other groups according to what the <code>-- PlaylistGroups</code> parameter in your playlist definition says.</p></details>
+- The new dynamic playlist should now be listed in DPL, either in the <i>Not classified</i> group or in other groups according to what the <code>-- PlaylistGroups</code> parameter in your playlist definition says.</p></details><br>
 
 <details><summary>»<b>The <i>Home > Dynamic Playlists</i> menu doesn't show dynamic playlists for <i>context menus</i>. Why?</b>«</summary><br><p>
 By default the <b>Home > Dynamic Playlists</b> menu will only show dynamic playlists that <i>don't</i> include the <code>-- PlaylistMenuListType:contextmenu</code> parameter. Here you won't find any dynamic playlists that can be called from an item's context menu.<br>
@@ -88,8 +88,7 @@ So for <b>artists</b> and <b>albums</b> DPL will show a <b>second <i>context</i>
 The <i>Don't Stop the Music</i> (DSTM) plugin “will automatically add similar music to what you've been listening to ... once you've reached the end of your playlist“. DSTM takes a look at the existing tracks in your client's playlist (the <i>seed list</i>) to determine what kind of tracks to search for.<br>Now you can use <i>Dynamic Playlists 3</i> to create a DSTM seed list from any dynamic playlist and start a DSTM mix for you. There's a preference setting if you prefer to skip playback of all seed list tracks (but the last one).
 </p></details><br>
 
-<details><summary>»<b>I can't add my dynamic playlist to my LMS favorites (menu)</b>.«<br>&nbsp;&nbsp;&nbsp;&nbsp;
-»<b>DPL shows a favorite icon with a <i>p</i> (default skin) or an orange tint (classic skin) next to my dynamic playlists. Why?</b>«</summary><br><p>
+<details><summary>»<b>I can't add my dynamic playlist to my LMS favorites (menu)</b>.«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>DPL shows a favorite icon with a <i>p</i> (default skin) or an orange tint (classic skin) next to my dynamic playlists. Why?</b>«</summary><br><p>
 DPL's default setting has always been (even in v2) that you can only add dynamic playlists to LMS favorites that <b>don't request user input</b>. In other words only <i>one-click</i> dynamic playlists could be added as LMS favorites.<br>
 DPL v3.4 allows you to add dynamic playlists with playlist parameter values (= values from user input) to LMS favorites - with some <b>limitations</b>:<br>
 
