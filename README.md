@@ -73,21 +73,22 @@ In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplayl
 
 - Now put this file in DPL's <i>folder for custom dynamic playlists</i> called <b>DPL-custom-lists</b>. Unless you've changed its location in DPL's settings you'll find this folder in your <i>LMS playlist folder</i>.<br>
 
-- The new dynamic playlist should now be listed in DPL, either in the <i>Not classified</i> group or in other groups according to what the <code>-- PlaylistGroups</code> parameter in your playlist definition says.</p></details><br>
+- The new dynamic playlist should now be listed in DPL, either in the <i>Not classified</i> group or in other groups according to what the <code>-- PlaylistGroups</code> parameter in your playlist definition says.</p></details>
 
 <details><summary>»<b>The <i>Home > Dynamic Playlists</i> menu doesn't show dynamic playlists for <i>context menus</i>. Why?</b>«</summary><br><p>
 By default the <b>Home > Dynamic Playlists</b> menu will only show dynamic playlists that <i>don't</i> include the <code>-- PlaylistMenuListType:contextmenu</code> parameter. Here you won't find any dynamic playlists that can be called from an item's context menu.<br>
 And <b>context menus</b> (= <i>More</i> menu in webUI or <i>click/touch-hold</i> on jivelite players) will <i>only show dynamic playlists for context menus</i>. So there may be some overlap but this separation greatly helps reduce clutter.</p></details><br>
 
-<details><summary>»<b>There's more than one DPL context menu item now. What's <i>preselection</i>? How does it work?</b>«</summary><br><p>
-For <b>artists</b> and <b>albums</b> DPL will show a <b>second context menu</b> that allows you to <b>preselect</b> this artist/album while browsing your music library. DPL will remember your (pre)selection (<i>until the next LMS restart</i>/rescan).<br>Once you're finished preselecting artists/albums go to DPL's menu and use this selection with any dynamic playlist that makes use of the <code>PlaylistPreselectedArtists</code> or <code>PlaylistPreselectedAlbums</code> playlist parameter. There are some built-in dynamic playlists to get you started (in the <i>Songs</i> group). And it's very easy to add to your custom dynamic playlists. See <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#user-input-parameters"><b>wiki</b></a> for more information.
+<details><summary>»<b>What's <i>preselection</i>? How does it work?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>There's more than one DPL context menu item.</b>«</summary><br><p>
+In DPL you have playlist parameters that allow you to select <b>multiple</b> genres, decades, years and static playlist. But even the smallest music libraries have a large number of <b>artists</b> and <b>albums</b> that would result in poorly browsable, far too long selection lists. The solution is to gather/select artists or albums first using the <b>preselection</b> context menu item and then start a dynamic playlist for preselected artists/albums.<br>
+So for <b>artists</b> and <b>albums</b> DPL will show a <b>second <i>context</i> menu</b> that allows you to <b>preselect</b> this artist/album while browsing your music library. DPL will remember your (pre)selection (<i>until the next LMS restart</i>/rescan).<br>Once you're finished preselecting artists/albums go to DPL's menu and use this selection with any dynamic playlist that makes use of the <code>PlaylistPreselectedArtists</code> or <code>PlaylistPreselectedAlbums</code> playlist parameter. There are some built-in dynamic playlists to get you started (in the <i>Songs</i> group). And it's very easy to add to your custom dynamic playlists. Read this <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#user-input-parameters"><b>wiki</b></a> section for more information.
 </p></details><br>
 
-<details><summary>»<b>How does DPL work with the <i>Don't Stop the Music</i> plugin?</b>«<br> »<b>What does the icon with the infinity symbol do?</b>«<br> »<b>What does “<i>Create DSTM seed list and play</i>“ mean?</b>«</summary><br><p>
+<details><summary>»<b>How does DPL work with the <i>Don't Stop the Music</i> plugin?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>What does the icon with the infinity symbol do?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>What does “<i>Create DSTM seed list and play</i>“ mean?</b>«</summary><br><p>
 The <i>Don't Stop the Music</i> (DSTM) plugin “will automatically add similar music to what you've been listening to ... once you've reached the end of your playlist“. DSTM takes a look at the existing tracks in your client's playlist (the <i>seed list</i>) to determine what kind of tracks to search for.<br>Now you can use <i>Dynamic Playlists 3</i> to create a DSTM seed list from any dynamic playlist and start a DSTM mix for you. There's a preference setting if you prefer to skip playback of all seed list tracks (but the last one).
-</p></details>
+</p></details><br>
 
-<details><summary>»<b>I can't add my dynamic playlist to my LMS favorites (menu)</b>.«<br>
+<details><summary>»<b>I can't add my dynamic playlist to my LMS favorites (menu)</b>.«<br>&nbsp;&nbsp;&nbsp;&nbsp;
 »<b>DPL shows a favorite icon with a <i>p</i> (default skin) or an orange tint (classic skin) next to my dynamic playlists. Why?</b>«</summary><br><p>
 DPL's default setting has always been (even in v2) that you can only add dynamic playlists to LMS favorites that <b>don't request user input</b>. In other words only <i>one-click</i> dynamic playlists could be added as LMS favorites.<br>
 DPL v3.4 allows you to add dynamic playlists with playlist parameter values (= values from user input) to LMS favorites - with some <b>limitations</b>:<br>
