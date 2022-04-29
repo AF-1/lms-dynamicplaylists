@@ -39,7 +39,7 @@ use File::Slurp; # for read_file
 use File::Spec::Functions qw(:ALL);
 use FindBin qw($Bin);
 use HTML::Entities; # for parsing
-use List::Util qw(shuffle);
+use List::Util qw(shuffle first);
 use POSIX qw(floor);
 use Scalar::Util qw(blessed);
 use Time::HiRes qw(time);
@@ -1745,8 +1745,9 @@ sub handleWebMixParameters {
 	my $parameterId = 1;
 	my @parameters = ();
 	my $playlist = getPlayList($client, $params->{'type'});
+	my $playlistParams = $playlist->{'parameters'};
 
-	my $i=1;
+	my $i = 1;
 	while (defined($params->{'dynamicplaylist_parameter_'.$i})) {
 		$parameterId = $parameterId + 1;
 		my $parameter = $playlist->{'parameters'}->{$i};
@@ -1825,73 +1826,80 @@ sub handleWebMixParameters {
 		}
 
 		# multiple genres list
-		my $genrelist = getGenres($client);
-		if (keys %selectedGenres > 0) {
-			foreach my $genre (keys %{$genrelist}) {
-				my $id = $genrelist->{$genre}->{'id'};
-				if ($selectedGenres{$id}) {
-					$genrelist->{$genre}->{'selected'} = 1;
+		if (defined (first {$_->{'type'} eq 'multiplegenres'} values %{$playlistParams})) {
+			my $genrelist = getGenres($client);
+			if (keys %selectedGenres > 0) {
+				foreach my $genre (keys %{$genrelist}) {
+					my $id = $genrelist->{$genre}->{'id'};
+					if ($selectedGenres{$id}) {
+						$genrelist->{$genre}->{'selected'} = 1;
+					}
 				}
 			}
-		}
-		$log->debug('genre list = '.Dumper($genrelist));
-		$params->{'genrelist'} = $genrelist;
+			$log->debug('genre list = '.Dumper($genrelist));
+			$params->{'genrelist'} = $genrelist;
 
-		my $genrelistsorted = [getSortedGenres($client)];
-		$log->debug('genrelistsorted (just names) = '.Dumper($genrelistsorted));
-		$params->{'genrelistsorted'} = $genrelistsorted;
+			my $genrelistsorted = [getSortedGenres($client)];
+			$log->debug('genrelistsorted (just names) = '.Dumper($genrelistsorted));
+			$params->{'genrelistsorted'} = $genrelistsorted;
+		}
 
 		# multiple decades list
-		my $decadelist = getDecades($client);
-		if (keys %selectedDecades > 0) {
-			foreach my $decade (keys %{$decadelist}) {
-				my $id = $decadelist->{$decade}->{'id'};
-				if ($selectedDecades{$id}) {
-					$decadelist->{$decade}->{'selected'} = 1;
+		if (defined (first {$_->{'type'} eq 'multipledecades'} values %{$playlistParams})) {
+			my $decadelist = getDecades($client);
+			if (keys %selectedDecades > 0) {
+				foreach my $decade (keys %{$decadelist}) {
+					my $id = $decadelist->{$decade}->{'id'};
+					if ($selectedDecades{$id}) {
+						$decadelist->{$decade}->{'selected'} = 1;
+					}
 				}
 			}
-		}
-		$log->debug('decade list = '.Dumper($decadelist));
-		$params->{'decadelist'} = $decadelist;
+			$log->debug('decade list = '.Dumper($decadelist));
+			$params->{'decadelist'} = $decadelist;
 
-		my $decadelistsorted = [getSortedDecades($client)];
-		$log->debug('decadelistsorted = '.Dumper($decadelistsorted));
-		$params->{'decadelistsorted'} = $decadelistsorted;
+			my $decadelistsorted = [getSortedDecades($client)];
+			$log->debug('decadelistsorted = '.Dumper($decadelistsorted));
+			$params->{'decadelistsorted'} = $decadelistsorted;
+		}
 
 		# multiple years list
-		my $yearlist = getYears($client);
-		if (keys %selectedYears > 0) {
-			foreach my $year (keys %{$yearlist}) {
-				my $id = $decadelist->{$year}->{'id'};
-				if ($selectedYears{$id}) {
-					$yearlist->{$year}->{'selected'} = 1;
+		if (defined (first {$_->{'type'} eq 'multipleyears'} values %{$playlistParams})) {
+			my $yearlist = getYears($client);
+			if (keys %selectedYears > 0) {
+				foreach my $year (keys %{$yearlist}) {
+					my $id = $yearlist->{$year}->{'id'};
+					if ($selectedYears{$id}) {
+						$yearlist->{$year}->{'selected'} = 1;
+					}
 				}
 			}
-		}
-		$log->debug('year list = '.Dumper($yearlist));
-		$params->{'yearlist'} = $yearlist;
+			$log->debug('year list = '.Dumper($yearlist));
+			$params->{'yearlist'} = $yearlist;
 
-		my $yearlistsorted = [getSortedYears($client)];
-		$log->debug('yearlistsorted = '.Dumper($yearlistsorted));
-		$params->{'yearlistsorted'} = $yearlistsorted;
+			my $yearlistsorted = [getSortedYears($client)];
+			$log->debug('yearlistsorted = '.Dumper($yearlistsorted));
+			$params->{'yearlistsorted'} = $yearlistsorted;
+		}
 
 		# multiple static playlists list
-		my $staticplaylistlist = getStaticPlaylists($client);
-		if (keys %selectedStaticPlaylists > 0) {
-			foreach my $staticPlaylist (keys %{$staticplaylistlist}) {
-				my $id = $staticplaylistlist->{$staticPlaylist}->{'id'};
-				if ($selectedStaticPlaylists{$id}) {
-					$staticplaylistlist->{$staticPlaylist}->{'selected'} = 1;
+		if (defined (first {$_->{'type'} eq 'multiplestaticplaylists'} values %{$playlistParams})) {
+			my $staticplaylistlist = getStaticPlaylists($client);
+			if (keys %selectedStaticPlaylists > 0) {
+				foreach my $staticPlaylist (keys %{$staticplaylistlist}) {
+					my $id = $staticplaylistlist->{$staticPlaylist}->{'id'};
+					if ($selectedStaticPlaylists{$id}) {
+						$staticplaylistlist->{$staticPlaylist}->{'selected'} = 1;
+					}
 				}
 			}
+			$log->debug('static playlist list = '.Dumper($staticplaylistlist));
+			$params->{'staticplaylistlist'} = $staticplaylistlist;
+
+			my $staticplaylistlistsorted = [getSortedStaticPlaylists($client)];
+			$log->debug('staticplaylistlistsorted (just names) = '.Dumper($staticplaylistlistsorted));
+			$params->{'staticplaylistlistsorted'} = $staticplaylistlistsorted;
 		}
-		$log->debug('static playlist list = '.Dumper($staticplaylistlist));
-		$params->{'staticplaylistlist'} = $staticplaylistlist;
-
-		my $staticplaylistlistsorted = [getSortedStaticPlaylists($client)];
-		$log->debug('staticplaylistlistsorted (just names) = '.Dumper($staticplaylistlistsorted));
-		$params->{'staticplaylistlistsorted'} = $staticplaylistlistsorted;
-
 
 		$params->{'pluginDynamicPlaylists3Playlist'} = $playlist;
 		$params->{'pluginDynamicPlaylists3PlaylistId'} = $params->{'type'};
