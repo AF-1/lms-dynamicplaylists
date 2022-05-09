@@ -921,9 +921,10 @@ sub stateStop {
 	$prefs->client($client)->remove('playlist');
 	$prefs->client($client)->remove('playlist_parameters');
 	$prefs->client($client)->remove('offset');
-	# delete previous multiple genre selection
+	# delete previous multiple selection
 	$client->pluginData('selected_genres' => []);
 	$client->pluginData('selected_decades' => []);
+	$client->pluginData('temp_decadelist' => {});
 	$client->pluginData('selected_years' => []);
 	$client->pluginData('selected_staticplaylists' => []);
 	my $masterClient = masterOrSelf($client);
@@ -1230,13 +1231,13 @@ sub getTracksForPlaylist {
 }
 
 
-### multiple genre selection ###
+### multiple selection ###
 
 sub _toggleMultipleSelectionState {
 	my $request = shift;
 	my $client = $request->client();
 	my $paramType = $request->getParam('_paramtype');
-	my $item = $request->getParam('_item'); # item: genre, decade or year
+	my $item = $request->getParam('_item'); # item: genre, decade, year or static playlist
 	my $value = $request->getParam('_value');
 	my @selected = ();
 
@@ -1466,38 +1467,43 @@ sub getDecades {
 	my $client = shift;
 	my $dbh = getCurrentDBH();
 	my $decades = {};
-	my $decadesQueryResult = {};
-	my $currentclientVLid = Slim::Music::VirtualLibraries->getLibraryIdForClient($client);
-	my $unknownString = string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_UNKNOWN');
+	my $decadesQueryResult = $client->pluginData('temp_decadelist') || {};
 
-	my $sql_decades = "select cast(((ifnull(tracks.year,0)/10)*10) as int) as decade,case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else '$unknownString' end as decadedisplayed from tracks
-	left join library_track on
-		library_track.track = tracks.id
-		and
-			case
-				when ('$currentclientVLid'!='' and '$currentclientVLid' is not null)
-				then library_track.library = '$currentclientVLid'
-				else 1
-			end
-	where tracks.audio=1 group by decade order by decade desc";
+	if (scalar keys %{$decadesQueryResult} == 0) {
+		my $currentclientVLid = Slim::Music::VirtualLibraries->getLibraryIdForClient($client);
+		my $unknownString = string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_UNKNOWN');
 
-	my ($decade, $decadeDisplayName);
-	eval {
-		my $sth = $dbh->prepare($sql_decades);
-		$sth->execute() or do {
-			$sql_decades = undef;
+		my $sql_decades = "select cast(((ifnull(tracks.year,0)/10)*10) as int) as decade,case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else '$unknownString' end as decadedisplayed from tracks
+		left join library_track on
+			library_track.track = tracks.id
+			and
+				case
+					when ('$currentclientVLid'!='' and '$currentclientVLid' is not null)
+					then library_track.library = '$currentclientVLid'
+					else 1
+				end
+		where tracks.audio=1 group by decade order by decade desc";
+
+		my ($decade, $decadeDisplayName);
+		eval {
+			my $sth = $dbh->prepare($sql_decades);
+			$sth->execute() or do {
+				$sql_decades = undef;
+			};
+			$sth->bind_columns(undef, \$decade, \$decadeDisplayName);
+
+			while ($sth->fetch()) {
+				$decadesQueryResult->{$decade} = $decadeDisplayName;
+			}
+			$sth->finish();
+			$log->debug('decadesQueryResult = '.Dumper($decadesQueryResult));
+			$client->pluginData('temp_decadelist' => $decadesQueryResult);
+			$log->info('caching new temp_decadelist = '.Dumper($client->pluginData('temp_decadelist')));
 		};
-		$sth->bind_columns(undef, \$decade, \$decadeDisplayName);
-
-		while ($sth->fetch()) {
-			$decadesQueryResult->{$decade} = $decadeDisplayName;
+		if ($@) {
+			$log->warn("Database error: $DBI::errstr\n$@");
+			return 'error';
 		}
-		$sth->finish();
-		$log->debug('decadesQueryResult = '.Dumper($decadesQueryResult));
-	};
-	if ($@) {
-		$log->warn("Database error: $DBI::errstr\n$@");
-		return 'error';
 	}
 
 	my $selectedDecades = $client->pluginData('selected_decades') || [];
@@ -1646,6 +1652,7 @@ sub getMultipleSelectionString {
 	$log->debug('multipleSelectionString = '.Dumper($multipleSelectionString));
 	return $multipleSelectionString;
 }
+
 
 ### web pages ###
 
@@ -2422,9 +2429,10 @@ sub cliJiveHandler {
 
 	$log->debug('Executing CLI browsejive command');
 
-	# delete previous multiple genre selection
+	# delete previous multiple selection
 	$client->pluginData('selected_genres' => []);
 	$client->pluginData('selected_decades' => []);
+	$client->pluginData('temp_decadelist' => {});
 	$client->pluginData('selected_years' => []);
 	$client->pluginData('selected_staticplaylists' => []);
 
@@ -2686,8 +2694,10 @@ sub cliJivePlaylistParametersHandler {
 		if ($parameter->{'type'} eq 'multipledecades') {
 			# add years to decades
 			$nextParamMultipleSelectionString = getMultipleSelectionString($client, $parameter->{'type'}, 1);
+			$log->debug('nextParamMultipleSelectionString (decades) = '.Dumper($nextParamMultipleSelectionString));
 		} else {
 			$nextParamMultipleSelectionString = getMultipleSelectionString($client, $parameter->{'type'});
+			$log->debug('nextParamMultipleSelectionString = '.Dumper($nextParamMultipleSelectionString));
 		}
 
 		my %itemParams = (
@@ -3919,7 +3929,7 @@ sub replaceParametersInSQL {
 	return $sql;
 }
 
-# read + parse built-in + custom dynamic playlists ##
+# read + parse built-in + custom dynamic playlists #
 sub getLocalDynamicPlaylists {
 	my $client = shift;
 	my $customlistdir_parentfolderpath = $prefs->get('customdirparentfolderpath');
@@ -4755,6 +4765,13 @@ sub setModeMixer {
 	my $client = shift;
 	my $method = shift;
 
+	# delete previous multiple selection
+	$client->pluginData('selected_genres' => []);
+	$client->pluginData('selected_decades' => []);
+	$client->pluginData('temp_decadelist' => {});
+	$client->pluginData('selected_years' => []);
+	$client->pluginData('selected_staticplaylists' => []);
+
 	if ($method eq 'pop') {
 		Slim::Buttons::Common::popMode($client);
 		return;
@@ -5032,12 +5049,6 @@ sub setModeChooseParameters {
 
 
 	if ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists') {
-		# delete previous multiple selection
-		$client->pluginData('selected_genres' => []);
-		$client->pluginData('selected_decades' => []);
-		$client->pluginData('selected_years' => []);
-		$client->pluginData('selected_staticplaylists' => []);
-
 		my @listRef;
 		my $header = '';
 
