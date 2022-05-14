@@ -68,7 +68,7 @@
 [% END %]
 <br>
 
-[% WRAPPER setting title="PLUGIN_DYNAMICPLAYLISTS3_CUSTOMDIRPARENTFOLDERPATH" desc="PLUGIN_DYNAMICPLAYLISTS3_CUSTOMDIRPARENTFOLDERPATH_DESC" %]
+[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CUSTOMDIRPARENTFOLDERPATH" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CUSTOMDIRPARENTFOLDERPATH_DESC" %]
 	<input type="text" class="stdedit selectFolder" name="pref_customdirparentfolderpath" id="customdirparentfolderpath" value="[% prefs.customdirparentfolderpath %]" size="40">
 [% END %]
 <br>
@@ -77,10 +77,14 @@
 	<input name="pref_includesavedplaylists" id="includesavedplaylists" type="checkbox" [% IF prefs.includesavedplaylists %] checked [% END %]>
 [% END %]
 
-[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_RANDOMSAVEDPLAYLISTS" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_RANDOMSAVEDPLAYLISTS_DESC" %]
-	<select name="pref_randomsavedplaylists">
-		<option value="1" [% IF prefs.randomsavedplaylists %]selected[% END %]>[% "PLUGIN_DYNAMICPLAYLISTS3_SETTINGS_RANDOM" | string %]</option>
-		<option value="0" [% IF NOT prefs.randomsavedplaylists %]selected[% END %]>[% "PLUGIN_DYNAMICPLAYLISTS3_SETTINGS_ORDERED" | string %]</option>
+[% WRAPPER setting title="PLUGIN_RATINGSLIGHT_MENUS_SHOW_RATED_TRACKS_MENUS" desc="PLUGIN_RATINGSLIGHT_MENUS_SHOW_RATED_TRACKS_MENUS_DESC" %]
+	<select name="pref_randomsavedplaylists" id="randomsavedplaylists">
+		[% FOREACH option = {
+			'1' => 'PLUGIN_DYNAMICPLAYLISTS3_SETTINGS_RANDOM',
+			'0' => 'PLUGIN_DYNAMICPLAYLISTS3_SETTINGS_ORDERED',
+		} %]
+		<option [% IF prefs.randomsavedplaylists == option.key %]selected='selected' [% END %]value="[% option.key %]">[% option.value | string %]</option>
+		[%- END -%]
 	</select>
 [% END %]
 
@@ -104,7 +108,7 @@
 			</tr>
 		[%- END %]
 	</table>
-</etails>
+</details>
 [% END %]
 
 [% PROCESS settings/footer.html %]

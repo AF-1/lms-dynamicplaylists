@@ -2,7 +2,7 @@
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
 -- PlaylistParameter1:multiplegenres:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTGENRES:
--- PlaylistParameter2:customdecadechained:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTDECADE:select cast(((ifnull(tracks.year,0)/10)*10) as int),case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else 'PlaylistDefinitionUnknownString' end from tracks where tracks.audio=1 group by cast(((ifnull(tracks.year,0)/10)*10) as int) order by tracks.year desc
+-- PlaylistParameter2:multipledecades:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTDECADES:
 -- PlaylistParameter3:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_PLAYED
 select distinct tracks.url from tracks
 	join genre_track on
@@ -23,11 +23,7 @@ select distinct tracks.url from tracks
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
-		and
-			case
-				when 'PlaylistParameter2'!=999999999 then tracks.year>='PlaylistParameter2' and tracks.year<('PlaylistParameter2'+10)
-				else 1
-			end
+		and tracks.year in ('PlaylistParameter2')
 		and
 			case
 				when 'PlaylistParameter3'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)

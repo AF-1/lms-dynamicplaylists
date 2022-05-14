@@ -1,4 +1,5 @@
-# 				DynamicPlaylists3 plugin
+#
+# DynamicPlaylists3 plugin
 #
 # (c) 2021-2022 AF
 #
@@ -67,6 +68,8 @@ sub pages {
 
 sub handler {
 	my ($class, $client, $paramRef) = @_;
+	my $result = undef;
+	my $callHandler = 1;
 
 	my ($playLists, $playListItems, $unclassifiedPlaylists, $savedstaticPlaylists) = Plugins::DynamicPlaylists3::Plugin::initPlayLists($client);
 	$paramRef->{'pluginDynamicPlaylists3PlayLists'} = $playLists;
@@ -106,9 +109,56 @@ sub handler {
 		my @groupPath = ();
 		my @groupResult = ();
 		$paramRef->{'pluginDynamicPlaylists3Groups'} = Plugins::DynamicPlaylists3::Plugin::getPlayListGroups(\@groupPath, $playListItems, \@groupResult);
+		$result = $class->SUPER::handler($client, $paramRef);
+		$callHandler = 0;
+	}
+	if ($paramRef->{'apc_dpl3only'}) {
+		if ($callHandler) {
+			$paramRef->{'saveSettings'} = 1;
+			$result = $class->SUPER::handler($client, $paramRef);
 		}
+		foreach my $playlist (keys %{$playLists}) {
+			if ($playLists->{$playlist}->{'playlistapcdupe'}) {
+				$prefs->set('playlist_'.$playlist.'_enabled', 1);
+			} elsif ($playLists->{$playlist}->{'apcplaylist'}) {
+				$prefs->set('playlist_'.$playlist.'_enabled', 0);
+			}
+		}
+		($playLists, $playListItems) = Plugins::DynamicPlaylists3::Plugin::initPlayLists($client);
+		$paramRef->{'pluginDynamicPlaylists3PlayLists'} = $playLists;
+		$result = $class->SUPER::handler($client, $paramRef);
+	} elsif ($paramRef->{'apc_apconly'}) {
+		if ($callHandler) {
+			$paramRef->{'saveSettings'} = 1;
+			$result = $class->SUPER::handler($client, $paramRef);
+		}
+		foreach my $playlist (keys %{$playLists}) {
+			if ($playLists->{$playlist}->{'playlistapcdupe'}) {
+				$prefs->set('playlist_'.$playlist.'_enabled', 0);
+			} elsif ($playLists->{$playlist}->{'apcplaylist'}) {
+				$prefs->set('playlist_'.$playlist.'_enabled', 1);
+			}
+		}
+		($playLists, $playListItems) = Plugins::DynamicPlaylists3::Plugin::initPlayLists($client);
+		$paramRef->{'pluginDynamicPlaylists3PlayLists'} = $playLists;
+		$result = $class->SUPER::handler($client, $paramRef);
+	} elsif ($paramRef->{'apc_both'}) {
+		if ($callHandler) {
+			$paramRef->{'saveSettings'} = 1;
+		}
+		foreach my $playlist (keys %{$playLists}) {
+			if ($playLists->{$playlist}->{'playlistapcdupe'} || $playLists->{$playlist}->{'apcplaylist'}) {
+				$prefs->set('playlist_'.$playlist.'_enabled', 1);
+			}
+		}
+		($playLists, $playListItems) = Plugins::DynamicPlaylists3::Plugin::initPlayLists($client);
+		$paramRef->{'pluginDynamicPlaylists3PlayLists'} = $playLists;
+		$result = $class->SUPER::handler($client, $paramRef);
+	} elsif ($callHandler) {
+		$result = $class->SUPER::handler($client, $paramRef);
+	}
 
-	return $class->SUPER::handler($client, $paramRef);
+	return $result;
 }
 
 sub savePlayListGroups {
@@ -131,6 +181,12 @@ sub savePlayListGroups {
 			}
 		}
 	}
+}
+
+sub beforeRender {
+	my ($class, $paramRef) = @_;
+	my $apc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::AlternativePlayCount::Plugin');
+	$paramRef->{'apcenabled'} = 'yes' if $apc_enabled;
 }
 
 *escape = \&URI::Escape::uri_escape_utf8;

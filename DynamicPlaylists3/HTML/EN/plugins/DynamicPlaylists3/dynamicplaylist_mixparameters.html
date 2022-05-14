@@ -19,27 +19,78 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 <form action="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html" name="editForm" accept-charset="iso8859-1">
 	<input type="hidden" name="type" value="[% pluginDynamicPlaylists3PlaylistId %]">
 	<input type="hidden" name="addOnly" value="[% pluginDynamicPlaylists3AddOnly %]">
-	<input type="hidden" name="dynamicplaylist_parameter_changed" value="">
 
 [% FOREACH param IN pluginDynamicPlaylists3MixParameters %]
-	[% IF param.parameter.type == "multiplegenres" %]
-
+	[% IF param.parameter.type == "multiplegenres" || param.parameter.type == "multipledecades" || param.parameter.type == "multipleyears" || param.parameter.type == "multiplestaticplaylists" %]
 	<span class="boldtitle">[% param.parameter.name %]:</span><br>
-	<table border="0" width="100%">[% USE table genrelistsorted, cols=3, pad=0 %]
-		[% FOREACH genrerow = table.rows %]
-			<tr class="">
-				[% FOREACH genre = genrerow %]
-				[% genreid = genrelist.item("$genre").id %]
-				<td>
-					<input type="checkbox" name="[% genreid %]" id="[% genreid %]" [% genrelist.item("$genre").selected ? "checked" : "" %] onclick="changeNumSelected(this)" [% IF currentparam != "multiplegenres" %]disabled[% END %]>
-					<label style="font-weight: normal;" for="[% genreid %]">[% genrelist.item("$genre").name | html %]</label>
-				</td>
-				[% END %]
-			</tr>
-		<tr>&nbsp;&nbsp;</tr><tr>&nbsp;&nbsp;</tr>
+		[% IF param.parameter.type == "multiplegenres" %]
+		<table border="0" width="100%">[% USE table genrelistsorted, cols=3, pad=0 %]
+			[% FOREACH genrerow = table.rows %]
+				<tr class="">
+					[% FOREACH genre = genrerow %]
+					[% genreid = genrelist.item("$genre").id %]
+					<td>
+						<input type="checkbox" name="[% genreid %]" id="[% genreid %]" [% genrelist.item("$genre").selected ? "checked" : "" %] onclick="changeNumSelected(this)" [% IF currentparam != "multiplegenres" %]disabled[% END %]>
+						<label style="font-weight: normal;" for="[% genreid %]">[% genrelist.item("$genre").name | html %]</label>
+					</td>
+					[% END %]
+				</tr>
+			<tr>&nbsp;&nbsp;</tr><tr>&nbsp;&nbsp;</tr>
+			[% END %]
+			<input type="hidden" id="dynamicplaylist_parameter_[% param.parameter.id %]" name="dynamicplaylist_parameter_[% param.parameter.id %]" value="[% param.value %]">
+		</table>
 		[% END %]
-		<input type="hidden" id="dynamicplaylist_parameter_[% param.parameter.id %]" name="dynamicplaylist_parameter_[% param.parameter.id %]" value="[% param.value %]">
-	</table>
+		[% IF param.parameter.type == "multipledecades" %]
+		<table border="0" width="100%">[% USE table decadelistsorted, cols=3, pad=0 %]
+			[% FOREACH decaderow = table.rows %]
+				<tr class="">
+					[% FOREACH decade = decaderow %]
+					[% decadeid = decadelist.item("$decade").id %]
+					<td>
+						<input type="checkbox" name="[% decadeid %]" id="[% decadeid %]" [% decadelist.item("$decade").selected ? "checked" : "" %] onclick="changeNumSelected(this)" [% IF currentparam != "multipledecades" %]disabled[% END %]>
+						<label style="font-weight: normal;" for="[% decadeid %]">[% decadelist.item("$decade").name | html %]</label>
+					</td>
+					[% END %]
+				</tr>
+			<tr>&nbsp;&nbsp;</tr><tr>&nbsp;&nbsp;</tr>
+			[% END %]
+			<input type="hidden" id="dynamicplaylist_parameter_[% param.parameter.id %]" name="dynamicplaylist_parameter_[% param.parameter.id %]" value="[% param.value %]">
+		</table>
+		[% END %]
+		[% IF param.parameter.type == "multipleyears" %]
+		<table border="0" width="100%">[% USE table yearlistsorted, cols=3, pad=0 %]
+			[% FOREACH yearrow = table.rows %]
+				<tr class="">
+					[% FOREACH year = yearrow %]
+					[% yearid = yearlist.item("$year").id %]
+					<td>
+						<input type="checkbox" name="[% yearid %]" id="[% yearid %]" [% yearlist.item("$year").selected ? "checked" : "" %] onclick="changeNumSelected(this)" [% IF currentparam != "multipleyears" %]disabled[% END %]>
+						<label style="font-weight: normal;" for="[% yearid %]">[% yearlist.item("$year").name | html %]</label>
+					</td>
+					[% END %]
+				</tr>
+			<tr>&nbsp;&nbsp;</tr><tr>&nbsp;&nbsp;</tr>
+			[% END %]
+			<input type="hidden" id="dynamicplaylist_parameter_[% param.parameter.id %]" name="dynamicplaylist_parameter_[% param.parameter.id %]" value="[% param.value %]">
+		</table>
+		[% END %]
+		[% IF param.parameter.type == "multiplestaticplaylists" %]
+		<table border="0" width="100%">[% USE table staticplaylistlistsorted, cols=1, pad=0 %]
+			[% FOREACH staticplaylistrow = table.rows %]
+				<tr class="">
+					[% FOREACH staticplaylist = staticplaylistrow %]
+					[% staticplaylistid = staticplaylistlist.item("$staticplaylist").id %]
+					<td>
+						<input type="checkbox" name="[% staticplaylistid %]" id="[% staticplaylistid %]" [% staticplaylistlist.item("$staticplaylist").selected ? "checked" : "" %] onclick="changeNumSelected(this)" [% IF currentparam != "multiplestaticplaylists" %]disabled[% END %]>
+						<label style="font-weight: normal;" for="[% staticplaylistid %]">[% staticplaylistlist.item("$staticplaylist").name | html %]</label>
+					</td>
+					[% END %]
+				</tr>
+			<tr>&nbsp;&nbsp;</tr><tr>&nbsp;&nbsp;</tr>
+			[% END %]
+			<input type="hidden" id="dynamicplaylist_parameter_[% param.parameter.id %]" name="dynamicplaylist_parameter_[% param.parameter.id %]" value="[% param.value %]">
+		</table>
+		[% END %]
 	<br>
 
 	[% ELSE %]
@@ -50,7 +101,7 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 		<td>
 			<select name="dynamicplaylist_parameter_[% param.parameter.id %]">
 			[% FOREACH value = param.values %]
-				<option onClick='document.editForm.dynamicplaylist_parameter_changed.value="[% param.parameter.id %]";document.editForm.submit();return false;' value="[% value.id %]" [% IF param.value == value.id %]selected="selected"[% END %]>[% value.name | html %]</option>
+				<option onClick='document.editForm.submit();return false;' value="[% value.id %]" [% IF param.value == value.id %]selected="selected"[% END %]>[% value.name | html %]</option>
 			[% END %]
 			</select>
 		</td>
@@ -61,7 +112,7 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 
 	<script type="text/javascript">
 		var f = document.editForm;
-		var selectedGenres = [];
+		var selectedItems = [];
 		var numSelected = 0;
 		var numCheckBoxes = 0;
 		var selectAllString = '[% "PLUGIN_DYNAMICPLAYLISTS3_SELECT_ALL" | string %]';
@@ -88,7 +139,7 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 				f.selectAllButton.value = selectNoneString;
 				for (var i=0; i < f.elements.length; i++) {
 					if (f.elements[i].type == 'checkbox') {
-						if(!selectedGenres.some(el => el === f.elements[i].id)) selectedGenres.push(f.elements[i].id);
+						if(!selectedItems.some(el => el === f.elements[i].id)) selectedItems.push(f.elements[i].id);
 					}
 				}
 			} else { // if numSelected = numCheckBoxes => select none
@@ -96,27 +147,27 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 				f.selectAllButton.value = selectAllString;
 				for (var i=0; i < f.elements.length; i++) {
 					if (f.elements[i].type == 'checkbox') {
-						selectedGenres = selectedGenres.filter(function(item) {
+						selectedItems = selectedItems.filter(function(item) {
 							return item !== f.elements[i].id
 						});
 					}
 				}
 			}
-			document.getElementById("dynamicplaylist_parameter_[% param.parameter.id %]").value = selectedGenres;
+			document.getElementById("dynamicplaylist_parameter_[% param.parameter.id %]").value = selectedItems;
 		}
 
 		// increase/decrease numSelected every time a checkbox changes
 		function changeNumSelected(checkBox) {
 			if (checkBox.checked) {
 				numSelected++;
-				if(!selectedGenres.some(el => el === f.elements[i].id)) selectedGenres.push(checkBox.id);
+				if(!selectedItems.some(el => el === f.elements[i].id)) selectedItems.push(checkBox.id);
 			} else {
 				numSelected--;
-				selectedGenres = selectedGenres.filter(function(item) {
+				selectedItems = selectedItems.filter(function(item) {
 					return item !== checkBox.id
 				});
 			}
-			document.getElementById("dynamicplaylist_parameter_[% param.parameter.id %]").value = selectedGenres;
+			document.getElementById("dynamicplaylist_parameter_[% param.parameter.id %]").value = selectedItems;
 
 			if (numSelected == numCheckBoxes) {
 				f.selectAllButton.value = selectNoneString;
@@ -147,7 +198,7 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 	<br>
 [% END %]
 	<input type="submit" value="[% IF lastparameter %][% IF addOnly == 1 %][% "PLUGIN_DYNAMICPLAYLISTS3_ADD" | string %][% ELSIF addOnly == 99 %][% "PLUGIN_DYNAMICPLAYLISTS3_ADDTOLMSFAVORITES_BTN" | string %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS3_PLAY" | string %][% END %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS3_NEXT" | string %][% END %]">
-[% IF currentparam == "multiplegenres" %]
+[% IF param.parameter.type == "multiplegenres" || param.parameter.type == "multipledecades" || param.parameter.type == "multipleyears" || param.parameter.type == "multiplestaticplaylists" %]
 	<script type="text/javascript">
 		document.write('<span class="padleft"><input type="button" value="' + (numSelected == numCheckBoxes ? selectNoneString : selectAllString) + '" id="selectAllButton" onclick="selectAll()"></span>');
 	</script>

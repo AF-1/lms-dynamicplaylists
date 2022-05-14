@@ -1,4 +1,5 @@
-#					DynamicPlaylists3 plugin
+#
+# DynamicPlaylists3 plugin
 #
 # (c) 2021-2022 AF
 #
@@ -39,7 +40,7 @@ use File::Slurp; # for read_file
 use File::Spec::Functions qw(:ALL);
 use FindBin qw($Bin);
 use HTML::Entities; # for parsing
-use List::Util qw(shuffle);
+use List::Util qw(shuffle first);
 use POSIX qw(floor);
 use Scalar::Util qw(blessed);
 use Time::HiRes qw(time);
@@ -79,6 +80,7 @@ my %empty = ();
 my %choiceMapping;
 
 my $dstm_enabled;
+my $apc_enabled;
 my %categorylangstrings;
 my %customsortnames;
 
@@ -146,8 +148,8 @@ sub initPlugin {
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'actionsmenu'], [1, 1, 1, \&_cliJiveActionsMenuHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'mixjive'], [1, 1, 1, \&cliMixJiveHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'preselect'], [1, 1, 1, \&_preselectionMenuJive]);
-	Slim::Control::Request::addDispatch(['dynamicplaylistselectgenre', '_genre', '_value'], [1, 0, 0, \&toggleGenreSelectionState]);
-	Slim::Control::Request::addDispatch(['dynamicplaylistgenreselectall', '_value'], [1, 0, 0, \&genreSelectAllOrNone]);
+	Slim::Control::Request::addDispatch(['dynamicplaylistmultipletoggle', '_paramtype', '_item', '_value'], [1, 0, 0, \&_toggleMultipleSelectionState]);
+	Slim::Control::Request::addDispatch(['dynamicplaylistmultipleall', '_paramtype', '_value'], [1, 0, 0, \&_multipleSelectAllOrNone]);
 
 	Slim::Player::ProtocolHandlers->registerHandler(dynamicplaylist => 'Plugins::DynamicPlaylists3::ProtocolHandler');
 	Slim::Player::ProtocolHandlers->registerHandler(dynamicplaylistaddonly => 'Plugins::DynamicPlaylists3::PlaylistProtocolHandler');
@@ -159,11 +161,12 @@ sub weight {
 
 sub postinitPlugin {
 	my $class = shift;
+	$apc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::AlternativePlayCount::Plugin');
 	initPlayLists();
 	initPlayListTypes();
 	registerJiveMenu($class);
 	registerStandardContextMenus();
-	Slim::Utils::Timers::setTimer(undef, Time::HiRes::time() + 8, sub {
+	Slim::Utils::Timers::setTimer(undef, Time::HiRes::time() + 3, sub {
 		$dstm_enabled = Slim::Utils::PluginManager->isEnabled('Slim::Plugin::DontStopTheMusic::Plugin');
 	});
 }
@@ -248,6 +251,7 @@ sub initPlayLists {
 	$log->debug('Searching for playlists');
 
 	getLocalDynamicPlaylists($client);
+	#$log->debug('localDynamicPlaylists = '.Dumper($localDynamicPlaylists));
 
 	my %localPlayLists = ();
 	my %localPlayListItems = ();
@@ -276,7 +280,7 @@ sub initPlayLists {
 				} elsif (starts_with($item, 'dplusercustom_') == 0) {
 					$pluginshortname = 'Dynamic Playlists v3 - '.string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLCUSTOM');
 				} elsif (starts_with($item, 'dplstandardpl_') == 0) {
-					$pluginshortname = 'Static LMS playlist';
+					$pluginshortname = string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_STANDARDPL');
 					$savedstaticPlaylists = 'found saved static playlists';
 				} else {
 					$pluginshortname =~ s/^Plugins::|::Plugin+$//g;
@@ -289,7 +293,6 @@ sub initPlayLists {
 				} else {
 					$playlist->{'dynamicplaylistenabled'} = 0;
 				}
-
 				my $favourite = $prefs->get('playlist_'.$item.'_favourite');
 				if (defined($favourite) && $favourite) {
 					$playlist->{'dynamicplaylistfavourite'} = 1;
@@ -437,7 +440,7 @@ sub initPlayListTypes {
 			if (defined($playlist->{'parameters'})) {
 				my $parameter1 = $playlist->{'parameters'}->{'1'};
 				if (defined($parameter1)) {
-					if ($parameter1->{'type'} eq 'album' || $parameter1->{'type'} eq 'artist' || $parameter1->{'type'} eq 'year' || $parameter1->{'type'} eq 'genre' || $parameter1->{'type'} eq 'multiplegenres' || $parameter1->{'type'} eq 'playlist' || $parameter1->{'type'} eq 'track' || $parameter1->{'type'} eq 'virtuallibrary') {
+					if ($parameter1->{'type'} eq 'album' || $parameter1->{'type'} eq 'artist' || $parameter1->{'type'} eq 'year' || $parameter1->{'type'} eq 'genre' || $parameter1->{'type'} eq 'multiplegenres' || $parameter1->{'type'} eq 'multipledecades' || $parameter1->{'type'} eq 'multipleyears' || $parameter1->{'type'} eq 'multiplestaticplaylists' || $parameter1->{'type'} eq 'playlist' || $parameter1->{'type'} eq 'track' || $parameter1->{'type'} eq 'virtuallibrary') {
 						$localPlayListTypes{$parameter1->{'type'}} = 1;
 					} elsif ($parameter1->{'type'} =~ /^custom(.+)$/) {
 						$localPlayListTypes{$1} = 1;
@@ -918,8 +921,12 @@ sub stateStop {
 	$prefs->client($client)->remove('playlist');
 	$prefs->client($client)->remove('playlist_parameters');
 	$prefs->client($client)->remove('offset');
-	# delete previous multiple genre selection
+	# delete previous multiple selection
 	$client->pluginData('selected_genres' => []);
+	$client->pluginData('selected_decades' => []);
+	$client->pluginData('temp_decadelist' => {});
+	$client->pluginData('selected_years' => []);
+	$client->pluginData('selected_staticplaylists' => []);
 	my $masterClient = masterOrSelf($client);
 	$masterClient->pluginData('type' => '');
 }
@@ -1063,6 +1070,27 @@ sub addParameterValues {
 		}
 		$log->debug('multiplegenres listRef array = '.Dumper($listRef));
 
+	} elsif (lc($parameter->{'type'}) eq 'multipledecades') {
+		my $decades = getDecades($client);
+		foreach my $decade (getSortedDecades($client)) {
+			push @{$listRef}, $decades->{$decade};
+		}
+		$log->debug('multipledecades listRef array = '.Dumper($listRef));
+
+	} elsif (lc($parameter->{'type'}) eq 'multipleyears') {
+		my $years = getYears($client);
+		foreach my $year (getSortedYears($client)) {
+			push @{$listRef}, $years->{$year};
+		}
+		$log->debug('multipleyears listRef array = '.Dumper($listRef));
+
+	} elsif (lc($parameter->{'type'}) eq 'multiplestaticplaylists') {
+		my $staticPlaylists = getStaticPlaylists($client);
+		foreach my $staticPlaylist (getSortedStaticPlaylists($client)) {
+			push @{$listRef}, $staticPlaylists->{$staticPlaylist};
+		}
+		$log->debug('multiplestaticplaylists listRef array = '.Dumper($listRef));
+
 	} elsif (lc($parameter->{'type'}) eq 'custom' || lc($parameter->{'type'}) =~ /^custom(.+)$/) {
 		if (defined($parameter->{'definition'}) && lc($parameter->{'definition'}) =~ /^select/) {
 			$sql = $parameter->{'definition'};
@@ -1096,7 +1124,7 @@ sub addParameterValues {
 				my $id;
 				my $name;
 				my $sortlink = undef;
-				if (($paramType eq 'customdecade') || ($paramType eq 'customdecadechained') || ($paramType eq 'year')) {
+				if ($paramType eq 'customdecade' || $paramType eq 'year') {
 					eval {
 						$sth->bind_columns(undef, \$id, \$name);
 					};
@@ -1118,9 +1146,6 @@ sub addParameterValues {
 						$listitem{'sortlink'} = Slim::Utils::Unicode::utf8decode($sortlink, 'utf8');
 					}
 					push @{$listRef}, \%listitem;
-				}
-				if (($paramType eq 'customdecadechained') || ($paramType eq 'customgenrechained')) {
-					unshift @{$listRef}, {'id' => '999999999', 'value' => 999999999, 'name' => string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_ANY')};
 				}
 				$log->debug('Added '.scalar(@{$listRef}).' items to value list');
 			}
@@ -1206,73 +1231,204 @@ sub getTracksForPlaylist {
 }
 
 
-### multiple genre selection ###
+### multiple selection ###
 
-sub toggleGenreSelectionState {
+sub _toggleMultipleSelectionState {
 	my $request = shift;
 	my $client = $request->client();
-	my $genre = $request->getParam('_genre');
+	my $paramType = $request->getParam('_paramtype');
+	my $item = $request->getParam('_item'); # item: genre, decade, year or static playlist
 	my $value = $request->getParam('_value');
-
-	my $genres = getGenres($client);
-	$genres->{$genre}->{'selected'} = $value;
 	my @selected = ();
-	for my $genre (keys %{$genres}) {
-		push @selected, $genre if $genres->{$genre}->{'selected'} == 1;
-	}
 
-	$client->pluginData('selected_genres' => [@selected]);
+	if ($paramType eq 'multiplegenres') {
+		my $genres = getGenres($client);
+		$genres->{$item}->{'selected'} = $value;
+		for my $genre (keys %{$genres}) {
+			push @selected, $genre if $genres->{$genre}->{'selected'} == 1;
+		}
+		$client->pluginData('selected_genres' => [@selected]);
+		$log->debug('pluginData cached for selected genres = '.Dumper($client->pluginData('selected_genres')));
+	}
+	if ($paramType eq 'multipledecades') {
+		my $decades = getDecades($client);
+		$decades->{$item}->{'selected'} = $value;
+		for my $decade (keys %{$decades}) {
+			push @selected, $decade if $decades->{$decade}->{'selected'} == 1;
+		}
+		$client->pluginData('selected_decades' => [@selected]);
+		$log->debug('pluginData cached for selected decades = '.Dumper($client->pluginData('selected_decades')));
+	}
+	if ($paramType eq 'multipleyears') {
+		my $years = getYears($client);
+		$years->{$item}->{'selected'} = $value;
+		for my $year (keys %{$years}) {
+			push @selected, $year if $years->{$year}->{'selected'} == 1;
+		}
+		$client->pluginData('selected_years' => [@selected]);
+		$log->debug('pluginData cached for selected years = '.Dumper($client->pluginData('selected_years')));
+	}
+	if ($paramType eq 'multiplestaticplaylists') {
+		my $staticPlaylists = getStaticPlaylists($client);
+		$staticPlaylists->{$item}->{'selected'} = $value;
+		for my $staticPlaylist (keys %{$staticPlaylists}) {
+			push @selected, $staticPlaylist if $staticPlaylists->{$staticPlaylist}->{'selected'} == 1;
+		}
+		$client->pluginData('selected_staticplaylists' => [@selected]);
+		$log->debug('pluginData cached for selected static playlists = '.Dumper($client->pluginData('selected_staticplaylists')));
+	}
 	$request->setStatusDone();
 }
 
-sub toggleGenreSelectionStateIP3k {
+sub _toggleMultipleSelectionStateIP3k {
 	my ($client, $item) = @_;
 
 	if ($item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_NEXT') || $item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_PLAY')) {
 		my $parameterId = $client->modeParam('dynamicplaylist_nextparameter');
 		my $playlist = $client->modeParam('dynamicplaylist_selectedplaylist');
-		my $selectedGenres_IDString = getMultipleGenresSelIDString($client);
-
-		$item->{'value'} = $selectedGenres_IDString;
-		$item->{'id'} = $selectedGenres_IDString;
+		my $multipleSelectionString;
+		if ($item->{'paramType'} eq 'multipledecades') {
+			$multipleSelectionString = getMultipleSelectionString($client, $item->{'paramType'}, 1);
+		} else {
+			$multipleSelectionString = getMultipleSelectionString($client, $item->{'paramType'});
+		}
+		$item->{'value'} = $multipleSelectionString;
+		$item->{'id'} = $multipleSelectionString;
 		requestNextParameter($client, $item, $parameterId, $playlist);
 	} else {
-		my $genres = getGenres($client);
-		if ($item->{'selectAll'}) {
-			$item->{'selected'} = ! $item->{'selected'};
-			# Select/deselect every genre
-			foreach my $genre (keys %$genres) {
-				$genres->{$genre}->{'selected'} = $item->{'selected'};
-			}
-		} else {
-			# Toggle the selected state of the current item
-			$genres->{$item->{'name'}}->{'selected'} = ! $genres->{$item->{'name'}}->{'selected'};
-		}
-
 		my @selected = ();
-		for my $genre (keys %{$genres}) {
-			push @selected, $genre if $genres->{$genre}->{'selected'} == 1;
-		}
 
-		$client->pluginData('selected_genres' => [@selected]);
+		if ($item->{'paramType'} eq 'multiplegenres') {
+			my $genres = getGenres($client);
+			if ($item->{'selectAll'}) {
+				$item->{'selected'} = ! $item->{'selected'};
+				# Select/deselect every genre
+				foreach my $genre (keys %{$genres}) {
+					$genres->{$genre}->{'selected'} = $item->{'selected'};
+				}
+			} else {
+				# Toggle the selected state of the current item
+				$genres->{$item->{'id'}}->{'selected'} = ! $genres->{$item->{'id'}}->{'selected'};
+			}
+
+			for my $genre (keys %{$genres}) {
+				push @selected, $genre if $genres->{$genre}->{'selected'} == 1;
+			}
+			$client->pluginData('selected_genres' => [@selected]);
+			$log->debug('cached client data for multiple selected genres = '.Dumper($client->pluginData('selected_genres')));
+		}
+		if ($item->{'paramType'} eq 'multipledecades') {
+			my $decades = getDecades($client);
+			if ($item->{'selectAll'}) {
+				$item->{'selected'} = ! $item->{'selected'};
+				# Select/deselect every genre
+				foreach my $decade (keys %{$decades}) {
+					$decades->{$decade}->{'selected'} = $item->{'selected'};
+				}
+			} else {
+				# Toggle the selected state of the current item
+				$decades->{$item->{'id'}}->{'selected'} = ! $decades->{$item->{'id'}}->{'selected'};
+			}
+
+			for my $decade (keys %{$decades}) {
+				push @selected, $decade if $decades->{$decade}->{'selected'} == 1;
+			}
+			$client->pluginData('selected_decades' => [@selected]);
+			$log->debug('cached client data for multiple selected decades = '.Dumper($client->pluginData('selected_decades')));
+		}
+		if ($item->{'paramType'} eq 'multipleyears') {
+			my $years = getYears($client);
+			if ($item->{'selectAll'}) {
+				$item->{'selected'} = ! $item->{'selected'};
+				# Select/deselect every genre
+				foreach my $year (keys %{$years}) {
+					$years->{$year}->{'selected'} = $item->{'selected'};
+				}
+			} else {
+				# Toggle the selected state of the current item
+				$years->{$item->{'id'}}->{'selected'} = ! $years->{$item->{'id'}}->{'selected'};
+			}
+
+			for my $year (keys %{$years}) {
+				push @selected, $year if $years->{$year}->{'selected'} == 1;
+			}
+			$client->pluginData('selected_years' => [@selected]);
+			$log->debug('cached client data for multiple selected years = '.Dumper($client->pluginData('selected_years')));
+		}
+		if ($item->{'paramType'} eq 'multiplestaticplaylists') {
+			my $staticPlaylists = getStaticPlaylists($client);
+			if ($item->{'selectAll'}) {
+				$item->{'selected'} = ! $item->{'selected'};
+				# Select/deselect every genre
+				foreach my $staticPlaylist (keys %{$staticPlaylists}) {
+					$staticPlaylists->{$staticPlaylist}->{'selected'} = $item->{'selected'};
+				}
+			} else {
+				# Toggle the selected state of the current item
+				$staticPlaylists->{$item->{'id'}}->{'selected'} = ! $staticPlaylists->{$item->{'id'}}->{'selected'};
+			}
+
+			for my $staticPlaylist (keys %{$staticPlaylists}) {
+				push @selected, $staticPlaylist if $staticPlaylists->{$staticPlaylist}->{'selected'} == 1;
+			}
+			$client->pluginData('selected_staticplaylists' => [@selected]);
+			$log->debug('cached client data for multiple static playlists = '.Dumper($client->pluginData('selected_staticplaylists')));
+		}
 		$client->update;
 	}
 }
 
-sub genreSelectAllOrNone {
+sub _multipleSelectAllOrNone {
 	my $request = shift;
 	my $client = $request->client();
+	my $paramType = $request->getParam('_paramtype');
 	my $value = $request->getParam('_value');
-	my $genres = getGenres($client);
-
 	my @selected = ();
-	for my $genre (keys %$genres) {
-		$genres->{$genre}->{'selected'} = $value;
-		if ($value == 1) {
-			push @selected, $genre;
+
+	if ($paramType eq 'multiplegenres') {
+		my $genres = getGenres($client);
+
+		for my $genre (keys %{$genres}) {
+			$genres->{$genre}->{'selected'} = $value;
+			if ($value == 1) {
+				push @selected, $genre;
+			}
 		}
+		$client->pluginData('selected_genres' => [@selected]);
 	}
-	$client->pluginData('selected_genres' => [@selected]);
+	if ($paramType eq 'multipledecades') {
+		my $decades = getDecades($client);
+
+		for my $decade (keys %{$decades}) {
+			$decades->{$decade}->{'selected'} = $value;
+			if ($value == 1) {
+				push @selected, $decade;
+			}
+		}
+		$client->pluginData('selected_decades' => [@selected]);
+	}
+	if ($paramType eq 'multipleyears') {
+		my $years = getYears($client);
+
+		for my $year (keys %{$years}) {
+			$years->{$year}->{'selected'} = $value;
+			if ($value == 1) {
+				push @selected, $year;
+			}
+		}
+		$client->pluginData('selected_years' => [@selected]);
+	}
+	if ($paramType eq 'multiplestaticplaylists') {
+		my $staticPlaylists = getStaticPlaylists($client);
+
+		for my $staticPlaylist (keys %{$staticPlaylists}) {
+			$staticPlaylists->{$staticPlaylist}->{'selected'} = $value;
+			if ($value == 1) {
+				push @selected, $staticPlaylist;
+			}
+		}
+		$client->pluginData('selected_staticplaylists' => [@selected]);
+	}
 	$request->setStatusDone();
 }
 
@@ -1282,19 +1438,18 @@ sub getGenres {
 	my $query = ['genres', 0, 999_999];
 
 	my $library_id = Slim::Music::VirtualLibraries->getLibraryIdForClient($client);
-	push @$query, 'library_id:'.$library_id if $library_id;
-
+	push @{$query}, 'library_id:'.$library_id if $library_id;
 	my $request = Slim::Control::Request::executeRequest($client, $query);
 
 	my $selectedGenres = $client->pluginData('selected_genres') || [];
 	my %selected = map { $_ => 1 } @{$selectedGenres};
 	my $i = 0;
 	foreach my $genre ( @{ $request->getResult('genres_loop') || [] } ) {
-		my $name = $genre->{genre};
-		$genres->{$name} = {
-			'name' => $name,
-			'id' => $genre->{id},
-			'selected' => $selected{$name} ? 1 : 0,
+		my $genreid = $genre->{id};
+		$genres->{$genreid} = {
+			'name' => $genre->{genre},
+			'id' => $genreid,
+			'selected' => $selected{$genreid} ? 1 : 0,
 			'sort' => $i++,
 		};
 	}
@@ -1308,24 +1463,195 @@ sub getSortedGenres {
 	return sort { $genres->{$a}->{'sort'} <=> $genres->{$b}->{'sort'}; } keys %{$genres};
 }
 
-sub getMultipleGenresSelIDString {
+sub getDecades {
 	my $client = shift;
-	my $selectedGenres = $client->pluginData('selected_genres') || [];
+	my $dbh = getCurrentDBH();
+	my $decades = {};
+	my $decadesQueryResult = $client->pluginData('temp_decadelist') || {};
 
-	$log->debug('selectedGenres = '.Dumper($selectedGenres));
-	my @IDsSelectedGenres = ();
-	if (scalar (@{$selectedGenres}) > 0) {
-		foreach my $genreName (@{$selectedGenres}) {
-			my $genreID = Slim::Schema->resultset('Genre')->single( {'name' => $genreName })->id;
-			$log->debug('Selected genre: '.$genreName.' ('.$genreID.')');
-			push @IDsSelectedGenres, $genreID;
+	if (scalar keys %{$decadesQueryResult} == 0) {
+		my $currentclientVLid = Slim::Music::VirtualLibraries->getLibraryIdForClient($client);
+		my $unknownString = string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_UNKNOWN');
+
+		my $sql_decades = "select cast(((ifnull(tracks.year,0)/10)*10) as int) as decade,case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else '$unknownString' end as decadedisplayed from tracks
+		left join library_track on
+			library_track.track = tracks.id
+			and
+				case
+					when ('$currentclientVLid'!='' and '$currentclientVLid' is not null)
+					then library_track.library = '$currentclientVLid'
+					else 1
+				end
+		where tracks.audio=1 group by decade order by decade desc";
+
+		my ($decade, $decadeDisplayName);
+		eval {
+			my $sth = $dbh->prepare($sql_decades);
+			$sth->execute() or do {
+				$sql_decades = undef;
+			};
+			$sth->bind_columns(undef, \$decade, \$decadeDisplayName);
+
+			while ($sth->fetch()) {
+				$decadesQueryResult->{$decade} = $decadeDisplayName;
+			}
+			$sth->finish();
+			$log->debug('decadesQueryResult = '.Dumper($decadesQueryResult));
+			$client->pluginData('temp_decadelist' => $decadesQueryResult);
+			$log->info('caching new temp_decadelist = '.Dumper($client->pluginData('temp_decadelist')));
+		};
+		if ($@) {
+			$log->warn("Database error: $DBI::errstr\n$@");
+			return 'error';
 		}
 	}
-	my $selectedGenres_IDString = join (',', @IDsSelectedGenres);
-	$log->debug('selectedGenres_IDString = '.Dumper($selectedGenres_IDString));
-	return $selectedGenres_IDString;
+
+	my $selectedDecades = $client->pluginData('selected_decades') || [];
+	my %selected = map { $_ => 1 } @{$selectedDecades};
+	foreach my $decade (keys %{$decadesQueryResult || ()}) {
+		my $name = $decadesQueryResult->{$decade};
+		$decades->{$decade} = {
+			'name' => $name,
+			'id' => $decade,
+			'selected' => $selected{$decade} ? 1 : 0,
+		};
+	}
+	$log->debug('decades for multiple decades selection = '.Dumper($decades));
+	return $decades;
 }
 
+sub getSortedDecades {
+	my $client = shift;
+	my $decades = getDecades($client);
+	return sort { $decades->{$b}->{'id'} <=> $decades->{$a}->{'id'}; } keys %{$decades};
+}
+
+sub getYears {
+	my $client = shift;
+	my $years = {};
+	my $query = ['years', 0, 999_999];
+
+	my $library_id = Slim::Music::VirtualLibraries->getLibraryIdForClient($client);
+	push @{$query}, 'library_id:'.$library_id if $library_id;
+
+	my $request = Slim::Control::Request::executeRequest($client, $query);
+
+	my $selectedYears = $client->pluginData('selected_years') || [];
+	my %selected = map { $_ => 1 } @{$selectedYears};
+	foreach my $year ( @{ $request->getResult('years_loop') || [] } ) {
+		my $thisYear = $year->{'year'};
+		$years->{$thisYear} = {
+			'name' => $thisYear,
+			'id' => $thisYear,
+			'selected' => $selected{$thisYear} ? 1 : 0,
+		};
+	}
+	$log->debug('years for multiple decades selection = '.Dumper($years));
+	return $years;
+}
+
+sub getSortedYears {
+	my $client = shift;
+	my $years = getYears($client);
+	return sort { $years->{$b}->{'id'} <=> $years->{$a}->{'id'}; } keys %{$years};
+}
+
+sub getStaticPlaylists {
+	my $client = shift;
+	my $staticPlaylists = {};
+	my $query = ['playlists', '0', '999_999', 'tags:x'];
+
+	my $library_id = Slim::Music::VirtualLibraries->getLibraryIdForClient($client);
+	push @{$query}, 'library_id:'.$library_id if $library_id;
+	my $request = Slim::Control::Request::executeRequest($client, $query);
+
+	my $selectedStaticPlaylists = $client->pluginData('selected_staticplaylists') || [];
+	my %selected = map { $_ => 1 } @{$selectedStaticPlaylists};
+	foreach my $staticPlaylist ( @{ $request->getResult('playlists_loop') || [] } ) {
+		next if $staticPlaylist->{'remote'} != 0;
+		my $staticPlaylistID = $staticPlaylist->{id};
+		$staticPlaylists->{$staticPlaylistID} = {
+			'name' => $staticPlaylist->{'playlist'},
+			'id' => $staticPlaylistID,
+			'selected' => $selected{$staticPlaylistID} ? 1 : 0,
+		};
+	}
+	$log->debug('playlists for multiple static playlist selection = '.Dumper($staticPlaylists));
+	return $staticPlaylists;
+}
+
+sub getSortedStaticPlaylists {
+	my $client = shift;
+	my $staticPlaylists = getStaticPlaylists($client);
+	return sort { lc($staticPlaylists->{$a}->{'name'}) cmp lc($staticPlaylists->{$b}->{'name'}); } keys %{$staticPlaylists};
+}
+
+sub getMultipleSelectionString {
+	my ($client, $paramType, $includeYears) = @_;
+	my $multipleSelectionString;
+
+	if ($paramType eq 'multiplegenres') {
+		my $selectedGenres = $client->pluginData('selected_genres') || [];
+		$log->debug('selectedGenres = '.Dumper($selectedGenres));
+		my @IDsSelectedGenres = ();
+		if (scalar (@{$selectedGenres}) > 0) {
+			foreach my $genreID (@{$selectedGenres}) {
+				$log->debug('Selected genre: '.Slim::Schema->resultset('Genre')->single( {'id' => $genreID })->name.' (ID: '.$genreID.')');
+				push @IDsSelectedGenres, $genreID;
+			}
+		}
+		$multipleSelectionString = join (',', @IDsSelectedGenres);
+	}
+	if ($paramType eq 'multipledecades') {
+		my $selectedDecades = $client->pluginData('selected_decades') || [];
+		$log->debug('selectedDecades = '.Dumper($selectedDecades));
+		my @selectedDecadesArray = ();
+		if (scalar (@{$selectedDecades}) > 0) {
+			foreach my $decade (@{$selectedDecades}) {
+				$log->debug('Selected decade: '.$decade);
+				push @selectedDecadesArray, $decade;
+			}
+		}
+		if ($includeYears) {
+			my @yearsArray;
+			foreach my $decade (@selectedDecadesArray) {
+				push @yearsArray, $decade;
+				for (1..9) {
+					push @yearsArray, $decade + $_;
+				}
+			}
+			$multipleSelectionString = join (',', @yearsArray);
+		} else {
+			$multipleSelectionString = join (',', @selectedDecadesArray);
+		}
+	}
+	if ($paramType eq 'multipleyears') {
+		my $selectedYears = $client->pluginData('selected_years') || [];
+		$log->debug('selectedYears = '.Dumper($selectedYears));
+		my @selectedYearsArray = ();
+		if (scalar (@{$selectedYears}) > 0) {
+			foreach my $year (@{$selectedYears}) {
+				$log->debug('Selected decade: '.$year);
+				push @selectedYearsArray, $year;
+			}
+		}
+		$multipleSelectionString = join (',', @{$selectedYears});
+	}
+	if ($paramType eq 'multiplestaticplaylists') {
+		my $selectedStaticPlaylists = $client->pluginData('selected_staticplaylists') || [];
+		$log->debug('selectedStaticPlaylists = '.Dumper($selectedStaticPlaylists));
+		my @IDsSelectedStaticPlaylists = ();
+		if (scalar (@{$selectedStaticPlaylists}) > 0) {
+			foreach my $staticPlaylistID (@{$selectedStaticPlaylists}) {
+				$log->debug('Selected static playlist: '.Slim::Schema->resultset('Playlist')->single( {'id' => $staticPlaylistID })->name.' (ID: '.$staticPlaylistID.')');
+				push @IDsSelectedStaticPlaylists, $staticPlaylistID;
+			}
+		}
+		$multipleSelectionString = join (',', @IDsSelectedStaticPlaylists);
+	}
+	$log->debug('multipleSelectionString = '.Dumper($multipleSelectionString));
+	return $multipleSelectionString;
+}
 
 
 ### web pages ###
@@ -1427,20 +1753,41 @@ sub handleWebMixParameters {
 	my $parameterId = 1;
 	my @parameters = ();
 	my $playlist = getPlayList($client, $params->{'type'});
+	my $playlistParams = $playlist->{'parameters'};
 
-	my $i=1;
+	my $i = 1;
 	while (defined($params->{'dynamicplaylist_parameter_'.$i})) {
-		$parameterId = $parameterId +1;
-		my %value = (
-			'id' => $params->{'dynamicplaylist_parameter_'.$i}
-		);
+		$parameterId = $parameterId + 1;
+		my $parameter = $playlist->{'parameters'}->{$i};
+		my %value;
+		if ($parameter && $parameter->{'type'} eq 'multipledecades') {
+			# add years to decades
+			my @decadeValues = split(/,/, $params->{'dynamicplaylist_parameter_'.$i});
+			my @yearsArray;
+			foreach my $decade (@decadeValues) {
+				push @yearsArray, $decade;
+				for (1..9) {
+					push @yearsArray, $decade + $_;
+				}
+			}
+			my $multipleDecadesString = join (',', @yearsArray);
+			$log->debug('multiple decades string with years (web) = '.Dumper($multipleDecadesString));
+			%value = (
+				'id' => $multipleDecadesString
+			);
+		} else {
+			%value = (
+				'id' => $params->{'dynamicplaylist_parameter_'.$i}
+			);
+		}
+
 		$client->modeParam('dynamicplaylist_parameter_'.$i, \%value);
 		$log->debug("Storing parameter $i = ".$value{'id'});
 		$i++;
 	}
 
 	if (defined($playlist->{'parameters'}->{$parameterId})) {
-		my %selected = ();
+		my (%selectedGenres, %selectedDecades, %selectedYears, %selectedStaticPlaylists) = ();
 		for(my $i = 1; $i < $parameterId; $i++) {
 			my @parameterValues = ();
 			my $parameter = $playlist->{'parameters'}->{$i};
@@ -1451,9 +1798,23 @@ sub handleWebMixParameters {
 				'value' => $params->{'dynamicplaylist_parameter_'.$i}
 			);
 
-			if ($parameter->{'type'} eq 'multiplegenres') {
-				my @selectedGenres = split (',', $params->{'dynamicplaylist_parameter_'.$i});
-				%selected = map { $_ => 1 } @selectedGenres;
+			if ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists') {
+				if ($parameter->{'type'} eq 'multiplegenres') {
+					my @selectedGenresArray = split (',', $params->{'dynamicplaylist_parameter_'.$i});
+					%selectedGenres = map { $_ => 1 } @selectedGenresArray;
+				}
+				if ($parameter->{'type'} eq 'multipledecades') {
+					my @selectedDecadesArray = split (',', $params->{'dynamicplaylist_parameter_'.$i});
+					%selectedDecades = map { $_ => 1 } @selectedDecadesArray;
+				}
+				if ($parameter->{'type'} eq 'multipleyears') {
+					my @selectedYearsArray = split (',', $params->{'dynamicplaylist_parameter_'.$i});
+					%selectedYears = map { $_ => 1 } @selectedYearsArray;
+				}
+				if ($parameter->{'type'} eq 'multiplestaticplaylists') {
+					my @selectedStaticPlaylistsArray = split (',', $params->{'dynamicplaylist_parameter_'.$i});
+					%selectedStaticPlaylists = map { $_ => 1 } @selectedStaticPlaylistsArray;
+				}
 			}
 			push @parameters, \%webParameter;
 		}
@@ -1468,25 +1829,85 @@ sub handleWebMixParameters {
 		);
 		push @parameters, \%currentParameter;
 
-		if ($parameter->{'type'} eq 'multiplegenres') {
-			$params->{'currentparam'} = 'multiplegenres';
+		if ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists') {
+			$params->{'currentparam'} = $parameter->{'type'};
 		}
 
-		my $genrelist = getGenres($client);
-		if (keys %selected > 0) {
-			foreach my $genre (keys %{$genrelist}) {
-				my $id = $genrelist->{$genre}->{'id'};
-				if ($selected{$id}) {
-					$genrelist->{$genre}->{'selected'} = 1;
+		# multiple genres list
+		if (defined (first {$_->{'type'} eq 'multiplegenres'} values %{$playlistParams})) {
+			my $genrelist = getGenres($client);
+			if (keys %selectedGenres > 0) {
+				foreach my $genre (keys %{$genrelist}) {
+					my $id = $genrelist->{$genre}->{'id'};
+					if ($selectedGenres{$id}) {
+						$genrelist->{$genre}->{'selected'} = 1;
+					}
 				}
 			}
-		}
-		$log->debug('genrelist (all genres) = '.Dumper($genrelist));
-		$params->{'genrelist'} = $genrelist;
+			$log->debug('genre list = '.Dumper($genrelist));
+			$params->{'genrelist'} = $genrelist;
 
-		my $genrelistsorted = [getSortedGenres($client)];
-		$log->debug('genrelistsorted (just names) = '.Dumper($genrelistsorted));
-		$params->{'genrelistsorted'} = $genrelistsorted;
+			my $genrelistsorted = [getSortedGenres($client)];
+			$log->debug('genrelistsorted (just names) = '.Dumper($genrelistsorted));
+			$params->{'genrelistsorted'} = $genrelistsorted;
+		}
+
+		# multiple decades list
+		if (defined (first {$_->{'type'} eq 'multipledecades'} values %{$playlistParams})) {
+			my $decadelist = getDecades($client);
+			if (keys %selectedDecades > 0) {
+				foreach my $decade (keys %{$decadelist}) {
+					my $id = $decadelist->{$decade}->{'id'};
+					if ($selectedDecades{$id}) {
+						$decadelist->{$decade}->{'selected'} = 1;
+					}
+				}
+			}
+			$log->debug('decade list = '.Dumper($decadelist));
+			$params->{'decadelist'} = $decadelist;
+
+			my $decadelistsorted = [getSortedDecades($client)];
+			$log->debug('decadelistsorted = '.Dumper($decadelistsorted));
+			$params->{'decadelistsorted'} = $decadelistsorted;
+		}
+
+		# multiple years list
+		if (defined (first {$_->{'type'} eq 'multipleyears'} values %{$playlistParams})) {
+			my $yearlist = getYears($client);
+			if (keys %selectedYears > 0) {
+				foreach my $year (keys %{$yearlist}) {
+					my $id = $yearlist->{$year}->{'id'};
+					if ($selectedYears{$id}) {
+						$yearlist->{$year}->{'selected'} = 1;
+					}
+				}
+			}
+			$log->debug('year list = '.Dumper($yearlist));
+			$params->{'yearlist'} = $yearlist;
+
+			my $yearlistsorted = [getSortedYears($client)];
+			$log->debug('yearlistsorted = '.Dumper($yearlistsorted));
+			$params->{'yearlistsorted'} = $yearlistsorted;
+		}
+
+		# multiple static playlists list
+		if (defined (first {$_->{'type'} eq 'multiplestaticplaylists'} values %{$playlistParams})) {
+			my $staticplaylistlist = getStaticPlaylists($client);
+			if (keys %selectedStaticPlaylists > 0) {
+				foreach my $staticPlaylist (keys %{$staticplaylistlist}) {
+					my $id = $staticplaylistlist->{$staticPlaylist}->{'id'};
+					if ($selectedStaticPlaylists{$id}) {
+						$staticplaylistlist->{$staticPlaylist}->{'selected'} = 1;
+					}
+				}
+			}
+			$log->debug('static playlist list = '.Dumper($staticplaylistlist));
+			$params->{'staticplaylistlist'} = $staticplaylistlist;
+
+			my $staticplaylistlistsorted = [getSortedStaticPlaylists($client)];
+			$log->debug('staticplaylistlistsorted (just names) = '.Dumper($staticplaylistlistsorted));
+			$params->{'staticplaylistlistsorted'} = $staticplaylistlistsorted;
+		}
 
 		$params->{'pluginDynamicPlaylists3Playlist'} = $playlist;
 		$params->{'pluginDynamicPlaylists3PlaylistId'} = $params->{'type'};
@@ -2008,8 +2429,12 @@ sub cliJiveHandler {
 
 	$log->debug('Executing CLI browsejive command');
 
-	# delete previous multiple genre selection
+	# delete previous multiple selection
 	$client->pluginData('selected_genres' => []);
+	$client->pluginData('selected_decades' => []);
+	$client->pluginData('temp_decadelist' => {});
+	$client->pluginData('selected_years' => []);
+	$client->pluginData('selected_staticplaylists' => []);
 
 	my $menuGroupResult;
 	my $showFlat = $prefs->get('flatlist');
@@ -2258,16 +2683,25 @@ sub cliJivePlaylistParametersHandler {
 	$log->debug('parameter = '.Dumper($parameter));
 	my @listRef = ();
 
-	if ($parameter->{'type'} eq 'multiplegenres') {
+	if ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists') {
 		addParameterValues($client, \@listRef, $parameter, $parameters);
-		my $selectedGenres_IDString = getMultipleGenresSelIDString($client);
+		my $nextParamMultipleSelectionString;
 
-		## first: add three items for next param/actionsmenu, select all, select none
+		## first: add three items: next param/actionsmenu, select all, select none
 		my $cnt = 0;
 
 		# next param or actionsmenu
+		if ($parameter->{'type'} eq 'multipledecades') {
+			# add years to decades
+			$nextParamMultipleSelectionString = getMultipleSelectionString($client, $parameter->{'type'}, 1);
+			$log->debug('nextParamMultipleSelectionString (decades) = '.Dumper($nextParamMultipleSelectionString));
+		} else {
+			$nextParamMultipleSelectionString = getMultipleSelectionString($client, $parameter->{'type'});
+			$log->debug('nextParamMultipleSelectionString = '.Dumper($nextParamMultipleSelectionString));
+		}
+
 		my %itemParams = (
-			'dynamicplaylist_parameter_'.$nextParameterId => $selectedGenres_IDString
+			'dynamicplaylist_parameter_'.$nextParameterId => $nextParamMultipleSelectionString
 		);
 		%baseParams = (%baseParams, %itemParams);
 
@@ -2300,7 +2734,7 @@ sub cliJivePlaylistParametersHandler {
 		my $actions_selectall = {
 			'go' => {
 				'player' => 0,
-				'cmd' => [ 'dynamicplaylistgenreselectall', 1 ],
+				'cmd' => [ 'dynamicplaylistmultipleall', $parameter->{'type'}, 1 ],
 			},
 		};
 		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
@@ -2313,7 +2747,7 @@ sub cliJivePlaylistParametersHandler {
 		my $actions_selectnone = {
 			'go' => {
 				'player' => 0,
-				'cmd' => [ 'dynamicplaylistgenreselectall', 0 ],
+				'cmd' => [ 'dynamicplaylistmultipleall', $parameter->{'type'}, 0 ],
 			},
 		};
 		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
@@ -2323,7 +2757,7 @@ sub cliJivePlaylistParametersHandler {
 		$cnt++;
 
 
-		## create genre items
+		## create multiple selection items
 		my $count = scalar(@listRef);
 		my $itemsPerResponse = $request->getParam('_itemsPerResponse') || $count;
 		my $offsetCount = 3;
@@ -2340,7 +2774,7 @@ sub cliJivePlaylistParametersHandler {
 					$actions = {
 								go => {
 									player => 0,
-									cmd => ['dynamicplaylistselectgenre', $item->{'name'}, $item->{'selected'} ? 0 : 1],
+									cmd => ['dynamicplaylistmultipletoggle', $parameter->{'type'}, $item->{'id'}, $item->{'selected'} ? 0 : 1],
 								},
 							};
 					$request->addResultLoop('item_loop', $offsetCount, 'text', ($item->{'selected'} ? $checkboxSelected : $checkboxEmpty).$item->{'name'});
@@ -2348,11 +2782,11 @@ sub cliJivePlaylistParametersHandler {
 					$actions = {
 								on => {
 									player => 0,
-									cmd => ['dynamicplaylistselectgenre', $item->{'name'}, 1],
+									cmd => ['dynamicplaylistmultipletoggle', $parameter->{'type'}, $item->{'id'}, 1],
 								},
 								off => {
 									player => 0,
-									cmd => ['dynamicplaylistselectgenre', $item->{'name'}, 0],
+									cmd => ['dynamicplaylistmultipletoggle', $parameter->{'type'}, $item->{'id'}, 0],
 								}
 							};
 					$request->addResultLoop('item_loop', $offsetCount, 'text', $item->{'name'});
@@ -3212,6 +3646,8 @@ sub getDynamicPlayLists {
 				'playlistsortname' => $playlistsortname,
 				'menulisttype' => $current->{'menulisttype'},
 				'playlistcategory' => $current->{'playlistcategory'},
+				'apcplaylist' => $current->{'apcplaylist'},
+				'playlistapcdupe' => $current->{'playlistapcdupe'},
 				'playlisttrackorder' => $current->{'playlisttrackorder'},
 				'playlistlimitoption' => $current->{'playlistlimitoption'},
 				'playlistvirtuallibrarynames' => $current->{'playlistvirtuallibrarynames'},
@@ -3493,7 +3929,7 @@ sub replaceParametersInSQL {
 	return $sql;
 }
 
-# read + parse built-in + custom dynamic playlists ##
+# read + parse built-in + custom dynamic playlists #
 sub getLocalDynamicPlaylists {
 	my $client = shift;
 	my $customlistdir_parentfolderpath = $prefs->get('customdirparentfolderpath');
@@ -3527,6 +3963,7 @@ sub getLocalDynamicPlaylists {
 				next unless $item =~ /$fileExtension/;
 				next if -d $item;
 				my $content = eval {read_file($item)};
+				my $plDirName = dirname($item);
 				$item = basename($item);
 				if ($content) {
 					# If necessary convert the file data to utf8
@@ -3542,9 +3979,15 @@ sub getLocalDynamicPlaylists {
 
 					my $parsedContent;
 					if ($localDefDir eq $pluginPlaylistFolder) {
+						if ($plDirName =~ /extplugin_APC/) {
+							next unless $apc_enabled;
+						}
 						$parsedContent = parseContent($client, $item, $content, undef, 'defaultplaylist');
 						$parsedContent->{'defaultplaylist'} = 1;
 						$parsedContent->{'playlistsortname'} = ''.$parsedContent->{'name'};
+						if (($plDirName =~ /extplugin_APC/) && $apc_enabled) {
+								$parsedContent->{'apcplaylist'} = 1;
+						}
 					} else {
 						$parsedContent = parseContent($client, $item, $content);
 						$parsedContent->{'customplaylist'} = 1;
@@ -3576,6 +4019,7 @@ sub parseContent {
 		my %parameters = ();
 		my $menuListType = '';
 		my $playlistCategory = '';
+		my $playlistAPCdupe = '';
 		my $playlistTrackOrder = '';
 		my $playlistLimitOption = '';
 		my $playlistVLnames = ();
@@ -3605,6 +4049,7 @@ sub parseContent {
 			my $action = parseAction($line);
 			my $listType = parseMenuListType($line);
 			my $category = parseCategory($line);
+			my $APCdupe = parseAPCdupe($line);
 			my $trackOrder = parseTrackOrder($line);
 			my $limitOption = parseLimitOption($line);
 			my $VLnameItem = parseVirtualLibraryName($line);
@@ -3638,6 +4083,9 @@ sub parseContent {
 			}
 			if ($category) {
 				$playlistCategory = $category;
+			}
+			if ($APCdupe) {
+				$playlistAPCdupe = $APCdupe;
 			}
 			if ($trackOrder) {
 				$playlistTrackOrder = $trackOrder;
@@ -3712,6 +4160,9 @@ sub parseContent {
 			}
 			if (defined $playlistCategory && $playlistCategory ne '') {
 				$playlist{'playlistcategory'} = $playlistCategory;
+			}
+			if (defined $playlistAPCdupe && $playlistAPCdupe ne '') {
+				$playlist{'playlistapcdupe'} = $playlistAPCdupe;
 			}
 			if (defined $playlistTrackOrder && $playlistTrackOrder ne '') {
 				$playlist{'playlisttrackorder'} = $playlistTrackOrder;
@@ -3887,6 +4338,25 @@ sub parseCategory {
 		} else {
 			$log->debug("No value or error in category: $line");
 			$log->debug("Option values: category = $category");
+			return undef;
+		}
+	}
+	return undef;
+}
+
+sub parseAPCdupe {
+	my $line = shift;
+	if ($line =~ /^\s*--\s*PlaylistAPCdupe\s*[:=]\s*/) {
+		$line =~ m/^\s*--\s*PlaylistAPCdupe\s*[:=]\s*([^:]+)\s*(.*)$/;
+		my $APCdupe = $1;
+		$APCdupe =~ s/\s+$//;
+		$APCdupe =~ s/^\s+//;
+
+		if ($APCdupe) {
+			return $APCdupe;
+		} else {
+			$log->debug("No value or error in APCdupe: $line");
+			$log->debug("Option values: APCdupe = $APCdupe");
 			return undef;
 		}
 	}
@@ -4295,6 +4765,13 @@ sub setModeMixer {
 	my $client = shift;
 	my $method = shift;
 
+	# delete previous multiple selection
+	$client->pluginData('selected_genres' => []);
+	$client->pluginData('selected_decades' => []);
+	$client->pluginData('temp_decadelist' => {});
+	$client->pluginData('selected_years' => []);
+	$client->pluginData('selected_staticplaylists' => []);
+
 	if ($method eq 'pop') {
 		Slim::Buttons::Common::popMode($client);
 		return;
@@ -4557,7 +5034,7 @@ sub setModeChooseParameters {
 		}
 	}
 
-	my $parameter= $playlist->{'parameters'}->{$parameterId};
+	my $parameter = $playlist->{'parameters'}->{$parameterId};
 	my @listRef = ();
 	addParameterValues($client, \@listRef, $parameter);
 	my $sorted = '0';
@@ -4571,22 +5048,21 @@ sub setModeChooseParameters {
 	my %params;
 
 
-	if ($parameter->{'type'} eq 'multiplegenres') {
-		# delete previous multiple genre selection
-		$client->pluginData('selected_genres' => []);
-
-		my $genres = getGenres($client);
+	if ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists') {
 		my @listRef;
+		my $header = '';
 
 		# Continue or play
 		if (exists $playlist->{'parameters'}->{($parameterId + 1)}) {
 			@listRef = ({
 				name => $client->string('PLUGIN_DYNAMICPLAYLISTS3_NEXT'),
+				paramType => $parameter->{'type'},
 				value => 0,
 			});
 		} else {
 			@listRef = ({
 				name => $client->string('PLUGIN_DYNAMICPLAYLISTS3_PLAY'),
+				paramType => $parameter->{'type'},
 				value => 0,
 			});
 		}
@@ -4594,30 +5070,64 @@ sub setModeChooseParameters {
 		# Select all or none
 		push @listRef, ({
 			name => $client->string('PLUGIN_DYNAMICPLAYLISTS3_SELECT_ALLORNONE'),
+			paramType => $parameter->{'type'},
 			selectAll => 1,
 			value => 1,
 		});
 
-		# Add the genres
-		foreach my $genre ( getSortedGenres($client) ) {
-			$genres->{$genre}->{'value'} = $genres->{$genre}->{'id'};
-			push @listRef, $genres->{$genre};
+		# Add individual selection items
+		if ($parameter->{'type'} eq 'multiplegenres') {
+			$header = '{PLUGIN_DYNAMICPLAYLISTS3_CHOOSE_GENRES}';
+			my $genres = getGenres($client);
+			foreach my $genre (getSortedGenres($client)) {
+				$genres->{$genre}->{'value'} = $genres->{$genre}->{'id'};
+				$genres->{$genre}->{'paramType'} = $parameter->{'type'};
+				push @listRef, $genres->{$genre};
+			}
+		}
+		if ($parameter->{'type'} eq 'multipledecades') {
+			$header = '{PLUGIN_DYNAMICPLAYLISTS3_CHOOSE_DECADES}';
+			my $decades = getDecades($client);
+			foreach my $decade (getSortedDecades($client)) {
+				$decades->{$decade}->{'value'} = $decade;
+				$decades->{$decade}->{'paramType'} = $parameter->{'type'};
+				push @listRef, $decades->{$decade};
+			}
+		}
+		if ($parameter->{'type'} eq 'multipleyears') {
+			$header = '{PLUGIN_DYNAMICPLAYLISTS3_CHOOSE_YEARS}';
+			my $years = getYears($client);
+			foreach my $year (getSortedYears($client)) {
+				$years->{$year}->{'value'} = $year;
+				$years->{$year}->{'paramType'} = $parameter->{'type'};
+				push @listRef, $years->{$year};
+			}
+		}
+		if ($parameter->{'type'} eq 'multiplestaticplaylists') {
+			$header = '{PLUGIN_DYNAMICPLAYLISTS3_CHOOSE_PLAYLISTS}';
+			my $staticPlaylists = getStaticPlaylists($client);
+			foreach my $staticPlaylist (getSortedStaticPlaylists($client)) {
+				$staticPlaylists->{$staticPlaylist}->{'value'} = $staticPlaylists->{$staticPlaylist}->{'id'};
+				$staticPlaylists->{$staticPlaylist}->{'paramType'} = $parameter->{'type'};
+				push @listRef, $staticPlaylists->{$staticPlaylist};
+			}
 		}
 
 		%params = (
-					header => '{PLUGIN_DYNAMICPLAYLISTS3_CHOOSE_GENRES}',
-					headerAddCount => 1,
-					listRef => \@listRef,
-					modeName => 'PLUGIN.DynamicPlaylists3.ChooseParameters',
-					overlayRef => \&getGenreOverlay,
-					onRight => \&toggleGenreSelectionStateIP3k,
-					onPlay => \&toggleGenreSelectionStateIP3k,
-					onAdd => \&toggleGenreSelectionStateIP3k,
+			header => $header,
+			headerAddCount => 1,
+			listRef => \@listRef,
+			modeName => 'PLUGIN.DynamicPlaylists3.ChooseParameters',
+			overlayRef => \&getGenreOverlay,
+			onRight => \&_toggleMultipleSelectionStateIP3k,
+			onPlay => \&_toggleMultipleSelectionStateIP3k,
+			onAdd => \&_toggleMultipleSelectionStateIP3k,
 
 			dynamicplaylist_nextparameter => $parameterId,
 			dynamicplaylist_selectedplaylist => $playlist,
 			dynamicplaylist_addonly => $client->modeParam('dynamicplaylist_addonly')
 		);
+
 	} else {
 		%params = (
 			header => "$name {count}",
@@ -4653,7 +5163,7 @@ sub setModeChooseParameters {
 			dynamicplaylist_addonly => $client->modeParam('dynamicplaylist_addonly')
 		);
 	}
-	for(my $i=1; $i < $parameterId; $i++) {
+	for(my $i = 1; $i < $parameterId; $i++) {
 		$params{'dynamicplaylist_parameter_'.$i} = $client->modeParam('dynamicplaylist_parameter_'.$i);
 	}
 	if (defined($client->modeParam('extrapopmode'))) {
@@ -4939,19 +5449,69 @@ sub getGenreOverlay {
 		return [undef, $client->symbols('rightarrow')];
 	} else {
 		my $value = 0;
-		my $genres = getGenres($client);
-		if ($item->{'selectAll'}) {
-			# This item should be ticked if all the genres are selected
-			my $genresSelected = 0;
-			for my $genre (keys %{$genres}) {
-				if ($genres->{$genre}->{'selected'}) {
-					$genresSelected++;
+		if ($item->{'paramType'} eq 'multiplegenres') {
+			my $genres = getGenres($client);
+			if ($item->{'selectAll'}) {
+				# This item should be ticked if all the genres are selected
+				my $genresSelected = 0;
+				for my $genre (keys %{$genres}) {
+					if ($genres->{$genre}->{'selected'}) {
+						$genresSelected++;
+					}
 				}
+				$value = $genresSelected == scalar keys %{$genres};
+				$item->{'selected'} = $value;
+			} else {
+				$value = $genres->{$item->{'id'}}->{'selected'};
 			}
-			$value = $genresSelected == scalar keys %{$genres};
-			$item->{'selected'} = $value;
-		} else {
-			$value = $genres->{$item->{'name'}}->{'selected'};
+		}
+		if ($item->{'paramType'} eq 'multipledecades') {
+			my $decades = getDecades($client);
+			if ($item->{'selectAll'}) {
+				# This item should be ticked if all the genres are selected
+				my $decadesSelected = 0;
+				for my $decade (keys %{$decades}) {
+					if ($decades->{$decade}->{'selected'}) {
+						$decadesSelected++;
+					}
+				}
+				$value = $decadesSelected == scalar keys %{$decades};
+				$item->{'selected'} = $value;
+			} else {
+				$value = $decades->{$item->{'id'}}->{'selected'};
+			}
+		}
+		if ($item->{'paramType'} eq 'multipleyears') {
+			my $years = getYears($client);
+			if ($item->{'selectAll'}) {
+				# This item should be ticked if all the genres are selected
+				my $yearsSelected = 0;
+				for my $year (keys %{$years}) {
+					if ($years->{$year}->{'selected'}) {
+						$yearsSelected++;
+					}
+				}
+				$value = $yearsSelected == scalar keys %{$years};
+				$item->{'selected'} = $value;
+			} else {
+				$value = $years->{$item->{'id'}}->{'selected'};
+			}
+		}
+		if ($item->{'paramType'} eq 'multiplestaticplaylists') {
+			my $staticPlaylists = getStaticPlaylists($client);
+			if ($item->{'selectAll'}) {
+				# This item should be ticked if all the genres are selected
+				my $staticPlaylistsSelected = 0;
+				for my $staticPlaylist (keys %{$staticPlaylists}) {
+					if ($staticPlaylists->{$staticPlaylist}->{'selected'}) {
+						$staticPlaylistsSelected++;
+					}
+				}
+				$value = $staticPlaylistsSelected == scalar keys %{$staticPlaylists};
+				$item->{'selected'} = $value;
+			} else {
+				$value = $staticPlaylists->{$item->{'id'}}->{'selected'};
+			}
 		}
 		return [undef, Slim::Buttons::Common::checkBoxOverlay($client, $value)];
 	}
@@ -4959,7 +5519,6 @@ sub getGenreOverlay {
 
 sub getChooseParametersOverlay {
 	my ($client, $item) = @_;
-
 	return [undef, $client->symbols('rightarrow')];
 }
 
