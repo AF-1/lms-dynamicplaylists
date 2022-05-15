@@ -1,4 +1,5 @@
-# 				DynamicPlaylists3 plugin
+#
+# Dynamic Playlists 3
 #
 # (c) 2021-2022 AF
 #

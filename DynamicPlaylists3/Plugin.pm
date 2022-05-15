@@ -41,8 +41,6 @@ use File::Spec::Functions qw(:ALL);
 use FindBin qw($Bin);
 use HTML::Entities; # for parsing
 use List::Util qw(shuffle first);
-use POSIX qw(floor);
-use Scalar::Util qw(blessed);
 use Time::HiRes qw(time);
 
 use Plugins::DynamicPlaylists3::Settings::Basic;
@@ -1498,7 +1496,7 @@ sub getDecades {
 			$sth->finish();
 			$log->debug('decadesQueryResult = '.Dumper($decadesQueryResult));
 			$client->pluginData('temp_decadelist' => $decadesQueryResult);
-			$log->info('caching new temp_decadelist = '.Dumper($client->pluginData('temp_decadelist')));
+			$log->debug('caching new temp_decadelist = '.Dumper($client->pluginData('temp_decadelist')));
 		};
 		if ($@) {
 			$log->warn("Database error: $DBI::errstr\n$@");
