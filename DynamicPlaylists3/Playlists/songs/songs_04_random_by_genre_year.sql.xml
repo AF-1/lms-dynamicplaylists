@@ -23,7 +23,7 @@ select distinct tracks.url from tracks
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
-		and tracks.year in ('PlaylistParameter2')
+		and ifnull(tracks.year, 0) in ('PlaylistParameter2')
 		and
 			case
 				when 'PlaylistParameter3'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)

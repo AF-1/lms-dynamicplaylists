@@ -28,7 +28,7 @@ create temporary table randomweightedratingslow as select distinct tracks.url as
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
-		and tracks.year in ('PlaylistParameter2')
+		and ifnull(tracks.year, 0) in ('PlaylistParameter2')
 		and
 			case
 				when 'PlaylistParameter4'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
@@ -62,7 +62,7 @@ create temporary table randomweightedratingshigh as select distinct tracks.url a
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
-		and tracks.year in ('PlaylistParameter2')
+		and ifnull(tracks.year, 0) in ('PlaylistParameter2')
 		and
 			case
 				when 'PlaylistParameter4'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)

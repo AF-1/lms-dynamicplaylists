@@ -33,6 +33,7 @@ If you want to test a new patch that hasn't made it into a release version yet o
 * Save dynamic playlists with (user input) parameters to LMS **favourites** (web only, read FAQ).
 * Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
 * New preference options and UI changes.
+* If you have the [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) plugin installed, you will see some additional dynamic playlists that use the data from this plugin.
 * …
 <br><br><br><br>
 
