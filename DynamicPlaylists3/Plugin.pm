@@ -171,6 +171,7 @@ sub postinitPlugin {
 
 sub initPrefs {
 	$prefs->init({
+		customdirparentfolderpath => $serverPrefs->get('playlistdir'),
 		max_number_of_unplayed_tracks => 15,
 		min_number_of_unplayed_tracks => 4,
 		number_of_played_tracks_to_keep => 3,
@@ -185,18 +186,50 @@ sub initPrefs {
 		rememberactiveplaylist => 1,
 		groupunclassifiedcustomplaylists => 1,
 		showactiveplaylistinmainmenu => 1,
-		customdirparentfolderpath => $serverPrefs->get('playlistdir'),
 		randomsavedplaylists => 0,
 		flatlist => 0,
 		structured_savedplaylists => 'on',
 		favouritesname => string('PLUGIN_DYNAMICPLAYLISTS3_FAVOURITES'),
 		max_number_of_unplayed_tracks => 15,
 		max_number_of_unplayed_tracks => 15,
+		pluginplaylistfolder => sub {
+			my @pluginDirs = Slim::Utils::OSDetect::dirsFor('Plugins');
+			for my $plugindir (@pluginDirs) {
+				if (-d catdir($plugindir, 'DynamicPlaylists3', 'Playlists')) {
+					my $pluginPlaylistFolder = catdir($plugindir, 'DynamicPlaylists3', 'Playlists');
+					$log->debug('pluginPlaylistFolder = '.Dumper($pluginPlaylistFolder));
+					return $pluginPlaylistFolder;
+				}
+			}
+			return undef;
+		},
+		customplaylistfolder => sub {
+			my $customPlaylistFolder_parentfolderpath = $prefs->get('customdirparentfolderpath') || $serverPrefs->get('playlistdir');
+			my $customPlaylistFolder = $customPlaylistFolder_parentfolderpath.'/DPL-custom-lists';
+			eval {
+				mkdir($customPlaylistFolder, 0755) unless (-d $customPlaylistFolder);
+				chdir($customPlaylistFolder);
+				return $customPlaylistFolder;
+			} or do {
+				$log->error('Could not create custom playlist folder!');
+				return undef;
+			};
+		}
 	});
 
-	my $customlistdir_parentfolderpath = $prefs->get('customdirparentfolderpath');
-	my $customlistdir = $customlistdir_parentfolderpath.'/DPL-custom-lists';
-	mkdir($customlistdir, 0755) unless (-d $customlistdir);
+	$prefs->setValidate(sub {
+		return if (!$_[1] || !(-d $_[1]) || (main::ISWINDOWS && !(-d Win32::GetANSIPathName($_[1]))) || !(-d Slim::Utils::Unicode::encode_locale($_[1])));
+		my $customPlaylistFolder = $_[1].'/DPL-custom-lists';
+		eval {
+			mkdir($customPlaylistFolder, 0755) unless (-d $customPlaylistFolder);
+			chdir($customPlaylistFolder);
+		} or do {
+			$log->warn("Could not create or access custom playlist folder in parent folder '$_[1]'!");
+			return;
+		};
+		$prefs->set('customplaylistfolder', $customPlaylistFolder);
+		return 1;
+	}, 'customdirparentfolderpath');
 
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 50}, 'max_number_of_unplayed_tracks');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 0, 'high' => 100}, 'number_of_played_tracks_to_keep');
@@ -205,12 +238,6 @@ sub initPrefs {
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 1800}, 'song_min_duration');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 20}, 'period_playedlongago');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 10}, qw(minartisttracks minalbumtracks));
-	$prefs->setValidate('dir', 'customdirparentfolderpath');
-	$prefs->setChange(sub {
-		my $customlistdir_parentfolderpath = $prefs->get('customdirparentfolderpath');
-		my $customlistdir = $customlistdir_parentfolderpath.'/DPL-custom-lists';
-		mkdir($customlistdir, 0755) unless (-d $customlistdir);
-		}, 'customdirparentfolderpath');
 
 	%choiceMapping = (
 		'arrow_left' => 'exit_left',
@@ -3162,6 +3189,7 @@ sub _preselectionMenuWeb {
 
 sub _preselectionMenuJive {
 	my $request = shift;
+	#$log->debug('request = '.Dumper($request));
 	my $client = $request->client();
 	my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
 
@@ -3179,6 +3207,7 @@ sub _preselectionMenuJive {
 	}
 
 	my $params = $request->getParamsCopy();
+	my $iPengCaller = 1 if $params->{'userInterfaceIdiom'} eq 'iPeng';
 	my $objectType = $params->{'objecttype'};
 	my $objectID = $params->{'objectid'};
 	my $objectName = $params->{'objectname'};
@@ -3211,7 +3240,7 @@ sub _preselectionMenuJive {
 	if (keys %{$preselectionList} > 0) {
 		$request->addResultLoop('item_loop', $cnt, 'type', 'text');
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-		$request->addResultLoop('item_loop', $cnt, 'actions', 'none');
+		#$request->addResultLoop('item_loop', $cnt, 'actions', 'none');
 		$request->addResultLoop('item_loop', $cnt, 'text', $objectType eq 'artist' ? $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_REMOVEINFO_ARTIST') : $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_REMOVEINFO_ALBUM'));
 		$cnt++;
 
@@ -3269,13 +3298,13 @@ sub _preselectionMenuJive {
 	} else {
 		$request->addResultLoop('item_loop', $cnt, 'type', 'text');
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-		$request->addResultLoop('item_loop', $cnt, 'actions', 'none');
+		#$request->addResultLoop('item_loop', $cnt, 'actions', 'none');
 		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_NONE'));
 		$cnt++;
 	}
 	# Material always displays last selection as window title. Add correct window title as textarea
 	my $windowTitle = $objectType eq 'artist' ? $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_CACHED_ARTISTS_LIST') : $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_CACHED_ALBUMS_LIST');
-	if ($materialCaller) {
+	if ($materialCaller || $iPengCaller) {
 		$request->addResult('window', {textarea => $windowTitle});
 	} else {
 		$request->addResult('window', {text => $windowTitle});
@@ -3930,22 +3959,10 @@ sub replaceParametersInSQL {
 # read + parse built-in + custom dynamic playlists #
 sub getLocalDynamicPlaylists {
 	my $client = shift;
-	my $customlistdir_parentfolderpath = $prefs->get('customdirparentfolderpath');
-	my $customlistdir = $customlistdir_parentfolderpath.'/DPL-custom-lists';
-	mkdir($customlistdir, 0755) unless (-d $customlistdir);
-	chdir($customlistdir) or $customlistdir = $customlistdir_parentfolderpath;
+	my $pluginPlaylistFolder = $prefs->get('pluginplaylistfolder');
+	my $customPlaylistFolder = $prefs->get('customplaylistfolder');
 
-	my $pluginPlaylistFolder;
-	my @pluginDirs = Slim::Utils::OSDetect::dirsFor('Plugins');
-	$log->debug('pluginDirs = '.Dumper(\@pluginDirs));
-	for my $plugindir (@pluginDirs) {
-		if (-d catdir($plugindir, 'DynamicPlaylists3', 'Playlists')) {
-			$pluginPlaylistFolder = catdir($plugindir, 'DynamicPlaylists3', 'Playlists');
-			$log->debug('pluginPlaylistFolder = '.Dumper($pluginPlaylistFolder));
-		}
-	}
-
-	my @localDefDirs = ($pluginPlaylistFolder, $customlistdir);
+	my @localDefDirs = ($pluginPlaylistFolder, $customPlaylistFolder);
 	$log->debug('Searching for custom dynamic playlist definitions in local directories');
 
 	for my $localDefDir (@localDefDirs) {
