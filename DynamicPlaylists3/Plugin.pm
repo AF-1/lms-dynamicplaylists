@@ -205,7 +205,7 @@ sub initPrefs {
 		},
 		customplaylistfolder => sub {
 			my $customPlaylistFolder_parentfolderpath = $prefs->get('customdirparentfolderpath') || $serverPrefs->get('playlistdir');
-			my $customPlaylistFolder = $customPlaylistFolder_parentfolderpath.'/DPL-custom-lists';
+			my $customPlaylistFolder = catdir($customPlaylistFolder_parentfolderpath, 'DPL-custom-lists');
 			eval {
 				mkdir($customPlaylistFolder, 0755) unless (-d $customPlaylistFolder);
 				chdir($customPlaylistFolder);
@@ -219,7 +219,7 @@ sub initPrefs {
 
 	$prefs->setValidate(sub {
 		return if (!$_[1] || !(-d $_[1]) || (main::ISWINDOWS && !(-d Win32::GetANSIPathName($_[1]))) || !(-d Slim::Utils::Unicode::encode_locale($_[1])));
-		my $customPlaylistFolder = $_[1].'/DPL-custom-lists';
+		my $customPlaylistFolder = catdir($_[1], 'DPL-custom-lists');
 		eval {
 			mkdir($customPlaylistFolder, 0755) unless (-d $customPlaylistFolder);
 			chdir($customPlaylistFolder);
