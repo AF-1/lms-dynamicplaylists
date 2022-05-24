@@ -3,7 +3,7 @@
 	<id>affd836d-ef36-ae47-79ab-815df2866642</id>
 	<name>PLUGIN_DYNAMICPLAYLISTS3</name>
 	<module>Plugins::DynamicPlaylists3::Plugin</module>
-	<version>3.5.7</version>
+	<version>3.5.8</version>
 	<description>PLUGIN_DYNAMICPLAYLISTS3_DESC</description>
 	<creator>AF</creator>
 	<optionsURL>plugins/DynamicPlaylists3/settings/basic.html</optionsURL>
