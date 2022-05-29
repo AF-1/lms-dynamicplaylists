@@ -202,20 +202,10 @@ sub initPrefs {
 				}
 			}
 			return undef;
-		},
-		customplaylistfolder => sub {
-			my $customPlaylistFolder_parentfolderpath = $prefs->get('customdirparentfolderpath') || $serverPrefs->get('playlistdir');
-			my $customPlaylistFolder = catdir($customPlaylistFolder_parentfolderpath, 'DPL-custom-lists');
-			eval {
-				mkdir($customPlaylistFolder, 0755) unless (-d $customPlaylistFolder);
-				chdir($customPlaylistFolder);
-				return $customPlaylistFolder;
-			} or do {
-				$log->error('Could not create custom playlist folder!');
-				return undef;
-			};
 		}
 	});
+
+	createCustomPlaylistFolder();
 
 	$prefs->setValidate(sub {
 		return if (!$_[1] || !(-d $_[1]) || (main::ISWINDOWS && !(-d Win32::GetANSIPathName($_[1]))) || !(-d Slim::Utils::Unicode::encode_locale($_[1])));
@@ -5704,6 +5694,19 @@ sub commandCallback65 {
 		$log->debug('cyclic mode ending due to playlist: '.($request->getRequestString()).' command');
 		playRandom($client, 'disable');
 	}
+}
+
+sub createCustomPlaylistFolder {
+	my $customPlaylistFolder_parentfolderpath = $prefs->get('customdirparentfolderpath') || $serverPrefs->get('playlistdir');
+	my $customPlaylistFolder = catdir($customPlaylistFolder_parentfolderpath, 'DPL-custom-lists');
+	eval {
+		mkdir($customPlaylistFolder, 0755) unless (-d $customPlaylistFolder);
+		chdir($customPlaylistFolder);
+	} or do {
+		$log->error("Could not create or access custom playlist folder in parent folder '$customPlaylistFolder_parentfolderpath'!");
+		return;
+	};
+	$prefs->set('customplaylistfolder', $customPlaylistFolder);
 }
 
 sub cliIsActive {
