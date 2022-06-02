@@ -759,7 +759,7 @@ sub playRandom {
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 					my $materialMsg = $statusmsg.' '.$playlistName;
-					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
+					Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 				}
 			}
 		} elsif ($showFeedback) {
@@ -769,7 +769,7 @@ sub playRandom {
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 					my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName;
-					Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
+					Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 				}
 		}
 		# Never show random as modified, since its a living playlist
@@ -789,7 +789,7 @@ sub playRandom {
 		}
 		if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 			my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED');
-			Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
+			Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 		}
 		stateStop($masterClient);
 		my @players = Slim::Player::Sync::slaves($masterClient);
@@ -871,7 +871,7 @@ sub playRandom {
 									 $statusmsg]}, $showTime);
 			}
 			if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
-				Slim::Control::Request::executeRequest('', ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id]);
+				Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id]);
 			}
 		}
 	}
