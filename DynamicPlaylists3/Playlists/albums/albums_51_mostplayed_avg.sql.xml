@@ -4,11 +4,14 @@
 -- PlaylistAPCdupe:yes
 -- PlaylistTrackOrder:ordered
 -- PlaylistLimitOption:unlimited
--- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_PLAYED
+-- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDECOMPIS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_COMPISONLY,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_NOCOMPIS
+-- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select mostavgplayed.album as album from
 		(select distinct tracks.album as album, avg(ifnull(tracks_persistent.playCount,0)) as avgcount, count(distinct tracks.id) as totaltrackcount from tracks
+		join albums on
+			albums.id = tracks.album
 		left join library_track on
 			library_track.track = tracks.id
 		join tracks_persistent on
@@ -32,6 +35,12 @@ create temporary table dynamicplaylist_random_albums as
 								genres.name in ('PlaylistExcludedGenres'))
 		group by tracks.album
 			having totaltrackcount >= 'PlaylistMinAlbumTracks'
+			and
+				case
+					when 'PlaylistParameter1'=1 then ifnull(albums.compilation, 0) = 1
+					when 'PlaylistParameter1'=2 then ifnull(albums.compilation, 0) = 0
+					else 1
+				end
 		order by avgcount desc, random()
 		limit 30) as mostavgplayed
 	order by random()
@@ -51,8 +60,8 @@ select distinct tracks.url from tracks
 		and dynamicplaylist_history.id is null
 		and
 			case
-				when 'PlaylistParameter1'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
-				when 'PlaylistParameter1'=2 then tracks_persistent.playCount > 0
+				when 'PlaylistParameter2'=1 then ifnull(tracks_persistent.playCount, 0) = 0
+				when 'PlaylistParameter2'=2 then ifnull(tracks_persistent.playCount, 0) > 0
 				else 1
 			end
 		and

@@ -1360,6 +1360,10 @@ PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDESONGS
 	EN	Choose songs to include
 	FR	Choisir les morceaux à inclure
 
+PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_INCLUDECOMPIS
+	EN	Choose albums to include
+	FR	Choisir les albums à inclure
+
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_ALBUMS_RECENTLYPLAYED
 	EN	Limit to albums that contain recently PLAYED songs?
 	FR	Limiter aux albums contenant les morceaux joués récemment ?
@@ -1485,6 +1489,18 @@ PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_6MONTHS
 PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_SELECTLASTADDEDPERIOD_12MONTHS
 	EN	Added in the 12 months before the last library import
 	FR	Ajoutés dans les 12 mois avant le dernier import de la bibliothèque
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_ALL
+	EN	all albums
+	FR	tous les albums
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_COMPISONLY
+	EN	compilations only
+	FR	seulement les compilations
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMVALUENAME_ALBUMS_NOCOMPIS
+	EN	no compilations
+	FR	pas de compilations
 
 
 

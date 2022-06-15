@@ -24,7 +24,6 @@ create temporary table dynamicplaylist_random_genres as
 								tracks.id=genre_track.track and
 								genre_track.genre=genres.id and
 								genres.name in ('PlaylistExcludedGenres'))
-			and dynamicplaylist_history.id is null
 			and
 				case
 					when ('PlaylistCurrentVirtualLibraryForClient'!='' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
@@ -53,8 +52,8 @@ select distinct tracks.url from tracks
 		and dynamicplaylist_history.id is null
 		and
 			case
-				when 'PlaylistParameter1'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
-				when 'PlaylistParameter1'=2 then tracks_persistent.playCount > 0
+				when 'PlaylistParameter1'=1 then ifnull(tracks_persistent.playCount, 0) = 0
+				when 'PlaylistParameter1'=2 then ifnull(tracks_persistent.playCount, 0) > 0
 				else 1
 			end
 		and

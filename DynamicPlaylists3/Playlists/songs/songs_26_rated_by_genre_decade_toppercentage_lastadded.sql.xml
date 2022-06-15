@@ -31,8 +31,8 @@ create temporary table randomweightedratingslow as select distinct tracks.url as
 		and ifnull(tracks.year, 0) in ('PlaylistParameter2')
 		and
 			case
-				when 'PlaylistParameter4'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
-				when 'PlaylistParameter4'=2 then tracks_persistent.playCount > 0
+				when 'PlaylistParameter4'=1 then ifnull(tracks_persistent.playCount, 0) = 0
+				when 'PlaylistParameter4'=2 then ifnull(tracks_persistent.playCount, 0) > 0
 				else 1
 			end
 		and
@@ -65,8 +65,8 @@ create temporary table randomweightedratingshigh as select distinct tracks.url a
 		and ifnull(tracks.year, 0) in ('PlaylistParameter2')
 		and
 			case
-				when 'PlaylistParameter4'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
-				when 'PlaylistParameter4'=2 then tracks_persistent.playCount > 0
+				when 'PlaylistParameter4'=1 then ifnull(tracks_persistent.playCount, 0) = 0
+				when 'PlaylistParameter4'=2 then ifnull(tracks_persistent.playCount, 0) > 0
 				else 1
 			end
 		and

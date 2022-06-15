@@ -28,8 +28,8 @@ select distinct tracks.url from tracks
 			end
 		and
 			case
-				when 'PlaylistParameter4'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
-				when 'PlaylistParameter4'=2 then tracks_persistent.playCount > 0
+				when 'PlaylistParameter4'=1 then ifnull(tracks_persistent.playCount, 0) = 0
+				when 'PlaylistParameter4'=2 then ifnull(tracks_persistent.playCount, 0) > 0
 				else 1
 			end
 		and not exists (select * from tracks t2, genre_track, genres

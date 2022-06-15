@@ -19,8 +19,8 @@ select distinct tracks.url from tracks
 		and (strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR')) - ifnull(alternativeplaycount.lastPlayed,0)) > 0
 		and
 			case
-				when 'PlaylistParameter2'=1 then (alternativeplaycount.playCount = 0 or alternativeplaycount.playCount is null)
-				when 'PlaylistParameter2'=2 then alternativeplaycount.playCount > 0
+				when 'PlaylistParameter2'=1 then ifnull(alternativeplaycount.playCount, 0) = 0
+				when 'PlaylistParameter2'=2 then ifnull(alternativeplaycount.playCount, 0) > 0
 				else 1
 			end
 		and

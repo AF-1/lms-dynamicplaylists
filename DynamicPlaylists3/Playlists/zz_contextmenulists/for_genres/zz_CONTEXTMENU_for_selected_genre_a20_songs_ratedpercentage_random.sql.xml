@@ -24,8 +24,8 @@ create temporary table randomweightedratingslow as
 		and dynamicplaylist_history.id is null
 		and
 			case
-				when 'PlaylistParameter3'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
-				when 'PlaylistParameter3'=2 then tracks_persistent.playCount > 0
+				when 'PlaylistParameter3'=1 then ifnull(tracks_persistent.playCount, 0) = 0
+				when 'PlaylistParameter3'=2 then ifnull(tracks_persistent.playCount, 0) > 0
 				else 1
 			end
 		and
@@ -53,8 +53,8 @@ create temporary table randomweightedratingshigh as
 		and dynamicplaylist_history.id is null
 		and
 			case
-				when 'PlaylistParameter3'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
-				when 'PlaylistParameter3'=2 then tracks_persistent.playCount > 0
+				when 'PlaylistParameter3'=1 then ifnull(tracks_persistent.playCount, 0) = 0
+				when 'PlaylistParameter3'=2 then ifnull(tracks_persistent.playCount, 0) > 0
 				else 1
 			end
 		and

@@ -50,8 +50,8 @@ select distinct tracks.url from tracks
 		and dynamicplaylist_history.id is null
 		and
 			case
-				when 'PlaylistParameter1'=1 then (alternativeplaycount.playCount = 0 or alternativeplaycount.playCount is null)
-				when 'PlaylistParameter1'=2 then alternativeplaycount.playCount > 0
+				when 'PlaylistParameter1'=1 then ifnull(alternativeplaycount.playCount, 0) = 0
+				when 'PlaylistParameter1'=2 then ifnull(alternativeplaycount.playCount, 0) > 0
 				else 1
 			end
 		and

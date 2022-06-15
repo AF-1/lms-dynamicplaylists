@@ -26,8 +26,8 @@ select distinct playlist_track.track from playlist_track
 		and ifnull(tracks.year, 0) in ('PlaylistParameter3')
 		and
 			case
-				when 'PlaylistParameter5'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
-				when 'PlaylistParameter5'=2 then tracks_persistent.playCount > 0
+				when 'PlaylistParameter5'=1 then ifnull(tracks_persistent.playCount, 0) = 0
+				when 'PlaylistParameter5'=2 then ifnull(tracks_persistent.playCount, 0) > 0
 				else 1
 			end
 		and

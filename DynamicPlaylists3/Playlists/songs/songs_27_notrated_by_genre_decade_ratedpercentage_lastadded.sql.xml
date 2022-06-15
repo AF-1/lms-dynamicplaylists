@@ -13,7 +13,7 @@ create temporary table randomweightedratingslow as select distinct tracks.url as
 	join genre_track on
 		genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter1')
 	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5 and (tracks_persistent.rating = 0 or tracks_persistent.rating is null)
+		tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) = 0
 	left join library_track on
 		library_track.track = tracks.id
 	left join dynamicplaylist_history on
@@ -31,8 +31,8 @@ create temporary table randomweightedratingslow as select distinct tracks.url as
 		and ifnull(tracks.year, 0) in ('PlaylistParameter2')
 		and
 			case
-				when 'PlaylistParameter4'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
-				when 'PlaylistParameter4'=2 then tracks_persistent.playCount > 0
+				when 'PlaylistParameter4'=1 then ifnull(tracks_persistent.playCount, 0) = 0
+				when 'PlaylistParameter4'=2 then ifnull(tracks_persistent.playCount, 0) > 0
 				else 1
 			end
 		and
@@ -65,8 +65,8 @@ create temporary table randomweightedratingshigh as select distinct tracks.url a
 		and ifnull(tracks.year, 0) in ('PlaylistParameter2')
 		and
 			case
-				when 'PlaylistParameter4'=1 then (tracks_persistent.playCount = 0 or tracks_persistent.playCount is null)
-				when 'PlaylistParameter4'=2 then tracks_persistent.playCount > 0
+				when 'PlaylistParameter4'=1 then ifnull(tracks_persistent.playCount, 0) = 0
+				when 'PlaylistParameter4'=2 then ifnull(tracks_persistent.playCount, 0) > 0
 				else 1
 			end
 		and

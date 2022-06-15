@@ -9,7 +9,7 @@ select distinct tracks.url from tracks
 	left join library_track on
 		library_track.track = tracks.id
 	join alternativeplaycount on
-		alternativeplaycount.urlmd5 = tracks.urlmd5 and (alternativeplaycount.playCount = 0 or alternativeplaycount.playCount is null)
+		alternativeplaycount.urlmd5 = tracks.urlmd5 and ifnull(alternativeplaycount.playCount, 0) = 0
 	left join dynamicplaylist_history on
 		dynamicplaylist_history.id=tracks.id and dynamicplaylist_history.client='PlaylistPlayer'
 	where
