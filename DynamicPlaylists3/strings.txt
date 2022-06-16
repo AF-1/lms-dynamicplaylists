@@ -529,6 +529,10 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_RANDOM
 	EN	Albums - random
 	FR	Albums - aléatoire
 
+PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_GENRE_DECADE
+	EN	Albums - random (by genre + decade)
+	FR	Albums - aléatoire (par genre + décennie)
+
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_TOPRATEDAVG
 	EN	Albums - with top average rating
 	FR	Albums - avec les meilleures notes moyennes
@@ -585,6 +589,10 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ALBUMS_PLAYEDLONGAGO
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_RANDOM
 	EN	Artists - random
 	FR	Artistes - aléatoire
+
+PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_GENRE_DECADE
+	EN	Artists - random (by genre + decade)
+	FR	Artistes - aléatoire (par genre + décennie)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_ARTISTS_TOPRATEDAVG
 	EN	Artists - with top average rating
