@@ -186,6 +186,7 @@ sub initPrefs {
 		rememberactiveplaylist => 1,
 		groupunclassifiedcustomplaylists => 1,
 		showactiveplaylistinmainmenu => 1,
+		showtimeperchar => 60,
 		randomsavedplaylists => 0,
 		flatlist => 0,
 		structured_savedplaylists => 'on',
@@ -224,10 +225,10 @@ sub initPrefs {
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 50}, 'max_number_of_unplayed_tracks');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 0, 'high' => 100}, 'number_of_played_tracks_to_keep');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 60}, 'song_adding_check_delay');
-	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 10}, 'min_number_of_unplayed_tracks');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 1800}, 'song_min_duration');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 20}, 'period_playedlongago');
-	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 10}, qw(minartisttracks minalbumtracks));
+	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 10}, qw(min_number_of_unplayed_tracks minartisttracks minalbumtracks));
+	$prefs->setValidate({'validator' => 'intlimit', 'low' => 0, 'high' => 100}, 'showtimeperchar');
 
 	%choiceMapping = (
 		'arrow_left' => 'exit_left',
@@ -623,8 +624,8 @@ sub playRandom {
 		$playlistName = $playlist->{'name'};
 	}
 
-	# Strings for non-track modes could be long so need some time to scroll
-	my $showTime = 10;
+	# showTime per character so long messages get more time to scroll
+	my $showTimePerChar = $prefs->get('showtimeperchar') / 1000;
 
 	$log->debug('playRandom called with type '.$type);
 
@@ -755,7 +756,7 @@ sub playRandom {
 				$statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_STATUSMSG') if $addOnly == 2;
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 					$client->showBriefly({'line' => [$statusmsg,
-										 $playlistName]}, $showTime);
+										 $playlistName]}, length($statusmsg.$playlistName) * $showTimePerChar); # showTime = length of all messages * showTime per character
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 					my $materialMsg = $statusmsg.' '.$playlistName;
@@ -765,7 +766,7 @@ sub playRandom {
 		} elsif ($showFeedback) {
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 					$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED'),
-										 string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName]}, $showTime);
+										 string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName]}, length(string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED').string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').$playlistName) * $showTimePerChar);
 				}
 				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 					my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName;
@@ -785,7 +786,7 @@ sub playRandom {
 		$log->debug('cyclic mode ended');
 		# Don't do showBrieflys if visualiser screensavers are running as the display messes up
 		if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3'), string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')]});
+			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3'), string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')]}, length(string('PLUGIN_DYNAMICPLAYLISTS3').string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')) * $showTimePerChar);
 		}
 		if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 			my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED');
@@ -868,7 +869,7 @@ sub playRandom {
 			my $statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED_LONG');
 			if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 				$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED'),
-									 $statusmsg]}, $showTime);
+									 $statusmsg]}, length(string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED').$statusmsg) * $showTimePerChar);
 			}
 			if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
 				Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id]);

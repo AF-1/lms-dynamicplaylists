@@ -222,6 +222,18 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_EXCLUDEDGENRES_DESC
 	EN	Choose genres to exclude from dynamic playlists that use the <i>ExcludedGenres</i> parameter (built-in playlists use this).
 	FR	Choisit les genres à exclure des listes de lecture dynamiques qui utilisent le paramètre <i>ExcludedGenres</i> (les listes de lecture intégrées l'utilise)
 
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SHOWTIMEPERCHAR
+	EN	Status message display time
+	FR	Durée d'affichage du message d'état
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SHOWTIMEPERCHAR_DESC
+	EN	Where possible, Dynamic Playlists adapts the <b>display duration</b> of messages to their <b>length</b>, so that more time is available for reading long messages.<br>This value here is the display time <b>per character</b>.
+	FR	Lorsque cela est possible, DPL adapte la <b>durée d'affichage</b> des messages à leur <b>longueur</b>, afin de disposer de plus de temps pour lire les longs messages.<br>Cette valeur-ci correspond à la durée d'affichage <b>par lettre</b>.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_MILLISECS
+	EN	Millisecond(s)
+	FR	Milliseconde(s)
+
 
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SELECT_PLAYLISTS

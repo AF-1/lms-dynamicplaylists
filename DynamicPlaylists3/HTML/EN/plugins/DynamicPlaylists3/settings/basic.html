@@ -48,6 +48,10 @@
 	<input type="text" class="stdedit sliderInput_1_10_1" name="pref_minalbumtracks" id="minalbumtracks" value="[% prefs.minalbumtracks %]" size="2">
 [% END %]
 
+[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SHOWTIMEPERCHAR" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SHOWTIMEPERCHAR_DESC" %]
+	<input type="text" class="stdedit sliderInput_1_100_10" name="pref_showtimeperchar" id="showtimeperchar" value="[% prefs.showtimeperchar %]" size="3"> [% "SETTINGS_PLUGIN_TESTPLUGIN_TIMEMILLISECS" | string %]
+[% END %]
+
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX_DESC" %]
 	<select name="pref_dstmstartindex">
 		<option value="1" [% IF prefs.dstmstartindex %]selected[% END %]>[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX_FIRST" | string %]</option>
