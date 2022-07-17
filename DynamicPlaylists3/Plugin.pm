@@ -758,19 +758,11 @@ sub playRandom {
 					$client->showBriefly({'line' => [$statusmsg,
 										 $playlistName]}, length($statusmsg.$playlistName) * $showTimePerChar); # showTime = length of all messages * showTime per character
 				}
-				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
-					my $materialMsg = $statusmsg.' '.$playlistName;
-					Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
-				}
 			}
 		} elsif ($showFeedback) {
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 					$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED'),
 										 string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName]}, length(string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED').string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').$playlistName) * $showTimePerChar);
-				}
-				if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
-					my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName;
-					Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 				}
 		}
 		# Never show random as modified, since its a living playlist
@@ -787,10 +779,6 @@ sub playRandom {
 		# Don't do showBrieflys if visualiser screensavers are running as the display messes up
 		if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3'), string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')]}, length(string('PLUGIN_DYNAMICPLAYLISTS3').string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')) * $showTimePerChar);
-		}
-		if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
-			my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED');
-			Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id]);
 		}
 		stateStop($masterClient);
 		my @players = Slim::Player::Sync::slaves($masterClient);
@@ -870,9 +858,6 @@ sub playRandom {
 			if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 				$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED'),
 									 $statusmsg]}, length(string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED').$statusmsg) * $showTimePerChar);
-			}
-			if (Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin')) {
-				Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id]);
 			}
 		}
 	}
