@@ -231,8 +231,8 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SHOWTIMEPERCHAR_DESC
 	FR	Lorsque cela est possible, DPL adapte la <b>durée d'affichage</b> des messages à leur <b>longueur</b>, afin de disposer de plus de temps pour lire les longs messages.<br>Cette valeur-ci correspond à la durée d'affichage <b>par lettre</b>.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_MILLISECS
-	EN	Millisecond(s)
-	FR	Milliseconde(s)
+	EN	millisecond(s)
+	FR	milliseconde(s)
 
 
 
