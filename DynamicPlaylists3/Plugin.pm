@@ -304,17 +304,9 @@ sub initPlayLists {
 				$playlist->{'dynamicplaylistpluginshortname'} = $pluginshortname;
 
 				my $enabled = $prefs->get('playlist_'.$item.'_enabled');
-				if (!defined $enabled || $enabled) {
-					$playlist->{'dynamicplaylistenabled'} = 1;
-				} else {
-					$playlist->{'dynamicplaylistenabled'} = 0;
-				}
+				$playlist->{'dynamicplaylistenabled'} = (!defined $enabled || $enabled) ? 1 : 0;
 				my $favourite = $prefs->get('playlist_'.$item.'_favourite');
-				if (defined($favourite) && $favourite) {
-					$playlist->{'dynamicplaylistfavourite'} = 1;
-				} else {
-					$playlist->{'dynamicplaylistfavourite'} = 0;
-				}
+				$playlist->{'dynamicplaylistfavourite'} = (defined($favourite) && $favourite) ? 1 : 0;
 
 				$playlist->{'isFavorite'} = defined(Slim::Utils::Favorites->new($client)->findUrl('dynamicplaylist://'.$playlist->{'dynamicplaylistid'}))?1:0;
 				if (defined($playlist->{'parameters'})) {
@@ -405,12 +397,7 @@ sub initPlayLists {
 										$enabled = 1;
 									}
 								}
-								if ($enabled && $playlist->{'dynamicplaylistenabled'}) {
-									$currentItemGroup{'dynamicplaylistenabled'} = 1;
-								} else {
-									$currentItemGroup{'dynamicplaylistenabled'} = 0;
-								}
-
+								$currentItemGroup{'dynamicplaylistenabled'} = ($enabled && $playlist->{'dynamicplaylistenabled'}) ? 1 : 0;
 								$currentLevel->{'dynamicplaylistgroup_'.$group} = \%currentItemGroup;
 								$currentLevel = \%level;
 							}
@@ -2253,7 +2240,7 @@ sub registerJiveMenu {
 		{
 			text => Slim::Utils::Strings::string('PLUGIN_DYNAMICPLAYLISTS3'),
 			weight => 78,
-			id => 'dynamicplaylist',
+			id => 'dynamicplaylists3',
 			menuIcon => 'plugins/DynamicPlaylists3/html/images/dpl_icon_svg.png',
 			window => {titleStyle => 'mymusic', 'icon-id' => $class->_pluginDataFor('icon')},
 			actions => {
@@ -2267,13 +2254,13 @@ sub registerJiveMenu {
 }
 
 sub registerStandardContextMenus {
-	Slim::Menu::TrackInfo->registerInfoProvider(dynamicplaylist => (
+	Slim::Menu::TrackInfo->registerInfoProvider(dynamicplaylists3 => (
 		before => 'favorites',
 		func => sub {
 			return objectInfoHandler(@_, undef, 'track');
 		},
 	));
-	Slim::Menu::AlbumInfo->registerInfoProvider(dynamicplaylist => (
+	Slim::Menu::AlbumInfo->registerInfoProvider(dynamicplaylists3 => (
 		after => 'addalbum',
 		func => sub {
 			if (scalar(@_) < 6) {
@@ -2283,33 +2270,33 @@ sub registerStandardContextMenus {
 			}
 		},
 	));
-	Slim::Menu::ArtistInfo->registerInfoProvider(dynamicplaylist => (
+	Slim::Menu::ArtistInfo->registerInfoProvider(dynamicplaylists3 => (
 		after => 'addartist',
 		func => sub {
 			return objectInfoHandler(@_, undef, 'artist');
 		},
 	));
-	Slim::Menu::YearInfo->registerInfoProvider(dynamicplaylist => (
+	Slim::Menu::YearInfo->registerInfoProvider(dynamicplaylists3 => (
 		after => 'addyear',
 		func => sub {
 			return objectInfoHandler(@_, undef, 'year');
 		},
 	));
-	Slim::Menu::PlaylistInfo->registerInfoProvider(dynamicplaylist => (
+	Slim::Menu::PlaylistInfo->registerInfoProvider(dynamicplaylists3 => (
 		after => 'addplaylist',
 		func => sub {
 			return objectInfoHandler(@_, 'playlist');
 		},
 	));
-	Slim::Menu::GenreInfo->registerInfoProvider(dynamicplaylist => (
+	Slim::Menu::GenreInfo->registerInfoProvider(dynamicplaylists3 => (
 		after => 'addgenre',
 		func => sub {
 			return objectInfoHandler(@_, undef, 'genre');
 		},
 	));
 
-	Slim::Menu::AlbumInfo->registerInfoProvider(dynamicplaylistcacheobj => (
-		after => 'dynamicplaylist',
+	Slim::Menu::AlbumInfo->registerInfoProvider(dynamicplaylists3cacheobj => (
+		after => 'dynamicplaylists3',
 		func => sub {
 			if (scalar(@_) < 6) {
 				return registerPreselectionMenu(@_, undef, 'album');
@@ -2318,8 +2305,8 @@ sub registerStandardContextMenus {
 			}
 		},
 	));
-	Slim::Menu::ArtistInfo->registerInfoProvider(dynamicplaylistcacheobj => (
-		after => 'dynamicplaylist',
+	Slim::Menu::ArtistInfo->registerInfoProvider(dynamicplaylists3cacheobj => (
+		after => 'dynamicplaylists3',
 		func => sub {
 			return registerPreselectionMenu(@_, undef, 'artist');
 		},
