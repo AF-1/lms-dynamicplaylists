@@ -81,7 +81,7 @@
 	<input name="pref_includesavedplaylists" id="includesavedplaylists" type="checkbox" [% IF prefs.includesavedplaylists %] checked [% END %]>
 [% END %]
 
-[% WRAPPER setting title="PLUGIN_RATINGSLIGHT_MENUS_SHOW_RATED_TRACKS_MENUS" desc="PLUGIN_RATINGSLIGHT_MENUS_SHOW_RATED_TRACKS_MENUS_DESC" %]
+[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_RANDOMSAVEDPLAYLISTS" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_RANDOMSAVEDPLAYLISTS_DESC" %]
 	<select name="pref_randomsavedplaylists" id="randomsavedplaylists">
 		[% FOREACH option = {
 			'1' => 'PLUGIN_DYNAMICPLAYLISTS3_SETTINGS_RANDOM',
