@@ -79,8 +79,10 @@ my %choiceMapping;
 
 my $dstm_enabled;
 my $apc_enabled;
+my $material_enabled;
 my %categorylangstrings;
 my %customsortnames;
+my $msgMaxDisplayTime = 25;
 
 sub initPlugin {
 	my $class = shift;
@@ -160,6 +162,7 @@ sub weight {
 sub postinitPlugin {
 	my $class = shift;
 	$apc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::AlternativePlayCount::Plugin');
+	$material_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin');
 	initPlayLists();
 	initPlayListTypes();
 	registerJiveMenu($class);
@@ -186,7 +189,7 @@ sub initPrefs {
 		rememberactiveplaylist => 1,
 		groupunclassifiedcustomplaylists => 1,
 		showactiveplaylistinmainmenu => 1,
-		showtimeperchar => 60,
+		showtimeperchar => 80,
 		randomsavedplaylists => 0,
 		flatlist => 0,
 		structured_savedplaylists => 'on',
@@ -228,7 +231,7 @@ sub initPrefs {
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 1800}, 'song_min_duration');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 20}, 'period_playedlongago');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 10}, qw(min_number_of_unplayed_tracks minartisttracks minalbumtracks));
-	$prefs->setValidate({'validator' => 'intlimit', 'low' => 0, 'high' => 100}, 'showtimeperchar');
+	$prefs->setValidate({'validator' => 'intlimit', 'low' => 0, 'high' => 200}, 'showtimeperchar');
 
 	%choiceMapping = (
 		'arrow_left' => 'exit_left',
@@ -743,13 +746,21 @@ sub playRandom {
 				$statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_STATUSMSG') if $addOnly == 2;
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 					$client->showBriefly({'line' => [$statusmsg,
-										 $playlistName]}, length($statusmsg.$playlistName) * $showTimePerChar); # showTime = length of all messages * showTime per character
+										 $playlistName]}, length($statusmsg.$playlistName) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length($statusmsg.$playlistName) * $showTimePerChar); # showTime = length of all messages * showTime per character
+				}
+				if ($material_enabled) {
+					my $materialMsg = $statusmsg.' '.$playlistName;
+					Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id, 'timeout:'.(length($materialMsg) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length($materialMsg) * $showTimePerChar)]);
 				}
 			}
 		} elsif ($showFeedback) {
 				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 					$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED'),
-										 string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName]}, length(string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED').string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').$playlistName) * $showTimePerChar);
+										 string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName]}, length(string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED').string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').$playlistName) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length(string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED').string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').$playlistName) * $showTimePerChar);
+				}
+				if ($material_enabled) {
+					my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName;
+					Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id, 'timeout:'.(length($materialMsg) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length($materialMsg) * $showTimePerChar)]);
 				}
 		}
 		# Never show random as modified, since its a living playlist
@@ -765,7 +776,11 @@ sub playRandom {
 		$log->debug('cyclic mode ended');
 		# Don't do showBrieflys if visualiser screensavers are running as the display messes up
 		if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3'), string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')]}, length(string('PLUGIN_DYNAMICPLAYLISTS3').string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')) * $showTimePerChar);
+			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3'), string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')]}, length(string('PLUGIN_DYNAMICPLAYLISTS3').string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length(string('PLUGIN_DYNAMICPLAYLISTS3').string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')) * $showTimePerChar);
+		}
+		if ($material_enabled) {
+			my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED');
+			Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id, 'timeout:'.(length($materialMsg) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length($materialMsg) * $showTimePerChar)]);
 		}
 		stateStop($masterClient);
 		my @players = Slim::Player::Sync::slaves($masterClient);
@@ -844,7 +859,10 @@ sub playRandom {
 			my $statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED_LONG');
 			if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
 				$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED'),
-									 $statusmsg]}, length(string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED').$statusmsg) * $showTimePerChar);
+									 $statusmsg]}, length(string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED').$statusmsg) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length(string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED').$statusmsg) * $showTimePerChar);
+			}
+			if ($material_enabled) {
+				Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id, 'timeout:'.(length($statusmsg) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime: length($statusmsg) * $showTimePerChar)]);
 			}
 		}
 	}
