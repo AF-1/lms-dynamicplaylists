@@ -82,7 +82,6 @@ my $apc_enabled;
 my $material_enabled;
 my %categorylangstrings;
 my %customsortnames;
-my $msgMaxDisplayTime = 25;
 
 sub initPlugin {
 	my $class = shift;
@@ -737,33 +736,37 @@ sub playRandom {
 		$log->debug('number of added items = '.$count);
 
 		$offset += $count;
-		if ($count > 0) {
-			# Do a show briefly the first time things are added, or every time a new album/artist/year
-			# is added
-			if (!$addOnly || $type ne $mixInfo{$masterClient}->{'type'}) {
-				# Don't do showBrieflys if visualiser screensavers are running as the display messes up
-				my $statusmsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING');
-				$statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_STATUSMSG') if $addOnly == 2;
-				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-					$client->showBriefly({'line' => [$statusmsg,
-										 $playlistName]}, length($statusmsg.$playlistName) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length($statusmsg.$playlistName) * $showTimePerChar); # showTime = length of all messages * showTime per character
+
+		# Display status message(s) if $showTimePerChar > 0
+		if ($showTimePerChar > 0) {
+			if ($count > 0) {
+				# Do a show briefly the first time things are added, or every time a new album/artist/year
+				# is added
+				if (!$addOnly || $type ne $mixInfo{$masterClient}->{'type'}) {
+					# Don't do showBrieflys if visualiser screensavers are running as the display messes up
+					my $statusmsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING');
+					$statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_STATUSMSG') if $addOnly == 2;
+					if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+						$client->showBriefly({'line' => [$statusmsg,
+											 $playlistName]}, getMsgDisplayTime($statusmsg.$playlistName));
+					}
+					if ($material_enabled) {
+						my $materialMsg = $statusmsg.' '.$playlistName;
+						Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id, 'timeout:'.getMsgDisplayTime($materialMsg)]);
+					}
 				}
-				if ($material_enabled) {
-					my $materialMsg = $statusmsg.' '.$playlistName;
-					Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id, 'timeout:'.(length($materialMsg) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length($materialMsg) * $showTimePerChar)]);
-				}
+			} elsif ($showFeedback) {
+					if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+						$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED'),
+											 string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED').string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').$playlistName));
+					}
+					if ($material_enabled) {
+						my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName;
+						Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id, 'timeout:'.getMsgDisplayTime($materialMsg)]);
+					}
 			}
-		} elsif ($showFeedback) {
-				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-					$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED'),
-										 string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName]}, length(string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED').string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').$playlistName) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length(string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED').string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').$playlistName) * $showTimePerChar);
-				}
-				if ($material_enabled) {
-					my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING_FAILED_LONG').' '.$playlistName;
-					Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id, 'timeout:'.(length($materialMsg) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length($materialMsg) * $showTimePerChar)]);
-				}
 		}
-		# Never show random as modified, since its a living playlist
+		# Never show random as modified, since it's a living playlist
 		$client->currentPlaylistModified(0);
 	}
 
@@ -774,13 +777,16 @@ sub playRandom {
 
 	if ($type eq 'disable') {
 		$log->debug('cyclic mode ended');
-		# Don't do showBrieflys if visualiser screensavers are running as the display messes up
-		if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3'), string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')]}, length(string('PLUGIN_DYNAMICPLAYLISTS3').string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length(string('PLUGIN_DYNAMICPLAYLISTS3').string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')) * $showTimePerChar);
-		}
-		if ($material_enabled) {
-			my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED');
-			Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id, 'timeout:'.(length($materialMsg) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length($materialMsg) * $showTimePerChar)]);
+		# Display status message(s) if $showTimePerChar > 0
+		if ($showTimePerChar > 0) {
+			# Don't do showBrieflys if visualiser screensavers are running as the display messes up
+			if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+				$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3'), string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS3').string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED')));
+			}
+			if ($material_enabled) {
+				my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS3_DISABLED');
+				Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id, 'timeout:'.getMsgDisplayTime($materialMsg)]);
+			}
 		}
 		stateStop($masterClient);
 		my @players = Slim::Player::Sync::slaves($masterClient);
@@ -856,13 +862,16 @@ sub playRandom {
 			}
 		} else {
 			$log->debug("Can't start DSTM. No DSTM provider enabled.");
-			my $statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED_LONG');
-			if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-				$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED'),
-									 $statusmsg]}, length(string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED').$statusmsg) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime : length(string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED').$statusmsg) * $showTimePerChar);
-			}
-			if ($material_enabled) {
-				Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id, 'timeout:'.(length($statusmsg) * $showTimePerChar > $msgMaxDisplayTime ? $msgMaxDisplayTime: length($statusmsg) * $showTimePerChar)]);
+			# Display status message(s) if $showTimePerChar > 0
+			if ($showTimePerChar > 0) {
+				my $statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED_LONG');
+				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+					$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED'),
+										 $statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_FAILED').$statusmsg));
+				}
+				if ($material_enabled) {
+					Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id, 'timeout:'.getMsgDisplayTime($statusmsg)]);
+				}
 			}
 		}
 	}
@@ -4953,6 +4962,7 @@ sub addFavorite {
 		my $url = 'dynamicplaylist://'.$item->{'playlist'}->{'dynamicplaylistid'};
 		my $favs = Slim::Utils::Favorites->new($client);
 		my ($index, $hk) = $favs->findUrl($url);
+		my $showTimePerChar = $prefs->get('showtimeperchar') / 1000;
 		if (!defined($index)) {
 			if (defined $hotkey) {
 				my $oldindex = $favs->hasHotkey($hotkey);
@@ -4963,16 +4973,22 @@ sub addFavorite {
 				my (undef, $hotkey) = $favs->add($url, $item->{'playlist'}->{'name'}, 'audio', undef, 'hotkey');
 			}
 
-			$client->showBriefly({
-				'line' => [$client->string('FAVORITES_ADDING'), $item->{'playlist'}->{'name'}]
-			});
+			# Display status message(s) if $showTimePerChar > 0
+			if ($showTimePerChar > 0) {
+				$client->showBriefly({
+					'line' => [$client->string('FAVORITES_ADDING'), $item->{'playlist'}->{'name'}]
+				}, getMsgDisplayTime(string('FAVORITES_ADDING').$item->{'playlist'}->{'name'}));
+			}
 		} elsif (defined($hotkey)) {
 			$favs->setHotkey($index, undef);
 			$favs->setHotkey($index, $hotkey);
 
-			$client->showBriefly({
-				'line' => [$client->string('FAVORITES_ADDING'), $item->{'playlist'}->{'name'}]
-			});
+			# Display status message(s) if $showTimePerChar > 0
+			if ($showTimePerChar > 0) {
+				$client->showBriefly({
+					'line' => [$client->string('FAVORITES_ADDING'), $item->{'playlist'}->{'name'}]
+				}, getMsgDisplayTime(string('FAVORITES_ADDING').$item->{'playlist'}->{'name'}));
+			}
 		} else {
 			$log->debug('Already exists as a favorite');
 		}
@@ -5738,6 +5754,16 @@ sub getExcludedGenreList {
 		$excludedgenreString = join ',', map qq/'$_'/, @{$excludegenres_namelist};
 	}
 	return $excludedgenreString;
+}
+
+sub getMsgDisplayTime {
+	my $displayString = shift;
+	my $showTimePerChar = $prefs->get('showtimeperchar') / 1000;
+	my $msgDisplayTime = length($displayString) * $showTimePerChar;
+	$msgDisplayTime = 2 if $msgDisplayTime < 2;
+	$msgDisplayTime = 25 if $msgDisplayTime > 25;
+	$log->debug("Display time: ".$msgDisplayTime."s for message '".$displayString."'");
+	return $msgDisplayTime;
 }
 
 sub getFunctions {
