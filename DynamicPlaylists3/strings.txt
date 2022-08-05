@@ -183,20 +183,20 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_CUSTOMDIRPARENTFOLDERPATH_DESC
 	FR	Choisissez un emplacement pour le dossier où seront enregistrés les définitions des listes de lecture dynamiques personnalisées.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_INCLUDESAVEDPLAYLISTS
-	EN	Saved standard playlists
-	FR	Listes de lecture standards sauvegardées
+	EN	Include saved static playlists
+	FR	Inclut les listes de lecture statiques sauvegardées
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_INCLUDESAVEDPLAYLISTS_DESC
-	EN	Include standard/static saved playlists in the Dynamic Playlists menu
-	FR	Inclut les listes de lecture standards/statiques dans le menu de listes de lecture dynamiques
+	EN	Include static saved playlists in the Dynamic Playlists menu
+	FR	Inclut les listes de lecture statiques dans le menu de listes de lecture dynamiques
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_RANDOMSAVEDPLAYLISTS
-	EN	Random standard playlists
-	FR	Listes de lecture standards aléatoires
+	EN	Playback order for static playlists
+	FR	Listes de lecture statiques aléatoires
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_RANDOMSAVEDPLAYLISTS_DESC
-	EN	Play songs in standard/static saved playlists in random order
-	FR	Joue les morceaux des listes de lecture standards/statiques dans un ordre aléatoire
+	EN	Play songs in static saved playlists in random order
+	FR	Joue les morceaux des listes de lecture statiques dans un ordre aléatoire
 
 PLUGIN_DYNAMICPLAYLISTS3_SETTINGS_RANDOM
 	EN	Random
@@ -207,12 +207,12 @@ PLUGIN_DYNAMICPLAYLISTS3_SETTINGS_ORDERED
 	FR	Ordonné
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_STRUCTURED_SAVEDPLAYLISTS
-	EN	Use sub directories of saved <wbr>standard&nbsp;playlists&nbsp;as&nbsp;groups
-	FR	Utiliser les sous répertoires des <wbr>listes&nbsp;de&nbsp;lecture&nbsp;standards en tant que groupes
+	EN	Use sub directories of saved <wbr>static&nbsp;playlists&nbsp;as&nbsp;groups
+	FR	Utiliser les sous répertoires des <wbr>listes&nbsp;de&nbsp;lecture&nbsp;statiques en tant que groupes
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_STRUCTURED_SAVEDPLAYLISTS_DESC
-	EN	Groups standard/static saved playlists from different sub directories into different groups. May help if you use a lot of standard/static saved playlists.
-	FR	Groupe les listes de lecture standards/statiques de différents sous répertoires dans différents groupes. Cela peut aider si vous utilisez beaucoup de listes de lecture standards/statiques.
+	EN	Groups static saved playlists from different sub directories into different groups. May help if you use a lot of static saved playlists.
+	FR	Groupe les listes de lecture statiques de différents sous répertoires dans différents groupes. Cela peut aider si vous utilisez beaucoup de listes de lecture statiques.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_EXCLUDEDGENRES
 	EN	Exclude genres
@@ -227,8 +227,8 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SHOWTIMEPERCHAR
 	FR	Durée d'affichage du message d'état
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SHOWTIMEPERCHAR_DESC
-	EN	Where possible, Dynamic Playlists adapts the <b>display duration</b> of messages to their <b>length</b>, so that more time is available for reading long messages.<br>This value here is the display time <b>per character</b>.
-	FR	Lorsque cela est possible, DPL adapte la <b>durée d'affichage</b> des messages à leur <b>longueur</b>, afin de disposer de plus de temps pour lire les longs messages.<br>Cette valeur-ci correspond à la durée d'affichage <b>par lettre</b>.
+	EN	Where possible, Dynamic Playlists adapts the <b>display duration</b> of messages to their <b>length</b>, so that more time is available for reading long messages.<br>This value here is the display time <b>per character</b>.<br>Set to zero to disable status messages.
+	FR	Lorsque cela est possible, DPL adapte la <b>durée d'affichage</b> des messages à leur <b>longueur</b>, afin de disposer de plus de temps pour lire les longs messages.<br>Cette valeur-ci correspond à la durée d'affichage <b>par lettre</b>.<br>Mettre à zéro pour désactiver les messages d'état.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_MILLISECS
 	EN	millisecond(s)
@@ -503,7 +503,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLCUSTOM
 	EN	custom/user-provided
 	FR	personnalisé
 
-SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_STANDARDPL
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_STATICPL
 	EN	Static LMS playlist
 	FR	Listes de lecture statiques LMS
 

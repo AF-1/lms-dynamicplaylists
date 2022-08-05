@@ -188,7 +188,7 @@ sub initPrefs {
 		rememberactiveplaylist => 1,
 		groupunclassifiedcustomplaylists => 1,
 		showactiveplaylistinmainmenu => 1,
-		showtimeperchar => 80,
+		showtimeperchar => 70,
 		randomsavedplaylists => 0,
 		flatlist => 0,
 		structured_savedplaylists => 'on',
@@ -297,8 +297,8 @@ sub initPlayLists {
 					$pluginshortname = 'Dynamic Playlists v3 - '.string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLBUILTIN');
 				} elsif (starts_with($item, 'dplusercustom_') == 0) {
 					$pluginshortname = 'Dynamic Playlists v3 - '.string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DPLCUSTOM');
-				} elsif (starts_with($item, 'dplstandardpl_') == 0) {
-					$pluginshortname = string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_STANDARDPL');
+				} elsif (starts_with($item, 'dplstaticpl_') == 0) {
+					$pluginshortname = string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_STATICPL');
 					$savedstaticPlaylists = 'found saved static playlists';
 				} else {
 					$pluginshortname =~ s/^Plugins::|::Plugin+$//g;
@@ -344,9 +344,7 @@ sub initPlayLists {
 				my $groups = $playlist->{'groups'};
 				if (!defined($groups)) {
 					my $groupunclassifiedcustomplaylists = $prefs->get('groupunclassifiedcustomplaylists');
-					if (defined($groupunclassifiedcustomplaylists)) {
-						$groups = [['Not classified']];
-					}
+					$groups = [['Not classified']] if $groupunclassifiedcustomplaylists;
 				}
 				if (!defined($groups)) {
 					my @emptyArray = ();
@@ -3607,7 +3605,7 @@ sub getDynamicPlayLists {
 			$playlistDir = Slim::Utils::Misc::fileURLFromPath($playlistDir);
 		}
 		foreach my $playlist (@{$playLists}) {
-			my $playlistid = 'dplstandardpl_'.sha1_base64($playlist->url);
+			my $playlistid = 'dplstaticpl_'.sha1_base64($playlist->url);
 			my $id = $playlist->id;
 			my $name = $playlist->title;
 			my $playlisturl;
@@ -3868,7 +3866,7 @@ sub getNextDynamicPlayListTracks {
 
 	} else {
 
-		$log->debug('Getting tracks for standard playlist: '.$dynamicplaylist->{'name'});
+		$log->debug('Getting tracks for static playlist: '.$dynamicplaylist->{'name'});
 		my $playlist = objectForId('playlist', $dynamicplaylist->{'id'});
 		my @tracks = ();
 		if ($prefs->get('randomsavedplaylists') == 0) {
