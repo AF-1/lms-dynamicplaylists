@@ -30,7 +30,7 @@ If you want to test a new patch that hasn't made it into a release version yet o
 * **Multiple** selection of *genres*, *decades*, *years* and *static playlists*
 * **Pre**select multiple *artists* or *albums* from their context menu at your leisure. DPL remembers your **pre**selection so that you can easily use it later with dynamic playlists that use **preselection**.
 * Use LMS **virtual libraries**.
-* Save dynamic playlists with (user input) parameters to LMS **favourites** (web only, read FAQ).
+* Save dynamic playlists with (user input) parameters to LMS **favourites** (see FAQ).
 * Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
 * New preference options and UI changes.
 * If you have installed the [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) plugin, you will see some additional dynamic playlists that use the data from this plugin.
@@ -92,12 +92,12 @@ The <i>Don't Stop the Music</i> (DSTM) plugin “will automatically add similar 
 
 <details><summary>»<b>I can't add my dynamic playlist to my LMS favorites (menu)</b>.«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>DPL shows a favorite icon with a <i>p</i> (default skin) or an orange tint (classic skin) next to my dynamic playlists. Why?</b>«</summary><br><p>
 DPL's default setting has always been (even in v2) that you can only add dynamic playlists to LMS favorites that <b>don't request user input</b>. In other words only <i>one-click</i> dynamic playlists could be added as LMS favorites.<br>
-DPL v3.4 allows you to add dynamic playlists with playlist parameter values (= values from user input) to LMS favorites - with some <b>limitations</b>:<br>
+DPL v3.6+ allows you to add dynamic playlists with playlist parameter values (= values from user input) to LMS favorites - with some <b>limitations</b>:<br>
 
-- This feature is <b>experimental</b> and will remain <b>limited to the LMS web UI</b> (<b>Default</b> and <b>Classic</b> skin).<br>
-- Saving dynamic playlists with user input values basically means you're saving a url with fixed playlist parameters as a one-click dynamic playlist. The value of <i>some</i> of these playlist parameters (LMS database IDs like artist/contributor IDs, album IDs, genre IDs, playlist IDs or virtual library IDs) might change after a (delete/wipe) rescan. Other parameters included in the saved URL (such as <i>list</i> parameters defined in the dynamic playlist definition, years, decades or max./min. rating values) won't be affected by a rescan. So please remember: <b>a (delete/wipe) rescan might invalidate some dynamic playlists favorites <i>with saved user input values</b></i>. You'll have to remove & readd them. Therefore I suggest you choose a good descriptive name so you'll remember what parameter values you chose (like "Alternative 80s rated").<br><br>
+- This feature is <b>experimental</b> and is <b>limited to the LMS web UI</b> (<i>Default</i> and <i>Classic</i> skin), <b>players with jivelite UI</b> (<i>Touch</i>, <i>Radio</i>, <i>SqueezePlay</i>, <i>piCorePlayer</i>) and <b>Material</b> skin.<br>
+- Saving dynamic playlists with user input values basically means you're saving a url with fixed playlist parameters as a one-click dynamic playlist. The value of <i>some</i> of these playlist parameters (LMS database IDs like artist/contributor IDs, album IDs, genre IDs, playlist IDs or virtual library IDs) might change after a (delete/wipe) rescan. Other parameters included in the saved URL (such as <i>list</i> parameters defined in the dynamic playlist definition, years, decades or max./min. rating values) won't be affected by a rescan. So please remember: <b>a (delete/wipe) rescan might invalidate some dynamic playlists favorites <i>with saved user input values</b></i>. You'll have to remove & <b>readd</b> them. Therefore I suggest you choose a good descriptive name so you'll remember what parameter values you chose (like "Alternative 80s rated").<br><br>
 
-In short: you can <i>save</i> dynamic playlists that request user input to LMS favorites now using LMS's <i>Default</i> or <i>Classic</i> <b>web UI</b>. Once saved they should behave like normal favorites (one-click action). These favorites <i>might</i> stop working after a (wipe/delete) rescan (esp. if they include artist/album/genre/track/playlist IDs).
+In short: you can <i>save</i> dynamic playlists that request user input to LMS favorites now. Once saved they should behave like normal favorites (one-click action). If favorites with certain parameters (esp. artist/album/genre/track/playlist IDs) stop working after a (wipe/delete) rescan, just remove and readd them.
 </p></details><br>
 
 <details><summary>»<b>The <i>Not classified</i> group in the DPL (home) menu has disappeared / doesn't show.</b>«</summary><br><p>

@@ -345,6 +345,30 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX_DESC
 	EN	After DPL has created a seed list for the <i>Don't Stop The Music</i> plugin, i.e. added tracks to the client's playlist choose if you want to start your DSTM mix with the <b>first</b> or the <b>last</b> song of that seed list.<br>Choosing the <i>last</i> song should trigger DSTM to add new tracks right away while skipping playback of all seed list tracks (but the last one).
 	FR	Après que DPL ait créé une liste pour le plugin <i>Don't Stop The Music</i>, i.e. ajoute des morceaux à la liste de lecture du client choisissez si vous voulez commencer votre mix DSTM avec le <b>premier</b> ou le <b>dernier</b> morceau de cette liste.<br>Choisir le <i>dernier</i> morceaux déclenchera le DSTM pour ajouter des nouveaux morceaux directement tout en sautant la lecture des morceaux de la iste (sauf le dernier).
 
+PLUGIN_DYNAMICPLAYLISTS3_SAVEASFAV
+	EN	Save as favourite
+	FR	Sauvegarder comme favori
+
+PLUGIN_DYNAMICPLAYLISTS3_SAVEASFAV_MATERIAL
+	EN	Save as favourite - enter a name for your favourite
+	FR	Sauvegarder comme favori - entrer un nom pour votre favori
+
+PLUGIN_DYNAMICPLAYLISTS3_SAVEASFAV_ADDONLY
+	EN	Save as add-only favourite
+	FR	Sauvegarder comme favori 'ajouter seulement'
+
+PLUGIN_DYNAMICPLAYLISTS3_SAVEASFAV_ADDONLY_MATERIAL
+	EN	Save as add-only favourite - enter a name for your favourite
+	FR	Sauvegarder comme favori 'ajouter seulement' - entrer un nom pour votre favori
+
+PLUGIN_DYNAMICPLAYLISTS3_SAVEDASFAV
+	EN	Saved dynamic playlist with selected parameters as favourite
+	FR	La liste de lecture dynamique avec les paramètres sélectionnés était sauvagardée comme favori.
+
+PLUGIN_DYNAMICPLAYLISTS3_SAVEDASFAV_ADDONLY
+	EN	Saved dynamic playlist with selected parameters as add-only favourite
+	FR	La liste de lecture dynamique avec les paramètres sélectionnés était sauvagardée comme favori 'ajouter seulement'.
+
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_DSTM_STARTINDEX_FIRST
 	EN	first song
 	FR	premier morceau
@@ -386,8 +410,12 @@ PLUGIN_DYNAMICPLAYLISTS3_CUSTOMFAVTITLE
 	FR	Nom favori
 
 PLUGIN_DYNAMICPLAYLISTS3_FAVADDONLY
-	EN	Only <u>add</u> tracks
-	FR	<u>Ajouter</u> seulement les morceaux
+	EN	<u>Add</u> only, don't play
+	FR	<u>Ajouter</u> seulement, ne pas jouer
+
+PLUGIN_DYNAMICPLAYLISTS3_FAVADDONLY_JIVE
+	EN	Add only, don't play
+	FR	Ajouter seulement, ne pas jouer
 
 
 PLUGIN_DYNAMICPLAYLISTS3_PRESELECTARTISTS

@@ -3,7 +3,7 @@
 #
 # (c) 2021-2022 AF
 #
-# Based on the DynamicPlayList plugin by (c) 2006 Erland Isaksson
+# Some code based on the DynamicPlayList plugin by (c) 2006 Erland Isaksson
 #
 # GPLv3 license
 # This program is free software: you can redistribute it and/or modify

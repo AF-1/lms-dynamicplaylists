@@ -3,7 +3,7 @@
 #
 # (c) 2021-2022 AF
 #
-# Based on the DynamicPlayList plugin by (c) 2006 Erland Isaksson
+# Some code based on the DynamicPlayList plugin by (c) 2006 Erland Isaksson
 #
 # GPLv3 license
 # This program is free software: you can redistribute it and/or modify
@@ -145,6 +145,8 @@ sub initPlugin {
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'browsejive', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJiveHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'jiveplaylistparameters', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJivePlaylistParametersHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'actionsmenu'], [1, 1, 1, \&_cliJiveActionsMenuHandler]);
+	Slim::Control::Request::addDispatch(['dynamicplaylist', 'saveasstaticpl'], [1, 1, 1, \&_cliJiveSaveAsStaticPlaylist]);
+	Slim::Control::Request::addDispatch(['dynamicplaylist', 'jivesaveasfav'], [1, 1, 1, \&_cliJiveSaveFavWithParams]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'mixjive'], [1, 1, 1, \&cliMixJiveHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'preselect'], [1, 1, 1, \&_preselectionMenuJive]);
 	Slim::Control::Request::addDispatch(['dynamicplaylistmultipletoggle', '_paramtype', '_item', '_value'], [1, 0, 0, \&_toggleMultipleSelectionState]);
@@ -554,9 +556,9 @@ sub findAndAdd {
 		$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 
 		# Add the remaining items to the end
-		if (! defined $limit || $limit > 1 || $totalItems > 1) {
+		if (! defined $limit || $limit > 1 || scalar @{$totalItems} > 1) {
 			$log->debug('Adding '.(scalar @{$totalItems}).' tracks to end of playlist');
-			if($totalItems > 1) {
+			if(scalar @{$totalItems} > 1) {
 				$request = $client->execute(['playlist', 'addtracks', 'listRef', $totalItems]);
 				$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 			}
@@ -1229,10 +1231,11 @@ sub getTracksForPlaylist {
 				}
 			}
 		}
+		$log->debug('parameterHash = '.Dumper(\%parameterHash));
 		$log->debug("Calling: $plugin :: getNextDynamicPlayListTracks");
 		$result = eval {&{"${plugin}::getNextDynamicPlayListTracks"}($client, $playlist, $limit, $offset, \%parameterHash)};
 		if ($@) {
-			$log->debug("Error getting tracks from $plugin: $@");
+			$log->info("Error getting tracks from $plugin: $@");
 			return 'error';
 		} else {
 			$log->debug('Found '.scalar(@{$result}).(scalar(@{$result}) == 1 ? ' track ' : ' tracks ').'for playlist \''.$playlist->{'name'}.'\'');
@@ -3024,7 +3027,7 @@ sub _cliJiveActionsMenuHandler {
 	});
 	my $cnt = 0;
 
-	# Play
+	## Play
 	my $actions_play = {
 		'do' => {
 			'cmd' => ['dynamicplaylist', 'playlist', 'play'],
@@ -3044,7 +3047,7 @@ sub _cliJiveActionsMenuHandler {
 	$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_PLAY'));
 	$cnt++;
 
-	# Add
+	## Add
 	my $actions_add = {
 		'do' => {
 			'cmd' => ['dynamicplaylist', 'playlist', 'add'],
@@ -3065,7 +3068,7 @@ sub _cliJiveActionsMenuHandler {
 	$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS3_ADD'));
 	$cnt++;
 
-	# Add playlist / DSTM seed list and play - if DSTM = enabled and DSTM provider selected
+	## Add playlist / DSTM seed list and play - if DSTM = enabled and DSTM provider selected
 	my $dstmProvider = preferences('plugin.dontstopthemusic')->client($client)->get('provider') || '';
 	$log->debug('dstmProvider = '.$dstmProvider);
 
@@ -3090,9 +3093,135 @@ sub _cliJiveActionsMenuHandler {
 		$cnt++;
 	}
 
+	# space/empty line
+	$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
+	$request->addResultLoop('item_loop', $cnt, 'actions', 'none');
+	$request->addResultLoop('item_loop', $cnt, 'text', ' ');
+	$request->addResultLoop('item_loop', $cnt, 'type', 'text');
+	$cnt++;
+
+	## save dpl with currently selected params as fav
+	my %dplParams;
+	for my $k (keys %{$params}) {
+		$log->debug("Got: $k=".$params->{$k});
+		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
+			$dplParams{$k} = $params->{$k};
+		}
+	}
+	my $paramCount = scalar keys %dplParams;
+
+	# show if we have dplparams
+	if ($paramCount > 0) {
+		my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
+	my $playlistID = $params->{'playlistid'};
+		my $input = {
+			initialText => $playLists->{$playlistID}->{'name'},
+			len => 1,
+			allowedChars => $client->string('JIVE_ALLOWEDCHARS_WITHCAPS'),
+		};
+
+		my $paramAppendix = '';
+		for (my $i = 1; $i <= $paramCount; $i++) {
+			$paramAppendix .= 'p'.$i.'='.$params->{'dynamicplaylist_parameter_'.$i};
+			$paramAppendix .= '&' unless $i == $paramCount;
+		}
+
+		# Save dpl as fav
+		my $favUrl = 'dynamicplaylist://'.$playlistID.'?'.$paramAppendix;
+		my $actions_saveFavName = {
+			go => {
+				player => 0,
+				cmd => ['dynamicplaylist', 'jivesaveasfav'],
+				params => {
+					playlistName => '__TAGGEDINPUT__',
+					url => $favUrl,
+				},
+				itemsParams => 'params',
+			},
+		};
+		if ($materialCaller) {
+			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS3_SAVEASFAV_MATERIAL'));
+		} else {
+			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS3_SAVEASFAV'));
+		}
+		$request->addResultLoop('item_loop', $cnt, 'input', $input);
+		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_saveFavName);
+		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'home');
+		$cnt++;
+
+		# Save dpl as fav
+		my $favUrlAddOnly = 'dynamicplaylistaddonly://'.$playlistID.'?'.$paramAppendix;
+		my $actions_saveFavNameAddOnly = {
+			go => {
+				player => 0,
+				cmd => ['dynamicplaylist', 'jivesaveasfav'],
+				params => {
+					playlistName => '__TAGGEDINPUT__',
+					url => $favUrlAddOnly,
+					addOnly => 1,
+				},
+				itemsParams => 'params',
+			},
+		};
+		if ($materialCaller) {
+			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS3_SAVEASFAV_ADDONLY_MATERIAL'));
+		} else {
+			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS3_SAVEASFAV_ADDONLY'));
+		}
+		$request->addResultLoop('item_loop', $cnt, 'input', $input);
+		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_saveFavNameAddOnly);
+		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'home');
+		$cnt++;
+	}
+
 	$request->addResult('offset', 0);
 	$request->addResult('count', $cnt);
 	$log->debug('Exiting cliJiveActionsMenuHandler');
+	$request->setStatusDone();
+}
+
+sub _cliJiveSaveFavWithParams {
+	$log->debug('Entering cliJiveSaveFavWithParams');
+	my $request = shift;
+	my $client = $request->client();
+
+	if (!$request->isQuery([['dynamicplaylist'], ['jivesaveasfav']])) {
+		$log->warn('Incorrect command');
+		$request->setStatusBadDispatch();
+		$log->debug('Exiting cliJiveSaveFavWithParams');
+		return;
+	}
+	if (!defined $client) {
+		$log->warn('Client required');
+		$request->setStatusNeedsClient();
+		$log->debug('Exiting cliJiveSaveFavWithParams');
+		return;
+	}
+
+	my $params = $request->getParamsCopy();
+	my $title = $params->{'playlistName'};
+	my $url = $params->{'url'};
+
+	my $isFav = Slim::Utils::Favorites->new($client)->findUrl($url);
+	if ($isFav) {
+		$log->info('Not adding dynamic playlist to LMS favorites. URL is already favorite.')
+	} else {
+		$log->debug('Saving this url to LMS favorites: '.$url);
+		my $showTimePerChar = $prefs->get('showtimeperchar') / 1000;
+		if ($showTimePerChar > 0) {
+			my $statusmsg = $params->{'addOnly'} ? string('PLUGIN_DYNAMICPLAYLISTS3_SAVEDASFAV_ADDONLY') : string('PLUGIN_DYNAMICPLAYLISTS3_SAVEDASFAV');
+			if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+				$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS3'),
+									 $statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS3').$statusmsg));
+			}
+			if ($material_enabled) {
+				Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id, 'timeout:'.getMsgDisplayTime($statusmsg)]);
+			}
+		}
+		$client->execute(['favorites', 'add', 'url:'.$url, 'title:'.$title, 'type:audio']);
+	}
+
+	$log->debug('Exiting cliJiveSaveFavWithParams');
 	$request->setStatusDone();
 }
 
