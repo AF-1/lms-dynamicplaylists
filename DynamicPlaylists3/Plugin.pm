@@ -4087,12 +4087,13 @@ sub getLocalDynamicPlaylists {
 			$log->debug('Skipping scan for custom definitions - directory is undefined or does not exist');
 		} else {
 			$log->debug('Checking dir: '.$localDefDir);
-
-			my @dircontents = Slim::Utils::Misc::readDirectory($localDefDir, 'sql.xml', 'dorecursive');
-			my $fileExtension = "\\.sql\\.xml\$";
+			my $fileExtension = "\\.sql\$";
+			my $fileExtensionLegacy = "\\.sql\\.xml\$";
+			my @dircontents = Slim::Utils::Misc::readDirectory($localDefDir, "sql|sql\\.xml", 'dorecursive');
+			$log->debug("directory contents for dir '$localDefDir': ".Dumper(\@dircontents));
 
 			for my $item (@dircontents) {
-				next unless $item =~ /$fileExtension/;
+				next unless $item =~ /($fileExtension|$fileExtensionLegacy)$/;
 				next if -d $item;
 				my $content = eval {read_file($item)};
 				my $plDirName = dirname($item);
@@ -4164,8 +4165,9 @@ sub parseContent {
 				$name = $defaultPlaylist ? parsePlaylistName($line, 'defaultplaylist') : parsePlaylistName($line);
 				if (!$name) {
 					my $file = $item;
-					my $fileExtension = "\\.sql\\.xml\$";
-					$item =~ s{$fileExtension$}{};
+					my $fileExtension = "\\.sql\$";
+					my $fileExtensionLegacy = "\\.sql\\.xml\$";
+					$item =~ s/($fileExtension|$fileExtensionLegacy)$//;
 					$name = $item; # playlist name = playlistid if no name found in file
 				}
 			}
@@ -4255,8 +4257,9 @@ sub parseContent {
 		if ($name && $statement) {
 			#my $playlistid = escape($name,"^A-Za-z0-9\-_");
 			my $file = $item;
-			my $fileExtension = "\\.sql\\.xml\$";
-			$item =~ s{$fileExtension$}{};
+			my $fileExtension = "\\.sql\$";
+			my $fileExtensionLegacy = "\\.sql\\.xml\$";
+			$item =~ s/($fileExtension|$fileExtensionLegacy)$//;
 			my $playlistid = $item;
 			$name =~ s/\'\'/\'/g;
 

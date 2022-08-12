@@ -60,17 +60,17 @@ The [**strings.txt**](https://github.com/AF-1/lms-dynamicplaylists/blob/main/Dyn
 </p></details><br>
 
 <details><summary>»<b>How do I create my own <i>custom</i> dynamic playlist?</b>«</summary><br><p>
-Dynamic playlist definitions are basically plain text files with a "<b>.sql.xml</b>" file extension that contain your sqlite code/playlist definition. The dynamic playlist format is basically the same as the SQLPlayList format.<br><br>
-If you're not comfortable with creating your SQLite playlist definition <i>from scratch</i>, you could use the <i>SQLPlayList</i> plugin (to assist you in creating your first draft). You can still let <i>SQLPayList</i> make your custom dynamic playlist available to DPL and that's it. But as the <i>SQLPlayList</i> plugin predates DPL v<b>3</b> it can't know/add any of the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#playlist-parameters">new playlist parameters</a> and I can't guarantee that dynamic playlists created with SQLPlayList will (continue to) work with DPL v<b>3</b>. So as long as <i>SQLPayList</i> works you could try that first if you don't like meddling with SQLite. But no guarantees.<br><br>On the other hand, if you want to make sure that your custom dynamic playlists will continue to work - even if SQLPayList stops working or is no longer compatible - you should <b>export</b> your custom dynamic playlists from <i>SQLPlayList</i> <b>as "Customized SQL"</b> files (file extension: <b>.sql.xml</b>). You can edit them in any (plain text) editor and use new playlist parameters or create more complex sqlite definitions. This will give you a great deal of freedom in creating dynamic playlists tailored to your specific needs.<br><br>
+Dynamic playlist definitions are basically plain text files with a "<b>.sql</b>" file extension that contain your sqlite code/playlist definition. The dynamic playlist format is basically the same as the SQLPlayList format.<br><br>
+If you're not comfortable with creating your SQLite playlist definition <i>from scratch</i>, you could use the <i>SQLPlayList</i> plugin (to assist you in creating your first draft). You can still let <i>SQLPayList</i> make your custom dynamic playlist available to DPL and that's it. But as the <i>SQLPlayList</i> plugin predates DPL v<b>3</b> it can't know/add any of the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#playlist-parameters">new playlist parameters</a> and I can't guarantee that dynamic playlists created with SQLPlayList will (continue to) work with DPL v<b>3</b>. So as long as <i>SQLPayList</i> works you could try that first if you don't like meddling with SQLite. But no guarantees.<br><br>On the other hand, if you want to make sure that your custom dynamic playlists will continue to work - even if SQLPayList stops working or is no longer compatible - you should <b>export</b> your custom dynamic playlists from <i>SQLPlayList</i> <b>as "Customized SQL"</b> files (file extension: <b>.sql</b>). You can edit them in any (plain text) editor and use new playlist parameters or create more complex sqlite definitions. This will give you a great deal of freedom in creating dynamic playlists tailored to your specific needs.<br><br>
 In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format">wiki</b></a> for more information on the dynamic playlist <b>format</b>.</p></details><br>
 
 <details><summary>»<b>I have a custom sql definition (file). How do I add it to/ use it directly in DPLv3?</b>«</summary><br><p>
 
-- If you already have a sql.xml <b>file</b> you can skip the next 2 steps.<br>
+- If you already have a sql <b>file</b> you can skip the next 2 steps.<br>
 
 - Open a plain text editor of your choice and copy&paste (or edit) your sql code.<br>
 
-- Save it as "nameofyourchoice.sql.xml". The file extension <b>.sql.xml</b> is important.<br>
+- Save it as "nameofyourchoice.sql". The file extension <b>.sql</b> is important.<br>
 
 - Now put this file in DPL's <i>folder for custom dynamic playlists</i> called <b>DPL-custom-lists</b>. Unless you've changed its location in DPL's settings you'll find this folder in your <i>LMS playlist folder</i>.<br>
 
