@@ -163,6 +163,6 @@ I think SQLPlayList used to display the currently playing dynamic playlist at th
 If you're **reporting a bug** please **include relevant server log entries and the version number of LMS, Perl and your OS**. You'll find all of that on the  *LMS* > *Settings* > *Information* page.
 
 Please post bug reports *only* [**here**](https://forums.slimdevices.com/showthread.php?115073-Announce-Dynamic-Playlists-3-(mod)).
-<br><br><br><hr><br>
+<br><br><br><hr>
 <sup>1</sup> Based on Erland's <i>DynamicPlayList</i> plugin.<br>
 <sup>2</sup> You can't save your preselection permanently, it's really more of a <b>short</b>-term thing. If you have a fixed selection of artists or albums that you want to listen to frequently, you can "hard-code" them into <b>your own custom</b> dynamic playlist.
