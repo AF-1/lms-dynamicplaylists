@@ -1,8 +1,8 @@
 Dynamic Playlists 3
 ====
 
-This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>.<br>
-*Dynamic Playlists 3* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). Based on Erland's <i>DynamicPlayList</i> plugin.<br><br>
+This plugin[^1] lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>.<br>
+*Dynamic Playlists 3* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started. At some point you'll probably want to create a dynamic playlist that's tailored to your very specific needs because the <i>built-in</i> dynamic playlists can and will never cover more than only a small selection of all possible use cases.<br><br>
 Some preferences are not enabled by default. Please take a look at the preferences and their descriptions on the plugin's settings page.
 <br><br>
 
@@ -24,18 +24,36 @@ If you want to test a new patch that hasn't made it into a release version yet o
 
 
 ## Features:
-* Use **your own custom dynamic playlist files/definitions directly in DPL** without intermediary plugins - you don't have to install other plugins (like SQLPlayList or TrackStat) to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
+* Use **your own custom dynamic playlist files/definitions directly in DPL** without intermediary plugins - you don't have to install other plugins to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
 * Comes with 190+ ready-to-use dynamic playlists (stand-alone + for context menus).
 * New playlist parameters (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
 * **Multiple** selection of *genres*, *decades*, *years* and *static playlists*
 * **Pre**select multiple *artists* or *albums* from their context menu at your leisure. DPL remembers your **pre**selection so that you can easily use it later with dynamic playlists that use **preselection**.
 * Use LMS **virtual libraries**.
-* Save dynamic playlists with (user input) parameters to LMS **favourites** (see FAQ).
+* Save dynamic playlists with (user input) parameters to LMS **favourites** (see [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq)).
 * Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
 * New preference options and UI changes.
 * If you have installed the [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) plugin, you will see some additional dynamic playlists that use the data from this plugin.
 * …
 <br><br><br><br>
+
+
+## Context Menus
+While the Dynamic Playlists menu in the LMS home menu folder is easy to find, its **context menus** can easily be overlooked. You'll find the **Dynamic Playlists menus** in the *context menus* for **artists**, **albums**, **genres**, **years** (for years and decades) and **static playlists**. Some of them are presented below.
+<br><br>
+
+### Players with Jivlite UI (Touch, piCorePlayer, SqueezePlay, Radio)
+![Players with Jivlite UI (Touch, piCorePlayer, SqueezePlay, Radio)](screenshots/jivelite.gif)
+<hr><br>
+
+### LMS Web UI - Default Skin
+![LMS Web UI - Default Skin](screenshots/defaultskin.gif)
+<hr><br>
+
+### Material Web UI
+![Material Web UI](screenshots/material.gif)
+<br><br><br><br>
+
 
 ## Translation
 The [**strings.txt**](https://github.com/AF-1/lms-dynamicplaylists/blob/main/DynamicPlaylists3/strings.txt) file contains all localizable strings. Once you're done **testing** the plugin with your translated strings just create a pull request on GitHub.<br>
@@ -48,27 +66,18 @@ The [**strings.txt**](https://github.com/AF-1/lms-dynamicplaylists/blob/main/Dyn
 
 ## FAQ
 
-<details><summary>»<b>Is DPL v<i>3</i> compatible with my old plugins?</b>«</summary><br><p><i>Dynamic Playlist 3</i> removes ties to other (unsupported) plugins in a way that they shouldn't break <i>Dynamic Playlists 3</i> if those plugins ever stopped working properly. And <b>within these limits</b> DPL v<b>3</b> tries to maintain as much backwards compatibility as possible.<br><br>So older plugins <i>might</i> work with DPL v<b>3</b> but <b>I won't guarantee that they do or will continue to do so. And I won't spend time on making DPL v3 compatible with unsupported/older plugins</b> (this is what <b>"not supported"</b> <i>below</i> refers to). <i>Somebody else</i> would have to maintain, test and update those plugins to make/keep them fully compatible with newer versions of DPL v<b>3</b> and provide support for them.<br>
-
-- <b>CustomSkip</b>: DPL v<b>3</b> works with <a href="https://github.com/AF-1/lms-customskip"><b>CustomSkip 3</b></a>. If you use <i>SQLPlayList</i> to create dynamic playlists that include CustomSkip filter sets check if SQLPlayList still works with DPL3. But setting secondary Custom Skip filter sets will work without the <i>SQLPlayList</i> plugin if you set the correct playlist parameter in your dynamic playlist definition (as explained in the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters"><b>wiki</b></a>). But <b>please read the CustomSkip v3 <a href="https://github.com/AF-1/lms-customskip#faq">FAQ</a> first <i>before</i> installing CS3</b>.<br>
-
-- <b>SQLPlayList</b>: main features (creating dynamic playlists and making them available to DPL3) should work but not supported. Please remember: SQLPlayList (which predates DPL v3) doesn't know about the new playlist parameters and functions introduced with DPL v<b>3</b>. As long as it works you could use SQLPlayList to assist you in creating (a first draft of) your custom dynamic playlists. You <i>don't need SQLPayList anymore to make your dynamic playlists <b>available</b> to DPL</i> though. You can simply export your (custom) dynamic playlists from SQLPlayList and use them directly in DPL v3 (read FAQ below).<br>
-
-- <b>TrackStat</b> / <b>CustomScan</b>: could work, not tested, not supported.<br>
-
-- <b>MultiLibrary</b>: might work, not tested, not supported. DPL v3 no longer contains code for MultiLibrary. I recommend migrating from the <i>MultiLibrary</i> plugin to native LMS <b>virtual libraries</b> so you can use DPL v3 <i>playlist parameters</i> for virtual libraries (ID, name and user input selection). You can easily create new virtual libraries using saved <b>advanced search</b>es. Or, if you're familiar with SQLite, there's a [plugin](https://github.com/AF-1/lms-sqlitevirtuallibraries) that lets you use SQLite statements to create virtual libraries.
-</p></details><br>
-
 <details><summary>»<b>How do I create my own <i>custom</i> dynamic playlist?</b>«</summary><br><p>
 Dynamic playlist definitions are basically plain text files with a "<b>.sql</b>" file extension that contain your playlist definition, i.e. a couple of <b>parameters</b> (<i>general</i> parameters like the playlist name, group or category and <i>user input</i> parameters) and the <b>SQLite statement</b> itself to fetch tracks from the LMS database.<br><br>
-If you're not comfortable with creating your SQLite playlist definition <i>from scratch</i>, you could use the <i>SQLPlayList</i> plugin (to assist you in creating your first draft). You can still let <i>SQLPayList</i> make your custom dynamic playlist available to DPL and that's it. But as the <i>SQLPlayList</i> plugin predates DPL v<b>3</b> it can't know/add any of the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#playlist-parameters">new playlist parameters</a> and I can't guarantee that dynamic playlists created with SQLPlayList will (continue to) work with DPL v<b>3</b>. So as long as <i>SQLPayList</i> works you could try that first if you don't like meddling with SQLite. But no guarantees.<br><br>On the other hand, if you want to make sure that your custom dynamic playlists will continue to work - even if SQLPayList stops working or is no longer compatible - you should <b>export</b> your custom dynamic playlists from <i>SQLPlayList</i> <b>as "Customized SQL"</b> files (file extension: <b>.sql</b>). You can edit them in any (plain text) editor and use new playlist parameters or create more complex sqlite definitions. This will give you a great deal of freedom in creating dynamic playlists tailored to your specific needs.<br><br>
+If you still have custom dynamic playlists in the unsupported SQLPlayList plugin, you should export them <b>as "Customized SQL"</b> files (file extension: <b>.sql</b>) and use them directly in DPL v3. This way you make sure that your custom dynamic playlists will continue to work when SQLPayList stops working or is no longer compatible with DPL3.<br><br>
+First see if you can find a <i>built-in</i> dynamic playlist that suits your needs. You can edit dynamic playlists in any (plain text) editor, add new playlist parameters or create more complex sqlite definitions. This will give you a great deal of freedom in creating dynamic playlists tailored to your specific needs.<br>
+And if you need help with your custom dynamic playlist, there's a dedicated  <a href="https://forums.slimdevices.com/showthread.php?115501-Dynamic-Playlists-3-get-help-with-your-custom-playlists"><b>LMS forum thread</b></a>.<br>
 In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format">wiki</b></a> for more information on the dynamic playlist <b>format</b>.</p></details><br>
 
-<details><summary>»<b>I have a custom sql definition (file). How do I add it to/ use it directly in DPLv3?</b>«</summary><br><p>
+<details><summary>»<b>I have a custom playlist definition (file). How do I add it to/ use it directly in DPLv3?</b>«</summary><br><p>
 
-- If you already have a sql <b>file</b> you can skip the next 2 steps.<br>
+- If you already have a dynamic playlist definition <b>file</b> (file extension: <b>.sql</b>), you can skip the next 2 steps.<br>
 
-- Open a plain text editor of your choice and copy&paste (or edit) your sql code.<br>
+- Open a plain text editor of your choice and copy&paste (or edit) your playlist definition (parameters and SQLite statement).<br>
 
 - Save it as "nameofyourchoice.sql". The file extension <b>.sql</b> is important.<br>
 
@@ -79,7 +88,7 @@ In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplayl
 
 <details><summary>»<b>The <i>Home > Dynamic Playlists</i> menu doesn't show dynamic playlists for <i>context menus</i>. Why?</b>«</summary><br><p>
 By default the <b>Home > Dynamic Playlists</b> menu will only show dynamic playlists that <i>don't</i> include the <code>-- PlaylistMenuListType:contextmenu</code> parameter. Here you won't find any dynamic playlists that can be called from an item's context menu.<br>
-And <b>context menus</b> (= <i>More</i> menu in webUI or <i>click/touch-hold</i> on jivelite players) will <i>only show dynamic playlists for context menus</i>. So there may be some overlap but this separation greatly helps reduce clutter.</p></details><br>
+And <b>context menus</b> (= <i><b>M</b>ore</i> menu in the web UI or <i>click/touch-hold</i> on jivelite players) will <i>only show dynamic playlists for context menus</i>. So there may be some overlap but this separation greatly helps reduce clutter.</p></details><br>
 
 <details><summary>»<b>What's <i>preselection</i>? How does it work?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>There's more than one DPL context menu item.</b>«</summary><br><p>
 DPL has playlist parameters that allow you to select <b>multiple</b> genres, decades, years and static playlist. But even the smallest music libraries have a large number of <b>artists</b> and <b>albums</b> that would result in poorly browsable, far too long selection lists. The solution is to gather/select artists or albums <i>first</i> using the <b>preselection</b> context menu item and then start a dynamic playlist for preselected artists/albums.<br>
@@ -107,7 +116,7 @@ The <i>Not classified</i> group in the DPL (home) menu and on settings pages wil
 The collection of <b>built-in</b> dynamic playlists includes only a large but limited set of frequently used playlists that won't see regular additions or updates. It can also be used as a <i>starting point</i> for creating your <b>own custom</b> dynamic playlists whose very reason for existence is to help you create dynamic playlists tailored to your <i>specific</i> needs.</p></details><br>
 
 <details><summary>»<b>I don't want my dynamic playlist in the <i>Not classified</i> group. I want a custom group (name).</b>«</summary><br><p>
-The <i>Not classified</i> group is a <i>catch-all group</i> for all dynamic playlist that are <b>not</b> assigned to any playlist <i>group</i>. You can <b>create your own custom playlist groups</b> either by entering a group name in SQLPlayList or by setting the <code>-- PlaylistGroups:</code> parameter in your dynamic playlist definition (see <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters"><b>wiki</b></a>).</p></details><br>
+The <i>Not classified</i> group is a <i>catch-all group</i> for all dynamic playlist that are <b>not</b> assigned to any playlist <i>group</i>. You can <b>create your own custom playlist groups</b> by setting the <code>-- PlaylistGroups:</code> parameter in your dynamic playlist definition (see <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters"><b>wiki</b></a>).</p></details><br>
 
 <details><summary>»<b>Does DPL handle online tracks?</b>«</summary><br><p>
 <i>Dynamic Playlists 3</i> will process <b>online tracks</b> that have been <b>added to your LMS library as part of an album</b>. LMS does not import <b>single</b> online tracks or tracks of <i>online</i> <b>playlists</b> as <b>library</b> tracks and therefore they won't be processed by <i>Dynamic Playlists 3</i>.</p></details><br>
@@ -120,16 +129,27 @@ In general <i>dynamic playlists</i> will <b>always</b> be listed in this order: 
 Explained in the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/CLI-commands">wiki</a>.
 </p></details><br>
 
-<details><summary>»<b>How do Dynamic Playlists 3 and SQLPlayList work together?</b>«</summary><br><p>
-<i>Dynamic Playlists 3</i> serves you a continuous music mix. To determine what music it should fetch from the music library it needs search criteria defined in so-called <i>dynamic playlists</i>. It comes with a collection of frequently used (built-in) dynamic playlists to get you started.<br>At some point you'll probably want to create a dynamic playlist that's tailored to your very specific needs because the <i>built-in</i> dynamic playlists can and will never cover more than only a small selection of all possible use cases. If you don't want to or don't know how to create custom dynamic playlists from scratch (see other FAQ section for instructions) you can try to use the <i>SQLPlayList</i> plugin (as long as it works - different plugin, not supported by me). SQLPlayList assists you in <i>creating</i> those dynamic playlists without bothering with the details of SQLite code and makes them <i>available</i> to DPL.<br><i>Dynamic Playlists 3</i>, like its predecessor, will never have any of those features.<br><br>So even though <i>Dynamic Playlists 3</i> comes with a collection of built-in dynamic playlists <b>its job is not to help you <i>create</i> dynamic playlists but to <i>play</i> them</b>.
-</p></details><br>
-
-<details><summary>»<b>Does DPL replace SQLPlayList and/or CustomSkip?</b>«</summary><br><p>
-No. SQLPlayList and CustomSkip3 are <b>separate</b> plugins and they have a different focus/job to do. DPL will never have the same features as any of these plugins. You <i>can</i> use them but you <i>don't have to</i>.<br>Custom Skip <b>3</b> works with DPL <b>3</b> and SQLPlayList is reported to work (with some limitations and without any guarantees as to how long, see other FAQ).<br>If you're comfortable writing/editing SQLite using custom dynamic playlist definitions you can probably do without them.
-</p></details><br>
-
 <details><summary>»<b>I want to my dynamic playlist to use one of CustomSkip3's filter sets.</b>«</summary><br><p>
-You can either use the <i>SQLPlayList</i> plugin to do that (as long as it works - different plugin, not supported by me) or add the necessary <b>action/CLI playlist parameters</b> to the SQLite code of your custom dynamic playlist as described <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters">here</a>.
+Just add the necessary <b>action/CLI playlist parameters</b> to the SQLite code of your custom dynamic playlist as described <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters">here</a>.<br>
+If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create a CustomSkip3 filter set that will <i>only</i> be active if DPL3 plays a dynamic playlist. See CustomSkip3 <a href="https://github.com/AF-1/lms-customskip/wiki#i-want-customskip-to-filter-only-dynamic-playlist-tracks">Wiki</a>.
+</p></details><br>
+
+<details><summary>»<b>Is DPL v<i>3</i> compatible with my old plugins?</b>«</summary><br><p><i>Dynamic Playlist 3</i> removes ties to unsupported plugins in a way that they shouldn't break <i>Dynamic Playlists 3</i> if those plugins ever stopped working properly. And <b>within these limits</b> DPL v<b>3</b> tries to maintain as much backwards compatibility as possible.<br><br>So <b>older plugins <i>might</i> work with DPL v3 but I won't guarantee that they do or will continue to do so.</b> And I won't spend time on making DPL v3 compatible with unsupported plugins</b> (this is what <b>"not supported"</b> <i>below</i> means). <i>Somebody else</i> would have to maintain, test and update those plugins to make/keep them fully compatible with newer versions of DPL v<b>3</b> and provide support for them.<br>
+
+- <b>CustomSkip</b>: DPL v<b>3</b> works with <a href="https://github.com/AF-1/lms-customskip"><b>CustomSkip 3</b></a>. Please read the CustomSkip v3 <a href="https://github.com/AF-1/lms-customskip#faq">FAQ</a> first <b>before</b> installing CS3.<br>
+
+- <b>SQLPlayList</b>: main features (creating dynamic playlists and making them available to DPL3) should work but not supported. You can't use new playlist parameters and features introduced with DPL v<b>3</b> in dynamic playlists created with SQLPlayList because it predates DPL v3 and therefore doesn't know about them.<br>
+
+- <b>TrackStat</b> / <b>CustomScan</b>: could work, not tested, not supported.<br>
+
+- <b>MultiLibrary</b>: might work, not tested, not supported. I recommend migrating from the <i>MultiLibrary</i> plugin to native LMS <b>virtual libraries</b> so you can use DPL v3 <i>playlist parameters</i> for virtual libraries (ID, name and user input selection). You can easily create new virtual libraries using saved <b>advanced search</b>es. Or, if you're familiar with SQLite, there's the [<b>SQLite Virtual Libraries</b>](https://github.com/AF-1/lms-sqlitevirtuallibraries) plugin that lets you use SQLite statements to create virtual libraries.
+</p></details><br>
+
+<details><summary>»<b>Do I still need SQLPlayList to use Dynamic Playlists 3?</b>«</summary><br><p>
+No, you don't have to use SQLPayList to <b>create</b> dynamic playlists or make them <b>available</b> to DPL.<br>
+For most dynamic playlists in SQLPlayList you can probably find a similar built-in dynamic playlist in DPL3. Or, with little effort, you can create a <i>custom</i> dynamic playlist using a built-in dynamic playlist as a template. You can export your old dynamic playlists from SQLPlayList and use them directly in DPL v3 (see FAQ about <i>creating custom dynamic playlists</i>).<br>
+
+If you still want to use SQLPlayList to create custom dynamic playlists, please note this: while SQLPlayList can still assist you in <i>creating</i> simple dynamic playlists, it doesn't support any of the new parameters (multiple genres, multiple decades...) and features (artist/album preselection...) introduced with DPL3.
 </p></details><br>
 
 <details><summary>»<b><i>SQLPlayList</i> 2.6.272 shows an error at the bottom of the page. Does this mean that <i>SQLPlayList</i> is no longer compatible with <i>Dynamic Playlists 3</i>?</b>«</summary><br><p>
@@ -145,3 +165,5 @@ If you're **reporting a bug** please **include relevant server log entries and t
 Please post bug reports *only* [**here**](https://forums.slimdevices.com/showthread.php?115073-Announce-Dynamic-Playlists-3-(mod)).
 <br><br><br>
 <sup>1</sup> You can't save your preselection permanently, it's really more of a <b>short</b>-term thing. If you have a fixed selection of artists or albums that you want to listen to frequently, you can "hard-code" them into <b>your own custom</b> dynamic playlist.
+<br>
+[^2]: Based on Erland's <i>DynamicPlayList</i> plugin.
