@@ -1,7 +1,7 @@
 Dynamic Playlists 3
 ====
 
-This plugin[^1] lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>.<br>
+This plugin <sup>1</sup> lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>.<br>
 *Dynamic Playlists 3* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started. At some point you'll probably want to create a dynamic playlist that's tailored to your very specific needs because the <i>built-in</i> dynamic playlists can and will never cover more than only a small selection of all possible use cases.<br><br>
 Some preferences are not enabled by default. Please take a look at the preferences and their descriptions on the plugin's settings page.
 <br><br>
@@ -163,7 +163,6 @@ I think SQLPlayList used to display the currently playing dynamic playlist at th
 If you're **reporting a bug** please **include relevant server log entries and the version number of LMS, Perl and your OS**. You'll find all of that on the  *LMS* > *Settings* > *Information* page.
 
 Please post bug reports *only* [**here**](https://forums.slimdevices.com/showthread.php?115073-Announce-Dynamic-Playlists-3-(mod)).
-<br><br><br>
+<br><br><br><hr><br>
+<sup>1</sup> Based on Erland's <i>DynamicPlayList</i> plugin.<br>
 <sup>2</sup> You can't save your preselection permanently, it's really more of a <b>short</b>-term thing. If you have a fixed selection of artists or albums that you want to listen to frequently, you can "hard-code" them into <b>your own custom</b> dynamic playlist.
-<br>
-[^1]: Based on Erland's <i>DynamicPlayList</i> plugin.
