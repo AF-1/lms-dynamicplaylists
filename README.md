@@ -152,7 +152,7 @@ Since DPL3 uses a different plugin name, the reference to the old DPL version 2 
 
 ## Bug reports
 
-If you're **reporting a bug** please **include relevant server log entries and the version number of LMS, Perl and your OS**. You'll find all of that on the  *LMS* > *Settings* > *Information* page.
+If you want to **report a bug**, please **provide relevant server log entries and the version numbers of this plugin, LMS, Perl, and your OS**. You'll find them on the *LMS* > *Settings* > *Plugins* and the *LMS* > *Settings* > *Information* pages.
 
 Please post bug reports *only* [**here**](https://forums.slimdevices.com/showthread.php?115073-Announce-Dynamic-Playlists-3-(mod)).
 <br><br><br><hr>
