@@ -7,7 +7,7 @@ PLUGIN_DYNAMICPLAYLISTS3
 	FR	Listes de lecture dynamiques (DPL)
 
 PLUGIN_DYNAMICPLAYLISTS3_DESC
-	EN	This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>. Comes with a number of ready-to-use dynamic playlists. In addition you can now <b>use your own custom dynamic playlist</b> definitions <b>directly</b> in DPL without intermediary plugins. More information on the github page.
+	EN	This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>. Comes with a number of ready-to-use dynamic playlists. In addition you can now <b>use your own custom dynamic playlist</b> definitions <b>directly</b> in DPL without intermediary plugins. More information on the GitHub page.
 	FR	Ce plugin permet de jouer des mix continus de musique basés sur des critères de sélection définis dans les <i>listes de lecture dynamiques</i>. Vient avec un ensemble de listes de lecture dynamiques prêtes à l'emploi. En addition vous pouvez maintenant <b>utiliser vos propres listes de lecture dynamiques directement</b> dans DPL sans plugin intermédiaire. Plus d'information sur la page GitHub.
 
 PLUGIN_DYNAMICPLAYLISTS3_SETTINGS
@@ -155,7 +155,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_REMEMBERACTIVEPLAYLIST
 	FR	Se souvenir de la liste de lecture dynamique active
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_REMEMBERACTIVEPLAYLIST_DESC
-	EN	Remember a client's active dynamic playlist after a LMS restart
+	EN	Remember a client's active dynamic playlist after an LMS restart
 	FR	Se souvenir de la liste de lecture dynamique active d'un client après le redémarrage de LMS
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SHOWACTIVEPLAYLISTINMAINMENU
