@@ -155,7 +155,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_REMEMBERACTIVEPLAYLIST
 	FR	Se souvenir de la liste de lecture dynamique active
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_REMEMBERACTIVEPLAYLIST_DESC
-	EN	Remember a client's active dynamic playlist after an LMS restart
+	EN	Remember a client's active dynamic playlist after a LMS restart
 	FR	Se souvenir de la liste de lecture dynamique active d'un client après le redémarrage de LMS
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SHOWACTIVEPLAYLISTINMAINMENU

@@ -3095,7 +3095,6 @@ sub _cliJiveActionsMenuHandler {
 
 	# space/empty line
 	$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-	$request->addResultLoop('item_loop', $cnt, 'actions', 'none');
 	$request->addResultLoop('item_loop', $cnt, 'text', ' ');
 	$request->addResultLoop('item_loop', $cnt, 'type', 'text');
 	$cnt++;
