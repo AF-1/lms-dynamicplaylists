@@ -1256,6 +1256,7 @@ sub _toggleMultipleSelectionState {
 	my $item = $request->getParam('_item'); # item: genre, decade, year or static playlist
 	my $value = $request->getParam('_value');
 	my @selected = ();
+	$log->debug('Received input: paramType = '.$paramType.' -- item = '.$item.' -- value = '.$value);
 
 	if ($paramType eq 'multiplegenres') {
 		my $genres = getGenres($client);
@@ -1605,6 +1606,7 @@ sub getSortedStaticPlaylists {
 sub getMultipleSelectionString {
 	my ($client, $paramType, $includeYears) = @_;
 	my $multipleSelectionString;
+	$log->debug('paramType = '.$paramType);
 
 	if ($paramType eq 'multiplegenres') {
 		my $selectedGenres = $client->pluginData('selected_genres') || [];
@@ -2670,9 +2672,10 @@ sub cliJivePlaylistParametersHandler {
 		'playlistid' => $playlistId,
 	);
 	for my $k (keys %{$params}) {
-		$log->debug("Got: $k=".$params->{$k});
+		$log->debug("Got: $k = ".$params->{$k});
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			$baseParams{$k} = $params->{$k};
+			$log->debug("Got: $k = ".$params->{$k});
 		}
 	}
 
@@ -2750,7 +2753,7 @@ sub cliJivePlaylistParametersHandler {
 		my $actions_selectall = {
 			'go' => {
 				'player' => 0,
-				'cmd' => [ 'dynamicplaylistmultipleall', $parameter->{'type'}, 1 ],
+				'cmd' => ['dynamicplaylistmultipleall', $parameter->{'type'}, 1],
 			},
 		};
 		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
@@ -2763,7 +2766,7 @@ sub cliJivePlaylistParametersHandler {
 		my $actions_selectnone = {
 			'go' => {
 				'player' => 0,
-				'cmd' => [ 'dynamicplaylistmultipleall', $parameter->{'type'}, 0 ],
+				'cmd' => ['dynamicplaylistmultipleall', $parameter->{'type'}, 0],
 			},
 		};
 		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
@@ -2779,14 +2782,15 @@ sub cliJivePlaylistParametersHandler {
 		my $offsetCount = 3;
 
 		# Material does not display checkboxes in MyMusic. Use unicode character name prefix instead.
-		my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
-		my $checkboxSelected = HTML::Entities::decode_entities('&#9724;&#xa0;&#xa0;');
-		my $checkboxEmpty = HTML::Entities::decode_entities('&#9723;&#xa0;&#xa0;');
+		my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->source) && $request->source eq 'JSONRPC');
+		my $iPengCaller = 1 if (defined($request->source) && $request->source =~ /iPeng/);
+		my $checkboxSelected = $iPengCaller ? HTML::Entities::decode_entities('&#9632;&#xa0;&#xa0;') : HTML::Entities::decode_entities('&#9724;&#xa0;&#xa0;');
+		my $checkboxEmpty = $iPengCaller ? HTML::Entities::decode_entities('&#9633;&#xa0;&#xa0;') : HTML::Entities::decode_entities('&#9723;&#xa0;&#xa0;');
 
 		foreach my $item (@listRef) {
 			if ($cnt >= $start && $offsetCount < $itemsPerResponse) {
 				my $actions;
-				if ($materialCaller) {
+				if ($materialCaller || $iPengCaller) {
 					$actions = {
 								go => {
 									player => 0,
@@ -2818,7 +2822,7 @@ sub cliJivePlaylistParametersHandler {
 		}
 
 		# Material always displays last selection as window title. Add correct window title as textarea
-		if ($materialCaller) {
+		if ($materialCaller || $iPengCaller) {
 			$request->addResult('window', {textarea => $parameter->{'name'}});
 		} else {
 			$request->addResult('window', {text => $parameter->{'name'}});

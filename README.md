@@ -5,6 +5,8 @@ This plugin<sup>1</sup> lets you play continuous music mixes based on selection 
 *Dynamic Playlists 3* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started. At some point you'll probably want to create a dynamic playlist that's tailored to your very specific needs because the <i>built-in</i> dynamic playlists cannot cover all possible use cases.<br><br>
 Some preferences are not enabled by default. Please take a look at the preferences and their descriptions on the plugin's settings page.
 <br><br>
+[⬅️ **Back to the list of all plugins**](https://github.com/AF-1/)
+<br><br>
 
 ## Requirements
 
