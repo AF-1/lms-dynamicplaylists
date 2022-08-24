@@ -860,9 +860,9 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_VLIB_RANDOM
 	EN	Songs - random from selected virtual library
 	FR	Morceaux - aléatoire sur la bibliothèque virtuelle sélectionnée
 
-PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED
-	EN	Songs - most played
-	FR	Morceaux - les plus jouées
+PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED_MINRATING
+	EN	Songs - most played (min. rating)
+	FR	Morceaux - les plus jouées (note min.)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_LEASTPLAYED
 	EN	Songs - least played
@@ -1719,9 +1719,9 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_PLAYLISTS_PLAYEDLONGAGO_APC
 	FR	Listes de lecture - jouées il y a longtemps (APC)
 
 
-PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED_APC
-	EN	Songs - most played (APC)
-	FR	Morceaux - les plus jouées (APC)
+PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED_MINRATING_APC
+	EN	Songs - most played (min. rating) (APC)
+	FR	Morceaux - les plus jouées (note min.) (APC)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_LEASTPLAYED_APC
 	EN	Songs - least played (APC)
