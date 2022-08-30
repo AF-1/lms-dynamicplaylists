@@ -23,6 +23,8 @@
 package Plugins::DynamicPlaylists3::PlaylistProtocolHandler;
 
 use strict;
+use warnings;
+use utf8;
 use base qw(FileHandle);
 use Data::Dumper;
 use Slim::Utils::Log;

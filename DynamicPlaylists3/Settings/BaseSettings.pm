@@ -23,6 +23,8 @@
 package Plugins::DynamicPlaylists3::Settings::BaseSettings;
 
 use strict;
+use warnings;
+use utf8;
 use base qw(Slim::Web::Settings);
 
 use File::Basename;

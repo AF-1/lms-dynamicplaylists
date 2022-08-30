@@ -23,6 +23,8 @@
 package Plugins::DynamicPlaylists3::Settings::PlaylistSettings;
 
 use strict;
+use warnings;
+use utf8;
 use base qw(Plugins::DynamicPlaylists3::Settings::BaseSettings);
 
 use File::Basename;

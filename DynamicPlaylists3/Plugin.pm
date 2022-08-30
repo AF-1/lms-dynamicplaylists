@@ -23,7 +23,8 @@
 package Plugins::DynamicPlaylists3::Plugin;
 
 use strict;
-
+use warnings;
+use utf8;
 use base qw(Slim::Plugin::Base);
 
 use Slim::Buttons::Home;
@@ -195,8 +196,6 @@ sub initPrefs {
 		flatlist => 0,
 		structured_savedplaylists => 'on',
 		favouritesname => string('PLUGIN_DYNAMICPLAYLISTS3_FAVOURITES'),
-		max_number_of_unplayed_tracks => 15,
-		max_number_of_unplayed_tracks => 15,
 		pluginplaylistfolder => sub {
 			my @pluginDirs = Slim::Utils::OSDetect::dirsFor('Plugins');
 			for my $plugindir (@pluginDirs) {
@@ -514,9 +513,6 @@ sub findAndAdd {
 
 		$noOfFoundItems = $noOfFoundItems + (scalar @{$items});
 		push (@{$totalItems}, @{$items});
-
-		my $seen ||= {};
-		$totalItems = [grep {!$seen->{$_}++} @{$totalItems}];
 		$log->debug('Total items found so far = '.scalar(@{$totalItems}));
 
 		if ($limit == 2000) {
@@ -563,27 +559,34 @@ sub findAndAdd {
 			}
 		}
 	}
-	$log->info('getting '.$noOfTotalItems.($noOfTotalItems == 1 ? ' track' : ' tracks').' for dynamic playlist "'.$playlist->{'name'}.'" took '.(time()-$started).' seconds.');
+	$log->info('Getting '.$noOfTotalItems.($noOfTotalItems == 1 ? ' track' : ' tracks').' for dynamic playlist "'.$playlist->{'name'}.'" took '.(time()-$started).' seconds.');
 	return $noOfTotalItems;
 }
 
 sub filterTracks {
 	my ($client, $items, $totalItems) = @_;
+	my $nonDupeNewItems;
 
-	# dedupe: first new items, then against total items
+	# filter for dupes in new items
 	if ($items && ref $items && scalar @{$items}) {
 		my $seen ||= {};
-		$items = [grep {!$seen->{$_}++} @{$items}];
+		$items = [grep {!$seen->{$_->url}++} @{$items}];
 	}
+	$nonDupeNewItems = $items;
+
+	# dedupe new items against total items
 	if (defined $totalItems && scalar(@{$totalItems}) > 0) {
 		my %seen;
-		@seen {@{$items}} = ();
-		delete @seen{@{$totalItems}};
-		my $items = [keys %seen];
+		@seen{map $_->url, @$totalItems} = ();
+		$nonDupeNewItems = [
+			grep {!exists $seen{$_->url}} @$items
+		];
 	}
 
-	# add found tracks to DPL client history
-	for my $item (@{$items}) {
+	$log->debug('Found these new non-dupe tracks: '.Dumper(\@{$nonDupeNewItems}));
+
+	# add new non-dupe tracks to DPL client history
+	for my $item (@{$nonDupeNewItems}) {
 		my $skipped = 0;
 		my $addedTime = time();
 		addToPlayListHistory($client, $item, $skipped, $addedTime);
@@ -592,7 +595,8 @@ sub filterTracks {
 			addToPlayListHistory($player, $item, $skipped, $addedTime);
 		}
 	}
-	return \@{$items};
+
+	return \@{$nonDupeNewItems};
 }
 
 sub playRandom {
@@ -1132,7 +1136,7 @@ sub addParameterValues {
 				my $id;
 				my $name;
 				my $sortlink = undef;
-				if ($paramType eq 'customdecade' || $paramType eq 'year') {
+				if ($paramType eq 'customdecade' || $paramType eq 'year' || $paramType eq 'customyear') {
 					eval {
 						$sth->bind_columns(undef, \$id, \$name);
 					};
@@ -3276,7 +3280,7 @@ sub _preselectionMenuWeb {
 	} elsif ($action == 3) {
 		$client->pluginData($listName, {});
 	}
-	my $preselectionList = $client->pluginData($listName) || {};
+	$preselectionList = $client->pluginData($listName) || {};
 	$log->debug("pluginData '$listName' (web) = ".Dumper($preselectionList));
 	$params->{'preselitemcount'} = keys %{$preselectionList};
 	$params->{'pluginDynamicPlaylists3preselectionList'} = $preselectionList if (keys %{$preselectionList} > 0);
@@ -3304,7 +3308,7 @@ sub _preselectionMenuJive {
 	}
 
 	my $params = $request->getParamsCopy();
-	my $iPengCaller = 1 if $params->{'userInterfaceIdiom'} eq 'iPeng';
+	my $iPengCaller = 1 if $params->{'userInterfaceIdiom'} && $params->{'userInterfaceIdiom'} eq 'iPeng';
 	my $objectType = $params->{'objecttype'};
 	my $objectID = $params->{'objectid'};
 	my $objectName = $params->{'objectname'};
@@ -3330,7 +3334,7 @@ sub _preselectionMenuJive {
 		$client->pluginData($listName, $preselectionList);
 	}
 
-	my $preselectionList = $client->pluginData($listName) || {};
+	$preselectionList = $client->pluginData($listName) || {};
 
 	$log->debug("pluginData $listName (jive) = ".Dumper($preselectionList));
 	my $cnt = 0;
@@ -3929,8 +3933,6 @@ sub getInternalParameters {
 	my $playlistVLids = $dynamicplaylist->{'playlistvirtuallibraryids'};
 	$log->debug('playlistVLids = '.Dumper($playlistVLnames));
 
-	my $dbh = getCurrentDBH();
-
 	my $predefinedParameters = ();
 	my %player = (
 		'id' => 'Player',
@@ -3940,7 +3942,7 @@ sub getInternalParameters {
 		'id' => 'Offset',
 		'value' => $offset
 	);
-	if (!defined($limit) || $playlistLimitOption eq 'unlimited') {$limit = -1};
+	if (!defined($limit) || ($playlistLimitOption && $playlistLimitOption eq 'unlimited')) {$limit = -1};
 	my %limitParameter = (
 		'id' => 'Limit',
 		'value' => $limit
@@ -4399,13 +4401,12 @@ sub parseAction {
 		my $actionType = $3;
 		my $actionDefinition = $4;
 
-		$actionType =~ s/^\s+//;
-		$actionType =~ s/\s+$//;
-
-		$actionDefinition =~ s/^\s+//;
-		$actionDefinition =~ s/\s+$//;
-
 		if ($actionId && $actionType && $actionDefinition) {
+			$actionType =~ s/^\s+//;
+			$actionType =~ s/\s+$//;
+			$actionDefinition =~ s/^\s+//;
+			$actionDefinition =~ s/\s+$//;
+
 			my %action = (
 				'id' => $actionId,
 				'execute' => $executeTime,
@@ -4415,7 +4416,7 @@ sub parseAction {
 			return \%action;
 		} else {
 			$log->warn("No action defined or error in action: $line");
-			$log->warn("Action values: Id=$actionId, Type=$actionType, Definition=$actionDefinition");
+			$log->warn('Action values: ID = '.Dumper($actionId).' -- Type = '.Dumper($actionType).' -- Definition = '.Dumper($actionDefinition));
 			return undef;
 		}
 	}
@@ -4427,14 +4428,14 @@ sub parseMenuListType {
 	if ($line =~ /^\s*--\s*PlaylistMenuListType\s*[:=]\s*/) {
 		$line =~ m/^\s*--\s*PlaylistMenuListType\s*[:=]\s*([^:]+)\s*(.*)$/;
 		my $MenuListType = $1;
-		$MenuListType =~ s/\s+$//;
-		$MenuListType =~ s/^\s+//;
 
 		if ($MenuListType) {
+			$MenuListType =~ s/\s+$//;
+			$MenuListType =~ s/^\s+//;
 			return $MenuListType;
 		} else {
 			$log->debug("No value or error in MenuListType: $line");
-			$log->debug("Option values: MenuListType = $MenuListType");
+			$log->debug('Option values: MenuListType = '.Dumper($MenuListType));
 			return undef;
 		}
 	}
@@ -4446,14 +4447,14 @@ sub parseCategory {
 	if ($line =~ /^\s*--\s*PlaylistCategory\s*[:=]\s*/) {
 		$line =~ m/^\s*--\s*PlaylistCategory\s*[:=]\s*([^:]+)\s*(.*)$/;
 		my $category = $1;
-		$category =~ s/\s+$//;
-		$category =~ s/^\s+//;
 
 		if ($category) {
+			$category =~ s/\s+$//;
+			$category =~ s/^\s+//;
 			return $category;
 		} else {
 			$log->debug("No value or error in category: $line");
-			$log->debug("Option values: category = $category");
+			$log->debug('Option values: category = '.Dumper($category));
 			return undef;
 		}
 	}
@@ -4465,14 +4466,14 @@ sub parseAPCdupe {
 	if ($line =~ /^\s*--\s*PlaylistAPCdupe\s*[:=]\s*/) {
 		$line =~ m/^\s*--\s*PlaylistAPCdupe\s*[:=]\s*([^:]+)\s*(.*)$/;
 		my $APCdupe = $1;
-		$APCdupe =~ s/\s+$//;
-		$APCdupe =~ s/^\s+//;
 
 		if ($APCdupe) {
+			$APCdupe =~ s/\s+$//;
+			$APCdupe =~ s/^\s+//;
 			return $APCdupe;
 		} else {
 			$log->debug("No value or error in APCdupe: $line");
-			$log->debug("Option values: APCdupe = $APCdupe");
+			$log->debug('Option values: APCdupe = '.Dumper($APCdupe));
 			return undef;
 		}
 	}
@@ -4484,14 +4485,14 @@ sub parseTrackOrder {
 	if ($line =~ /^\s*--\s*PlaylistTrackOrder\s*[:=]\s*/) {
 		$line =~ m/^\s*--\s*PlaylistTrackOrder\s*[:=]\s*([^:]+)\s*(.*)$/;
 		my $trackOrder = $1;
-		$trackOrder =~ s/\s+$//;
-		$trackOrder =~ s/^\s+//;
 
 		if ($trackOrder) {
+			$trackOrder =~ s/\s+$//;
+			$trackOrder =~ s/^\s+//;
 			return $trackOrder;
 		} else {
 			$log->debug("No value or error in trackOrder: $line");
-			$log->debug("Option values: trackOrder = $trackOrder");
+			$log->debug('Option values: trackOrder = '.Dumper($trackOrder));
 			return undef;
 		}
 	}
@@ -4503,14 +4504,14 @@ sub parseLimitOption {
 	if ($line =~ /^\s*--\s*PlaylistLimitOption\s*[:=]\s*/) {
 		$line =~ m/^\s*--\s*PlaylistLimitOption\s*[:=]\s*([^:]+)\s*(.*)$/;
 		my $limitOption = $1;
-		$limitOption =~ s/\s+$//;
-		$limitOption =~ s/^\s+//;
 
 		if ($limitOption) {
+			$limitOption =~ s/\s+$//;
+			$limitOption =~ s/^\s+//;
 			return $limitOption;
 		} else {
 			$log->debug("No value or error in limitOption: $line");
-			$log->debug("Option values: limitOption = $limitOption");
+			$log->debug('Option values: limitOption = '.Dumper($limitOption));
 			return undef;
 		}
 	}
@@ -4524,13 +4525,12 @@ sub parseVirtualLibraryName {
 		my $VLnumber = $1;
 		my $VLname = $2;
 
-		$VLnumber =~ s/^\s+//;
-		$VLnumber =~ s/\s+$//;
-
-		$VLname =~ s/^\s+//;
-		$VLname =~ s/\s+$//;
-
 		if ($VLnumber && $VLname) {
+			$VLnumber =~ s/^\s+//;
+			$VLnumber =~ s/\s+$//;
+			$VLname =~ s/^\s+//;
+			$VLname =~ s/\s+$//;
+
 			my %VLnameItem = (
 				'number' => $VLnumber,
 				'name' => $VLname,
@@ -4538,7 +4538,7 @@ sub parseVirtualLibraryName {
 			return \%VLnameItem;
 		} else {
 			$log->warn("Error in parameter: $line");
-			$log->warn("Parameter values: number = $VLnumber, name = $VLname");
+			$log->warn('Parameter values: VL number = '.Dumper($VLnumber).' -- VL name = '.Dumper($VLname));
 			return undef;
 		}
 	}
@@ -4552,13 +4552,12 @@ sub parseVirtualLibraryID {
 		my $VLnumber = $1;
 		my $VLid = $2;
 
-		$VLnumber =~ s/^\s+//;
-		$VLnumber =~ s/\s+$//;
-
-		$VLid =~ s/^\s+//;
-		$VLid =~ s/\s+$//;
-
 		if ($VLnumber && $VLid) {
+			$VLnumber =~ s/^\s+//;
+			$VLnumber =~ s/\s+$//;
+			$VLid =~ s/^\s+//;
+			$VLid =~ s/\s+$//;
+
 			my %VLidItem = (
 				'number' => $VLnumber,
 				'id' => $VLid,
@@ -4566,7 +4565,7 @@ sub parseVirtualLibraryID {
 			return \%VLidItem;
 		} else {
 			$log->warn("Error in parameter: $line");
-			$log->warn("Parameter values: number = $VLnumber, id = $VLid");
+			$log->warn('Parameter values: VL number = '.Dumper($VLnumber).' -- VLid = '.Dumper($VLid));
 			return undef;
 		}
 	}
@@ -5147,7 +5146,7 @@ sub setModeChooseParameters {
 	addParameterValues($client, \@listRef, $parameter, undef, $playlist);
 	my $sorted = '0';
 	if (scalar(@listRef) > 0) {
-		my $firstItem = @listRef[0];
+		my $firstItem = $listRef[0];
 		if (defined($firstItem->{'sortlink'})) {
 			$sorted = 'L';
 		}
