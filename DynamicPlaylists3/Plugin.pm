@@ -458,8 +458,7 @@ sub initPlayListTypes {
 }
 
 sub getPlayList {
-	my $client = shift;
-	my $type = shift;
+	my ($client, $type) = @_;
 	return undef unless $type;
 
 	$log->debug('Get playlist: '.$type);
@@ -474,7 +473,7 @@ sub getPlayList {
 # Find tracks matching parameters and add them to the playlist
 sub findAndAdd {
 	my ($client, $type, $offset, $limit, $addOnly, $continue) = @_;
-	$log->debug("Starting random selection of $limit items for type: $type");
+	$log->debug("Starting random selection of max. $limit items for type: $type");
 	my $started = time();
 
 	Slim::Utils::Timers::killTimers($client, \&findAndAdd);
@@ -508,17 +507,17 @@ sub findAndAdd {
 			last;
 		}
 		next if (!defined $items || scalar(@{$items}) == 0);
-		$log->debug("iteration $i returned ".(scalar @{$items}).' unfiltered '.((scalar @{$items}) == 1 ? 'item' : 'items'));
+		$log->debug("Iteration $i returned ".(scalar @{$items}).' unfiltered '.((scalar @{$items}) == 1 ? 'item' : 'items'));
 
 		$items = filterTracks($masterClient, $items, $totalItems);
-		$log->debug("iteration $i returned ".(scalar @{$items}).((scalar @{$items}) == 1 ? ' item' : ' items').' after filtering');
+		$log->debug("Iteration $i returned ".(scalar @{$items}).((scalar @{$items}) == 1 ? ' item' : ' items').' after filtering');
 
 		$noOfFoundItems = $noOfFoundItems + (scalar @{$items});
 		push (@{$totalItems}, @{$items});
 
 		my $seen ||= {};
 		$totalItems = [grep {!$seen->{$_}++} @{$totalItems}];
-		$log->debug('total items found so far = '.scalar(@{$totalItems}));
+		$log->debug('Total items found so far = '.scalar(@{$totalItems}));
 
 		if ($limit == 2000) {
 			if (scalar(@{$totalItems}) > $minUnplayedTracks) {
@@ -535,7 +534,7 @@ sub findAndAdd {
 		}
 	}
 	if (!defined $totalItems || scalar(@{$totalItems}) == 0) {
-		$log->info('found no tracks matching your search parameter or playlist definition for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
+		$log->info('Found no tracks matching your search parameter or playlist definition for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
 		return 0;
 	}
 	if (scalar(@{$totalItems}) > $limit) {
@@ -556,9 +555,9 @@ sub findAndAdd {
 		$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 
 		# Add the remaining items to the end
-		if (! defined $limit || $limit > 1 || scalar @{$totalItems} > 1) {
-			$log->debug('Adding '.(scalar @{$totalItems}).' tracks to end of playlist');
-			if(scalar @{$totalItems} > 1) {
+		if (!defined $limit || $limit > 1 || scalar @{$totalItems} >= 1) {
+			$log->debug('Adding '.(scalar @{$totalItems}).' tracks to the end of the playlist.');
+			if(scalar @{$totalItems} >= 1) {
 				$request = $client->execute(['playlist', 'addtracks', 'listRef', $totalItems]);
 				$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 			}
@@ -569,9 +568,7 @@ sub findAndAdd {
 }
 
 sub filterTracks {
-	my $client = shift;
-	my $items = shift;
-	my $totalItems = shift;
+	my ($client, $items, $totalItems) = @_;
 
 	# dedupe: first new items, then against total items
 	if ($items && ref $items && scalar @{$items}) {
@@ -878,17 +875,14 @@ sub playRandom {
 }
 
 sub stateOffset {
-	my $client = shift;
-	my $offset = shift;
+	my ($client, $offset) = @_;
 
 	$mixInfo{$client}->{'offset'} = $offset;
 	$prefs->client($client)->set('offset', $offset);
 }
 
 sub stateNew {
-	my $client = shift;
-	my $type = shift;
-	my $playlist = shift;
+	my ($client, $type, $playlist) = @_;
 
 	Slim::Utils::Timers::killTimers($client, \&findAndAdd);
 	$mixInfo{$client}->{'type'} = $type;
@@ -908,10 +902,7 @@ sub stateNew {
 }
 
 sub stateContinue {
-	my $client = shift;
-	my $type = shift;
-	my $offset = shift;
-	my $parameters = shift;
+	my ($client, $type, $offset, $parameters) = @_;
 
 	$mixInfo{$client}->{'type'} = $type;
 	$prefs->client($client)->set('playlist', $type);
@@ -966,7 +957,6 @@ sub handlePlayOrAdd {
 
 sub getCurrentPlayList {
 	my $client = shift;
-
 	my $masterClient = masterOrSelf($client);
 
 	if (defined($client) && $mixInfo{$masterClient}) {
@@ -1018,10 +1008,7 @@ sub addAlarmPlaylists {
 }
 
 sub addParameterValues {
-	my $client = shift;
-	my $listRef = shift;
-	my $parameter = shift;
-	my $parameterValues = shift;
+	my ($client, $listRef, $parameter, $parameterValues, $playlist) = @_;
 
 	$log->debug('Getting values for '.$parameter->{'name'}.' of type '.$parameter->{'type'});
 	my $sql = undef;
@@ -1109,6 +1096,12 @@ sub addParameterValues {
 	} elsif (lc($parameter->{'type'}) eq 'custom' || lc($parameter->{'type'}) =~ /^custom(.+)$/) {
 		if (defined($parameter->{'definition'}) && lc($parameter->{'definition'}) =~ /^select/) {
 			$sql = $parameter->{'definition'};
+
+			# necessary to replace placeholders in pre-play user-input
+			my $predfinedParameters = getInternalParameters($client, $playlist, undef, undef);
+			$sql = replaceParametersInSQL($sql, $predfinedParameters, 'Playlist');
+			$log->debug('sql = '.$sql);
+
 			for (my $i=1; $i < $parameter->{'id'}; $i++) {
 				my $value = undef;
 				if (defined($parameterValues)) {
@@ -1205,10 +1198,7 @@ sub getVirtualLibraries {
 }
 
 sub getTracksForPlaylist {
-	my $client = shift;
-	my $playlist = shift;
-	my $limit = shift;
-	my $offset = shift;
+	my ($client, $playlist, $limit, $offset) = @_;
 	my @result;
 
 	my $id = $playlist->{'dynamicplaylistid'};
@@ -1809,7 +1799,7 @@ sub handleWebMixParameters {
 		for(my $i = 1; $i < $parameterId; $i++) {
 			my @parameterValues = ();
 			my $parameter = $playlist->{'parameters'}->{$i};
-			addParameterValues($client, \@parameterValues, $parameter);
+			addParameterValues($client, \@parameterValues, $parameter, undef, $playlist);
 			my %webParameter = (
 				'parameter' => $parameter,
 				'values' => \@parameterValues,
@@ -1840,7 +1830,7 @@ sub handleWebMixParameters {
 		my $parameter = $playlist->{'parameters'}->{$parameterId};
 		$log->debug('Getting values for: '.$parameter->{'name'});
 		my @parameterValues = ();
-		addParameterValues($client, \@parameterValues, $parameter);
+		addParameterValues($client, \@parameterValues, $parameter, undef, $playlist);
 		my %currentParameter = (
 			'parameter' => $parameter,
 			'values' => \@parameterValues
@@ -1993,10 +1983,7 @@ sub handleWebSelectPlaylists {
 }
 
 sub getPlayListContext {
-	my $client = shift;
-	my $params = shift;
-	my $currentItems = shift;
-	my $level = shift;
+	my ($client, $params, $currentItems, $level) = @_;
 	my @result = ();
 	my $displayname;
 	$log->debug("Get playlist context for level: $level");
@@ -2035,10 +2022,7 @@ sub getPlayListContext {
 }
 
 sub getPlayListGroupsForContext {
-	my $client = shift;
-	my $params = shift;
-	my $currentItems = shift;
-	my $level = shift;
+	my ($client, $params, $currentItems, $level) = @_;
 	my @result = ();
 
 	if ($prefs->get('flatlist') || $params->{'flatlist'}) {
@@ -2094,11 +2078,7 @@ sub getPlayListGroupsForContext {
 }
 
 sub getPlayListsForContext {
-	my $client = shift;
-	my $params = shift;
-	my $currentItems = shift;
-	my $level = shift;
-	my $playlisttype = shift;
+	my ($client, $params, $currentItems, $level, $playlisttype) = @_;
 	my @result = ();
 
 	if ($prefs->get('flatlist') || $params->{'flatlist'}) {
@@ -2139,9 +2119,8 @@ sub getPlayListsForContext {
 }
 
 sub getPlayListGroups {
-	my $path = shift;
-	my $items = shift;
-	my $result = shift;
+	my ($path, $items, $result) = @_;
+
 	for my $key (keys %{$items}) {
 		my $item = $items->{$key};
 		if (!defined($item->{'playlist'}) && defined($item->{'name'})) {
@@ -2237,9 +2216,7 @@ sub handleWebSaveSelectPlaylists {
 }
 
 sub savePlayListGroups {
-	my $items = shift;
-	my $params = shift;
-	my $path = shift;
+	my ($items, $params, $path) = @_;
 
 	foreach my $itemKey (keys %{$items}) {
 		my $item = $items->{$itemKey};
@@ -2264,8 +2241,8 @@ sub savePlayListGroups {
 ### jive ###
 
 sub registerJiveMenu {
-	my $class = shift;
-	my $client = shift;
+	my ($class, $client) = @_;
+
 	my @menuItems = (
 		{
 			text => Slim::Utils::Strings::string('PLUGIN_DYNAMICPLAYLISTS3'),
@@ -2703,7 +2680,7 @@ sub cliJivePlaylistParametersHandler {
 	my @listRef = ();
 
 	if ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists') {
-		addParameterValues($client, \@listRef, $parameter, $parameters);
+		addParameterValues($client, \@listRef, $parameter, $parameters, $playlist);
 		my $nextParamMultipleSelectionString;
 
 		## first: add three items: next param/actionsmenu, select all, select none
@@ -2832,7 +2809,7 @@ sub cliJivePlaylistParametersHandler {
 		$request->addResult('count', $cnt);
 
 	} else {
-		addParameterValues($client, \@listRef, $parameter, $parameters);
+		addParameterValues($client, \@listRef, $parameter, $parameters, $playlist);
 
 		my $count = scalar(@listRef);
 		my $itemsPerResponse = $request->getParam('_itemsPerResponse') || $count;
@@ -3719,8 +3696,7 @@ sub cliStopPlaylist {
 ### built-in & user-provided custom dynamic playlists + saved static playlists
 
 sub getDynamicPlayLists {
-	my ($client) = @_;
-
+	my $client = shift;
 	my $playLists = ();
 	my %result = ();
 
@@ -3837,134 +3813,21 @@ sub getNextDynamicPlayListTracks {
 	my @result = ();
 	my $dynamicplaylistID = $dynamicplaylist->{'dynamicplaylistid'};
 	my $localDynamicPlaylistID = $dynamicplaylist->{'id'};
+	my $dbh = getCurrentDBH();
 
 	if ((starts_with($dynamicplaylistID, 'dpldefault_') == 0) || (starts_with($dynamicplaylistID, 'dplusercustom_') == 0)) {
 		$log->debug('Getting tracks for dynamic playlist: \''.$dynamicplaylist->{'name'}.'\' with ID: '.$dynamicplaylist->{'id'});
 		$log->debug("limit = $limit, offset = $offset, parameters = ".Dumper($parameters));
 
-		my $playlistTrackOrder = $dynamicplaylist->{'playlisttrackorder'};
-		$log->debug('playlistTrackOrder = '.Dumper($playlistTrackOrder));
-		my $playlistLimitOption = $dynamicplaylist->{'playlistlimitoption'};
-		$log->debug('playlistLimitOption = '.Dumper($playlistLimitOption));
-		my $playlistVLnames = $dynamicplaylist->{'playlistvirtuallibrarynames'};
-		$log->debug('playlistVLnames = '.Dumper($playlistVLnames));
-		my $playlistVLids = $dynamicplaylist->{'playlistvirtuallibraryids'};
-		$log->debug('playlistVLids = '.Dumper($playlistVLnames));
-
 		my $playlist = getPlayList($client, $dynamicplaylistID);
 		my $localDynamicPlaylistSQLstatement = $localDynamicPlaylists->{$localDynamicPlaylistID}->{'sql'};
 		my $sqlstatement = replaceParametersInSQL($localDynamicPlaylistSQLstatement, $parameters);
-		my $dbh = getCurrentDBH();
-
-		my $predefinedParameters = ();
-		my %player = (
-			'id' => 'Player',
-			'value' => $dbh->quote($client->id),
-		);
-		my %offsetParameter = (
-			'id' => 'Offset',
-			'value' => $offset
-		);
-		if (!defined($limit) || $playlistLimitOption eq 'unlimited') {$limit = -1};
-		my %limitParameter = (
-			'id' => 'Limit',
-			'value' => $limit
-		);
-		my %trackOrder = (
-			'id' => 'TrackOrder',
-			'value' => $playlistTrackOrder? 1 : 0,
-		);
-		my %VAstring = (
-			'id' => 'VariousArtistsString',
-			'value' => $dbh->quote($serverPrefs->get('variousArtistsString')) || 'Various Artists',
-		);
-		my %VAid = (
-			'id' => 'VariousArtistsID',
-			'value' => Slim::Schema->variousArtistsObject->id,
-		);
-		my %minTrackDuration = (
-			'id' => 'TrackMinDuration',
-			'value' => $prefs->get('song_min_duration'),
-		);
-		my %topratedMinRating = (
-			'id' => 'TopRatedMinRating',
-			'value' => $prefs->get('toprated_min_rating'),
-		);
-		my %periodPlayedLongAgo = (
-			'id' => 'PeriodPlayedLongAgo',
-			'value' => $prefs->get('period_playedlongago'),
-		);
-		my %minArtistTracks = (
-			'id' => 'MinArtistTracks',
-			'value' => $prefs->get('minartisttracks'),
-		);
-		my %minAlbumTracks = (
-			'id' => 'MinAlbumTracks',
-			'value' => $prefs->get('minalbumtracks'),
-		);
-		my %excludedGenres = (
-			'id' => 'ExcludedGenres',
-			'value' => getExcludedGenreList(),
-		);
-		my %currentVirtualLibraryForClient = (
-			'id' => 'CurrentVirtualLibraryForClient',
-			'value' => $dbh->quote(Slim::Music::VirtualLibraries->getLibraryIdForClient($client)),
-		);
-
-		if (keys %{$playlistVLnames}) {
-			foreach my $thisKey (sort keys %{$playlistVLnames}) {
-				my %thisVirtualLibraryNameItem = (
-					'id' => 'VirtualLibraryName'.$thisKey,
-					'value' => $dbh->quote(Slim::Music::VirtualLibraries->getIdForName($playlistVLnames->{$thisKey})),
-				);
-				$predefinedParameters->{'PlaylistVirtualLibraryName'.$thisKey} = \%thisVirtualLibraryNameItem;
-			}
-		}
-		if (keys %{$playlistVLids}) {
-			foreach my $thisKey (sort keys %{$playlistVLids}) {
-				my %thisVirtualLibraryIDItem = (
-					'id' => 'VirtualLibraryID'.$thisKey,
-					'value' => $dbh->quote(Slim::Music::VirtualLibraries->getRealId($playlistVLids->{$thisKey})),
-				);
-				$predefinedParameters->{'PlaylistVirtualLibraryID'.$thisKey} = \%thisVirtualLibraryIDItem;
-			}
-		}
-
-		my $preselectionListArtists = $client->pluginData('cachedArtists') || {};
-		my $preselectionListAlbums = $client->pluginData('cachedAlbums') || {};
-		$log->debug("pluginData 'cachedArtists' = ".Dumper($preselectionListArtists));
-		$log->debug("pluginData 'cachedAlbums' = ".Dumper($preselectionListAlbums));
-		if (keys %{$preselectionListArtists} > 0) {
-			my %preselArtists= (
-				'id' => 'PreselectedArtists',
-				'value' => join(',', keys %{$preselectionListArtists}),
-			);
-			$predefinedParameters->{'PlaylistPreselectedArtists'} = \%preselArtists;
-		}
-		if (keys %{$preselectionListAlbums} > 0) {
-			my %preselAlbums = (
-				'id' => 'PreselectedAlbums',
-				'value' => join(',', keys %{$preselectionListAlbums}),
-			);
-			$predefinedParameters->{'PlaylistPreselectedAlbums'} = \%preselAlbums;
-		}
-
-		$predefinedParameters->{'PlaylistPlayer'} = \%player;
-		$predefinedParameters->{'PlaylistOffset'} = \%offsetParameter;
-		$predefinedParameters->{'PlaylistLimit'} = \%limitParameter;
-		$predefinedParameters->{'PlaylistTrackOrder'} = \%trackOrder;
-		$predefinedParameters->{'PlaylistVariousArtistsString'} = \%VAstring;
-		$predefinedParameters->{'PlaylistVariousArtistsID'} = \%VAid;
-		$predefinedParameters->{'PlaylistTrackMinDuration'} = \%minTrackDuration;
-		$predefinedParameters->{'PlaylistTopRatedMinRating'} = \%topratedMinRating;
-		$predefinedParameters->{'PlaylistPeriodPlayedLongAgo'} = \%periodPlayedLongAgo;
-		$predefinedParameters->{'PlaylistMinArtistTracks'} = \%minArtistTracks;
-		$predefinedParameters->{'PlaylistMinAlbumTracks'} = \%minAlbumTracks;
-		$predefinedParameters->{'PlaylistExcludedGenres'} = \%excludedGenres;
-		$predefinedParameters->{'PlaylistCurrentVirtualLibraryForClient'} = \%currentVirtualLibraryForClient;
-
+		my $predefinedParameters = getInternalParameters($client, $playlist, $limit, $offset);
 		$sqlstatement = replaceParametersInSQL($sqlstatement, $predefinedParameters, 'Playlist');
 		$log->debug('sqlstatement = '.$sqlstatement);
+
+		my $playlistTrackOrder = $dynamicplaylist->{'playlisttrackorder'};
+		$log->debug('playlistTrackOrder = '.Dumper($playlistTrackOrder));
 
 		my @result = ();
 		for my $sql (split(/[\n\r]/, $sqlstatement)) {
@@ -4053,10 +3916,132 @@ sub getNextDynamicPlayListTracks {
 	}
 }
 
+sub getInternalParameters {
+	my ($client, $dynamicplaylist, $limit, $offset) = @_;
+	my $dbh = getCurrentDBH();
+
+	my $playlistTrackOrder = $dynamicplaylist->{'playlisttrackorder'};
+	$log->debug('playlistTrackOrder = '.Dumper($playlistTrackOrder));
+	my $playlistLimitOption = $dynamicplaylist->{'playlistlimitoption'};
+	$log->debug('playlistLimitOption = '.Dumper($playlistLimitOption));
+	my $playlistVLnames = $dynamicplaylist->{'playlistvirtuallibrarynames'};
+	$log->debug('playlistVLnames = '.Dumper($playlistVLnames));
+	my $playlistVLids = $dynamicplaylist->{'playlistvirtuallibraryids'};
+	$log->debug('playlistVLids = '.Dumper($playlistVLnames));
+
+	my $dbh = getCurrentDBH();
+
+	my $predefinedParameters = ();
+	my %player = (
+		'id' => 'Player',
+		'value' => $dbh->quote($client->id),
+	);
+	my %offsetParameter = (
+		'id' => 'Offset',
+		'value' => $offset
+	);
+	if (!defined($limit) || $playlistLimitOption eq 'unlimited') {$limit = -1};
+	my %limitParameter = (
+		'id' => 'Limit',
+		'value' => $limit
+	);
+	my %trackOrder = (
+		'id' => 'TrackOrder',
+		'value' => $playlistTrackOrder? 1 : 0,
+	);
+	my %VAstring = (
+		'id' => 'VariousArtistsString',
+		'value' => $dbh->quote($serverPrefs->get('variousArtistsString')) || 'Various Artists',
+	);
+	my %VAid = (
+		'id' => 'VariousArtistsID',
+		'value' => Slim::Schema->variousArtistsObject->id,
+	);
+	my %minTrackDuration = (
+		'id' => 'TrackMinDuration',
+		'value' => $prefs->get('song_min_duration'),
+	);
+	my %topratedMinRating = (
+		'id' => 'TopRatedMinRating',
+		'value' => $prefs->get('toprated_min_rating'),
+	);
+	my %periodPlayedLongAgo = (
+		'id' => 'PeriodPlayedLongAgo',
+		'value' => $prefs->get('period_playedlongago'),
+	);
+	my %minArtistTracks = (
+		'id' => 'MinArtistTracks',
+		'value' => $prefs->get('minartisttracks'),
+	);
+	my %minAlbumTracks = (
+		'id' => 'MinAlbumTracks',
+		'value' => $prefs->get('minalbumtracks'),
+	);
+	my %excludedGenres = (
+		'id' => 'ExcludedGenres',
+		'value' => getExcludedGenreList(),
+	);
+	my %currentVirtualLibraryForClient = (
+		'id' => 'CurrentVirtualLibraryForClient',
+		'value' => $dbh->quote(Slim::Music::VirtualLibraries->getLibraryIdForClient($client)),
+	);
+
+	if (keys %{$playlistVLnames}) {
+		foreach my $thisKey (sort keys %{$playlistVLnames}) {
+			my %thisVirtualLibraryNameItem = (
+				'id' => 'VirtualLibraryName'.$thisKey,
+				'value' => $dbh->quote(Slim::Music::VirtualLibraries->getIdForName($playlistVLnames->{$thisKey})),
+			);
+			$predefinedParameters->{'PlaylistVirtualLibraryName'.$thisKey} = \%thisVirtualLibraryNameItem;
+		}
+	}
+	if (keys %{$playlistVLids}) {
+		foreach my $thisKey (sort keys %{$playlistVLids}) {
+			my %thisVirtualLibraryIDItem = (
+				'id' => 'VirtualLibraryID'.$thisKey,
+				'value' => $dbh->quote(Slim::Music::VirtualLibraries->getRealId($playlistVLids->{$thisKey})),
+			);
+			$predefinedParameters->{'PlaylistVirtualLibraryID'.$thisKey} = \%thisVirtualLibraryIDItem;
+		}
+	}
+
+	my $preselectionListArtists = $client->pluginData('cachedArtists') || {};
+	my $preselectionListAlbums = $client->pluginData('cachedAlbums') || {};
+	$log->debug("pluginData 'cachedArtists' = ".Dumper($preselectionListArtists));
+	$log->debug("pluginData 'cachedAlbums' = ".Dumper($preselectionListAlbums));
+	if (keys %{$preselectionListArtists} > 0) {
+		my %preselArtists= (
+			'id' => 'PreselectedArtists',
+			'value' => join(',', keys %{$preselectionListArtists}),
+		);
+		$predefinedParameters->{'PlaylistPreselectedArtists'} = \%preselArtists;
+	}
+	if (keys %{$preselectionListAlbums} > 0) {
+		my %preselAlbums = (
+			'id' => 'PreselectedAlbums',
+			'value' => join(',', keys %{$preselectionListAlbums}),
+		);
+		$predefinedParameters->{'PlaylistPreselectedAlbums'} = \%preselAlbums;
+	}
+
+	$predefinedParameters->{'PlaylistPlayer'} = \%player;
+	$predefinedParameters->{'PlaylistOffset'} = \%offsetParameter;
+	$predefinedParameters->{'PlaylistLimit'} = \%limitParameter;
+	$predefinedParameters->{'PlaylistTrackOrder'} = \%trackOrder;
+	$predefinedParameters->{'PlaylistVariousArtistsString'} = \%VAstring;
+	$predefinedParameters->{'PlaylistVariousArtistsID'} = \%VAid;
+	$predefinedParameters->{'PlaylistTrackMinDuration'} = \%minTrackDuration;
+	$predefinedParameters->{'PlaylistTopRatedMinRating'} = \%topratedMinRating;
+	$predefinedParameters->{'PlaylistPeriodPlayedLongAgo'} = \%periodPlayedLongAgo;
+	$predefinedParameters->{'PlaylistMinArtistTracks'} = \%minArtistTracks;
+	$predefinedParameters->{'PlaylistMinAlbumTracks'} = \%minAlbumTracks;
+	$predefinedParameters->{'PlaylistExcludedGenres'} = \%excludedGenres;
+	$predefinedParameters->{'PlaylistCurrentVirtualLibraryForClient'} = \%currentVirtualLibraryForClient;
+	return \%{$predefinedParameters};
+}
+
 sub replaceParametersInSQL {
-	my $sql = shift;
-	my $parameters = shift;
-	my $parameterType = shift;
+	my ($sql, $parameters, $parameterType) = @_;
 	if (!defined($parameterType)) {
 		$parameterType='PlaylistParameter';
 	}
@@ -4137,11 +4122,7 @@ sub getLocalDynamicPlaylists {
 }
 
 sub parseContent {
-	my $client = shift;
-	my $item = shift;
-	my $content = shift;
-	my $items = shift;
-	my $defaultPlaylist = shift;
+	my ($client, $item, $content, $items, $defaultPlaylist) = @_;
 
 	my $errorMsg = undef;
 	if ($content) {
@@ -4346,8 +4327,7 @@ sub parseContent {
 }
 
 sub parsePlaylistName {
-	my $line = shift;
-	my $defaultplaylist = shift;
+	my ($line, $defaultPlaylist) = @_;
 	if ($line =~ /^\s*--\s*PlaylistName\s*[:=]\s*/) {
 		my $name = $line;
 		$name =~ s/^\s*--\s*PlaylistName\s*[:=]\s*//io;
@@ -4355,7 +4335,7 @@ sub parsePlaylistName {
 		$name =~ s/^\s+//;
 
 		if ($name) {
-			if ($defaultplaylist) {
+			if ($defaultPlaylist) {
 				$name = string($name) || $name;
 			}
 			return $name;
@@ -4369,8 +4349,7 @@ sub parsePlaylistName {
 }
 
 sub parseParameter {
-	my $line = shift;
-	my $defaultPlaylist = shift;
+	my ($line, $defaultPlaylist) = @_;
 	my $unknownString = string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_UNKNOWN');
 
 	if ($line =~ /^\s*--\s*PlaylistParameter\s*\d\s*[:=]\s*/) {
@@ -4411,8 +4390,7 @@ sub parseParameter {
 }
 
 sub parseAction {
-	my $line = shift;
-	my $actionType = shift;
+	my ($line, $actionType) = @_;
 
 	if ($line =~ /^\s*--\s*Playlist(Start|Stop)Action\s*\d\s*[:=]\s*/) {
 		$line =~ m/^\s*--\s*Playlist(Start|Stop)Action\s*(\d)\s*[:=]\s*([^:]+):\s*(.*)$/;
@@ -4541,7 +4519,6 @@ sub parseLimitOption {
 
 sub parseVirtualLibraryName {
 	my $line = shift;
-
 	if ($line =~ /^\s*--\s*PlaylistVirtualLibraryName\s*\d\s*[:=]\s*/) {
 		$line =~ m/^\s*--\s*PlaylistVirtualLibraryName\s*(\d)\s*[:=]\s*([^:]+)\s*(.*)$/;
 		my $VLnumber = $1;
@@ -4570,7 +4547,6 @@ sub parseVirtualLibraryName {
 
 sub parseVirtualLibraryID {
 	my $line = shift;
-
 	if ($line =~ /^\s*--\s*PlaylistVirtualLibraryID\s*\d\s*[:=]\s*/) {
 		$line =~ m/^\s*--\s*PlaylistVirtualLibraryID\s*(\d)\s*[:=]\s*([^:]+)\s*(.*)$/;
 		my $VLnumber = $1;
@@ -4753,9 +4729,7 @@ sub getMusicInfoSCRCustomItems {
 }
 
 sub getTitleFormatDynamicPlaylist {
-	my $client = shift;
-	my $song = shift;
-	my $tag = shift;
+	my ($client, $song, $tag) = @_;
 
 	$log->debug("Entering getTitleFormatDynamicPlaylist with $client and $tag");
 	my $masterClient = masterOrSelf($client);
@@ -4820,10 +4794,7 @@ sub getCustomSkipFilterTypes {
 }
 
 sub checkCustomSkipFilterType {
-	my $client = shift;
-	my $filter = shift;
-	my $track = shift;
-
+	my ($client, $filter, $track) = @_;
 	my $currentTime = time();
 	my $parameters = $filter->{'parameter'};
 	my $sql = undef;
@@ -4900,8 +4871,7 @@ sub checkCustomSkipFilterType {
 ## for IP3k / VFD devices ##
 
 sub setModeMixer {
-	my $client = shift;
-	my $method = shift;
+	my ($client, $method) = @_;
 
 	# delete previous multiple selection
 	$client->pluginData('selected_genres' => []);
@@ -5131,18 +5101,12 @@ sub addFavorite {
 }
 
 sub setMode {
-	my $class = shift;
-	my $client = shift;
-	my $method = shift;
-
+	my ($class, $client, $method) = @_;
 	setModeMixer($client, $method);
 }
 
 sub enterSelectedGroup {
-	my $client = shift;
-	my $listRef = shift;
-	my $selectedGroups = shift;
-
+	my ($client, $listRef, $selectedGroups) = @_;
 	my $currentGroup = shift @{$selectedGroups};
 	for my $item (@{$listRef}) {
 		if (!defined($item->{'playlist'}) && defined($item->{'childs'}) && $item->{'name'} eq $currentGroup) {
@@ -5162,8 +5126,7 @@ sub enterSelectedGroup {
 }
 
 sub setModeChooseParameters {
-	my $client = shift;
-	my $method = shift;
+	my ($client, $method) = @_;
 
 	if ($method eq 'pop') {
 		Slim::Buttons::Common::popMode($client);
@@ -5181,7 +5144,7 @@ sub setModeChooseParameters {
 
 	my $parameter = $playlist->{'parameters'}->{$parameterId};
 	my @listRef = ();
-	addParameterValues($client, \@listRef, $parameter);
+	addParameterValues($client, \@listRef, $parameter, undef, $playlist);
 	my $sorted = '0';
 	if (scalar(@listRef) > 0) {
 		my $firstItem = @listRef[0];
@@ -5319,9 +5282,7 @@ sub setModeChooseParameters {
 }
 
 sub getSetModeDataForSubItems {
-	my $client = shift;
-	my $currentItem = shift;
-	my $items = shift;
+	my ($client, $currentItem, $items) = @_;
 
 	my @listRefSub = ();
 	foreach my $menuItemKey (sort keys %{$items}) {
@@ -5441,11 +5402,7 @@ sub getSetModeDataForSubItems {
 }
 
 sub requestNextParameter {
-	my $client = shift;
-	my $item = shift;
-	my $parameterId = shift;
-	my $playlist = shift;
-	my $addOnly = shift;
+	my ($client, $item, $parameterId, $playlist, $addOnly) = @_;
 
 	if (!defined($addOnly)) {
 		$addOnly = $client->modeParam('dynamicplaylist_addonly');
@@ -5477,10 +5434,7 @@ sub requestNextParameter {
 }
 
 sub requestFirstParameter {
-	my $client = shift;
-	my $playlist = shift;
-	my $addOnly = shift;
-	my $params = shift;
+	my ($client, $playlist, $addOnly, $params) = @_;
 
 	my %nextParameters = (
 		'dynamicplaylist_selectedplaylist' => $playlist,
@@ -5512,8 +5466,7 @@ sub requestFirstParameter {
 }
 
 sub stepOut {
-	my $client = shift;
-	my $noOfSteps = shift;
+	my ($client, $noOfSteps) = @_;
 	for(my $i = 1; $i < $noOfSteps; $i++) {
 		Slim::Buttons::Common::popMode($client);
 	}
@@ -5952,19 +5905,18 @@ sub validateIntOrEmpty {
 }
 
 sub fisher_yates_shuffle {
-	my $myarray = shift;
-	my $i = @{$myarray};
-	if (scalar(@{$myarray}) > 1) {
+	my $myArray = shift;
+	my $i = @{$myArray};
+	if (scalar(@{$myArray}) > 1) {
 		while (--$i) {
 			my $j = int rand ($i + 1);
-			@{$myarray}[$i, $j] = @{$myarray}[$j, $i];
+			@{$myArray}[$i, $j] = @{$myArray}[$j, $i];
 		}
 	}
 }
 
 sub objectForId {
-	my $type = shift;
-	my $id = shift;
+	my ($type, $id) = @_;
 	if ($type eq 'artist') {
 		$type = 'Contributor';
 	} elsif ($type eq 'album') {
@@ -6014,8 +5966,7 @@ sub starts_with {
 *escape = \&URI::Escape::uri_escape_utf8;
 
 sub unescape {
-	my $in = shift;
-	my $isParam = shift;
+	my ($in, $isParam) = @_;
 
 	$in =~ s/\+/ /g if $isParam;
 	$in =~ s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg;

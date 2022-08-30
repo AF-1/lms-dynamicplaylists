@@ -4,10 +4,11 @@
 [% END %]
 
 [% BLOCK controls %]
-	[% IF playlist.dynamicplaylistplugin == "Plugins::SQLPlayList::Plugin" %]
+	[% IF playlist.dynamicplaylistplugin == "Plugins::DynamicPlaylistCreator::Plugin" or playlist.dynamicplaylistplugin == "Plugins::SQLPlayList::Plugin" %]
 		[% WRAPPER editlink noTarget=1 -%]href="[% webroot %][% playlist.url %]&amp;player=[% player | uri %]"[%- END %]
 	[%- END %]
 	[% IF !playlist.parameters %]
+	[% playlist.parameters %]
 		[%
 			itemobj = {
 				url = "dynamicplaylist://${playlist.dynamicplaylistid}"

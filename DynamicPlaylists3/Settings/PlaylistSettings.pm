@@ -162,9 +162,7 @@ sub handler {
 }
 
 sub savePlayListGroups {
-	my $items = shift;
-	my $paramRef = shift;
-	my $path = shift;
+	my ($items, $paramRef, $path) = @_;
 
 	foreach my $itemKey (keys %{$items}) {
 		my $item = $items->{$itemKey};
