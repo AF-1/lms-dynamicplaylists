@@ -52,7 +52,7 @@ my $prefs = preferences('plugin.dynamicplaylists3');
 my $serverPrefs = preferences('server');
 my $log = Slim::Utils::Log->addLogCategory({
 	'category' => 'plugin.dynamicplaylists3',
-	'defaultLevel' => 'WARN',
+	'defaultLevel' => 'ERROR',
 	'description' => 'PLUGIN_DYNAMICPLAYLISTS3',
 });
 
@@ -376,7 +376,7 @@ sub initPlayLists {
 										$enabled = 1;
 									}
 								}
-								if ($group eq 'Context menu lists') {
+								if ($group && $group eq 'Context menu lists') {
 									$enabled = undef;
 									$existingItem->{'dynamicplaylistenabled'} = 0;
 								}
@@ -444,7 +444,7 @@ sub initPlayListTypes {
 			if (defined($playlist->{'parameters'})) {
 				my $parameter1 = $playlist->{'parameters'}->{'1'};
 				if (defined($parameter1)) {
-					if ($parameter1->{'type'} eq 'album' || $parameter1->{'type'} eq 'artist' || $parameter1->{'type'} eq 'year' || $parameter1->{'type'} eq 'genre' || $parameter1->{'type'} eq 'multiplegenres' || $parameter1->{'type'} eq 'multipledecades' || $parameter1->{'type'} eq 'multipleyears' || $parameter1->{'type'} eq 'multiplestaticplaylists' || $parameter1->{'type'} eq 'playlist' || $parameter1->{'type'} eq 'track' || $parameter1->{'type'} eq 'virtuallibrary') {
+					if ($parameter1->{'type'} && ($parameter1->{'type'} eq 'album' || $parameter1->{'type'} eq 'artist' || $parameter1->{'type'} eq 'year' || $parameter1->{'type'} eq 'genre' || $parameter1->{'type'} eq 'multiplegenres' || $parameter1->{'type'} eq 'multipledecades' || $parameter1->{'type'} eq 'multipleyears' || $parameter1->{'type'} eq 'multiplestaticplaylists' || $parameter1->{'type'} eq 'playlist' || $parameter1->{'type'} eq 'track' || $parameter1->{'type'} eq 'virtuallibrary')) {
 						$localPlayListTypes{$parameter1->{'type'}} = 1;
 					} elsif ($parameter1->{'type'} =~ /^custom(.+)$/) {
 						$localPlayListTypes{$1} = 1;
@@ -501,7 +501,7 @@ sub findAndAdd {
 	for (my $i = 1; $i <= $noOfRetriesToGetUnplayedTracks; $i++) {
 		my $iterationStartTime = time();
 		$items = getTracksForPlaylist($masterClient, $playlist, $limit, $offset + $noOfFoundItems);
-		if ($items eq 'error') {
+		if ($items && $items eq 'error') {
 			$log->error('Error trying to find tracks. Please check your playlist definition.');
 			last;
 		}
@@ -646,7 +646,7 @@ sub playRandom {
 			# Executing actions related to new mix
 			if (!$addOnly) {
 				my $startactions = undef;
-				if ($type ne 'disable') {
+				if ($type && $type ne 'disable') {
 					my $playlist = getPlayList($client, $type);
 					if (defined($playlist)) {
 						if (defined($playlist->{'startactions'})) {
@@ -686,7 +686,7 @@ sub playRandom {
 	# Work out how many items need adding
 	my $numItems = 0;
 
-	if ($type ne 'disable' && ($continuousMode || !$mixInfo{$masterClient} || $mixInfo{$masterClient}->{'type'} ne $type || $songsRemaining < $minNumberUnplayedSongs)) {
+	if ($type && $type ne 'disable' && ($continuousMode || !$mixInfo{$masterClient} || $mixInfo{$masterClient}->{'type'} ne $type || $songsRemaining < $minNumberUnplayedSongs)) {
 		# Add new tracks if there aren't enough after the current track
 		my $maxNumberUnplayedTracks = $prefs->get('max_number_of_unplayed_tracks');
 		if (!$addOnly && !$continue) {
@@ -743,7 +743,7 @@ sub playRandom {
 			if ($count > 0) {
 				# Do a show briefly the first time things are added, or every time a new album/artist/year
 				# is added
-				if (!$addOnly || $type ne $mixInfo{$masterClient}->{'type'}) {
+				if (!$addOnly || ($type && $type ne $mixInfo{$masterClient}->{'type'})) {
 					# Don't do showBrieflys if visualiser screensavers are running as the display messes up
 					my $statusmsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING');
 					$statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_STATUSMSG') if $addOnly == 2;
@@ -776,7 +776,7 @@ sub playRandom {
 		$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 	}
 
-	if ($type eq 'disable') {
+	if ($type && $type eq 'disable') {
 		$log->debug('cyclic mode ended');
 		# Display status message(s) if $showTimePerChar > 0
 		if ($showTimePerChar > 0) {
@@ -808,7 +808,7 @@ sub playRandom {
 					stateNew($player, $type, $playlist);
 				}
 			}
-			if ($mixInfo{$masterClient}->{'type'} eq $type) {
+			if ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} eq $type) {
 				stateOffset($masterClient, $offset);
 				my @players = Slim::Player::Sync::slaves($client);
 				foreach my $player (@players) {
@@ -847,7 +847,7 @@ sub playRandom {
 		my $dstmProvider = preferences('plugin.dontstopthemusic')->client($client)->get('provider') || '';
 		$log->debug('dstmProvider = '.$dstmProvider);
 
-		if ($dstmProvider && $dstmProvider ne '') {
+		if ($dstmProvider) {
 			my $clientPlaylistLength = Slim::Player::Playlist::count($client);
 
 			if ($clientPlaylistLength > 0) {
@@ -1013,6 +1013,11 @@ sub addAlarmPlaylists {
 
 sub addParameterValues {
 	my ($client, $listRef, $parameter, $parameterValues, $playlist) = @_;
+
+	if (!$parameter->{'type'}) {
+		$log->warn('Missing parameter type!');
+		return;
+	}
 
 	$log->debug('Getting values for '.$parameter->{'name'}.' of type '.$parameter->{'type'});
 	my $sql = undef;
@@ -1250,6 +1255,11 @@ sub _toggleMultipleSelectionState {
 	my $item = $request->getParam('_item'); # item: genre, decade, year or static playlist
 	my $value = $request->getParam('_value');
 	my @selected = ();
+
+	if (!$paramType) {
+		$log->warn('Missing parameter type!');
+		return;
+	}
 	$log->debug('Received input: paramType = '.$paramType.' -- item = '.$item.' -- value = '.$value);
 
 	if ($paramType eq 'multiplegenres') {
@@ -1294,7 +1304,7 @@ sub _toggleMultipleSelectionState {
 sub _toggleMultipleSelectionStateIP3k {
 	my ($client, $item) = @_;
 
-	if ($item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_NEXT') || $item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_PLAY')) {
+	if ($item->{'name'} && ($item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_NEXT') || $item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_PLAY'))) {
 		my $parameterId = $client->modeParam('dynamicplaylist_nextparameter');
 		my $playlist = $client->modeParam('dynamicplaylist_selectedplaylist');
 		my $multipleSelectionString;
@@ -1308,6 +1318,10 @@ sub _toggleMultipleSelectionStateIP3k {
 		requestNextParameter($client, $item, $parameterId, $playlist);
 	} else {
 		my @selected = ();
+		if (!$item->{'paramType'}) {
+			$log->warn('Missing parameter type!');
+			return;
+		}
 
 		if ($item->{'paramType'} eq 'multiplegenres') {
 			my $genres = getGenres($client);
@@ -1396,6 +1410,10 @@ sub _multipleSelectAllOrNone {
 	my $value = $request->getParam('_value');
 	my @selected = ();
 
+	if (!$paramType) {
+		$log->warn('Missing parameter type!');
+		return;
+	}
 	if ($paramType eq 'multiplegenres') {
 		my $genres = getGenres($client);
 
@@ -1602,6 +1620,10 @@ sub getMultipleSelectionString {
 	my $multipleSelectionString;
 	$log->debug('paramType = '.$paramType);
 
+	if (!$paramType) {
+		$log->warn('Missing parameter type!');
+		return;
+	}
 	if ($paramType eq 'multiplegenres') {
 		my $selectedGenres = $client->pluginData('selected_genres') || [];
 		$log->debug('selectedGenres = '.Dumper($selectedGenres));
@@ -1724,7 +1746,7 @@ sub handleWebList {
 	}
 
 	my $dstmProvider = preferences('plugin.dontstopthemusic')->client($client)->get('provider') || '';
-	$params->{'pluginDynamicPlaylists3dstmPlay'} = 'cando' if ($dstm_enabled && $dstmProvider && $dstmProvider ne '');
+	$params->{'pluginDynamicPlaylists3dstmPlay'} = 'cando' if ($dstm_enabled && $dstmProvider);
 
 	my $preselectionListArtists = $client->pluginData('cachedArtists') || {};
 	my $preselectionListAlbums = $client->pluginData('cachedAlbums') || {};
@@ -1743,7 +1765,7 @@ sub handleWebList {
 sub handleWebMix {
 	my ($client, $params) = @_;
 	if (defined $client && $params->{'type'}) {
-		if ($params->{'type'} eq 'disable') {
+		if ($params->{'type'} && $params->{'type'} eq 'disable') {
 			playRandom($client, 'disable');
 		} else {
 			my $playlist = getPlayList($client, $params->{'type'});
@@ -1772,7 +1794,7 @@ sub handleWebMixParameters {
 		$parameterId = $parameterId + 1;
 		my $parameter = $playlist->{'parameters'}->{$i};
 		my %value;
-		if ($parameter && $parameter->{'type'} eq 'multipledecades') {
+		if ($parameter && $parameter->{'type'} && $parameter->{'type'} eq 'multipledecades') {
 			# add years to decades
 			my @decadeValues = split(/,/, $params->{'dynamicplaylist_parameter_'.$i});
 			my @yearsArray;
@@ -1810,7 +1832,7 @@ sub handleWebMixParameters {
 				'value' => $params->{'dynamicplaylist_parameter_'.$i}
 			);
 
-			if ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists') {
+			if ($parameter->{'type'} && ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists')) {
 				if ($parameter->{'type'} eq 'multiplegenres') {
 					my @selectedGenresArray = split (',', $params->{'dynamicplaylist_parameter_'.$i});
 					%selectedGenres = map { $_ => 1 } @selectedGenresArray;
@@ -1841,7 +1863,7 @@ sub handleWebMixParameters {
 		);
 		push @parameters, \%currentParameter;
 
-		if ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists') {
+		if ($parameter->{'type'} && ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists')) {
 			$params->{'currentparam'} = $parameter->{'type'};
 		}
 
@@ -2265,12 +2287,6 @@ sub registerJiveMenu {
 }
 
 sub registerStandardContextMenus {
-	Slim::Menu::TrackInfo->registerInfoProvider(dynamicplaylists3 => (
-		before => 'favorites',
-		func => sub {
-			return objectInfoHandler(@_, undef, 'track');
-		},
-	));
 	Slim::Menu::AlbumInfo->registerInfoProvider(dynamicplaylists3 => (
 		after => 'addalbum',
 		func => sub {
@@ -2564,7 +2580,7 @@ sub cliJiveHandler {
 	}
 
 	foreach my $item (@{$menuResult}) {
-		if ($item->{'dynamicplaylistenabled'} && $item->{'menulisttype'} ne 'contextmenu') {
+		if ($item->{'dynamicplaylistenabled'} && (!defined($item->{'menulisttype'}) || $item->{'menulisttype'} ne 'contextmenu')) {
 			my $name;
 			my $id;
 			$name = $item->{'name'};
@@ -2683,7 +2699,7 @@ sub cliJivePlaylistParametersHandler {
 	$log->debug('parameter = '.Dumper($parameter));
 	my @listRef = ();
 
-	if ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists') {
+	if ($parameter->{'type'} && ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists')) {
 		addParameterValues($client, \@listRef, $parameter, $parameters, $playlist);
 		my $nextParamMultipleSelectionString;
 
@@ -2691,7 +2707,7 @@ sub cliJivePlaylistParametersHandler {
 		my $cnt = 0;
 
 		# next param or actionsmenu
-		if ($parameter->{'type'} eq 'multipledecades') {
+		if ($parameter->{'type'} && $parameter->{'type'} eq 'multipledecades') {
 			# add years to decades
 			$nextParamMultipleSelectionString = getMultipleSelectionString($client, $parameter->{'type'}, 1);
 			$log->debug('nextParamMultipleSelectionString (decades) = '.Dumper($nextParamMultipleSelectionString));
@@ -2900,9 +2916,8 @@ sub cliMixJiveHandler {
 		initPlayLists($client);
 	}
 	my $params = $request->getParamsCopy();
-
 	for my $k (keys %{$params}) {
-		$log->debug("Got: $k=".$params->{$k});
+		$log->debug("Got: $k = ".$params->{$k});
 	}
 
 	my $playlisttype = undef;
@@ -2935,7 +2950,7 @@ sub cliMixJiveHandler {
 	if (defined($playlisttype)) {
 		foreach my $flatItem (sort keys %{$playLists}) {
 			my $playlist = $playLists->{$flatItem};
-			next if (($request->getParam('useContextMenu') == 1) && ($playlist->{'menulisttype'} ne 'contextmenu'));
+			next if ($request->getParam('useContextMenu') && ($request->getParam('useContextMenu') == 1) && $playlist->{'menulisttype'} && $playlist->{'menulisttype'} ne 'contextmenu');
 			if ($playlist->{'dynamicplaylistenabled'}) {
 				if (defined($playlist->{'parameters'}) && defined($playlist->{'parameters'}->{'1'}) && ($playlist->{'parameters'}->{'1'}->{'type'} eq $playlisttype || ($playlist->{'parameters'}->{'1'}->{'type'} =~ /^custom(.+)$/ && $1 eq $playlisttype))) {
 					my $name;
@@ -3057,7 +3072,7 @@ sub _cliJiveActionsMenuHandler {
 	my $dstmProvider = preferences('plugin.dontstopthemusic')->client($client)->get('provider') || '';
 	$log->debug('dstmProvider = '.$dstmProvider);
 
-	if ($dstm_enabled && $dstmProvider && $dstmProvider ne '') {
+	if ($dstm_enabled && $dstmProvider) {
 		my $actions_dstm_add = {
 			'do' => {
 				'cmd' => ['dynamicplaylist', 'playlist', 'dstmplay'],
@@ -3216,7 +3231,7 @@ sub registerPreselectionMenu {
 	my ($client, $url, $obj, $remoteMeta, $tags, $whatever, $objectType) = @_;
 	$tags ||= {};
 
-	unless ($objectType eq 'artist' || $objectType eq 'album') {
+	unless ($objectType && ($objectType eq 'artist' || $objectType eq 'album')) {
 		return undef;
 	}
 
@@ -4276,19 +4291,19 @@ sub parseContent {
 					}
 				}
 			}
-			if (defined $menuListType && $menuListType ne '') {
+			if ($menuListType) {
 				$playlist{'menulisttype'} = $menuListType;
 			}
-			if (defined $playlistCategory && $playlistCategory ne '') {
+			if ($playlistCategory) {
 				$playlist{'playlistcategory'} = $playlistCategory;
 			}
-			if (defined $playlistAPCdupe && $playlistAPCdupe ne '') {
+			if ($playlistAPCdupe) {
 				$playlist{'playlistapcdupe'} = $playlistAPCdupe;
 			}
-			if (defined $playlistTrackOrder && $playlistTrackOrder ne '') {
+			if ($playlistTrackOrder) {
 				$playlist{'playlisttrackorder'} = $playlistTrackOrder;
 			}
-			if (defined $playlistLimitOption && $playlistLimitOption ne '') {
+			if ($playlistLimitOption) {
 				$playlist{'playlistlimitoption'} = $playlistLimitOption;
 			}
 			if (keys %{$playlistVLnames}) {
@@ -4578,14 +4593,14 @@ sub parseVirtualLibraryID {
 sub initDatabase {
 	my $dbh = getCurrentDBH();
 	my $st = $dbh->table_info();
-	my $tblexists;
+	my $tablexists;
 	while (my ($qual, $owner, $table, $type) = $st->fetchrow_array()) {
 		if ($table eq 'dynamicplaylist_history') {
-			$tblexists=1;
+			$tablexists = 1;
 		}
 	}
 	$st->finish();
-	unless ($tblexists) {
+	unless ($tablexists) {
 		my $sqlCreate = "create table if not exists dynamicplaylist_history (client varchar(20) not null, position integer primary key autoincrement, id int(10) not null unique, url text not null unique, added int(10) not null, skipped int(10) default null);";
 		$log->debug('Creating DPL history database table');
 		eval {$dbh->do($sqlCreate)};
@@ -5154,6 +5169,10 @@ sub setModeChooseParameters {
 	my $name = $parameter->{'name'};
 	my %params;
 
+	if (!$parameter->{'type'}) {
+		$log->warn('Missing parameter type!');
+		return;
+	}
 
 	if ($parameter->{'type'} eq 'multiplegenres' || $parameter->{'type'} eq 'multipledecades' || $parameter->{'type'} eq 'multipleyears' || $parameter->{'type'} eq 'multiplestaticplaylists') {
 		my @listRef;
@@ -5497,7 +5516,7 @@ sub getDisplayText {
 		return $name.' ('.string('PLUGIN_DYNAMICPLAYLISTS3_PLAYING').')';
 
 	# if a mode is active, handle the temporarily added disable option
-	} elsif ($id eq 'disable' && $mixInfo{$masterClient}) {
+	} elsif ($id && $id eq 'disable' && $mixInfo{$masterClient}) {
 		return string('PLUGIN_DYNAMICPLAYLISTS3_PRESS_RIGHT');
 	} else {
 		return $name;
@@ -5542,10 +5561,14 @@ sub getOverlay {
 sub getGenreOverlay {
 	my ($client, $item) = @_;
 
-	if ($item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_NEXT') || $item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_PLAY')) {
+	if ($item->{'name'} && ($item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_NEXT') || $item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS3_PLAY'))) {
 		return [undef, $client->symbols('rightarrow')];
 	} else {
 		my $value = 0;
+		if (!$item->{'paramType'}) {
+			$log->warn('Missing parameter type!');
+			return;
+		}
 		if ($item->{'paramType'} eq 'multiplegenres') {
 			my $genres = getGenres($client);
 			if ($item->{'selectAll'}) {
@@ -5762,7 +5785,7 @@ sub commandCallback65 {
 		}
 
 		my $songsToKeep = $prefs->get('number_of_played_tracks_to_keep');
-		if ($songIndex && $songsToKeep ne '') {
+		if ($songIndex && $songsToKeep) {
 			$log->debug('Stripping off completed track(s)');
 
 			# Delete tracks before this one on the playlist
