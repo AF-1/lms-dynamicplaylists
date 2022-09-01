@@ -545,7 +545,7 @@ sub findAndAdd {
 		$log->debug((($addOnly || $continue) ? 'Adding ' : 'Playing ')."$type: $itemTitle, ".($item->id));
 
 		# Replace the current playlist with the first item / track or add it to end
-		my $request = $client->execute(['playlist', ($addOnly || $continue) ? 'addtracks' : 'loadtracks', sprintf('%s=%d', getLinkAttribute('track'), $item->id)]);
+		my $request = $client->execute(['playlist', (($addOnly && $addOnly != 2) || $continue) ? 'addtracks' : 'loadtracks', sprintf('%s=%d', getLinkAttribute('track'), $item->id)]);
 
 		# indicate request source
 		$request->source('PLUGIN_DYNAMICPLAYLISTS3');
@@ -584,6 +584,7 @@ sub filterTracks {
 	}
 
 	$log->debug('Found these new non-dupe tracks: '.Dumper(\@{$nonDupeNewItems}));
+	undef($items); undef($totalItems);
 
 	# add new non-dupe tracks to DPL client history
 	for my $item (@{$nonDupeNewItems}) {
@@ -616,12 +617,11 @@ sub playRandom {
 
 	# showTime per character so long messages get more time to scroll
 	my $showTimePerChar = $prefs->get('showtimeperchar') / 1000;
-
 	$log->debug('playRandom called with type '.$type);
 
 	$masterClient->pluginData('type' => $type);
 	$log->debug('pluginData type for '.$masterClient->name.' = '.$masterClient->pluginData('type'));
-	$log->debug('client pref type = '.$mixInfo{$masterClient}->{'type'});
+	$log->debug('client pref type = '.$mixInfo{$masterClient}->{'type'}) if $mixInfo{$masterClient}->{'type'};
 
 	# Whether to keep adding tracks after generating the initial playlist
 	my $continuousMode = $prefs->get('keep_adding_tracks');;
@@ -637,7 +637,7 @@ sub playRandom {
 	}
 
 	# If this is a new mix, clear playlist history
-	if (($continuousMode && (!$addOnly && !$continue)) || !$mixInfo{$masterClient} || $mixInfo{$masterClient}->{'type'} ne $type) {
+	if (($continuousMode && (!$addOnly && !$continue)) || ($addOnly && $addOnly == 2) || !$mixInfo{$masterClient} || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type)) {
 		$continue = undef;
 			my @players = Slim::Player::Sync::slaves($masterClient);
 			push @players, $masterClient;
@@ -681,15 +681,16 @@ sub playRandom {
 
 	my $songIndex = Slim::Player::Source::streamingSongIndex($client);
 	my $songsRemaining = Slim::Player::Playlist::count($client) - $songIndex - 1;
+	$songsRemaining = 0 if $songsRemaining < 0;
 	$log->debug("$songsRemaining songs remaining, songIndex = $songIndex");
 	my $minNumberUnplayedSongs = $prefs->get('min_number_of_unplayed_tracks');
 	# Work out how many items need adding
 	my $numItems = 0;
 
-	if ($type && $type ne 'disable' && ($continuousMode || !$mixInfo{$masterClient} || $mixInfo{$masterClient}->{'type'} ne $type || $songsRemaining < $minNumberUnplayedSongs)) {
+	if ($type && $type ne 'disable' && ($continuousMode || !$mixInfo{$masterClient} || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type) || $songsRemaining < $minNumberUnplayedSongs)) {
 		# Add new tracks if there aren't enough after the current track
 		my $maxNumberUnplayedTracks = $prefs->get('max_number_of_unplayed_tracks');
-		if (!$addOnly && !$continue) {
+		if ((!$addOnly && !$continue) || ($addOnly && $addOnly == 2)) {
 			$numItems = $maxNumberUnplayedTracks;
 		} elsif ($songsRemaining < $minNumberUnplayedSongs) {
 			$numItems = $maxNumberUnplayedTracks - $songsRemaining;
@@ -698,14 +699,14 @@ sub playRandom {
 			# Add a single track if add button is pushed when the playlist is full
 			$numItems = 1;
 		} else {
-			$log->debug("$songsRemaining items remaining so not adding new track");
+			$log->debug("$songsRemaining items remaining so not adding new tracks");
 		}
 	}
 
 	my $count = 0;
 	$log->debug('numItems = '.$numItems);
 	if ($numItems) {
-		if (!$addOnly) {
+		if (!$addOnly || $addOnly == 2) {
 			if (Slim::Player::Source::playmode($client) ne 'stop') {
 				if (UNIVERSAL::can('Slim::Utils::Alarm', 'getCurrentAlarm')) {
 					my $alarm = Slim::Utils::Alarm->getCurrentAlarm($client);
@@ -723,6 +724,7 @@ sub playRandom {
 				$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 			}
 		}
+
 		my $shuffle = Slim::Player::Playlist::shuffle($client);
 		Slim::Player::Playlist::shuffle($client, 0);
 
@@ -743,7 +745,7 @@ sub playRandom {
 			if ($count > 0) {
 				# Do a show briefly the first time things are added, or every time a new album/artist/year
 				# is added
-				if (!$addOnly || ($type && $type ne $mixInfo{$masterClient}->{'type'})) {
+				if (!$addOnly || ($type && $mixInfo{$masterClient}->{'type'} && $type ne $mixInfo{$masterClient}->{'type'})) {
 					# Don't do showBrieflys if visualiser screensavers are running as the display messes up
 					my $statusmsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLISTS3_NOW_PLAYING');
 					$statusmsg = string('PLUGIN_DYNAMICPLAYLISTS3_DSTM_PLAY_STATUSMSG') if $addOnly == 2;
@@ -834,10 +836,10 @@ sub playRandom {
 			}
 		}
 	}
-	# if mode is addonly=1 and client playlist trackcount before adding = 0,
-	# you probably want to create a one-time static playlist instead of adding tracks to an existing one
+	# if mode is addonly and client playlist trackcount before adding = 0,
+	# you probably want to create a one-time static playlist or DSTM seed playlist instead of adding tracks to an existing playlist
 	# so let's not keep these tracks in DPL history
-	if ($addOnly && ($addOnly == 1 || $addOnly == 99) && ($PlaylistTrackCount == 0)) {
+	if ($addOnly && ($PlaylistTrackCount == 0)) {
 		$masterClient->pluginData('type' => '');
 		my @players = Slim::Player::Sync::slaves($masterClient);
 		push @players, $masterClient;
@@ -849,9 +851,13 @@ sub playRandom {
 
 		if ($dstmProvider) {
 			my $clientPlaylistLength = Slim::Player::Playlist::count($client);
-
 			if ($clientPlaylistLength > 0) {
-				$masterClient->pluginData('type' => '');
+				stateStop($masterClient);
+				my @players = Slim::Player::Sync::slaves($client);
+				foreach my $player (@players) {
+					stateStop($player);
+				}
+
 				my $dstmStartIndex = $prefs->get('dstmstartindex'); # 0 = last song, 1 = current or first song if no current song
 				my $firstSongIndex = (Slim::Player::Source::streamingSongIndex($client) || 0);
 				$firstSongIndex = $firstSongIndex + 1 if ($clientPlaylistLength > $firstSongIndex && $firstSongIndex > 0);
@@ -944,7 +950,7 @@ sub stateStop {
 
 sub handlePlayOrAdd {
 	my ($client, $item, $add) = @_;
-	$log->debug(($add ? 'Add' : 'Play')."$item");
+	$log->debug(($add ? 'Add' : 'Play')." $item");
 
 	my $masterClient = masterOrSelf($client);
 
@@ -3414,7 +3420,6 @@ sub _preselectionMenuJive {
 	} else {
 		$request->addResultLoop('item_loop', $cnt, 'type', 'text');
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-		#$request->addResultLoop('item_loop', $cnt, 'actions', 'none');
 		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_NONE'));
 		$cnt++;
 	}
@@ -4757,7 +4762,7 @@ sub getTitleFormatDynamicPlaylist {
 
 	if ($tag =~ 'DYNAMICORSAVEDPLAYLIST') {
 		my $playlist = Slim::Music::Info::playlistForClient($client);
-		if ($playlist && $playlist->content_type ne 'cpl') {
+		if ($playlist && $playlist->content_type && $playlist->content_type ne 'cpl') {
 			$log->debug('Exiting getTitleFormatDynamicPlaylist with '.$playlist->title);
 			return $playlist->title;
 		}
@@ -4905,7 +4910,7 @@ sub setModeMixer {
 	my $playlisttype = $client->modeParam('playlisttype');
 	my $showFlat = $prefs->get('flatlist');
 	if ($showFlat || defined($client->modeParam('flatlist'))) {
-		foreach my $flatItem (sort { $playLists->{$a}->{'playlistsortname'} cmp $playLists->{$b}->{'playlistsortname'}; } keys %{$playLists}) {
+		foreach my $flatItem (sort { ($playLists->{$a}->{'playlistsortname'} || '') cmp ($playLists->{$b}->{'playlistsortname'} || ''); } keys %{$playLists}) {
 			my $playlist = $playLists->{$flatItem};
 			if ($playlist->{'dynamicplaylistenabled'}) {
 				my %flatPlaylistItem = (
@@ -4923,7 +4928,7 @@ sub setModeMixer {
 			}
 		}
 	} else {
-		foreach my $menuItemKey (sort { $playListItems->{$a}->{'playlistsortname'} cmp $playListItems->{$b}->{'playlistsortname'}; } keys %{$playListItems}) {
+		foreach my $menuItemKey (sort { ($playListItems->{$a}->{'playlistsortname'} || '') cmp ($playListItems->{$b}->{'playlistsortname'} || ''); } keys %{$playListItems}) {
 			if ($playListItems->{$menuItemKey}->{'dynamicplaylistenabled'}) {
 				if (!defined($playlisttype)) {
 					if (!defined $playListItems->{$menuItemKey}->{'playlist'} && $customsortnames{$playListItems->{$menuItemKey}->{'name'}}) {
@@ -5066,7 +5071,7 @@ sub setModeMixer {
 	}
 
 	# if we have an active mode, temporarily add the disable option to the list.
-	if ($mixInfo{$masterClient} && $mixInfo{$masterClient}->{'type'} ne '') {
+	if ($mixInfo{$masterClient} && $mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne '') {
 		push @{$params{listRef}}, \%disable;
 	}
 
@@ -5503,7 +5508,7 @@ sub getDisplayText {
 		if ($item->{'displayname'}) {
 			$name = $item->{'displayname'};
 		} else {
-			$name = $item->{'name'};
+			$name = $item->{'name'} || '';
 		}
 		if ($name eq '' && defined($item->{'playlist'})) {
 			$name = $item->{'playlist'}->{'name'};
@@ -5512,7 +5517,7 @@ sub getDisplayText {
 	}
 
 	# if showing the current mode, show altered string
-	if ($mixInfo{$masterClient} && defined($mixInfo{$masterClient}->{'type'}) && $id eq $mixInfo{$masterClient}->{'type'}) {
+	if ($mixInfo{$masterClient} && defined($mixInfo{$masterClient}->{'type'}) && $id && $id eq $mixInfo{$masterClient}->{'type'}) {
 		return $name.' ('.string('PLUGIN_DYNAMICPLAYLISTS3_PLAYING').')';
 
 	# if a mode is active, handle the temporarily added disable option
@@ -5762,8 +5767,8 @@ sub commandCallback65 {
 	$log->debug('received command '.($request->getRequestString()));
 
 	# because of the filter this should never happen
-	# in addition there are valid commands (rescan f.e.) that have no
-	# client so the bt() is strange here
+	# in addition there are valid commands (e.g. rescan) that have no client
+	# so the bt() is strange here
 	if (!defined $masterClient || !defined $mixInfo{$masterClient}->{'type'}) {
 		return;
 	}
