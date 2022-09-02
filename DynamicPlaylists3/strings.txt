@@ -60,6 +60,10 @@ PLUGIN_DYNAMICPLAYLISTS3_PRESS_RIGHT
 	EN	Press RIGHT to stop adding songs
 	FR	Appuyez sur DROITE pour arrêter l'ajout de morceaux
 
+PLUGIN_DYNAMICPLAYLISTS3_STOPADDINGSONGS
+	EN	Stop adding songs
+	FR	Arrêter l'ajout de morceaux
+
 PLUGIN_DYNAMICPLAYLISTS3_DISABLE
 	EN	Stop adding songs
 	FR	Arrêter d'ajouter des morceaux

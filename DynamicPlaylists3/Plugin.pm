@@ -269,6 +269,8 @@ sub initPlayLists {
 	my $client = shift;
 	$log->debug('Searching for playlists');
 
+	($playLists, $playListItems, $localDynamicPlaylists) = undef;
+
 	getLocalDynamicPlaylists($client);
 	#$log->debug('localDynamicPlaylists = '.Dumper($localDynamicPlaylists));
 
@@ -584,7 +586,6 @@ sub filterTracks {
 	}
 
 	$log->debug('Found these new non-dupe tracks: '.Dumper(\@{$nonDupeNewItems}));
-	undef($items); undef($totalItems);
 
 	# add new non-dupe tracks to DPL client history
 	for my $item (@{$nonDupeNewItems}) {
@@ -961,7 +962,6 @@ sub handlePlayOrAdd {
 		stateStop($player);
 	}
 
-	# Go go go!
 	playRandom($client, $item, $add, 1, 1);
 }
 
@@ -2439,9 +2439,9 @@ sub cliJiveHandler {
 		return;
 	}
 
-	if (!$playLists || $rescan) {
-		initPlayLists($client);
-	}
+	initPlayLists($client);
+	initPlayListTypes();
+
 	my $params = $request->getParamsCopy();
 
 	for my $k (keys %{$params}) {
@@ -2495,21 +2495,22 @@ sub cliJiveHandler {
 
 	my $cnt = 0;
 
-	# active dynamic playlist for client if any
-	if ($prefs->get('showactiveplaylistinmainmenu')) {
-		my $masterClient = masterOrSelf($client);
-		my $playlist = undef;
-		if (defined($client) && defined($mixInfo{$masterClient}) && defined($mixInfo{$masterClient}->{'type'})) {
-			$playlist = getPlayList($client, $mixInfo{$masterClient}->{'type'});
-		}
-		if ($playlist && $nextGroup == 1) {
-			my $text = '** Active ** playlist: '.$playlist->{'name'};
-			$log->debug('active dynamic playlist for client "'.$client->name.'" = '.$playlist->{'name'});
-			$request->addResultLoop('item_loop', 0, 'text', $text);
-			$request->addResultLoop('item_loop', 0, 'style', 'itemNoAction');
-			$request->addResultLoop('item_loop', 0, 'action', 'none');
-			$cnt++;
-		}
+	# get menu level and check if active dynamic playlist
+	my $masterClient = masterOrSelf($client);
+	my $playlist = undef;
+	if (defined($client) && defined($mixInfo{$masterClient}) && defined($mixInfo{$masterClient}->{'type'})) {
+		$playlist = getPlayList($client, $mixInfo{$masterClient}->{'type'});
+	}
+	my $activeTopLevel = 1 if ($playlist && $nextGroup == 1);
+
+	# display active dynamic playlist
+	if ($prefs->get('showactiveplaylistinmainmenu') && $activeTopLevel) {
+		my $text = '** Active ** playlist: '.$playlist->{'name'};
+		$log->debug('active dynamic playlist for client "'.$client->name.'" = '.$playlist->{'name'});
+		$request->addResultLoop('item_loop', $cnt, 'text', $text);
+		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
+		$request->addResultLoop('item_loop', $cnt, 'action', 'none');
+		$cnt++;
 	}
 
 	# currently preselected artists/albums list link
@@ -2587,11 +2588,8 @@ sub cliJiveHandler {
 
 	foreach my $item (@{$menuResult}) {
 		if ($item->{'dynamicplaylistenabled'} && (!defined($item->{'menulisttype'}) || $item->{'menulisttype'} ne 'contextmenu')) {
-			my $name;
-			my $id;
-			$name = $item->{'name'};
-			$id = $item->{'dynamicplaylistid'};
-
+			my $name = $item->{'name'};
+			my $id = $item->{'dynamicplaylistid'};
 			my %itemParams = (
 				'playlistid' => $id,
 			);
@@ -2625,6 +2623,27 @@ sub cliJiveHandler {
 			$request->addResultLoop('item_loop', $cnt, 'text', $name);
 			$cnt++;
 		}
+	}
+
+	# add option to stop adding songs if active mode
+	if ($activeTopLevel) {
+		my %itemParams = (
+			'playlistid' => 'disable',
+		);
+		my $stopAddingAction = {
+			'go' => {
+				'player' => 0,
+				'cmd' => ['dynamicplaylist', 'playlist', 'stop'],
+				'params' => \%itemParams,
+				'itemsParams' => 'params',
+			},
+		};
+		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
+		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'refresh');
+		$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
+		$request->addResultLoop('item_loop', $cnt, 'actions', $stopAddingAction);
+		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS3_STOPADDINGSONGS'));
+		$cnt++;
 	}
 
 	$request->addResult('offset', 0);
@@ -3290,15 +3309,15 @@ sub _preselectionMenuWeb {
 	my $listName = $objectType eq 'artist' ? 'cachedArtists' : 'cachedAlbums';
 	my $preselectionList = $client->pluginData($listName) || {};
 
-	if ($action == 1) {
+	if ($action && $action == 1) {
 		delete $preselectionList->{$objectId};
 		$client->pluginData($listName, $preselectionList);
-	} elsif ($action == 2) {
+	} elsif ($action && $action == 2) {
 		$preselectionList->{$objectId}->{'name'} = $objectName if $objectName;
 		$preselectionList->{$objectId}->{'id'} = $objectId;
 		$preselectionList->{$objectId}->{'artistname'} = $artistName if $objectType eq 'album' && $artistName;
 		$client->pluginData($listName, $preselectionList);
-	} elsif ($action == 3) {
+	} elsif ($action && $action == 3) {
 		$client->pluginData($listName, {});
 	}
 	$preselectionList = $client->pluginData($listName) || {};

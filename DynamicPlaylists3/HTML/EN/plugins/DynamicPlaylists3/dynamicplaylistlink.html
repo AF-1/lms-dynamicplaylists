@@ -13,6 +13,13 @@
 	[% END %]
 [% END %]
 
+[% BLOCK dynamicPlayListStopAddingLink %]
+	[% link='cmdlink' cmdimage='dpl_stop.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_STOPADDINGSONGS' %]
+		[% WRAPPER $link noTarget=1 %]
+			href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_list.html?p0=dynamicplaylist&amp;p1=playlist&amp;p2=play&amp;p3=disable&amp;player=[% player |uri%]" onClick="setTimeout('document.location.reload(true)',500)"
+		[% END %]
+[% END %]
+
 [% BLOCK dynamicPlayListPreselectionLink %]
 	[% link='cmdlink' cmdimage='b_delete.gif';IF objectid; cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_REMOVE_TITLE';ELSE;cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_CLEAR_LIST';END %]
 		[% WRAPPER $link noTarget=1 %]

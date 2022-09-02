@@ -30,8 +30,12 @@ href="[% webroot %]
 		[% "NO_PLAYER_FOUND" | string %]
 	[% ELSE %]
 		<br>
-		[% IF activeClientMixName %][% "PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_ACTIVEDPL" | string %] "[% activeClientName %]": <span class="boldtitle">[% activeClientMixName %]</span><br><br>
-		[% END %]
+		[%- IF activeClientMixName -%]
+			[%- WRAPPER contentitem controls='stopaddingcontrols' %]
+				[% "PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_ACTIVEDPL" | string %] "[% activeClientName %]": <span class="boldtitle">[% activeClientMixName %]</span>
+			[% END %]
+		<br><br>
+		[%- END -%]
 
 		[% IF pluginDynamicPlaylists3preselectionListArtists %]
 			[%- WRAPPER contentitem %]

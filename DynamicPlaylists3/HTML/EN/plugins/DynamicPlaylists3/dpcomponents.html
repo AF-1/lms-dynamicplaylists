@@ -25,6 +25,10 @@
 	[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="0" parameters=playlist.parameters %]
 	[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="1" parameters=playlist.parameters %]
 [% END %]
+[% BLOCK stopaddingcontrols %]
+	[% PROCESS dynamicPlayListStopAddingLink %]
+[% END %]
+
 [% BLOCK controlspreselection %]
 	[% PROCESS dynamicPlayListPreselectionLink objectid=item.id %]
 [% END %]
