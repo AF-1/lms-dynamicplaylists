@@ -60,9 +60,9 @@ PLUGIN_DYNAMICPLAYLISTS3_PRESS_RIGHT
 	EN	Press RIGHT to stop adding songs
 	FR	Appuyez sur DROITE pour arrêter l'ajout de morceaux
 
-PLUGIN_DYNAMICPLAYLISTS3_STOPADDINGSONGS
-	EN	Stop adding songs
-	FR	Arrêter l'ajout de morceaux
+PLUGIN_DYNAMICPLAYLISTS3_ACTIVEDPL
+	EN	** Active ** playlist: 
+	FR	Liste de lecture dynamique ** active **: 
 
 PLUGIN_DYNAMICPLAYLISTS3_DISABLE
 	EN	Stop adding songs
@@ -863,6 +863,10 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RANDOM_IGNORE_SELECTEDPL
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_VLIB_RANDOM
 	EN	Songs - random from selected virtual library
 	FR	Morceaux - aléatoire sur la bibliothèque virtuelle sélectionnée
+
+PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_VLIB_GENRE_DECADE_MINRATING
+	EN	Songs - random from selected virtual library (by genre, decade + min. rating)
+	FR	Morceaux - aléatoire sur la bibliothèque virtuelle sélectionnée (par genre, décennie + note min.)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED_MINRATING
 	EN	Songs - most played (min. rating)

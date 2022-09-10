@@ -14,7 +14,7 @@
 [% END %]
 
 [% BLOCK dynamicPlayListStopAddingLink %]
-	[% link='cmdlink' cmdimage='dpl_stop.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_STOPADDINGSONGS' %]
+	[% link='cmdlink' cmdimage='dpl_stop.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_DISABLE' %]
 		[% WRAPPER $link noTarget=1 %]
 			href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_list.html?p0=dynamicplaylist&amp;p1=playlist&amp;p2=play&amp;p3=disable&amp;player=[% player |uri%]" onClick="setTimeout('document.location.reload(true)',500)"
 		[% END %]
