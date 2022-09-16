@@ -1,0 +1,171 @@
+<style>details summary{cursor:pointer;outline:none;margin-bottom:10px;}details summary > *{display:inline;}.dpllist_source{padding-left: 15px;}.categoryheader{font-weight:600;text-transform:capitalize;}.playlists td:first-child {padding-left:10px;min-width:360px;}.apcsection{[% IF !apcenabled %]display:none;[% END %]}.apcbutton{padding-left:2px;padding-right:10px;}</style>
+[% page = "PLUGIN_DYNAMICPLAYLISTS3" %]
+[% PROCESS settings/header.html %]
+
+[% PROCESS plugins/DynamicPlaylists3/settings/subpage_chooser.html %]
+	[% IF pluginDynamicPlaylists3Groups.size>0 %]
+		[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SELECT_GROUPS" desc="" %]
+			<table border="0">
+				[%- FOREACH group IN pluginDynamicPlaylists3Groups %]
+				[% IF group.name.search('Context menu lists') == false %]
+				<tr>
+					[%- groupid = "playlist_" _ group.id %]
+					<td colspan="3"><input type="checkbox" name="[% groupid %]" id="[% groupid %]" value="1" [% group.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
+					<label for="[% groupid %]">[% group.displayname | html %]</label></td>
+				</tr>
+				[%- END %]
+				[% END %]
+			</table>
+		[% END %]
+	[% END %]
+<div class="apcsection">
+<br>
+	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APC_PLAYLISTS_BATCH" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APC_PLAYLISTS_BATCH_DESC" %]
+	<span class="apcbutton"><input style="margin-top:-1px;" name="apc_dpl3only" type="submit" class="stdclick" value="[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APCDUPES_ENABLE_BUTTON_DPL3ONLY" | string %]"></span>
+	<span class="apcbutton"><input style="margin-top:-1px;" name="apc_apconly" type="submit" class="stdclick" value="[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APCDUPES_ENABLE_BUTTON_APCONLY" | string %]"></span>
+	<span class="apcbutton"><input style="margin-top:-1px;" name="apc_both" type="submit" class="stdclick" value="[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_APCDUPES_ENABLE_BUTTON_BOTH" | string %]"></span>
+	[% END %]
+</div>
+<br>
+	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SELECT_PLAYLISTS" desc="" %]
+		[% FOREACH category = ['songs', 'artists', 'albums', 'genres', 'years', 'playlists'] %]
+			<details><summary><span class="categoryheader">[% categorylangstrings.$category %]</span></summary>
+				<table border="0">
+					[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
+						[% IF item.menulisttype != "contextmenu" && item.playlistcategory == category %]
+						<tr class="playlists">
+							[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
+							<td><input type="checkbox" name="[% playlistid %]" id="[% playlistid %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
+							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> ([% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SOURCE" | string %]: [% item.dynamicplaylistpluginshortname | html %])</td>
+						</tr>
+						[% END %]
+					[%- END %]
+				</table>
+				<br>
+			</details>
+		[% END %]
+		[% IF savedstaticPlaylists %]
+			<details><summary><span class="categoryheader">[% "PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_STATICPLAYLISTS" | string %]</span></summary>
+				<table border="0">
+					[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
+						[% IF item.menulisttype != "contextmenu" && item.playlistcategory == 'static LMS playlists' %]
+						<tr class="playlists">
+							[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
+							<td><input type="checkbox" name="[% playlistid %]" id="[% playlistid %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
+							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> ([% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SOURCE" | string %]: [% item.dynamicplaylistpluginshortname | html %])</td>
+						</tr>
+						[% END %]
+					[%- END %]
+				</table>
+				<br>
+			</details>
+		[% END %]
+		[% IF unclassifiedPlaylists %]
+			<details><summary>[% "PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_NOTCLASSIFIED" | string %]</summary>
+				<table border="0">
+					[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
+						[% IF item.menulisttype != "contextmenu" && NOT item.playlistcategory %]
+						<tr class="playlists">
+							[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
+							<td><input type="checkbox" name="[% playlistid %]" id="[% playlistid %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
+							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> ([% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SOURCE" | string %]: [% item.dynamicplaylistpluginshortname | html %])</td>
+						</tr>
+						[% END %]
+					[%- END %]
+				</table>
+			</details>
+		[% END %]
+	[% END %]
+
+	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SELECT_PLAYLISTS_CONTEXTMENU" desc="" %]
+		[% FOREACH category = ['artists', 'albums', 'genres', 'years', 'playlists'] %]
+			<details><summary><span class="categoryheader">[% categorylangstrings.$category %]</span></summary>
+				<table border="0">
+					[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
+						[% IF item.menulisttype == "contextmenu" && item.playlistcategory == category %]
+						<tr class="playlists">
+							[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
+							<td><input type="checkbox" name="[% playlistid %]" id="[% playlistid %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
+							<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> ([% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SOURCE" | string %]: [% item.dynamicplaylistpluginshortname | html %])</td>
+						</tr>
+						[% END %]
+					[%- END %]
+				</table>
+				<br>
+			</details>
+		[% END %]
+		[% IF unclassifiedContextMenuPlaylists %]
+			<details><summary>[% "PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_WEBLIST_NOTCLASSIFIED" | string %]</summary>
+				<table border="0">
+				[% FOREACH item IN pluginDynamicPlaylists3PlayLists.values.sort('playlistsortname') %]
+					[% IF item.menulisttype == "contextmenu" && NOT item.playlistcategory %]
+					<tr class="playlists">
+						[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
+						<td><input type="checkbox" name="[% playlistid %]" id="[% playlistid %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
+						<label for="[% playlistid %]">[% item.name | html %]</label></td><td class="dpllist_source"> ([% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_SOURCE" | string %]: [% item.dynamicplaylistpluginshortname | html %])</td>
+					</tr>
+					[% END %]
+				[%- END %]
+				</table>
+			</details>
+		[%- END %]
+	[% END %]
+	[% WRAPPER setting title="" %]
+		<span id="plselectbutton"></span>
+	[% END %]
+	<script type="text/javascript">
+		var f = document.settingsForm;
+		var numSelected = 0;
+		var numCheckBoxes = 0;
+		var selectAllPlaylistsString = '[% "PLUGIN_DYNAMICPLAYLISTS3_SELECT_PLAYLISTS_ALL" | string %]';
+		var selectNonePlaylistsString = '[% "PLUGIN_DYNAMICPLAYLISTS3_SELECT_PLAYLISTS_NONE" | string %]';
+
+		// Work out how many checkboxes are initially selected
+		for (var i=0; i < f.elements.length; i++) {
+			if (f.elements[i].type == 'checkbox' && String(f.elements[i].name).substring(0,9) == 'playlist_') {
+				numCheckBoxes++;
+				if (f.elements[i].checked) {
+					numSelected++;
+				}
+			}
+		}
+
+		// Select none if all are selected, else select all
+		function selectAllPlaylists() {
+			var newState = numSelected != numCheckBoxes;
+
+			for (var i=0; i < f.elements.length; i++) {
+				if (f.elements[i].type == 'checkbox' && (String(f.elements[i].name).substring(0,9) == 'playlist_' || newState==0)) {
+					f.elements[i].checked = newState;
+				}
+			}
+			if (newState) {
+				numSelected = numCheckBoxes;
+				f.selectAllPlaylistsButton.value = selectNonePlaylistsString;
+			} else {
+				numSelected = 0;
+				f.selectAllPlaylistsButton.value = selectAllPlaylistsString;
+			}
+		}
+
+		// Increase/decrease num selected every time a checkbox changes
+		function changeNumSelected(checkBox) {
+			if (checkBox.checked && String(checkBox.name).substring(0,9) == 'playlist_') {
+				numSelected++;
+			} else if(String(checkBox.name).substring(0,9) == 'playlist_') {
+				numSelected--;
+			}
+
+			if (numSelected == numCheckBoxes) {
+				f.selectAllPlaylistsButton.value = selectNonePlaylistsString;
+			} else {
+				f.selectAllPlaylistsButton.value = selectAllPlaylistsString;
+			}
+		}
+
+		// Write the button using js, so it won't appear if js isn't enabled/available
+		var buttonhtml = '<input type="button" value="' + (numSelected == numCheckBoxes ? selectNonePlaylistsString : selectAllPlaylistsString)
+					 + '" id="selectAllPlaylistsButton" onclick="selectAllPlaylists()">';
+		document.getElementById("plselectbutton").innerHTML = buttonhtml;
+	</script>
+[% PROCESS settings/footer.html %]
