@@ -61,8 +61,8 @@ PLUGIN_DYNAMICPLAYLISTS3_PRESS_RIGHT
 	FR	Appuyez sur DROITE pour arrêter l'ajout de morceaux
 
 PLUGIN_DYNAMICPLAYLISTS3_ACTIVEDPL
-	EN	** Active ** playlist: 
-	FR	Liste de lecture dynamique ** active **: 
+	EN	** Active ** playlist:
+	FR	Liste de lecture dynamique ** active **:
 
 PLUGIN_DYNAMICPLAYLISTS3_DISABLE
 	EN	Stop adding songs
@@ -827,6 +827,10 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_PLAYCOUNT
 	EN	Songs - RATED (un-/played)
 	FR	Morceaux - notés (non-/joués)
+
+PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_PERCENTAGETOPRATED
+	EN	Songs - RATED (with % of top rated songs)
+	FR	Morceaux - notés (avec un % de morceaux bien notés)
 
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_MINRATING
 	EN	Songs - RATED (choose minimum rating)
