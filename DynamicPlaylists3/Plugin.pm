@@ -264,8 +264,6 @@ sub initPlayLists {
 	my $client = shift;
 	$log->debug('Searching for playlists');
 
-	($playLists, $playListItems, $localDynamicPlaylists) = undef;
-
 	readParseLocalDynamicPlaylists($client);
 	#$log->debug('localDynamicPlaylists = '.Dumper($localDynamicPlaylists));
 
