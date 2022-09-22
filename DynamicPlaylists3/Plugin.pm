@@ -509,7 +509,7 @@ sub getPlayList {
 
 # Find tracks matching parameters and add them to the playlist
 sub findAndAdd {
-	my ($client, $type, $offset, $limit, $addOnly, $continue) = @_;
+	my ($client, $type, $offset, $limit, $addOnly, $continue, $unlimited) = @_;
 	$log->debug("Starting random selection of max. $limit items for type: $type");
 	my $started = time();
 
@@ -523,8 +523,12 @@ sub findAndAdd {
 	my $noOfFoundItems = 0;
 	my $noOfRetriesToGetUnplayedTracks = 10;
 	my $minUnplayedTracks = $prefs->get('min_number_of_unplayed_tracks');
-	for (my $i = 1; $i <= $noOfRetriesToGetUnplayedTracks; $i++) {
+
+
+	my $i = 1;
+	while ($i <= $noOfRetriesToGetUnplayedTracks) {
 		my $iterationStartTime = time();
+		$log->debug('limit = '.$limit.' -- offset = '.$offset.' -- number of found items = '.$noOfFoundItems);
 		$items = getTracksForPlaylist($masterClient, $playlist, $limit, $offset + $noOfFoundItems);
 		if ($items && $items eq 'error') {
 			$log->error('Error trying to find tracks. Please check your playlist definition.');
@@ -539,9 +543,9 @@ sub findAndAdd {
 		$noOfFoundItems = $noOfFoundItems + (scalar @{$items});
 		push (@{$totalItems}, @{$items});
 		$log->debug('Total items found so far = '.scalar(@{$totalItems}));
-
-		if ($limit == 2000) {
+		if ($unlimited) {
 			if (scalar(@{$totalItems}) > $minUnplayedTracks) {
+				$log->debug('Unlimited option: totalItems '.scalar(@{$totalItems}).' > '.$minUnplayedTracks.' minUnplayedTracks');
 				last;
 			}
 		} else {
@@ -553,6 +557,7 @@ sub findAndAdd {
 			}
 			last if (defined $totalItems && scalar(@{$totalItems}) >= $limit);
 		}
+		$i++;
 	}
 	if (!defined $totalItems || scalar(@{$totalItems}) == 0) {
 		$log->info('Found no tracks matching your search parameter or playlist definition for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
@@ -627,7 +632,6 @@ sub filterTracks {
 sub playRandom {
 	# If addOnly, then track(s) are appended to end. Otherwise, a new playlist is created.
 	my ($client, $type, $addOnly, $showFeedback, $forcedAdd, $continue) = @_;
-
 	my $masterClient = masterOrSelf($client);
 
 	Slim::Utils::Timers::killTimers($client, \&playRandom);
@@ -714,6 +718,7 @@ sub playRandom {
 	my $numItems = 0;
 	my $maxLimit = 2000; # prevents faulty playlist definitions from accidentally adding complete libraries
 	my $minLimit = 1;
+	my $unlimited;
 	my $minNumberUnplayedSongs = $prefs->get('min_number_of_unplayed_tracks');
 	my $maxNumberUnplayedTracks = $prefs->get('max_number_of_unplayed_tracks');
 	my $playlistLimitOption = $playlist->{'playlistlimitoption'};
@@ -722,6 +727,7 @@ sub playRandom {
 	if (defined($playlistLimitOption)) {
 		if ($playlistLimitOption eq 'unlimited') {
 			$maxNumberUnplayedTracks = $maxLimit;
+			$unlimited = 1;
 		} else {
 			$playlistLimitOption = isInt($playlist->{'playlistlimitoption'}, 1, $maxLimit, 1, 1);
 			$minNumberUnplayedSongs = ($playlistLimitOption && $playlistLimitOption < $prefs->get('min_number_of_unplayed_tracks')) ? $playlistLimitOption : $prefs->get('min_number_of_unplayed_tracks');
@@ -779,7 +785,8 @@ sub playRandom {
 				$numItems,
 				# 2nd time round just add tracks to end
 				$addOnly,
-				$continue);
+				$continue,
+				$unlimited);
 		$log->debug('number of added items = '.$count);
 
 		$offset += $count;
