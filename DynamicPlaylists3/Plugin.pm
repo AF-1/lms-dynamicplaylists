@@ -4985,12 +4985,11 @@ sub readParseLocalDynamicPlaylists {
 		} else {
 			$log->debug('Checking dir: '.$localDefDir);
 			my $fileExtension = "\\.sql\$";
-			my $fileExtensionLegacy = "\\.sql\\.xml\$";
-			my @dircontents = Slim::Utils::Misc::readDirectory($localDefDir, "sql|sql\\.xml", 'dorecursive');
+			my @dircontents = Slim::Utils::Misc::readDirectory($localDefDir, "sql", 'dorecursive');
 			$log->debug("directory contents for dir '$localDefDir': ".Dumper(\@dircontents));
 
 			for my $item (@dircontents) {
-				next unless $item =~ /($fileExtension|$fileExtensionLegacy)$/;
+				next unless $item =~ /$fileExtension$/;
 				next if -d $item;
 				my $content = eval {read_file($item)};
 				my $plDirName = dirname($item);
@@ -5065,8 +5064,7 @@ sub parseContent {
 				if (!$name) {
 					my $file = $item;
 					my $fileExtension = "\\.sql\$";
-					my $fileExtensionLegacy = "\\.sql\\.xml\$";
-					$item =~ s/($fileExtension|$fileExtensionLegacy)$//;
+					$item =~ s/$fileExtension$//;
 					$name = $item; # playlist name = playlistid if no name found in file
 				}
 			}
@@ -5157,8 +5155,7 @@ sub parseContent {
 			#my $playlistid = escape($name,"^A-Za-z0-9\-_");
 			my $file = $item;
 			my $fileExtension = "\\.sql\$";
-			my $fileExtensionLegacy = "\\.sql\\.xml\$";
-			$item =~ s/($fileExtension|$fileExtensionLegacy)$//;
+			$item =~ s/$fileExtension$//;
 			my $playlistid = $item;
 			$name =~ s/\'\'/\'/g;
 
