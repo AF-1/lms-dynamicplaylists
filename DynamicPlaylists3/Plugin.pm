@@ -528,15 +528,17 @@ sub findAndAdd {
 	my $i = 1;
 	while ($i <= $noOfRetriesToGetUnplayedTracks) {
 		my $iterationStartTime = time();
-		$log->debug('limit = '.$limit.' -- offset = '.$offset.' -- number of found items = '.$noOfFoundItems);
+		$log->debug('limit = '.$limit.' -- offset = '.$offset.' -- number of found items so far = '.$noOfFoundItems.' -- iteration = '.$i);
 		$items = getTracksForPlaylist($masterClient, $playlist, $limit, $offset + $noOfFoundItems);
 		if ($items && $items eq 'error') {
 			$log->error('Error trying to find tracks. Please check your playlist definition.');
 			last;
 		}
-		next if (!defined $items || scalar(@{$items}) == 0);
-		$log->debug("Iteration $i returned ".(scalar @{$items}).' unfiltered '.((scalar @{$items}) == 1 ? 'item' : 'items'));
-
+		if (!defined $items || scalar(@{$items}) == 0) {
+			$log->debug("Iteration $i didn't return any items");
+			$i++;
+			next;
+		}
 		$items = filterTracks($masterClient, $items, $totalItems);
 		$log->debug("Iteration $i returned ".(scalar @{$items}).((scalar @{$items}) == 1 ? ' item' : ' items').' after filtering');
 
