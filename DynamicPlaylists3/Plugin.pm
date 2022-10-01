@@ -78,7 +78,7 @@ my $deleteAllQueues = 0;
 my %empty = ();
 my %choiceMapping;
 
-my ($dstm_enabled, $apc_enabled, $material_enabled);
+my ($dplc_enabled, $dstm_enabled, $apc_enabled, $material_enabled);
 my %categorylangstrings;
 my %customsortnames;
 
@@ -148,6 +148,7 @@ sub initPlugin {
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'jivesaveasfav'], [1, 1, 1, \&_cliJiveSaveFavWithParams]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'contextmenujive'], [1, 1, 1, \&cliContextMenuJiveHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'preselect'], [1, 1, 1, \&_preselectionMenuJive]);
+	Slim::Control::Request::addDispatch(['dynamicplaylist', 'refreshplaylists'], [1, 0, 0, \&cliRefreshPlaylists]);
 	Slim::Control::Request::addDispatch(['dynamicplaylistmultipletoggle', '_paramtype', '_item', '_value'], [1, 0, 0, \&_toggleMultipleSelectionState]);
 	Slim::Control::Request::addDispatch(['dynamicplaylistmultipleall', '_paramtype', '_value'], [1, 0, 0, \&_multipleSelectAllOrNone]);
 
@@ -157,6 +158,7 @@ sub initPlugin {
 
 sub postinitPlugin {
 	my $class = shift;
+	$dplc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::DynamicPlaylistCreator::Plugin');
 	$apc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::AlternativePlayCount::Plugin');
 	$material_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin');
 	initPlayLists();
@@ -264,7 +266,7 @@ sub initPlayLists {
 	my $client = shift;
 	$log->debug('Searching for playlists');
 
-	readParseLocalDynamicPlaylists($client);
+	readParseLocalDynamicPlaylists();
 	#$log->debug('localDynamicPlaylists = '.Dumper($localDynamicPlaylists));
 
 	my %localPlayLists = ();
@@ -296,6 +298,8 @@ sub initPlayLists {
 				} elsif (starts_with($item, 'dplstaticpl_') == 0) {
 					$pluginshortname = string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_STATICPL');
 					$savedstaticPlaylists = 'found saved static playlists';
+				} elsif (starts_with($item, 'dplccustom_') == 0) {
+					$pluginshortname = 'Dynamic Playlist Creator';
 				} else {
 					$pluginshortname =~ s/^Plugins::|::Plugin+$//g;
 				}
@@ -3095,6 +3099,30 @@ sub cliStopPlaylist {
 	$log->debug('Exiting cliStopPlaylist');
 }
 
+sub cliRefreshPlaylists {
+	$log->debug('Entering cliRefreshPlaylists');
+	my $request = shift;
+	my $client = $request->client();
+
+	if ($request->isNotCommand([['dynamicplaylist'], ['refreshplaylists']])) {
+		$log->warn('Incorrect command');
+		$request->setStatusBadDispatch();
+		$log->debug('Exiting cliRefreshPlaylists');
+		return;
+	}
+	if (!defined $client) {
+		$log->warn('Client required');
+		$request->setStatusNeedsClient();
+		$log->debug('Exiting cliRefreshPlaylists');
+		return;
+	}
+
+	initPlayLists($client);
+	initPlayListTypes();
+
+	$request->setStatusDone();
+	$log->debug('Exiting cliRefreshPlaylists');
+}
 
 
 ### IP3k / VFD devices ###
@@ -3421,7 +3449,7 @@ sub setModeChooseParameters {
 
 		# Add individual selection items
 		if ($parameter->{'type'} eq 'multiplegenres') {
-			$header = '{PLUGIN_DYNAMICPLAYLISTS3_CHOOSE_GENRES}';
+			$header = '{PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTGENRES}';
 			my $genres = getGenres($client, $limitingParamSelVLID);
 			foreach my $genre (getSortedGenres($client, $limitingParamSelVLID)) {
 				$genres->{$genre}->{'value'} = $genres->{$genre}->{'id'};
@@ -3430,7 +3458,7 @@ sub setModeChooseParameters {
 			}
 		}
 		if ($parameter->{'type'} eq 'multipledecades') {
-			$header = '{PLUGIN_DYNAMICPLAYLISTS3_CHOOSE_DECADES}';
+			$header = '{PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTDECADES}';
 			my $decades = getDecades($client, $limitingParamSelVLID);
 			foreach my $decade (getSortedDecades($client, $limitingParamSelVLID)) {
 				$decades->{$decade}->{'value'} = $decade;
@@ -3439,7 +3467,7 @@ sub setModeChooseParameters {
 			}
 		}
 		if ($parameter->{'type'} eq 'multipleyears') {
-			$header = '{PLUGIN_DYNAMICPLAYLISTS3_CHOOSE_YEARS}';
+			$header = '{PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTYEARS}';
 			my $years = getYears($client, $limitingParamSelVLID);
 			foreach my $year (getSortedYears($client, $limitingParamSelVLID)) {
 				$years->{$year}->{'value'} = $year;
@@ -3448,7 +3476,7 @@ sub setModeChooseParameters {
 			}
 		}
 		if ($parameter->{'type'} eq 'multiplestaticplaylists') {
-			$header = '{PLUGIN_DYNAMICPLAYLISTS3_CHOOSE_PLAYLISTS}';
+			$header = '{PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTPLAYLISTS}';
 			my $staticPlaylists = getStaticPlaylists($client, $limitingParamSelVLID);
 			foreach my $staticPlaylist (getSortedStaticPlaylists($client, $limitingParamSelVLID)) {
 				$staticPlaylists->{$staticPlaylist}->{'value'} = $staticPlaylists->{$staticPlaylist}->{'id'};
@@ -4661,12 +4689,21 @@ sub getDynamicPlayLists {
 			if ($current->{'defaultplaylist'}) {
 				$playlistid = 'dpldefault_'.$playlist;
 				$playlistsortname = '0000001_'.$playlistid;
-			} else {
+			}
+			if ($current->{'customplaylist'}) {
 				$playlistid = 'dplusercustom_'.$playlist;
 				if ((!$current->{'playlistcategory'} || $current->{'playlistcategory'} eq '') && $prefs->get('unclassified_sortbyid')) {
 					$playlistsortname = '0000002_dplusercustom_'.$playlistid;
 				} else {
 					$playlistsortname = '0000002_dplusercustom_'.$current->{'name'};
+				}
+			}
+			if ($current->{'dplcplaylist'}) {
+				$playlistid = 'dplccustom_'.$playlist;
+				if ((!$current->{'playlistcategory'} || $current->{'playlistcategory'} eq '') && $prefs->get('unclassified_sortbyid')) {
+					$playlistsortname = '0000003_dplccustom_'.$playlistid;
+				} else {
+					$playlistsortname = '0000003_dplccustom_'.$current->{'name'};
 				}
 			}
 			my %currentResult = (
@@ -4721,7 +4758,7 @@ sub getNextDynamicPlayListTracks {
 	my $localDynamicPlaylistID = $dynamicplaylist->{'id'};
 	my $dbh = getCurrentDBH();
 
-	if ((starts_with($dynamicplaylistID, 'dpldefault_') == 0) || (starts_with($dynamicplaylistID, 'dplusercustom_') == 0)) {
+	if ((starts_with($dynamicplaylistID, 'dpldefault_') == 0) || (starts_with($dynamicplaylistID, 'dplusercustom_') == 0) || (starts_with($dynamicplaylistID, 'dplccustom_') == 0)) {
 		$log->debug('Getting tracks for dynamic playlist: \''.$dynamicplaylist->{'name'}.'\' with ID: '.$dynamicplaylist->{'id'});
 		$log->debug("limit = $limit, offset = $offset, parameters = ".Dumper($parameters));
 
@@ -4970,20 +5007,26 @@ sub replaceParametersInSQL {
 ### read + parse built-in + custom dynamic playlist FILES ###
 
 sub readParseLocalDynamicPlaylists {
-	my $client = shift;
 	my $pluginPlaylistFolder = $prefs->get('pluginplaylistfolder');
 	my $customPlaylistFolder = $prefs->get('customplaylistfolder');
+	my $dplc_customPLfolder = (preferences('plugin.dynamicplaylistcreator')->get('customplaylistfolder') || '') if $dplc_enabled;
 	my $localCustomDynamicPlaylists;
+
 	my @localDefDirs = ($customPlaylistFolder);
 	if (!$localBuiltinDynamicPlaylists) {
-		@localDefDirs = ($pluginPlaylistFolder, $customPlaylistFolder);
+		push @localDefDirs, $pluginPlaylistFolder;
 		$log->debug('Built-in dpls not parsed yet. Including them in search.');
+	}
+
+	if ($dplc_enabled && $dplc_customPLfolder) {
+		push @localDefDirs, $dplc_customPLfolder;
+		$log->debug("Including DynamicPlaylistCreator folder '$dplc_customPLfolder' in search.");
 	}
 	$log->debug('Searching for dynamic playlist definitions in local directories');
 
 	for my $localDefDir (@localDefDirs) {
 		if (!defined $localDefDir || !-d $localDefDir) {
-			$log->debug('Skipping scan for custom definitions - directory is undefined or does not exist');
+			$log->debug('Skipping scan for custom definitions - directory is undefined or does not exist: '.Dumper($localDefDir));
 		} else {
 			$log->debug('Checking dir: '.$localDefDir);
 			my $fileExtension = "\\.sql\$";
@@ -5013,16 +5056,22 @@ sub readParseLocalDynamicPlaylists {
 						if ($plDirName =~ /extplugin_APC/) {
 							next unless $apc_enabled;
 						}
-						$parsedContent = parseContent($client, $item, $content, undef, 'defaultplaylist');
+						$parsedContent = parseContent($item, $content, undef, 'parseStrings');
 						$parsedContent->{'defaultplaylist'} = 1;
 						$parsedContent->{'playlistsortname'} = ''.$parsedContent->{'name'};
 						if (($plDirName =~ /extplugin_APC/) && $apc_enabled) {
 								$parsedContent->{'apcplaylist'} = 1;
 						}
 						$localBuiltinDynamicPlaylists->{$parsedContent->{'id'}} = $parsedContent;
-					} else {
-						$parsedContent = parseContent($client, $item, $content);
+					}
+					if ($localDefDir eq $customPlaylistFolder) {
+						$parsedContent = parseContent($item, $content);
 						$parsedContent->{'customplaylist'} = 1;
+						$localCustomDynamicPlaylists->{$parsedContent->{'id'}} = $parsedContent;
+					}
+					if ($dplc_customPLfolder && $localDefDir eq $dplc_customPLfolder) {
+						$parsedContent = parseContent($item, $content, undef, 'parseStrings');
+						$parsedContent->{'dplcplaylist'} = 1;
 						$localCustomDynamicPlaylists->{$parsedContent->{'id'}} = $parsedContent;
 					}
 				}
@@ -5038,7 +5087,7 @@ sub readParseLocalDynamicPlaylists {
 }
 
 sub parseContent {
-	my ($client, $item, $content, $items, $defaultPlaylist) = @_;
+	my ($item, $content, $items, $parseStrings) = @_;
 
 	my $errorMsg = undef;
 	if ($content) {
@@ -5062,7 +5111,7 @@ sub parseContent {
 		for my $line (@playlistDataArray) {
 			#Lets add linefeed again, to make sure playlist looks ok when editing
 			if (!$name) {
-				$name = $defaultPlaylist ? parsePlaylistName($line, 'defaultplaylist') : parsePlaylistName($line);
+				$name = $parseStrings ? parsePlaylistName($line, 'parseStrings') : parsePlaylistName($line);
 				if (!$name) {
 					my $file = $item;
 					my $fileExtension = "\\.sql\$";
@@ -5078,7 +5127,7 @@ sub parseContent {
 
 			# use "--PlaylistName:" as name of playlist
 			#$line =~ s/^\s*--\s*PlaylistName\s*[:=]\s*//io;
-			my $parameter = $defaultPlaylist ? parseParameter($line, 'defaultplaylist') : parseParameter($line);
+			my $parameter = $parseStrings ? parseParameter($line, 'parseStrings') : parseParameter($line);
 			my $action = parseAction($line);
 			my $listType = parseMenuListType($line);
 			my $category = parseCategory($line);
@@ -5241,7 +5290,7 @@ sub parseContent {
 }
 
 sub parsePlaylistName {
-	my ($line, $defaultPlaylist) = @_;
+	my ($line, $parseStrings) = @_;
 	if ($line =~ /^\s*--\s*PlaylistName\s*[:=]\s*/) {
 		my $name = $line;
 		$name =~ s/^\s*--\s*PlaylistName\s*[:=]\s*//io;
@@ -5249,7 +5298,7 @@ sub parsePlaylistName {
 		$name =~ s/^\s+//;
 
 		if ($name) {
-			if ($defaultPlaylist) {
+			if ($parseStrings) {
 				$name = string($name) || $name;
 			}
 			return $name;
@@ -5263,7 +5312,7 @@ sub parsePlaylistName {
 }
 
 sub parseParameter {
-	my ($line, $defaultPlaylist) = @_;
+	my ($line, $parseStrings) = @_;
 	my $unknownString = string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_UNKNOWN');
 
 	if ($line =~ /^\s*--\s*PlaylistParameter\s*\d\s*[:=]\s*/) {
@@ -5278,7 +5327,7 @@ sub parseParameter {
 
 		$parameterName =~ s/^\s+//;
 		$parameterName =~ s/\s+$//;
-		if ($parameterName && $defaultPlaylist) {
+		if ($parameterName && $parseStrings) {
 			$parameterName = string($parameterName) || $parameterName;
 		}
 
