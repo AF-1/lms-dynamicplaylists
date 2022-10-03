@@ -22,6 +22,12 @@ create temporary table randomweightedratingslow as select distinct tracks.url as
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
+		and not exists (select * from tracks t2,genre_track,genres
+						where
+							t2.id=tracks.id and
+							tracks.id=genre_track.track and
+							genre_track.genre=genres.id and
+							genres.name in ('PlaylistExcludedGenres'))
 	group by tracks.id
 	order by random()
 	limit (100-'PlaylistParameter1');
@@ -42,6 +48,12 @@ create temporary table randomweightedratingshigh as select distinct tracks.url a
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
+		and not exists (select * from tracks t2,genre_track,genres
+						where
+							t2.id=tracks.id and
+							tracks.id=genre_track.track and
+							genre_track.genre=genres.id and
+							genres.name in ('PlaylistExcludedGenres'))
 	group by tracks.id
 	order by random()
 	limit 'PlaylistParameter1';
