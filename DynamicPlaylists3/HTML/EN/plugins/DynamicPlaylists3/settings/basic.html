@@ -59,6 +59,10 @@
 	</select>
 [% END %]
 
+[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_ENABLEPARAMDPLSAVE" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_ENABLEPARAMDPLSAVE_DESC" %]
+	<input name="pref_paramsdplsaveenabled" id="paramsdplsaveenabled" type="checkbox" [% IF prefs.paramsdplsaveenabled %]checked="checked" [% END %] value="1" class="stdedit">
+[% END %]
+
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_REMEMBERACTIVEPLAYLIST" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_REMEMBERACTIVEPLAYLIST_DESC" %]
 	<input name="pref_rememberactiveplaylist" id="rememberactiveplaylist" type="checkbox" [% IF prefs.rememberactiveplaylist %]checked="checked" [% END %] value="1" class="stdedit">
 [% END %]

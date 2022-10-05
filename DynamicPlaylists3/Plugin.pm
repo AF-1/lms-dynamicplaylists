@@ -1312,6 +1312,7 @@ sub handleWebList {
 	$log->debug("pluginData 'cachedAlbums' (web) = ".Dumper($preselectionListAlbums));
 	$params->{'pluginDynamicPlaylists3preselectionListArtists'} = 'display' if (keys %{$preselectionListArtists} > 0);
 	$params->{'pluginDynamicPlaylists3preselectionListAlbums'} = 'display' if (keys %{$preselectionListAlbums} > 0);
+	$params->{'paramsdplsaveenabled'} = $prefs->get('paramsdplsaveenabled');
 
 	$params->{'pluginDynamicPlaylists3Context'} = getPlayListContext($client, $params, $playListItems, 1);
 	$params->{'pluginDynamicPlaylists3Groups'} = getPlayListGroupsForContext($client, $params, $playListItems, 1);
@@ -2687,12 +2688,6 @@ sub _cliJiveActionsMenuHandler {
 		$cnt++;
 	}
 
-	# space/empty line
-	$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-	$request->addResultLoop('item_loop', $cnt, 'text', ' ');
-	$request->addResultLoop('item_loop', $cnt, 'type', 'text');
-	$cnt++;
-
 	## save dpl with currently selected params as fav
 	my %dplParams;
 	for my $k (keys %{$params}) {
@@ -2703,8 +2698,14 @@ sub _cliJiveActionsMenuHandler {
 	}
 	my $paramCount = scalar keys %dplParams;
 
-	# show if we have dplparams
-	if ($paramCount > 0) {
+	# show if we have dplparams and display enabled in prefs
+	if ($paramCount > 0 && $prefs->get('paramsdplsaveenabled')) {
+		# space/empty line
+		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
+		$request->addResultLoop('item_loop', $cnt, 'text', ' ');
+		$request->addResultLoop('item_loop', $cnt, 'type', 'text');
+		$cnt++;
+
 		my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
 	my $playlistID = $params->{'playlistid'};
 		my $input = {
@@ -2719,7 +2720,7 @@ sub _cliJiveActionsMenuHandler {
 			$paramAppendix .= '&' unless $i == $paramCount;
 		}
 
-		# Save dpl as fav
+		# Save dpl as fav (play)
 		my $favUrl = 'dynamicplaylist://'.$playlistID.'?'.$paramAppendix;
 		my $actions_saveFavName = {
 			go => {
@@ -2742,7 +2743,7 @@ sub _cliJiveActionsMenuHandler {
 		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'home');
 		$cnt++;
 
-		# Save dpl as fav
+		# Save dpl as fav (add)
 		my $favUrlAddOnly = 'dynamicplaylistaddonly://'.$playlistID.'?'.$paramAppendix;
 		my $actions_saveFavNameAddOnly = {
 			go => {

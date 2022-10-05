@@ -162,6 +162,14 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_MINTRACKS_ALBUM_DESC
 	EN	<b>Albums</b> that have less than the minimum number of tracks you set here will be ignored in dynamic playlists that use the <i>PlaylistMinAlbumTracks</i> parameter (some built-in playlists use this).
 	FR	Les <b>albums</b> qui ont moins de morceaux que le nombre minimum défini ici seront ignorés dans les listes de lecture dynamiques qui utilisent le paramètre <i>PlaylistMinAlbumTracks</i> (certaines listes de lecture intégrées l'utilisent)
 
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_ENABLEPARAMDPLSAVE
+	EN	Allow adding dynamic playlists <b>with</b> parameters to <b>favorites</b> 
+	FR	Ajouter des listes de lecture dynamiques <b>avec</b> des paramètres aux <b>favoris</b>
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_ENABLEPARAMDPLSAVE_DESC
+	EN	Dynamic playlists, whose value users have to specify only when starting the playlist, can be saved as favorites with this. Some parameters like contributors, albums, genres or playlists may have a different ID value after a 'delete' rescan. Those favorites may no longer work after such a rescan. More information in the FAQ.
+	FR	Les listes de lecture dynamiques, dont les utilisateurs ne doivent spécifier la valeur qu'au moment de lancer la liste de lecture, peuvent être sauvegardées comme favoris grâce à cette fonction. Certains paramètres tels que les contributeurs, les albums, les genres ou les listes de lecture peuvent avoir une valeur ID différente après un rescan. Il est possible que ces favoris ne fonctionnent plus après un tel rescan. Plus d'informations dans la FAQ.
+
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_REMEMBERACTIVEPLAYLIST
 	EN	Remember active dynamic playlist
 	FR	Se souvenir de la liste de lecture dynamique active
