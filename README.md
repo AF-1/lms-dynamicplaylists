@@ -161,7 +161,7 @@ If SQLPlayList displays an error at the bottom of its main page where it used to
 
 ## Bug reports
 
-If you think that you've fond a bug, open an [**issue here on GitHub**](https://github.com/AF-1/lms-dynamicplaylists/issues) and fill out the ***Bug report* issue template**.<br>
+If you think that you've found a bug, open an [**issue here on GitHub**](https://github.com/AF-1/lms-dynamicplaylists/issues) and fill out the ***Bug report* issue template**.<br>
 **Don't** post bug reports on the LMS forum.
 <br><br><br><hr>
 <sup>1</sup> Based on Erland's <i>DynamicPlayList</i> plugin.<br>
