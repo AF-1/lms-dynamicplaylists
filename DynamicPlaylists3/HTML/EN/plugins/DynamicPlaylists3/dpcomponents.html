@@ -8,7 +8,6 @@
 		[% WRAPPER editlink noTarget=1 -%]href="[% webroot %][% playlist.url %]&amp;player=[% player | uri %]"[%- END %]
 	[%- END %]
 	[% IF !playlist.parameters %]
-	[% playlist.parameters %]
 		[%
 			itemobj = {
 				url = "dynamicplaylist://${playlist.dynamicplaylistid}"
@@ -17,7 +16,7 @@
 			PROCESS favoritescontrol isFavorite = playlist.isFavorite
 		%]
 	[% ELSE %]
-		[% IF paramsdplsaveenabled %]
+		[% IF paramsdplsaveenabled or playlist.hasnovolatileparams %]
 		[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="99" parameters=playlist.parameters %]
 		[% END %]
 	[% END %]

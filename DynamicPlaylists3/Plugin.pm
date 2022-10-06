@@ -311,8 +311,19 @@ sub initPlayLists {
 				$playlist->{'dynamicplaylistfavourite'} = (defined($favourite) && $favourite) ? 1 : 0;
 
 				$playlist->{'isFavorite'} = defined(Slim::Utils::Favorites->new($client)->findUrl('dynamicplaylist://'.$playlist->{'dynamicplaylistid'}))?1:0;
+
 				if (defined($playlist->{'parameters'})) {
+					my $hasNoVolatileParam = 1;
 					foreach my $p (keys %{$playlist->{'parameters'}}) {
+						# mark dpls with volatile params whose value may change after delete/wipe rescan
+						my %volatileParams = map { $_ => 1 } ('artist', 'album', 'genre', 'multiplegenres', 'playlist', 'multiplestaticplaylists');
+						my $paramType = $playlist->{'parameters'}->{$p}->{'type'};
+						if ($volatileParams{$paramType}) {
+								$log->debug("Playlist '".$playlist->{'name'}."' contains volatile param type '".$paramType."'");
+								$hasNoVolatileParam = 0;
+						}
+
+						# Use existing value for PlaylistParameter if available
 						if (defined($playLists)
 							&& defined($playLists->{$item})
 							&& defined($playLists->{$item}->{'parameters'})
@@ -325,6 +336,7 @@ sub initPlayLists {
 							$playlist->{'parameters'}->{$p}->{'value'}=$playLists->{$item}->{'parameters'}->{$p}->{'value'};
 						}
 					}
+					$playlist->{'hasnovolatileparams'} = $hasNoVolatileParam;
 				}
 				$localPlayLists{$item} = $playlist;
 
@@ -2689,6 +2701,7 @@ sub _cliJiveActionsMenuHandler {
 	}
 
 	## save dpl with currently selected params as fav
+	# count params
 	my %dplParams;
 	for my $k (keys %{$params}) {
 		$log->debug("Got: $k=".$params->{$k});
@@ -2698,8 +2711,12 @@ sub _cliJiveActionsMenuHandler {
 	}
 	my $paramCount = scalar keys %dplParams;
 
-	# show if we have dplparams and display enabled in prefs
-	if ($paramCount > 0 && $prefs->get('paramsdplsaveenabled')) {
+	# check for volatile params
+	my $playlistID = $params->{'playlistid'};
+	my $hasNoVolatileParams = $playLists->{$playlistID}->{'hasnovolatileparams'};
+
+	# if we have params show if enabled in prefs or params = non-volatile
+	if ($paramCount > 0 && ($prefs->get('paramsdplsaveenabled') || $hasNoVolatileParams)) {
 		# space/empty line
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
 		$request->addResultLoop('item_loop', $cnt, 'text', ' ');
@@ -2707,7 +2724,6 @@ sub _cliJiveActionsMenuHandler {
 		$cnt++;
 
 		my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
-	my $playlistID = $params->{'playlistid'};
 		my $input = {
 			initialText => $playLists->{$playlistID}->{'name'},
 			len => 1,
