@@ -191,20 +191,9 @@ sub initPrefs {
 		randomsavedplaylists => 0,
 		flatlist => 0,
 		structured_savedplaylists => 'on',
-		favouritesname => string('PLUGIN_DYNAMICPLAYLISTS3_FAVOURITES'),
-		pluginplaylistfolder => sub {
-			my @pluginDirs = Slim::Utils::OSDetect::dirsFor('Plugins');
-			for my $plugindir (@pluginDirs) {
-				if (-d catdir($plugindir, 'DynamicPlaylists3', 'Playlists')) {
-					my $pluginPlaylistFolder = catdir($plugindir, 'DynamicPlaylists3', 'Playlists');
-					$log->debug('pluginPlaylistFolder = '.Dumper($pluginPlaylistFolder));
-					return $pluginPlaylistFolder;
-				}
-			}
-			return undef;
-		}
+		favouritesname => string('PLUGIN_DYNAMICPLAYLISTS3_FAVOURITES')
 	});
-
+	refreshPluginPlaylistFolder();
 	createCustomPlaylistFolder();
 
 	$prefs->setValidate(sub {
@@ -5043,7 +5032,7 @@ sub readParseLocalDynamicPlaylists {
 
 	for my $localDefDir (@localDefDirs) {
 		if (!defined $localDefDir || !-d $localDefDir) {
-			$log->debug('Skipping scan for custom definitions - directory is undefined or does not exist: '.Dumper($localDefDir));
+			$log->debug('Directory is undefined or does not exist - skipping scan for dpl definitions in: '.Dumper($localDefDir));
 		} else {
 			$log->debug('Checking dir: '.$localDefDir);
 			my $fileExtension = "\\.sql\$";
@@ -6023,6 +6012,18 @@ sub createCustomPlaylistFolder {
 		return;
 	};
 	$prefs->set('customplaylistfolder', $customPlaylistFolder);
+}
+
+sub refreshPluginPlaylistFolder {
+	# in case you need to switch between manual and LMS repo install
+	my @pluginDirs = Slim::Utils::OSDetect::dirsFor('Plugins');
+	for my $plugindir (@pluginDirs) {
+		if (-d catdir($plugindir, 'DynamicPlaylists3', 'Playlists')) {
+			my $pluginPlaylistFolder = catdir($plugindir, 'DynamicPlaylists3', 'Playlists');
+			$log->debug('pluginPlaylistFolder = '.Dumper($pluginPlaylistFolder));
+			$prefs->set('pluginplaylistfolder', $pluginPlaylistFolder);
+		}
+	}
 }
 
 sub cliIsActive {
