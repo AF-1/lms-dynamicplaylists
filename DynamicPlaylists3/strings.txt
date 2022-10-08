@@ -164,11 +164,11 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_MINTRACKS_ALBUM_DESC
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_ENABLEVOLATILEPARAMDPLSAVE
 	EN	Allow dynamic playlists with <i>volatile</i> parameters as <b>favorites</b> 
-	FR	Permettre l'ajout de listes de lecture dynamiques avec des paramètres <i>volatils</i> aux favoris
+	FR	Permettre l'ajout de listes de lecture dynamiques avec des paramètres <i>volatiles</i> aux favoris
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_ENABLEVOLATILEPARAMDPLSAVE_DESC
 	EN	<b>By default</b>, you <b>can't add</b> dynamic playlists to LMS favorites that will ask for <b>volatile</b> user-input parameters at run-time whose values <b>could change after a rescan</b> (artist, album, genre, multiplegenres, playlist or multiplestaticplaylists).<br><br>With this setting enabled, you can even add dynamic playlists with <b>volatile</b> parameters to LMS favorites. However, keep in mind that such favorites may no longer work after a rescan. More information in the FAQ.
-	FR	Par défaut, vous ne pouvez pas ajouter aux favoris LMS des listes de lecture dynamiques qui demanderont des paramètres <b>volatils</b> au moment de l'exécution et dont les valeurs pourraient changer après une nouvelle analyse (artiste, album, genre, genres multiples, liste de lecture ou listes de lecture multiplestatiques).<br><br>Avec ce paramètre coché, vous pouvez même ajouter des listes de lecture dynamiques avec des paramètres <b>volatils</b> aux favoris LMS. Cependant, n'oubliez pas qu'il est possible que ces favoris ne fonctionnent plus après un rescan. Plus d'informations dans la FAQ.
+	FR	Par défaut, vous ne pouvez pas ajouter aux favoris LMS des listes de lecture dynamiques qui demanderont des paramètres <b>volatiles</b> au moment de l'exécution et dont les valeurs pourraient changer après une nouvelle analyse (artiste, album, genre, genres multiples, liste de lecture ou listes de lecture multiple statiques).<br><br>Avec ce paramètre activé, vous pouvez même ajouter des listes de lecture dynamiques avec des paramètres <b>volatiles</b> aux favoris LMS. Cependant, n'oubliez pas qu'il est possible que ces favoris ne fonctionnent plus après un rescan. Plus d'informations dans la FAQ.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_REMEMBERACTIVEPLAYLIST
 	EN	Remember active dynamic playlist
