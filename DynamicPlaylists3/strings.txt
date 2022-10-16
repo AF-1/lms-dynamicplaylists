@@ -828,6 +828,10 @@ PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_MINRATING
 	EN	Songs - RATED (choose minimum rating)
 	FR	Morceaux - notés (choisir la note minimum)
 
+PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_RATED_EXACTRATING
+	EN	Songs - RATED (choose exact rating)
+	FR	Morceaux - notés (choisir la note exacte)
+
 PLUGIN_DYNAMICPLAYLISTS3_BUILTIN_PLAYLIST_SONGS_TOPRATED
 	EN	Songs - top RATED
 	FR	Morceaux - mieux notés
@@ -1407,6 +1411,10 @@ PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTPLAYLIST_IGNORE
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTMINRATING
 	EN	Select minimum rating (stars)
 	FR	Sélectionner la note minimum (étoiles)
+
+PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTEXACTRATING
+	EN	Select exact rating (stars)
+	FR	Sélectionner la note exacte (étoiles)
 
 PLUGIN_DYNAMICPLAYLISTS3_PARAMNAME_SELECTPERCENTAGERATED
 	EN	Select percentage of rated songs
