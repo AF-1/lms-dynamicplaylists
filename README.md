@@ -35,6 +35,7 @@ If you want to test a new patch that hasn't made it into a release version yet o
 * Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
 * New playlist parameters (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
 * New preference options and UI changes.
+* Compatible with [**Custom Skip 3**](https://github.com/AF-1/lms-customskip#custom-skip-3), [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) and [**Dynamic Playlist Creator (beta)**](https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator---beta).
 * If you have installed the [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) plugin, you will see some additional dynamic playlists that use the data from this plugin.
 * …
 <br><br><br><br>
@@ -59,7 +60,7 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 
 ## Reporting a bug
 
-If you think that you've found a bug, open an [**issue here on GitHub**](https://github.com/AF-1/lms-dynamicplaylists/issues) and fill out the ***Bug report* issue template**. Please post bug reports on **GitHub only**.
+If you think that you've found a bug, open an [**issue here on GitHub**](https://github.com/AF-1/lms-dynamicplaylists/issues) and fill out the ***Bug report* issue template**. Please post bug reports **only** on **GitHub**.
 <br><br><br><br>
 
 
@@ -68,7 +69,8 @@ If you think that you've found a bug, open an [**issue here on GitHub**](https:/
 <details><summary>»<b>How do I create my own <i>custom</i> dynamic playlist?</b>«</summary><br><p>
 Dynamic playlist definitions are basically plain text files with a "<b>.sql</b>" file extension that contain your playlist definition, i.e. a couple of <b>parameters</b> (<i>general</i> parameters like the playlist name, group or category and <i>user input</i> parameters) and the <b>SQLite statement</b> itself to fetch tracks from the LMS database.<br><br>
 First see if you can find a <i>built-in</i> dynamic playlist that suits your needs. You can edit dynamic playlists in any (plain text) editor, add new playlist parameters or create more complex sqlite definitions. This will give you a great deal of freedom in creating dynamic playlists tailored to your specific needs.<br>
-In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format">wiki</b></a> for more information on the dynamic playlist <b>format</b>.</p></details><br>
+In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format">wiki</b></a> for more information on the dynamic playlist <b>format</b>.<br><br>
+Or you could take a look at the <b>beta</b> version of the <b>Dynamic Playlist Creator</b> plugin that should help you create dynamic playlists using templates. Please read the requirements on its <a href="https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator---beta"><b>GitHub page</b></a> and decide for yourself whether you would like to become a beta tester and contribute to the development of that plugin.</p></details><br>
 
 <details><summary>»<b>I have a custom playlist definition (file). How do I add it to/ use it directly in DPLv3?</b>«</summary><br><p>
 
@@ -141,6 +143,7 @@ If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create 
 
 - <b>SQLPlayList</b>: compatibility not guaranteed, <b>not supported by me</b>.<br>
 If you can't find a similar built-in dynamic playlist in DPL3, you can create a <i>custom</i> dynamic playlist (and maybe use a built-in dynamic playlist as a template).<br>
+Or you could take a look at the <b>beta</b> version of the <b>Dynamic Playlist Creator</b> plugin. Please read the requirements on its <a href="https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator---beta"><b>GitHub page</b></a> and decide for yourself whether you would like to become a beta tester and contribute to the development of that plugin.<br>
 If SQLPlayList displays an error at the bottom of its main page where it used to display the currently playing dynamic playlist, just ignore this error.
 
 - <b>TrackStat</b>: no longer needed. LMS keeps track of ratings, play counts and date last played in its own database table.<br>
