@@ -1201,12 +1201,14 @@ sub stateNew {
 		my %storeParams = ();
 		for my $p (keys %{$playlist->{'parameters'}}) {
 			if (defined($playlist->{'parameters'}->{$p})) {
-				$storeParams{$p}=$playlist->{'parameters'}->{$p}->{'value'};
+				$storeParams{$p} = $playlist->{'parameters'}->{$p}->{'value'};
 			}
 		}
 		$prefs->client($client)->set('playlist_parameters', \%storeParams);
+		$log->debug("stateNew with dpl type '".$type."' and params: ".Dumper(\%storeParams));
 	} else {
 		$prefs->client($client)->remove('playlist_parameters');
+		$log->debug("stateNew with dpl type '".$type."'");
 	}
 }
 
@@ -1223,8 +1225,10 @@ sub stateContinue {
 	if (defined($parameters)) {
 		$prefs->client($client)->remove('playlist_parameters');
 		$prefs->client($client)->set('playlist_parameters', $parameters);
+		$log->debug("stateContinue with dpl type '".$type."'".(defined($offset) ? ", offset ".$offset : "")." and params: ".Dumper($parameters));
 	} else {
 		$prefs->client($client)->remove('playlist_parameters');
+		$log->debug("stateContinue with dpl type '".$type."'".(defined($offset) ? " and offset ".$offset : ""));
 	}
 }
 
@@ -1232,6 +1236,7 @@ sub stateStop {
 	my $client = shift;
 
 	Slim::Utils::Timers::killTimers($client, \&findAndAdd);
+	$log->debug('stateStop');
 	$mixInfo{$client} = undef;
 	$prefs->client($client)->remove('playlist');
 	$prefs->client($client)->remove('playlist_parameters');
