@@ -21,13 +21,16 @@ Steps to reproduce the behavior:
 3. Scroll down to '....'
 4. See error
 
-
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
 
-**Log excerpt**
+**Server log excerpt**
 Add relevant (error) messages from the LMS server log.
+
+
+**Name/code of dynamic playlist**
+If the issue involves a dynamic playlist, please provide the **full** (menu) name for *built-in* dynamic playlists or the **SQLite code** if it is a *custom* dynamic playlist that you have created.
 
 
 **Version info**
