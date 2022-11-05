@@ -606,7 +606,7 @@ sub findAndAdd {
 			}
 		}
 	}
-	$log->info('Getting '.scalar(@totalItems).(scalar(@totalItems) == 1 ? ' track' : ' tracks').' for dynamic playlist "'.$playlist->{'name'}.'" took '.(time()-$started).' seconds.');
+	$log->info('Got '.scalar(@totalItems).(scalar(@totalItems) == 1 ? ' track' : ' tracks').' for dynamic playlist "'.$playlist->{'name'}.'" in '.(time()-$started).' seconds.');
 	return scalar(@totalItems);
 }
 
@@ -947,114 +947,6 @@ sub playRandom {
 	}
 }
 
-sub saveAsStaticPL {
-	my ($client, $type, $staticPLmaxTrackLimit, $staticPLname, $sortOrder) = @_;
-	$log->debug('Killing existing timers for saving static PL to prevent multiple calls');
-	Slim::Utils::Timers::killOneTimer(undef, \&saveAsStaticPL);
-
-	$log->debug("Creating static playlist with max. $staticPLmaxTrackLimit items for type: $type");
-	my $started = time();
-
-	my $masterClient = masterOrSelf($client);
-	my $playlist = getPlayList($client, $type);
-	my $items = undef;
-	my $filteredItems = undef;
-	my @totalItems = ();
-	my $noOfRetriesToGetUnplayedTracks = 15;
-
-	my $i = 1;
-	my $noMatchResults = 0;
-	while ($i <= $noOfRetriesToGetUnplayedTracks) {
-		my $iterationStartTime = time();
-		$log->info("Iteration $i: total items so far = ".(scalar @totalItems).' -- staticPLmaxTrackLimit = '.$staticPLmaxTrackLimit);
-
-		# get tracks
-		my $getTracksForPlaylistStartTime = time();
-		$items = getTracksForPlaylist($masterClient, $playlist, $staticPLmaxTrackLimit, 0);
-		$log->info("Iteration $i: returned ".(defined $items ? scalar(@{$items}) : 0).' tracks in '.(time()-$getTracksForPlaylistStartTime). ' seconds');
-
-		if ($items && $items eq 'error') {
-			$log->error('Error trying to find tracks. Please check your playlist definition.');
-			last;
-		}
-		if (!defined $items || scalar(@{$items}) == 0) {
-			$log->info("Iteration $i didn't return any items");
-			$i++;
-			$noMatchResults++;
-			$noMatchResults >= 5 ? last : next;
-		}
-
-		# filter tracks
-		my $filterTracksStartTime = time();
-		$items = filterTracks($masterClient, $items, \@totalItems, 1);
-		$log->info("Iteration $i: filtering took ".(time()-$filterTracksStartTime).' seconds');
-		$log->info("Iteration $i: returned ".(scalar @{$items}).((scalar @{$items}) == 1 ? ' item' : ' items').' after filtering.');
-
-		push (@totalItems, @{$items});
-		$log->info("Iteration $i: total items found so far = ".scalar(@totalItems));
-		$i++;
-		main::idleStreams();
-
-		last if scalar(@totalItems) >= $staticPLmaxTrackLimit;
-	}
-
-	if (scalar(@totalItems) == 0) {
-		$log->info('Found no tracks matching your search parameter or playlist definition for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
-		return 0;
-	}
-
-	@totalItems = @totalItems[0..($staticPLmaxTrackLimit-1)] if (scalar(@totalItems) > $staticPLmaxTrackLimit);
-
-
-	### Save tracks as static playlist ###
-
-	# if PL with same name exists, add epoch time to PL name
-	my $newStaticPL = Slim::Schema->rs('Playlist')->single({'title' => $staticPLname});
-	if ($newStaticPL) {
-		my $timestamp = strftime "%Y-%m-%d--%H-%M-%S", localtime time;
-		$staticPLname = $staticPLname.'_'.$timestamp;
-	}
-
-	$newStaticPL = Slim::Schema->rs('Playlist')->single({'title' => $staticPLname});
-	Slim::Control::Request::executeRequest(undef, ['playlists', 'new', 'name:'.$staticPLname]) if !$newStaticPL;
-	$newStaticPL = Slim::Schema->rs('Playlist')->single({'title' => $staticPLname});
-	my @sortedTracks;
-
-	if (scalar(@totalItems) > 1 && $sortOrder > 1) {
-		my $sortStartTime= time();
-		if ($sortOrder == 2) {
-			# sort order: artist > album > disc no. > track no.
-			@sortedTracks = sort {lc($a->artist->namesearch) cmp lc($b->artist->namesearch) || lc($a->album->namesearch) cmp lc($b->album->namesearch) || ($a->{'_column_data'}->{'disc'} || 0) <=> ($b->{'_column_data'}->{'disc'} || 0) || ($a->{'_column_data'}->{'tracknum'} || 0) <=> ($b->{'_column_data'}->{'tracknum'} || 0)} @totalItems;
-		} elsif ($sortOrder == 3) {
-			# sort order: album > artist > disc no. > track no.
-			@sortedTracks = sort {lc($a->album->namesearch) cmp lc($b->album->namesearch) || lc($a->artist->namesearch) cmp lc($b->artist->namesearch) || ($a->{'_column_data'}->{'disc'} || 0) <=> ($b->{'_column_data'}->{'disc'} || 0) || ($a->{'_column_data'}->{'tracknum'} || 0) <=> ($b->{'_column_data'}->{'tracknum'} || 0)} @totalItems;
-		} elsif ($sortOrder == 4) {
-			# sort order: album > disc no. > track no.
-			@sortedTracks = sort {lc($a->album->namesearch) cmp lc($b->album->namesearch) || ($a->{'_column_data'}->{'disc'} || 0) <=> ($b->{'_column_data'}->{'disc'} || 0) || ($a->{'_column_data'}->{'tracknum'} || 0) <=> ($b->{'_column_data'}->{'tracknum'} || 0)} @totalItems;
-		}
-		$log->info('Sorting tracks took '.(time()-$sortStartTime).' seconds');
-		main::idleStreams();
-		main::idle();
-
-		my $setTracksStartTime = time();
-		$newStaticPL->setTracks(\@sortedTracks);
-		$log->info("setTracks took ".(time()-$setTracksStartTime).' seconds');
-	} else {
-		my $setTracksStartTime = time();
-		$newStaticPL->setTracks(\@totalItems);
-		$log->info("setTracks took ".(time()-$setTracksStartTime).' seconds');
-	}
-
-	$newStaticPL->update;
-
-	my $scheduleWriteOfPlaylistStartTime = time();
-	Slim::Player::Playlist::scheduleWriteOfPlaylist(undef, $newStaticPL);
-	$log->info("scheduleWriteOfPlaylist took ".(time()-$scheduleWriteOfPlaylistStartTime).' seconds');
-
-	$log->info('Saved static playlist "'.$staticPLname.'" with '.scalar(@totalItems).(scalar(@totalItems) == 1 ? ' track' : ' tracks').' using playlist definition "'.$playlist->{'name'}.'". Task completed after '.(time()-$started).' seconds.');
-	return;
-}
-
 sub handlePlayOrAdd {
 	my ($client, $item, $add) = @_;
 	$log->debug(($add ? 'Add' : 'Play')." $item");
@@ -1294,6 +1186,136 @@ sub getTracksForPlaylist {
 }
 
 
+# Save dpl as static playlist
+sub saveAsStaticPL {
+	my ($client, $type, $staticPLmaxTrackLimit, $staticPLname, $sortOrder) = @_;
+	$log->debug('Killing existing timers for saving static PL to prevent multiple calls');
+	Slim::Utils::Timers::killOneTimer(undef, \&saveAsStaticPL);
+
+	$log->debug("Creating static playlist with max. $staticPLmaxTrackLimit items for type: $type");
+	my $started = time();
+
+	my $masterClient = masterOrSelf($client);
+	my $playlist = getPlayList($client, $type);
+	my $items = undef;
+	my $filteredItems = undef;
+	my @totalItems = ();
+	my $noOfRetriesToGetUnplayedTracks = 15;
+
+	my $i = 1;
+	my ($noMatchResults, $noPostFilterResults) = 0;
+	while ($i <= $noOfRetriesToGetUnplayedTracks) {
+		my $iterationStartTime = time();
+		$log->info("Iteration $i: total items so far = ".(scalar @totalItems).' -- staticPLmaxTrackLimit = '.$staticPLmaxTrackLimit);
+
+		# get tracks
+		my $getTracksForPlaylistStartTime = time();
+		$items = getTracksForPlaylist($masterClient, $playlist, $staticPLmaxTrackLimit, 0);
+		$log->info("Iteration $i: returned ".(defined $items ? scalar(@{$items}) : 0).' tracks in '.(time()-$getTracksForPlaylistStartTime). ' seconds');
+
+		if ($items && $items eq 'error') {
+			$log->error('Error trying to find tracks. Please check your playlist definition.');
+			last;
+		}
+		# stop if search returns no results at all
+		if (!defined $items || scalar(@{$items}) == 0) {
+			$log->info("Iteration $i didn't return any items");
+			$i++;
+			$noMatchResults++;
+			$noMatchResults >= 5 ? last : next;
+		}
+
+		# filter tracks
+		my $filterTracksStartTime = time();
+		$items = filterTracks($masterClient, $items, \@totalItems, 1);
+		$log->info("Iteration $i: filtering took ".(time()-$filterTracksStartTime).' seconds');
+		$log->info("Iteration $i: returned ".(scalar @{$items}).((scalar @{$items}) == 1 ? ' item' : ' items').' after filtering.');
+
+		push (@totalItems, @{$items});
+		$log->info("Iteration $i: total items found so far = ".scalar(@totalItems));
+
+		# stop if search AFTER filtering returns no results
+		if (defined $items && scalar(@{$items}) == 0) {
+			$log->info("Iteration $i: didn't return any items after filtering");
+			$i++;
+			$noPostFilterResults++;
+			main::idleStreams();
+			$noPostFilterResults >= 5 ? last : next;
+		}
+		$i++;
+		main::idleStreams();
+
+		last if scalar(@totalItems) >= $staticPLmaxTrackLimit;
+	}
+
+	if (scalar(@totalItems) == 0) {
+		$log->info('Found no tracks matching your search parameter or playlist definition for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
+		return 0;
+	}
+
+	@totalItems = @totalItems[0..($staticPLmaxTrackLimit-1)] if (scalar(@totalItems) > $staticPLmaxTrackLimit);
+
+
+	### Save tracks as static playlist ###
+
+	# if PL with same name exists, add epoch time to PL name
+	my $newStaticPL = Slim::Schema->rs('Playlist')->single({'title' => $staticPLname});
+	if ($newStaticPL) {
+		my $timestamp = strftime "%Y-%m-%d--%H-%M-%S", localtime time;
+		$staticPLname = $staticPLname.'_'.$timestamp;
+	}
+
+	$newStaticPL = Slim::Schema->rs('Playlist')->single({'title' => $staticPLname});
+	Slim::Control::Request::executeRequest(undef, ['playlists', 'new', 'name:'.$staticPLname]) if !$newStaticPL;
+	$newStaticPL = Slim::Schema->rs('Playlist')->single({'title' => $staticPLname});
+	my @sortedTracks;
+
+	if (scalar(@totalItems) > 1 && $sortOrder > 1) {
+		my $sortStartTime= time();
+		if ($sortOrder == 2) {
+			# sort order: artist > album > disc no. > track no.
+			@sortedTracks = sort {lc($a->artist->namesort) cmp lc($b->artist->namesort) || lc($a->album->namesort) cmp lc($b->album->namesort) || ($a->{'_column_data'}->{'disc'} || 0) <=> ($b->{'_column_data'}->{'disc'} || 0) || ($a->{'_column_data'}->{'tracknum'} || 0) <=> ($b->{'_column_data'}->{'tracknum'} || 0)} @totalItems;
+		} elsif ($sortOrder == 3) {
+			# sort order: album > artist > disc no. > track no.
+			@sortedTracks = sort {lc($a->album->namesort) cmp lc($b->album->namesort) || lc($a->artist->namesort) cmp lc($b->artist->namesort) || ($a->{'_column_data'}->{'disc'} || 0) <=> ($b->{'_column_data'}->{'disc'} || 0) || ($a->{'_column_data'}->{'tracknum'} || 0) <=> ($b->{'_column_data'}->{'tracknum'} || 0)} @totalItems;
+		} elsif ($sortOrder == 4) {
+			# sort order: album > disc no. > track no.
+			@sortedTracks = sort {lc($a->album->namesort) cmp lc($b->album->namesort) || ($a->{'_column_data'}->{'disc'} || 0) <=> ($b->{'_column_data'}->{'disc'} || 0) || ($a->{'_column_data'}->{'tracknum'} || 0) <=> ($b->{'_column_data'}->{'tracknum'} || 0)} @totalItems;
+		}
+		$log->info('Sorting tracks took '.(time()-$sortStartTime).' seconds');
+		main::idleStreams();
+
+		my $setTracksStartTime = time();
+		$newStaticPL->setTracks(\@sortedTracks);
+		$log->info("setTracks took ".(time()-$setTracksStartTime).' seconds');
+	} else {
+		my $setTracksStartTime = time();
+		$newStaticPL->setTracks(\@totalItems);
+		$log->info("setTracks took ".(time()-$setTracksStartTime).' seconds');
+	}
+
+	$newStaticPL->update;
+
+	my $scheduleWriteOfPlaylistStartTime = time();
+	Slim::Player::Playlist::scheduleWriteOfPlaylist(undef, $newStaticPL);
+	$log->info("scheduleWriteOfPlaylist took ".(time()-$scheduleWriteOfPlaylistStartTime).' seconds');
+
+	$log->info('Saved static playlist "'.$staticPLname.'" with '.scalar(@totalItems).(scalar(@totalItems) == 1 ? ' track' : ' tracks').' using playlist definition "'.$playlist->{'name'}.'". Task completed after '.(time()-$started).' seconds.');
+	return;
+}
+
+sub _saveAsStaticNoParamsWeb {
+	my ($client, $params) = @_;
+	my $playlist = getPlayList($client, $params->{'type'});
+	$params->{'staticplname'} = $playlist->{'name'};
+	$params->{'lastparameter'} = 'islastparam';
+	$params->{'addOnly'} = 77;
+	$params->{'pluginDynamicPlaylists3AddOnly'} = 77;
+	$params->{'pluginDynamicPlaylists3PlaylistId'} = $params->{'type'};
+	return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html', $params);
+}
+
+
 ### client states ###
 
 sub stateOffset {
@@ -1376,6 +1398,7 @@ sub webPages {
 		'dynamicplaylist_selectplaylists\.html' => \&handleWebSelectPlaylists,
 		'dynamicplaylist_saveselectplaylists\.html' => \&handleWebSaveSelectPlaylists,
 		'dynamicplaylist_preselectionmenu\.html' => \&_preselectionMenuWeb,
+		'dynamicplaylist_staticnoparams\.html' => \&_saveAsStaticNoParamsWeb,
 	);
 
 	my $value = $htmlTemplate;

@@ -13,6 +13,13 @@
 	[% END %]
 [% END %]
 
+[% BLOCK dynamicPlayListSaveStaticNoParamsLink %]
+	[% link='cmdlink' cmdimage='dpl_saveasstaticpl.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_SAVEASSTATICPL_TITLE' %]
+		[% WRAPPER $link noTarget=1 %]
+			href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_staticnoparams.html?type=[% type %]&amp;player=[% player |uri%]"
+		[% END %]
+[% END %]
+
 [% BLOCK dynamicPlayListStopAddingLink %]
 	[% link='cmdlink' cmdimage='dpl_stop.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS3_DISABLE' %]
 		[% WRAPPER $link noTarget=1 %]

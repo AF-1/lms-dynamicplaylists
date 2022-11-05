@@ -204,7 +204,7 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 		<td class="vcenter">[% "PLUGIN_DYNAMICPLAYLISTS3_NEWSTATICPLNAME" | string %]</td>
 		<td>&nbsp;&nbsp;</td>
 		<td>
-			<input type="text" id="dpl_customstaticplname" name="dpl_customstaticplname" value="[% pluginDynamicPlaylists3Playlist.name | html %]" size="40">
+			<input type="text" id="dpl_customstaticplname" name="dpl_customstaticplname" value="[% IF staticplname %][% staticplname %][% ELSE %][% pluginDynamicPlaylists3Playlist.name | html %][% END %]" size="40">
 		</td>
 		</tr>
 		<tr><td>&nbsp;&nbsp;</td></tr>
@@ -212,7 +212,7 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 		<td class="vcenter">[% "PLUGIN_DYNAMICPLAYLISTS3_NEWSTATICPLMAXTRACKLIMIT" | string %]</td>
 		<td>&nbsp;&nbsp;</td>
 		<td>
-			<input type="text" class="stdedit sliderInput_100_4000_100" name="dpl_customstaticplmaxtracklimit" id="dpl_customstaticplmaxtracklimit" value="4000" size="2">
+			<input type="text" class="stdedit sliderInput_100_4000_100" name="dpl_customstaticplmaxtracklimit" id="dpl_customstaticplmaxtracklimit" value="4000" size="3">
 		</td>
 		</tr>
 		<tr>
