@@ -106,7 +106,7 @@ sub initPlugin {
 
 	initPrefs();
 	initDatabase();
-	clearPlayListHistory() unless ($prefs->get('rememberactiveplaylist'));
+	clearPlayListHistory();
 	Slim::Buttons::Common::addMode('PLUGIN.DynamicPlaylists3.ChooseParameters', getFunctions(), \&setModeChooseParameters);
 	Slim::Buttons::Common::addMode('PLUGIN.DynamicPlaylists3.Mixer', getFunctions(), \&setModeMixer);
 	my %choiceFunctions = %{Slim::Buttons::Input::Choice::getFunctions()};
@@ -192,8 +192,7 @@ sub initPrefs {
 		flatlist => 0,
 		structured_savedplaylists => 'on',
 		favouritesname => string('PLUGIN_DYNAMICPLAYLISTS3_FAVOURITES'),
-		displaycreatestaticpl => 1,
-		saveasstaticplmaxtracks => 2000
+		enablestaticplsaving => 1,
 	});
 	refreshPluginPlaylistFolder();
 	createCustomPlaylistFolder();
@@ -530,15 +529,15 @@ sub findAndAdd {
 	my @totalItems = ();
 	my $minUnplayedTracks = $prefs->get('min_number_of_unplayed_tracks');
 	my $noOfRetriesToGetUnplayedTracks = 10;
-
+$log->info(Dumper($playlist));
 	my $i = 1;
 	while ($i <= $noOfRetriesToGetUnplayedTracks) {
 		my $iterationStartTime = time();
-		$log->debug("Iteration $i: total items so far = ".(scalar @totalItems).' -- limit = '.$limit.' -- offset = '.$offset);
+		$log->debug("Iteration $i: total items so far = ".scalar(@totalItems).' -- limit = '.$limit.' -- offset = '.$offset);
 
 		# get tracks
 		my $getTracksForPlaylistStartTime = time();
-		$items = getTracksForPlaylist($masterClient, $playlist, $limit, $offset + scalar @totalItems);
+		$items = getTracksForPlaylist($masterClient, $playlist, $limit, $offset + scalar(@totalItems));
 		$log->debug("Iteration $i: returned ".(defined $items ? scalar(@{$items}) : 0).' tracks in '.(time()-$getTracksForPlaylistStartTime). ' seconds');
 
 		if ($items && $items eq 'error') {
@@ -571,7 +570,7 @@ sub findAndAdd {
 			# let's start playback and get the rest of the tracks later
 			if ((time() - $iterationStartTime) > 5 && scalar(@totalItems) >= $minUnplayedTracks && scalar(@totalItems) < $limit) {
 				Slim::Utils::Timers::setTimer($client, Time::HiRes::time() + 15, \&findAndAdd, $type, $offset, $limit - scalar(@totalItems), 1, 0);
-				$log->info('Getting tracks took '.(time() - $iterationStartTime).' secs so far. Will start playlist with '.scalar @totalItems.' tracks and fetch '.($limit - scalar @totalItems).' tracks later');
+				$log->info('Getting tracks took '.(time() - $iterationStartTime).' secs so far. Will start playlist with '.scalar(@totalItems).' tracks and fetch '.($limit - scalar(@totalItems)).' tracks later');
 				last;
 			}
 			last if scalar(@totalItems) >= $limit;
@@ -584,7 +583,8 @@ sub findAndAdd {
 		return 0;
 	}
 
-	@totalItems = @totalItems[0..($limit-1)] if (scalar(@totalItems) > $limit);
+	@totalItems = @totalItems[0..($limit - 1)] if (scalar(@totalItems) > $limit);
+	my $noOfTotalItems = scalar(@totalItems); # get no of total items before shifting first track
 
 	# Pull the first track off to add / play it if needed.
 	my $item = shift @totalItems;
@@ -598,16 +598,16 @@ sub findAndAdd {
 		$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 
 		# Add the remaining items to the end
-		if (!defined $limit || $limit > 1 || scalar @totalItems >= 1) {
-			$log->debug('Adding '.(scalar @totalItems).' tracks to the end of the playlist.');
-			if(scalar @totalItems >= 1) {
+		if (!defined $limit || $limit > 1 || scalar(@totalItems) >= 1) {
+			$log->debug('Adding '.scalar(@totalItems).' tracks to the end of the playlist.');
+			if(scalar(@totalItems) >= 1) {
 				$request = $client->execute(['playlist', 'addtracks', 'listRef', \@totalItems]);
 				$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 			}
 		}
 	}
-	$log->info('Got '.scalar(@totalItems).(scalar(@totalItems) == 1 ? ' track' : ' tracks').' for dynamic playlist "'.$playlist->{'name'}.'" in '.(time()-$started).' seconds.');
-	return scalar(@totalItems);
+	$log->info('Got '.$noOfTotalItems.($noOfTotalItems == 1 ? ' track' : ' tracks').' for dynamic playlist "'.$playlist->{'name'}.'" in '.(time()-$started).' seconds.');
+	return $noOfTotalItems;
 }
 
 sub filterTracks {
@@ -1206,7 +1206,7 @@ sub saveAsStaticPL {
 	my ($noMatchResults, $noPostFilterResults) = 0;
 	while ($i <= $noOfRetriesToGetUnplayedTracks) {
 		my $iterationStartTime = time();
-		$log->info("Iteration $i: total items so far = ".(scalar @totalItems).' -- staticPLmaxTrackLimit = '.$staticPLmaxTrackLimit);
+		$log->info("Iteration $i: total items so far = ".scalar(@totalItems).' -- staticPLmaxTrackLimit = '.$staticPLmaxTrackLimit);
 
 		# get tracks
 		my $getTracksForPlaylistStartTime = time();
@@ -1253,7 +1253,7 @@ sub saveAsStaticPL {
 		return 0;
 	}
 
-	@totalItems = @totalItems[0..($staticPLmaxTrackLimit-1)] if (scalar(@totalItems) > $staticPLmaxTrackLimit);
+	@totalItems = @totalItems[0..($staticPLmaxTrackLimit - 1)] if (scalar(@totalItems) > $staticPLmaxTrackLimit);
 
 
 	### Save tracks as static playlist ###
@@ -1312,6 +1312,7 @@ sub _saveAsStaticNoParamsWeb {
 	$params->{'addOnly'} = 77;
 	$params->{'pluginDynamicPlaylists3AddOnly'} = 77;
 	$params->{'pluginDynamicPlaylists3PlaylistId'} = $params->{'type'};
+	$params->{'pluginDynamicPlaylists3noParamsStaticPLsave'} = 1;
 	return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html', $params);
 }
 
@@ -1455,7 +1456,7 @@ sub handleWebList {
 	$params->{'pluginDynamicPlaylists3preselectionListArtists'} = 'display' if (keys %{$preselectionListArtists} > 0);
 	$params->{'pluginDynamicPlaylists3preselectionListAlbums'} = 'display' if (keys %{$preselectionListAlbums} > 0);
 	$params->{'paramsdplsaveenabled'} = $prefs->get('paramsdplsaveenabled');
-	$params->{'pluginDynamicPlaylists3createStaticPL'} = $prefs->get('displaycreatestaticpl');
+	$params->{'pluginDynamicPlaylists3staticPLsavingEnabled'} = $prefs->get('enablestaticplsaving');
 
 	$params->{'pluginDynamicPlaylists3Context'} = getPlayListContext($client, $params, $playListItems, 1);
 	$params->{'pluginDynamicPlaylists3Groups'} = getPlayListGroupsForContext($client, $params, $playListItems, 1);
@@ -4518,7 +4519,7 @@ sub getVirtualLibraries {
 			id => qq('$k'),
 		};
 	}
-	if (scalar @items == 0) {
+	if (scalar(@items) == 0) {
 		push @items, {
 			name => string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_COMPLETELIB'),
 			sortName => 'complete library',
@@ -4527,7 +4528,7 @@ sub getVirtualLibraries {
 		};
 	}
 
-	if (scalar @items > 1) {
+	if (scalar(@items) > 1) {
 		@items = sort {lc($a->{sortName}) cmp lc($b->{sortName})} @items;
 	}
 	return \@items;

@@ -20,7 +20,7 @@
 		[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="99" parameters=playlist.parameters %]
 		[% END %]
 	[% END %]
-	[% IF pluginDynamicPlaylists3createStaticPL %]
+	[% IF pluginDynamicPlaylists3staticPLsavingEnabled %]
 		[% IF !playlist.parameters %]
 			[% PROCESS dynamicPlayListSaveStaticNoParamsLink type="$playlist.dynamicplaylistid" %]
 		[% ELSE %]

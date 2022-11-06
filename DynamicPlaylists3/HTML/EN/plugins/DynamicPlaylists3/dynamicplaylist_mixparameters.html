@@ -1,4 +1,4 @@
-<style>.boldtitle{font-weight:600;}.padleft{padding-left:20px;}.vcenter{vertical-align: middle;}.trpadbottom{padding-bottom:5px;}.dpl3btn{padding:2px;}</style>
+<style>.boldtitle{font-weight:600;}.padleft{padding-left:20px;}.vcenter{vertical-align: middle;}.trpadbottom{padding-bottom:5px;}.dpl3btn{padding:2px;}.lastparamsep{width:45%;text-align:left;margin-left:0;}</style>
 [% pagetitle = 'PLUGIN_DYNAMICPLAYLISTS3' | string; pageicon = 'PLUGIN_DYNAMICPLAYLISTS3' %]
 
 [% pwd_list = BLOCK %]/
@@ -15,7 +15,10 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 							return false;'
 [% END %]
 
-<br><p>[% "PLUGIN_DYNAMICPLAYLISTS3_PARAMETERS_TITLE" | string %]: <span class="boldtitle">[% pluginDynamicPlaylists3Playlist.name | html %]</span></p><br>
+[% IF !pluginDynamicPlaylists3noParamsStaticPLsave %]
+<br><p>[% "PLUGIN_DYNAMICPLAYLISTS3_PARAMETERS_TITLE" | string %]: <span class="boldtitle">[% pluginDynamicPlaylists3Playlist.name | html %]</span></p>
+[% END %]
+<br>
 <form action="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html" name="editForm" accept-charset="iso8859-1">
 	<input type="hidden" name="type" value="[% pluginDynamicPlaylists3PlaylistId %]">
 	<input type="hidden" name="addOnly" value="[% pluginDynamicPlaylists3AddOnly %]">
@@ -111,74 +114,9 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 	[% END %]
 [% END %]
 
-	<script type="text/javascript">
-		var f = document.editForm;
-		var selectedItems = [];
-		var numSelected = 0;
-		var numCheckBoxes = 0;
-		var selectAllString = '[% "PLUGIN_DYNAMICPLAYLISTS3_SELECT_ALL" | string %]';
-		var selectNoneString = '[% "PLUGIN_DYNAMICPLAYLISTS3_SELECT_NONE" | string %]';
-
-		// get number of checkboxes
-		for (var i=0; i < f.elements.length; i++) {
-			if (f.elements[i].type == 'checkbox') {
-				numCheckBoxes++;
-			}
-		}
-
-		// select all or none
-		function selectAll() {
-			var newState = numSelected != numCheckBoxes;
-
-			for (var i=0; i < f.elements.length; i++) {
-				if (f.elements[i].type == 'checkbox') {
-					f.elements[i].checked = newState;
-				}
-			}
-			if (newState) { // if numSelected < numCheckBoxes => select all
-				numSelected = numCheckBoxes;
-				f.selectAllButton.value = selectNoneString;
-				for (var i=0; i < f.elements.length; i++) {
-					if (f.elements[i].type == 'checkbox') {
-						if(!selectedItems.some(el => el === f.elements[i].id)) selectedItems.push(f.elements[i].id);
-					}
-				}
-			} else { // if numSelected = numCheckBoxes => select none
-				numSelected = 0;
-				f.selectAllButton.value = selectAllString;
-				for (var i=0; i < f.elements.length; i++) {
-					if (f.elements[i].type == 'checkbox') {
-						selectedItems = selectedItems.filter(function(item) {
-							return item !== f.elements[i].id
-						});
-					}
-				}
-			}
-			document.getElementById("dynamicplaylist_parameter_[% param.parameter.id %]").value = selectedItems;
-		}
-
-		// increase/decrease numSelected every time a checkbox changes
-		function changeNumSelected(checkBox) {
-			if (checkBox.checked) {
-				numSelected++;
-				if(!selectedItems.some(el => el === f.elements[i].id)) selectedItems.push(checkBox.id);
-			} else {
-				numSelected--;
-				selectedItems = selectedItems.filter(function(item) {
-					return item !== checkBox.id
-				});
-			}
-			document.getElementById("dynamicplaylist_parameter_[% param.parameter.id %]").value = selectedItems;
-
-			if (numSelected == numCheckBoxes) {
-				f.selectAllButton.value = selectNoneString;
-			} else {
-				f.selectAllButton.value = selectAllString;
-			}
-		}
-	</script>
-	<br>
 [% IF lastparameter && addOnly == 99 %]
+	<hr class="lastparamsep">
+	<br>
 	<table border="0">
 		<tr>
 		<td class="vcenter">[% "PLUGIN_DYNAMICPLAYLISTS3_CUSTOMFAVTITLE" | string %]</td>
@@ -196,9 +134,12 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 		</td>
 		</tr>
 	</table>
-	<br>
 [% END %]
 [% IF lastparameter && addOnly == 77 %]
+	[% IF !pluginDynamicPlaylists3noParamsStaticPLsave %]
+	<hr class="lastparamsep">
+	<br>
+	[% END %]
 	<table border="0">
 		<tr>
 		<td class="vcenter">[% "PLUGIN_DYNAMICPLAYLISTS3_NEWSTATICPLNAME" | string %]</td>
@@ -231,9 +172,76 @@ href="[% webroot %]plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html?
 		</tr>
 		<tr>
 	</table>
-	<br>
 [% END %]
+	<br>
 	<input type="submit" class="dpl3btn" value="[% IF lastparameter %][% IF addOnly == 1 %][% "PLUGIN_DYNAMICPLAYLISTS3_ADD" | string %][% ELSIF addOnly == 99 %][% "PLUGIN_DYNAMICPLAYLISTS3_ADDTOLMSFAVORITES_BTN" | string %][% ELSIF addOnly == 77 %][% "PLUGIN_DYNAMICPLAYLISTS3_SAVE_BTN" | string %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS3_PLAY" | string %][% END %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS3_NEXT" | string %][% END %]">
+
+<script type="text/javascript">
+	var f = document.editForm;
+	var selectedItems = [];
+	var numSelected = 0;
+	var numCheckBoxes = 0;
+	var selectAllString = '[% "PLUGIN_DYNAMICPLAYLISTS3_SELECT_ALL" | string %]';
+	var selectNoneString = '[% "PLUGIN_DYNAMICPLAYLISTS3_SELECT_NONE" | string %]';
+
+	// get number of checkboxes
+	for (var i=0; i < f.elements.length; i++) {
+		if (f.elements[i].type == 'checkbox') {
+			numCheckBoxes++;
+		}
+	}
+
+	// select all or none
+	function selectAll() {
+		var newState = numSelected != numCheckBoxes;
+
+		for (var i=0; i < f.elements.length; i++) {
+			if (f.elements[i].type == 'checkbox') {
+				f.elements[i].checked = newState;
+			}
+		}
+		if (newState) { // if numSelected < numCheckBoxes => select all
+			numSelected = numCheckBoxes;
+			f.selectAllButton.value = selectNoneString;
+			for (var i=0; i < f.elements.length; i++) {
+				if (f.elements[i].type == 'checkbox') {
+					if(!selectedItems.some(el => el === f.elements[i].id)) selectedItems.push(f.elements[i].id);
+				}
+			}
+		} else { // if numSelected = numCheckBoxes => select none
+			numSelected = 0;
+			f.selectAllButton.value = selectAllString;
+			for (var i=0; i < f.elements.length; i++) {
+				if (f.elements[i].type == 'checkbox') {
+					selectedItems = selectedItems.filter(function(item) {
+						return item !== f.elements[i].id
+					});
+				}
+			}
+		}
+		document.getElementById("dynamicplaylist_parameter_[% param.parameter.id %]").value = selectedItems;
+	}
+
+	// increase/decrease numSelected every time a checkbox changes
+	function changeNumSelected(checkBox) {
+		if (checkBox.checked) {
+			numSelected++;
+			if(!selectedItems.some(el => el === f.elements[i].id)) selectedItems.push(checkBox.id);
+		} else {
+			numSelected--;
+			selectedItems = selectedItems.filter(function(item) {
+				return item !== checkBox.id
+			});
+		}
+		document.getElementById("dynamicplaylist_parameter_[% param.parameter.id %]").value = selectedItems;
+
+		if (numSelected == numCheckBoxes) {
+			f.selectAllButton.value = selectNoneString;
+		} else {
+			f.selectAllButton.value = selectAllString;
+		}
+	}
+</script>
 [% IF param.parameter.type == "multiplegenres" || param.parameter.type == "multipledecades" || param.parameter.type == "multipleyears" || param.parameter.type == "multiplestaticplaylists" %]
 	<script type="text/javascript">
 		document.write('<span class="padleft"><input type="button" class="dpl3btn" value="' + (numSelected == numCheckBoxes ? selectNoneString : selectAllString) + '" id="selectAllButton" onclick="selectAll()"></span>');
