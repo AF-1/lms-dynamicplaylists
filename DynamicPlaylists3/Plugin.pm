@@ -529,7 +529,7 @@ sub findAndAdd {
 	my @totalItems = ();
 	my $minUnplayedTracks = $prefs->get('min_number_of_unplayed_tracks');
 	my $noOfRetriesToGetUnplayedTracks = 10;
-$log->info(Dumper($playlist));
+
 	my $i = 1;
 	while ($i <= $noOfRetriesToGetUnplayedTracks) {
 		my $iterationStartTime = time();
