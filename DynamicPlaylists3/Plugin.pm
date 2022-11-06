@@ -190,7 +190,7 @@ sub initPrefs {
 		showtimeperchar => 70,
 		randomsavedplaylists => 0,
 		flatlist => 0,
-		structured_savedplaylists => 'on',
+		structured_savedplaylists => 1,
 		favouritesname => string('PLUGIN_DYNAMICPLAYLISTS3_FAVOURITES'),
 		enablestaticplsaving => 1,
 	});
