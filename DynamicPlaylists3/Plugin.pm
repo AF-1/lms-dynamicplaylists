@@ -1206,7 +1206,7 @@ sub saveAsStaticPL {
 	my ($noMatchResults, $noPostFilterResults) = 0;
 	while ($i <= $noOfRetriesToGetUnplayedTracks) {
 		my $iterationStartTime = time();
-		$log->info("Iteration $i: total items so far = ".scalar(@totalItems).' -- staticPLmaxTrackLimit = '.$staticPLmaxTrackLimit);
+		$log->debug("Iteration $i: total items so far = ".scalar(@totalItems).' -- staticPLmaxTrackLimit = '.$staticPLmaxTrackLimit);
 
 		# get tracks
 		my $getTracksForPlaylistStartTime = time();
@@ -1219,7 +1219,7 @@ sub saveAsStaticPL {
 		}
 		# stop if search returns no results at all
 		if (!defined $items || scalar(@{$items}) == 0) {
-			$log->info("Iteration $i didn't return any items");
+			$log->debug("Iteration $i didn't return any items");
 			$i++;
 			$noMatchResults++;
 			$noMatchResults >= 5 ? last : next;
@@ -1229,14 +1229,14 @@ sub saveAsStaticPL {
 		my $filterTracksStartTime = time();
 		$items = filterTracks($masterClient, $items, \@totalItems, 1);
 		$log->info("Iteration $i: filtering took ".(time()-$filterTracksStartTime).' seconds');
-		$log->info("Iteration $i: returned ".(scalar @{$items}).((scalar @{$items}) == 1 ? ' item' : ' items').' after filtering.');
+		$log->debug("Iteration $i: returned ".(scalar @{$items}).((scalar @{$items}) == 1 ? ' item' : ' items').' after filtering.');
 
 		push (@totalItems, @{$items});
-		$log->info("Iteration $i: total items found so far = ".scalar(@totalItems));
+		$log->debug("Iteration $i: total items found so far = ".scalar(@totalItems));
 
 		# stop if search AFTER filtering returns no results
 		if (defined $items && scalar(@{$items}) == 0) {
-			$log->info("Iteration $i: didn't return any items after filtering");
+			$log->debug("Iteration $i: didn't return any items after filtering");
 			$i++;
 			$noPostFilterResults++;
 			main::idleStreams();
@@ -4948,11 +4948,11 @@ sub getNextDynamicPlayListTracks {
 					$sth->bind_col(1,\$trackURL);
 					my @tracks = ();
 					while ($sth->fetch()) {
-						my $track = Slim::Schema->resultset('Track')->objectForUrl($trackURL);
+						my $track = Slim::Schema->resultset('Track')->single({ 'url' => $trackURL });
 						push @tracks, $track;
 					}
 					unless ($prefs->get('disableextrashuffle') || (defined($playlistTrackOrder) && $playlistTrackOrder eq 'ordered')) {
-						fisher_yates_shuffle(\@tracks);
+						shuffle(\@tracks);
 					}
 					push @result, @tracks;
 				}
@@ -4996,7 +4996,7 @@ sub getNextDynamicPlayListTracks {
 					}
 					if (scalar(@trackIds) > 0) {
 						@tracks = Slim::Schema->resultset('Track')->search({'id' => {'in' => \@trackIds}});
-						fisher_yates_shuffle(\@tracks);
+						shuffle(\@tracks);
 					}
 				}
 				$sth->finish();
@@ -6289,17 +6289,6 @@ sub validateIntOrEmpty {
 		return $arg;
 	}
 	return undef;
-}
-
-sub fisher_yates_shuffle {
-	my $myArray = shift;
-	my $i = @{$myArray};
-	if (scalar(@{$myArray}) > 1) {
-		while (--$i) {
-			my $j = int rand ($i + 1);
-			@{$myArray}[$i, $j] = @{$myArray}[$j, $i];
-		}
-	}
 }
 
 sub objectForId {
