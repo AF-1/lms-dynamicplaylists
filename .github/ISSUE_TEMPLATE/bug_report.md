@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**Please read the *FAQ* and take a look at the *closed* issues first to avoid duplicates. Thank you.**
+**Please read the *FAQ* (if available) and take a look at the *closed* issues first to avoid duplicates. Thank you.**
 
 ---
 
