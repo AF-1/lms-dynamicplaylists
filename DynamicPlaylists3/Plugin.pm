@@ -42,7 +42,6 @@ use File::Spec::Functions qw(:ALL);
 use FindBin qw($Bin);
 use HTML::Entities; # for parsing
 use List::Util qw(shuffle first);
-use POSIX qw(strftime);
 use Time::HiRes qw(time);
 
 use Plugins::DynamicPlaylists3::Settings::Basic;
@@ -177,6 +176,7 @@ sub initPrefs {
 		max_number_of_unplayed_tracks => 15,
 		min_number_of_unplayed_tracks => 4,
 		number_of_played_tracks_to_keep => 3,
+		keep_adding_tracks => 1,
 		song_adding_check_delay => 30,
 		song_min_duration => 90,
 		toprated_min_rating => 60,
@@ -190,9 +190,8 @@ sub initPrefs {
 		showtimeperchar => 70,
 		randomsavedplaylists => 0,
 		flatlist => 0,
-		structured_savedplaylists => 1,
-		favouritesname => string('PLUGIN_DYNAMICPLAYLISTS3_FAVOURITES'),
-		enablestaticplsaving => 1,
+		structured_savedplaylists => 'on',
+		favouritesname => string('PLUGIN_DYNAMICPLAYLISTS3_FAVOURITES')
 	});
 	refreshPluginPlaylistFolder();
 	createCustomPlaylistFolder();
@@ -218,7 +217,6 @@ sub initPrefs {
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 20}, 'period_playedlongago');
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 1, 'high' => 10}, qw(min_number_of_unplayed_tracks minartisttracks minalbumtracks));
 	$prefs->setValidate({'validator' => 'intlimit', 'low' => 0, 'high' => 200}, 'showtimeperchar');
-	$prefs->setValidate({'validator' => 'intlimit', 'low' => 100, 'high' => 10000}, 'saveasstaticplmaxtracks');
 
 	%choiceMapping = (
 		'arrow_left' => 'exit_left',
@@ -323,8 +321,8 @@ sub initPlayLists {
 							&& $playLists->{$item}->{'parameters'}->{$p}->{'name'} eq $playlist->{'parameters'}->{$p}->{'name'}
 							&& defined($playLists->{$item}->{'parameters'}->{$p}->{'value'})) {
 
-							$log->debug("Use already existing value for PlaylistParameter$p = ".$playLists->{$item}->{'parameters'}->{$p}->{'value'});
-							$playlist->{'parameters'}->{$p}->{'value'} = $playLists->{$item}->{'parameters'}->{$p}->{'value'};
+							$log->debug("Use already existing value for PlaylistParameter$p=".$playLists->{$item}->{'parameters'}->{$p}->{'value'});
+							$playlist->{'parameters'}->{$p}->{'value'}=$playLists->{$item}->{'parameters'}->{$p}->{'value'};
 						}
 					}
 					$playlist->{'hasnovolatileparams'} = $hasNoVolatileParam;
@@ -526,20 +524,17 @@ sub findAndAdd {
 	my $playlist = getPlayList($client, $type);
 	my $items = undef;
 	my $filteredItems = undef;
-	my @totalItems = ();
-	my $minUnplayedTracks = $prefs->get('min_number_of_unplayed_tracks');
+	my $totalItems = undef;
+	my $noOfFoundItems = 0;
 	my $noOfRetriesToGetUnplayedTracks = 10;
+	my $minUnplayedTracks = $prefs->get('min_number_of_unplayed_tracks');
+
 
 	my $i = 1;
 	while ($i <= $noOfRetriesToGetUnplayedTracks) {
 		my $iterationStartTime = time();
-		$log->debug("Iteration $i: total items so far = ".scalar(@totalItems).' -- limit = '.$limit.' -- offset = '.$offset);
-
-		# get tracks
-		my $getTracksForPlaylistStartTime = time();
-		$items = getTracksForPlaylist($masterClient, $playlist, $limit, $offset + scalar(@totalItems));
-		$log->debug("Iteration $i: returned ".(defined $items ? scalar(@{$items}) : 0).' tracks in '.(time()-$getTracksForPlaylistStartTime). ' seconds');
-
+		$log->debug('limit = '.$limit.' -- offset = '.$offset.' -- number of found items so far = '.$noOfFoundItems.' -- iteration = '.$i);
+		$items = getTracksForPlaylist($masterClient, $playlist, $limit, $offset + $noOfFoundItems);
 		if ($items && $items eq 'error') {
 			$log->error('Error trying to find tracks. Please check your playlist definition.');
 			last;
@@ -549,45 +544,38 @@ sub findAndAdd {
 			$i++;
 			next;
 		}
+		$items = filterTracks($masterClient, $items, $totalItems);
+		$log->debug("Iteration $i returned ".(scalar @{$items}).((scalar @{$items}) == 1 ? ' item' : ' items').' after filtering');
 
-		# filter tracks
-		my $filterTracksStartTime = time();
-		$items = filterTracks($masterClient, $items, \@totalItems);
-		$log->debug("Iteration $i: filtering took ".(time()-$filterTracksStartTime).' seconds');
-		$log->debug("Iteration $i: returned ".(scalar @{$items}).((scalar @{$items}) == 1 ? ' item' : ' items').' after filtering.');
-
-		push (@totalItems, @{$items});
-		$log->debug('Total items found so far = '.scalar(@totalItems));
-
-		# stop or get more tracks
+		$noOfFoundItems = $noOfFoundItems + (scalar @{$items});
+		push (@{$totalItems}, @{$items});
+		$log->debug('Total items found so far = '.scalar(@{$totalItems}));
 		if ($unlimited) {
-			if (scalar(@totalItems) >= $minUnplayedTracks) {
-				$log->debug('Unlimited option: totalItems '.scalar(@totalItems).' >= '.$minUnplayedTracks.' minUnplayedTracks');
+			if (scalar(@{$totalItems}) > $minUnplayedTracks) {
+				$log->debug('Unlimited option: totalItems '.scalar(@{$totalItems}).' > '.$minUnplayedTracks.' minUnplayedTracks');
 				last;
 			}
 		} else {
-			# if fetching tracks takes a long time but we already have more than the minimum number of unplayed tracks
+			# if fetching tracks takes a long time but we already have more than the minimum number of tracks
 			# let's start playback and get the rest of the tracks later
-			if ((time() - $iterationStartTime) > 5 && scalar(@totalItems) >= $minUnplayedTracks && scalar(@totalItems) < $limit) {
-				Slim::Utils::Timers::setTimer($client, Time::HiRes::time() + 15, \&findAndAdd, $type, $offset, $limit - scalar(@totalItems), 1, 0);
-				$log->info('Getting tracks took '.(time() - $iterationStartTime).' secs so far. Will start playlist with '.scalar(@totalItems).' tracks and fetch '.($limit - scalar(@totalItems)).' tracks later');
+			if (time()-$iterationStartTime > 5 && scalar(@{$totalItems}) > $minUnplayedTracks && scalar(@{$totalItems}) < $limit) {
+				Slim::Utils::Timers::setTimer($client, Time::HiRes::time() + 15, \&findAndAdd, $type, $offset, $limit-scalar(@{$totalItems}), 1, 0);
 				last;
 			}
-			last if scalar(@totalItems) >= $limit;
+			last if (defined $totalItems && scalar(@{$totalItems}) >= $limit);
 		}
 		$i++;
-		main::idleStreams();
 	}
-	if (scalar(@totalItems) == 0) {
+	if (!defined $totalItems || scalar(@{$totalItems}) == 0) {
 		$log->info('Found no tracks matching your search parameter or playlist definition for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
 		return 0;
 	}
-
-	@totalItems = @totalItems[0..($limit - 1)] if (scalar(@totalItems) > $limit);
-	my $noOfTotalItems = scalar(@totalItems); # get no of total items before shifting first track
-
+	if (scalar(@{$totalItems}) > $limit) {
+		$totalItems = [ @{$totalItems}[0..($limit-1)] ];
+	}
+	my $noOfTotalItems = scalar(@{$totalItems});
 	# Pull the first track off to add / play it if needed.
-	my $item = shift @totalItems;
+	my $item = shift @{$totalItems};
 
 	if ($item && ref($item)) {
 		my $itemTitle = $item->title;
@@ -595,54 +583,57 @@ sub findAndAdd {
 
 		# Replace the current playlist with the first item / track or add it to end
 		my $request = $client->execute(['playlist', (($addOnly && $addOnly != 2) || $continue) ? 'addtracks' : 'loadtracks', sprintf('%s=%d', getLinkAttribute('track'), $item->id)]);
+
+		# indicate request source
 		$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 
 		# Add the remaining items to the end
-		if (!defined $limit || $limit > 1 || scalar(@totalItems) >= 1) {
-			$log->debug('Adding '.scalar(@totalItems).' tracks to the end of the playlist.');
-			if(scalar(@totalItems) >= 1) {
-				$request = $client->execute(['playlist', 'addtracks', 'listRef', \@totalItems]);
+		if (!defined $limit || $limit > 1 || scalar @{$totalItems} >= 1) {
+			$log->debug('Adding '.(scalar @{$totalItems}).' tracks to the end of the playlist.');
+			if(scalar @{$totalItems} >= 1) {
+				$request = $client->execute(['playlist', 'addtracks', 'listRef', $totalItems]);
 				$request->source('PLUGIN_DYNAMICPLAYLISTS3');
 			}
 		}
 	}
-	$log->info('Got '.$noOfTotalItems.($noOfTotalItems == 1 ? ' track' : ' tracks').' for dynamic playlist "'.$playlist->{'name'}.'" in '.(time()-$started).' seconds.');
+	$log->info('Getting '.$noOfTotalItems.($noOfTotalItems == 1 ? ' track' : ' tracks').' for dynamic playlist "'.$playlist->{'name'}.'" took '.(time()-$started).' seconds.');
 	return $noOfTotalItems;
 }
 
 sub filterTracks {
-	my ($client, $newItems, $totalItems, $isStaticPL) = @_;
+	my ($client, $items, $totalItems) = @_;
+	my $nonDupeNewItems;
 
 	# filter for dupes in new items
-	if ($newItems && ref $newItems && scalar @{$newItems}) {
+	if ($items && ref $items && scalar @{$items}) {
 		my $seen ||= {};
-		$newItems = [grep {!$seen->{$_->url}++} @{$newItems}];
+		$items = [grep {!$seen->{$_->url}++} @{$items}];
 	}
+	$nonDupeNewItems = $items;
 
 	# dedupe new items against total items
 	if (defined $totalItems && scalar(@{$totalItems}) > 0) {
 		my %seen;
 		@seen{map $_->url, @$totalItems} = ();
-		$newItems = [
-			grep {!exists $seen{$_->url}} @$newItems
+		$nonDupeNewItems = [
+			grep {!exists $seen{$_->url}} @$items
 		];
 	}
 
-	$log->debug('Found these new non-dupe tracks: '.Dumper(\@{$newItems}));
+	$log->debug('Found these new non-dupe tracks: '.Dumper(\@{$nonDupeNewItems}));
 
-	# add new non-dupe tracks to DPL client history - unless it's a saved static PL
-	unless ($isStaticPL) {
-		for my $item (@{$newItems}) {
-			my $addedTime = time();
-			addToPlayListHistory($client, $item, $addedTime);
-			my @players = Slim::Player::Sync::slaves($client);
-			foreach my $player (@players) {
-				addToPlayListHistory($player, $item, $addedTime);
-			}
+	# add new non-dupe tracks to DPL client history
+	for my $item (@{$nonDupeNewItems}) {
+		my $skipped = 0;
+		my $addedTime = time();
+		addToPlayListHistory($client, $item, $skipped, $addedTime);
+		my @players = Slim::Player::Sync::slaves($client);
+		foreach my $player (@players) {
+			addToPlayListHistory($player, $item, $skipped, $addedTime);
 		}
 	}
 
-	return \@{$newItems};
+	return \@{$nonDupeNewItems};
 }
 
 sub playRandom {
@@ -667,6 +658,9 @@ sub playRandom {
 	$log->debug('pluginData type for '.$masterClient->name.' = '.$masterClient->pluginData('type'));
 	$log->debug('client pref type = '.$mixInfo{$masterClient}->{'type'}) if $mixInfo{$masterClient}->{'type'};
 
+	# Whether to keep adding tracks after generating the initial playlist
+	my $continuousMode = $prefs->get('keep_adding_tracks');;
+
 	my $stopactions = undef;
 	if (defined($mixInfo{$masterClient}->{'type'})) {
 		my $playlist = getPlayList($client, $mixInfo{$masterClient}->{'type'});
@@ -678,7 +672,7 @@ sub playRandom {
 	}
 
 	# If this is a new mix, clear playlist history
-	if (($addOnly && $addOnly == 2) || !$mixInfo{$masterClient} || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type)) {
+	if (($continuousMode && (!$addOnly && !$continue)) || ($addOnly && $addOnly == 2) || !$mixInfo{$masterClient} || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type)) {
 		$continue = undef;
 			my @players = Slim::Player::Sync::slaves($masterClient);
 			push @players, $masterClient;
@@ -751,7 +745,7 @@ sub playRandom {
 	$log->debug('maxNumberUnplayedTracks = '.$maxNumberUnplayedTracks);
 
 
-	if ($type && $type ne 'disable' && (!$mixInfo{$masterClient} || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type) || $songsRemaining < $minNumberUnplayedSongs)) {
+	if ($type && $type ne 'disable' && ($continuousMode || !$mixInfo{$masterClient} || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type) || $songsRemaining < $minNumberUnplayedSongs)) {
 		# Add new tracks if there aren't enough after the current track
 		if ((!$addOnly && !$continue) || ($addOnly && $addOnly == 2)) {
 			$numItems = $maxNumberUnplayedTracks;
@@ -864,6 +858,7 @@ sub playRandom {
 		clearPlayListHistory(\@players);
 	} else {
 		if (!$numItems || $numItems == 0 || $count > 0) {
+			#$log->debug(($addOnly ? 'Adding ' : 'Playing ').($continuousMode ? 'continuous' : 'static')." $type with ".Slim::Player::Playlist::count($client).' items');
 			if (!$addOnly) {
 				# Record current mix type and the time it was started.
 				# Do this last to prevent menu items changing too soon
@@ -1000,12 +995,12 @@ sub addParameterValues {
 		}
 	} elsif (lc($parameter->{'type'}) eq 'playlist') {
 		if ($limitingParamSelVLID) {
-			$sql = "select playlist_track.playlist, tracks.title, substr(tracks.titlesort,1,1) from tracks, playlist_track join library_track on library_track.track = tracks.id and library_track.library = '$limitingParamSelVLID' where tracks.id = playlist_track.playlist and playlist_track.track = tracks.url group by playlist_track.playlist order by titlesort";
+			$sql = "select playlist_track.playlist, tracks.title, substr(tracks.titlesort,1,1) from tracks, playlist_track join library_track on library_track.track = tracks.id and library_track.library = '$limitingParamSelVLID' where tracks.id=playlist_track.playlist and playlist_track.track=tracks.url group by playlist_track.playlist order by titlesort";
 		} else {
-			$sql = "select playlist_track.playlist, tracks.title, substr(tracks.titlesort,1,1) from tracks, playlist_track where tracks.id = playlist_track.playlist group by playlist_track.playlist order by titlesort";
+			$sql = "select playlist_track.playlist, tracks.title, substr(tracks.titlesort,1,1) from tracks, playlist_track where tracks.id=playlist_track.playlist group by playlist_track.playlist order by titlesort";
 		}
 	} elsif (lc($parameter->{'type'}) eq 'track') {
-		$sql = "select tracks.id, case when (albums.title is null or albums.title = '') then '' else albums.title || ' -- ' end || case when tracks.tracknum is null then '' else tracks.tracknum || '. ' end || tracks.title, substr(tracks.titlesort,1,1) from tracks, albums where tracks.album = albums.id and audio = 1 group by tracks.id order by albums.titlesort, albums.disc, tracks.tracknum";
+		$sql = "select tracks.id, case when (albums.title is null or albums.title = '') then '' else albums.title || ' -- ' end || case when tracks.tracknum is null then '' else tracks.tracknum || '. ' end || tracks.title, substr(tracks.titlesort,1,1) from tracks, albums where tracks.album=albums.id and audio=1 group by tracks.id order by albums.titlesort, albums.disc, tracks.tracknum";
 	} elsif (lc($parameter->{'type'}) eq 'list') {
 		my $value = $parameter->{'definition'};
 		if (defined($value) && $value ne '') {
@@ -1024,12 +1019,12 @@ sub addParameterValues {
 						);
 						if (defined($name)) {
 							$name = string($name) || $name;
-							$listitem{'name'} = $name;
+							$listitem{'name'}=$name;
 						} else {
-							$listitem{'name'} = $id;
+							$listitem{'name'}=$id;
 						}
 						if (defined($sortlink)) {
-							$listitem{'sortlink'} = $sortlink;
+							$listitem{'sortlink'}=$sortlink;
 						}
 						push @{$listRef}, \%listitem;
 					}
@@ -1083,7 +1078,7 @@ sub addParameterValues {
 			$sql = replaceParametersInSQL($sql, $predfinedParameters, 'Playlist');
 			$log->debug('sql = '.$sql);
 
-			for (my $i = 1; $i < $parameter->{'id'}; $i++) {
+			for (my $i=1; $i < $parameter->{'id'}; $i++) {
 				my $value = undef;
 				if (defined($parameterValues)) {
 					$value = $parameterValues->{$i};
@@ -1186,137 +1181,6 @@ sub getTracksForPlaylist {
 }
 
 
-# Save dpl as static playlist
-sub saveAsStaticPL {
-	my ($client, $type, $staticPLmaxTrackLimit, $staticPLname, $sortOrder) = @_;
-	$log->debug('Killing existing timers for saving static PL to prevent multiple calls');
-	Slim::Utils::Timers::killOneTimer(undef, \&saveAsStaticPL);
-
-	$log->debug("Creating static playlist with max. $staticPLmaxTrackLimit items for type: $type");
-	my $started = time();
-
-	my $masterClient = masterOrSelf($client);
-	my $playlist = getPlayList($client, $type);
-	my $items = undef;
-	my $filteredItems = undef;
-	my @totalItems = ();
-	my $noOfRetriesToGetUnplayedTracks = 15;
-
-	my $i = 1;
-	my ($noMatchResults, $noPostFilterResults) = 0;
-	while ($i <= $noOfRetriesToGetUnplayedTracks) {
-		my $iterationStartTime = time();
-		$log->debug("Iteration $i: total items so far = ".scalar(@totalItems).' -- staticPLmaxTrackLimit = '.$staticPLmaxTrackLimit);
-
-		# get tracks
-		my $getTracksForPlaylistStartTime = time();
-		$items = getTracksForPlaylist($masterClient, $playlist, $staticPLmaxTrackLimit, 0);
-		$log->info("Iteration $i: returned ".(defined $items ? scalar(@{$items}) : 0).' tracks in '.(time()-$getTracksForPlaylistStartTime). ' seconds');
-
-		if ($items && $items eq 'error') {
-			$log->error('Error trying to find tracks. Please check your playlist definition.');
-			last;
-		}
-		# stop if search returns no results at all
-		if (!defined $items || scalar(@{$items}) == 0) {
-			$log->debug("Iteration $i didn't return any items");
-			$i++;
-			$noMatchResults++;
-			$noMatchResults >= 5 ? last : next;
-		}
-
-		# filter tracks
-		my $filterTracksStartTime = time();
-		$items = filterTracks($masterClient, $items, \@totalItems, 1);
-		$log->info("Iteration $i: filtering took ".(time()-$filterTracksStartTime).' seconds');
-		$log->debug("Iteration $i: returned ".(scalar @{$items}).((scalar @{$items}) == 1 ? ' item' : ' items').' after filtering.');
-
-		push (@totalItems, @{$items});
-		$log->debug("Iteration $i: total items found so far = ".scalar(@totalItems));
-
-		# stop if search AFTER filtering returns no results
-		if (defined $items && scalar(@{$items}) == 0) {
-			$log->debug("Iteration $i: didn't return any items after filtering");
-			$i++;
-			$noPostFilterResults++;
-			main::idleStreams();
-			$noPostFilterResults >= 5 ? last : next;
-		}
-		$i++;
-		main::idleStreams();
-
-		last if scalar(@totalItems) >= $staticPLmaxTrackLimit;
-	}
-
-	if (scalar(@totalItems) == 0) {
-		$log->info('Found no tracks matching your search parameter or playlist definition for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
-		return 0;
-	}
-
-	@totalItems = @totalItems[0..($staticPLmaxTrackLimit - 1)] if (scalar(@totalItems) > $staticPLmaxTrackLimit);
-
-
-	### Save tracks as static playlist ###
-
-	# if PL with same name exists, add epoch time to PL name
-	my $newStaticPL = Slim::Schema->rs('Playlist')->single({'title' => $staticPLname});
-	if ($newStaticPL) {
-		my $timestamp = strftime "%Y-%m-%d--%H-%M-%S", localtime time;
-		$staticPLname = $staticPLname.'_'.$timestamp;
-	}
-
-	$newStaticPL = Slim::Schema->rs('Playlist')->single({'title' => $staticPLname});
-	Slim::Control::Request::executeRequest(undef, ['playlists', 'new', 'name:'.$staticPLname]) if !$newStaticPL;
-	$newStaticPL = Slim::Schema->rs('Playlist')->single({'title' => $staticPLname});
-	my @sortedTracks;
-
-	if (scalar(@totalItems) > 1 && $sortOrder > 1) {
-		my $sortStartTime= time();
-		if ($sortOrder == 2) {
-			# sort order: artist > album > disc no. > track no.
-			@sortedTracks = sort {lc($a->artist->namesort) cmp lc($b->artist->namesort) || lc($a->album->namesort) cmp lc($b->album->namesort) || ($a->{'_column_data'}->{'disc'} || 0) <=> ($b->{'_column_data'}->{'disc'} || 0) || ($a->{'_column_data'}->{'tracknum'} || 0) <=> ($b->{'_column_data'}->{'tracknum'} || 0)} @totalItems;
-		} elsif ($sortOrder == 3) {
-			# sort order: album > artist > disc no. > track no.
-			@sortedTracks = sort {lc($a->album->namesort) cmp lc($b->album->namesort) || lc($a->artist->namesort) cmp lc($b->artist->namesort) || ($a->{'_column_data'}->{'disc'} || 0) <=> ($b->{'_column_data'}->{'disc'} || 0) || ($a->{'_column_data'}->{'tracknum'} || 0) <=> ($b->{'_column_data'}->{'tracknum'} || 0)} @totalItems;
-		} elsif ($sortOrder == 4) {
-			# sort order: album > disc no. > track no.
-			@sortedTracks = sort {lc($a->album->namesort) cmp lc($b->album->namesort) || ($a->{'_column_data'}->{'disc'} || 0) <=> ($b->{'_column_data'}->{'disc'} || 0) || ($a->{'_column_data'}->{'tracknum'} || 0) <=> ($b->{'_column_data'}->{'tracknum'} || 0)} @totalItems;
-		}
-		$log->info('Sorting tracks took '.(time()-$sortStartTime).' seconds');
-		main::idleStreams();
-
-		my $setTracksStartTime = time();
-		$newStaticPL->setTracks(\@sortedTracks);
-		$log->info("setTracks took ".(time()-$setTracksStartTime).' seconds');
-	} else {
-		my $setTracksStartTime = time();
-		$newStaticPL->setTracks(\@totalItems);
-		$log->info("setTracks took ".(time()-$setTracksStartTime).' seconds');
-	}
-
-	$newStaticPL->update;
-
-	my $scheduleWriteOfPlaylistStartTime = time();
-	Slim::Player::Playlist::scheduleWriteOfPlaylist(undef, $newStaticPL);
-	$log->info("scheduleWriteOfPlaylist took ".(time()-$scheduleWriteOfPlaylistStartTime).' seconds');
-
-	$log->info('Saved static playlist "'.$staticPLname.'" with '.scalar(@totalItems).(scalar(@totalItems) == 1 ? ' track' : ' tracks').' using playlist definition "'.$playlist->{'name'}.'". Task completed after '.(time()-$started).' seconds.');
-	return;
-}
-
-sub _saveAsStaticNoParamsWeb {
-	my ($client, $params) = @_;
-	my $playlist = getPlayList($client, $params->{'type'});
-	$params->{'staticplname'} = $playlist->{'name'};
-	$params->{'lastparameter'} = 'islastparam';
-	$params->{'addOnly'} = 77;
-	$params->{'pluginDynamicPlaylists3AddOnly'} = 77;
-	$params->{'pluginDynamicPlaylists3PlaylistId'} = $params->{'type'};
-	$params->{'pluginDynamicPlaylists3noParamsStaticPLsave'} = 1;
-	return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlaylists3/dynamicplaylist_mixparameters.html', $params);
-}
-
-
 ### client states ###
 
 sub stateOffset {
@@ -1399,7 +1263,6 @@ sub webPages {
 		'dynamicplaylist_selectplaylists\.html' => \&handleWebSelectPlaylists,
 		'dynamicplaylist_saveselectplaylists\.html' => \&handleWebSaveSelectPlaylists,
 		'dynamicplaylist_preselectionmenu\.html' => \&_preselectionMenuWeb,
-		'dynamicplaylist_staticnoparams\.html' => \&_saveAsStaticNoParamsWeb,
 	);
 
 	my $value = $htmlTemplate;
@@ -1438,7 +1301,7 @@ sub handleWebList {
 		my $group = unescape($params->{'group1'});
 		if ($group =~/\//) {
 			my @groups = split(/\//, $group);
-			my $i = 1;
+			my $i=1;
 			for my $grp (@groups) {
 				$params->{'group'.$i} = escape($grp);
 				$i++;
@@ -1456,7 +1319,6 @@ sub handleWebList {
 	$params->{'pluginDynamicPlaylists3preselectionListArtists'} = 'display' if (keys %{$preselectionListArtists} > 0);
 	$params->{'pluginDynamicPlaylists3preselectionListAlbums'} = 'display' if (keys %{$preselectionListAlbums} > 0);
 	$params->{'paramsdplsaveenabled'} = $prefs->get('paramsdplsaveenabled');
-	$params->{'pluginDynamicPlaylists3staticPLsavingEnabled'} = $prefs->get('enablestaticplsaving');
 
 	$params->{'pluginDynamicPlaylists3Context'} = getPlayListContext($client, $params, $playListItems, 1);
 	$params->{'pluginDynamicPlaylists3Groups'} = getPlayListGroupsForContext($client, $params, $playListItems, 1);
@@ -1676,7 +1538,6 @@ sub handleWebMixParameters {
 	} else {
 		if ($params->{'addOnly'} == 99) {
 			my $title = $params->{'dpl_customfavtitle'} || $playlist->{'name'};
-			$title = Slim::Utils::Misc::cleanupFilename($title);
 			my $url = $params->{'dpl_favaddonly'} ? ('dynamicplaylistaddonly://'.$playlist->{'dynamicplaylistid'}.'?') : ('dynamicplaylist://'.$playlist->{'dynamicplaylistid'}.'?');
 			for (my $i = 1; $i < $parameterId; $i++) {
 				$url .= 'p'.$i.'='.$client->modeParam('dynamicplaylist_parameter_'.$i)->{'id'};
@@ -1689,20 +1550,6 @@ sub handleWebMixParameters {
 				$log->debug('Saving this url to LMS favorites: '.$url);
 				$client->execute(['favorites', 'add', 'url:'.$url, 'title:'.$title, 'type:audio']);
 			}
-		} elsif ($params->{'addOnly'} == 77) {
-			my $staticPLname = $params->{'dpl_customstaticplname'} || $playlist->{'name'};
-			$staticPLname = Slim::Utils::Misc::cleanupFilename($staticPLname);
-
-			my $staticPLmaxTrackLimit = $params->{'dpl_customstaticplmaxtracklimit'} || 200;
-			$staticPLmaxTrackLimit = 4000 if $staticPLmaxTrackLimit > 4000;
-			$staticPLmaxTrackLimit = 10 if $staticPLmaxTrackLimit < 10;
-
-			my $sortOrder = $params->{'dpl_customstaticplsortorder'} || 1;
-
-			for (my $i = 1; $i < $parameterId; $i++) {
-				$playlist->{'parameters'}->{$i}->{'value'} = $client->modeParam('dynamicplaylist_parameter_'.$i)->{'id'};
-			}
-			Slim::Utils::Timers::setTimer($client, Time::HiRes::time() + 3, \&saveAsStaticPL, $params->{'type'}, $staticPLmaxTrackLimit, $staticPLname, $sortOrder);
 		} else {
 			for (my $i = 1; $i < $parameterId; $i++) {
 				$playlist->{'parameters'}->{$i}->{'value'} = $client->modeParam('dynamicplaylist_parameter_'.$i)->{'id'};
@@ -1987,10 +1834,10 @@ sub savePlayListGroups {
 			my $groupid = escape($path).'_'.escape($item->{'name'});
 			my $playlistid = 'playlist_'.$groupid;
 			if ($params->{$playlistid}) {
-				$log->debug('Saving: playlist_group_'.$groupid.'_enabled = 1');
+				$log->debug('Saving: playlist_group_'.$groupid.'_enabled=1');
 				$prefs->set('playlist_group_'.$groupid.'_enabled', 1);
 			} else {
-				$log->debug('Saving: playlist_group_'.$groupid.'_enabled = 0');
+				$log->debug('Saving: playlist_group_'.$groupid.'_enabled=0');
 				$prefs->set('playlist_group_'.$groupid.'_enabled', 0);
 			}
 			if (defined($item->{'childs'})) {
@@ -2177,7 +2024,7 @@ sub cliJiveHandler {
 	my $params = $request->getParamsCopy();
 
 	for my $k (keys %{$params}) {
-		$log->debug("Got: $k = ".$params->{$k});
+		$log->debug("Got: $k=".$params->{$k});
 	}
 
 	$log->debug('Executing CLI browsejive command');
@@ -2315,7 +2162,7 @@ sub cliJiveHandler {
 			my %itemParams = ();
 			foreach my $p (keys %baseParams) {
 				if ($p =~ /^group/) {
-					$itemParams{$p} = $baseParams{$p}
+					$itemParams{$p}=$baseParams{$p}
 				}
 			}
 			$itemParams{'group'.$nextGroup} = $id;
@@ -2851,7 +2698,7 @@ sub _cliJiveActionsMenuHandler {
 	# count params
 	my %dplParams;
 	for my $k (keys %{$params}) {
-		$log->debug("Got: $k = ".$params->{$k});
+		$log->debug("Got: $k=".$params->{$k});
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			$dplParams{$k} = $params->{$k};
 		}
@@ -2862,7 +2709,7 @@ sub _cliJiveActionsMenuHandler {
 	my $playlistID = $params->{'playlistid'};
 	my $hasNoVolatileParams = $playLists->{$playlistID}->{'hasnovolatileparams'};
 
-	# if we have params, display if params = non-volatile or pref setting = enabled
+	# if we have params show if enabled in prefs or params = non-volatile
 	if ($paramCount > 0 && ($prefs->get('paramsdplsaveenabled') || $hasNoVolatileParams)) {
 		# space/empty line
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
@@ -3078,11 +2925,11 @@ sub cliPlayPlaylist {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			my $parameterId = $1;
 			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
-				$log->debug("Using: $k = ".$params->{$k});
+				$log->debug("Using: $k=".$params->{$k});
 				$playLists->{$playlistId}->{'parameters'}->{$1}->{'value'} = $params->{$k};
 			}
 		} else {
-			$log->debug("Got: $k = ".$params->{$k});
+			$log->debug("Got: $k=".$params->{$k});
 		}
 	}
 
@@ -3127,11 +2974,11 @@ sub cliContinuePlaylist {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			my $parameterId = $1;
 			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
-				$log->debug("Using: $k = ".$params->{$k});
+				$log->debug("Using: $k=".$params->{$k});
 				$playLists->{$playlistId}->{'parameters'}->{$1}->{'value'} = $params->{$k};
 			}
 		} else {
-			$log->debug("Got: $k = ".$params->{$k});
+			$log->debug("Got: $k=".$params->{$k});
 		}
 	}
 
@@ -3176,11 +3023,11 @@ sub cliAddPlaylist {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			my $parameterId = $1;
 			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
-				$log->debug("Using: $k = ".$params->{$k});
+				$log->debug("Using: $k=".$params->{$k});
 				$playLists->{$playlistId}->{'parameters'}->{$1}->{'value'} = $params->{$k};
 			}
 		} else {
-			$log->debug("Got: $k = ".$params->{$k});
+			$log->debug("Got: $k=".$params->{$k});
 		}
 	}
 
@@ -3225,11 +3072,11 @@ sub cliDstmSeedListPlay {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			my $parameterId = $1;
 			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
-				$log->debug("Using: $k = ".$params->{$k});
+				$log->debug("Using: $k=".$params->{$k});
 				$playLists->{$playlistId}->{'parameters'}->{$1}->{'value'} = $params->{$k};
 			}
 		} else {
-			$log->debug("Got: $k = ".$params->{$k});
+			$log->debug("Got: $k=".$params->{$k});
 		}
 	}
 
@@ -3397,7 +3244,7 @@ sub setModeMixer {
 				my $playlist = $item->{'playlist'};
 				if (defined($playlist->{'parameters'})) {
 					my %parameterValues = ();
-					my $i = 1;
+					my $i=1;
 					while (defined($client->modeParam('dynamicplaylist_parameter_'.$i))) {
 						$parameterValues{'dynamicplaylist_parameter_'.$i} = $client->modeParam('dynamicplaylist_parameter_'.$i);
 						$i++;
@@ -3417,7 +3264,7 @@ sub setModeMixer {
 			if (defined($item->{'playlist'})) {
 				if (defined($playlist->{'parameters'})) {
 					my %parameterValues = ();
-					my $i = 1;
+					my $i=1;
 					while (defined($client->modeParam('dynamicplaylist_parameter_'.$i))) {
 						$parameterValues{'dynamicplaylist_parameter_'.$i} = $client->modeParam('dynamicplaylist_parameter_'.$i);
 						$i++;
@@ -3463,7 +3310,7 @@ sub setModeMixer {
 				}
 		},
 	);
-	my $i = 1;
+	my $i=1;
 	while (defined($client->modeParam('dynamicplaylist_parameter_'.$i))) {
 		$params{'dynamicplaylist_parameter_'.$i} = $client->modeParam('dynamicplaylist_parameter_'.$i);
 		$i++;
@@ -3880,7 +3727,7 @@ sub requestFirstParameter {
 	if (defined($playlist->{'parameters'}) && defined($playlist->{'parameters'}->{$nextParameters{'dynamicplaylist_nextparameter'}})) {
 		Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists3.ChooseParameters', \%nextParameters);
 	} else {
-		for($i = 1; $i < $nextParameters{'dynamicplaylist_nextparameter'}; $i++) {
+		for($i=1; $i < $nextParameters{'dynamicplaylist_nextparameter'}; $i++) {
 			$playlist->{'parameters'}->{$i}->{'value'} = $params->{'dynamicplaylist_parameter_'.$i}->{'id'};
 		}
 		handlePlayOrAdd($client, $playlist->{'dynamicplaylistid'}, $addOnly);
@@ -4318,9 +4165,9 @@ sub getDecades {
 
 		my $sql_decades;
 		if ($library_id) {
-			$sql_decades = "select cast(((ifnull(tracks.year,0)/10)*10) as int) as decade,case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else '$unknownString' end as decadedisplayed from tracks join library_track on library_track.track = tracks.id and library_track.library = '$library_id' where tracks.audio = 1 group by decade order by decade desc";
+			$sql_decades = "select cast(((ifnull(tracks.year,0)/10)*10) as int) as decade,case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else '$unknownString' end as decadedisplayed from tracks join library_track on library_track.track = tracks.id and library_track.library = '$library_id' where tracks.audio=1 group by decade order by decade desc";
 		} else {
-			$sql_decades = "select cast(((ifnull(tracks.year,0)/10)*10) as int) as decade,case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else '$unknownString' end as decadedisplayed from tracks where tracks.audio = 1 group by decade order by decade desc";
+			$sql_decades = "select cast(((ifnull(tracks.year,0)/10)*10) as int) as decade,case when tracks.year>0 then cast(((tracks.year/10)*10) as int)||'s' else '$unknownString' end as decadedisplayed from tracks where tracks.audio=1 group by decade order by decade desc";
 		}
 
 		my ($decade, $decadeDisplayName);
@@ -4519,7 +4366,7 @@ sub getVirtualLibraries {
 			id => qq('$k'),
 		};
 	}
-	if (scalar(@items) == 0) {
+	if (scalar @items == 0) {
 		push @items, {
 			name => string('PLUGIN_DYNAMICPLAYLISTS3_LANGSTRINGS_COMPLETELIB'),
 			sortName => 'complete library',
@@ -4528,7 +4375,7 @@ sub getVirtualLibraries {
 		};
 	}
 
-	if (scalar(@items) > 1) {
+	if (scalar @items > 1) {
 		@items = sort {lc($a->{sortName}) cmp lc($b->{sortName})} @items;
 	}
 	return \@items;
@@ -4715,7 +4562,6 @@ sub _preselectionMenuJive {
 	if (keys %{$preselectionList} > 0) {
 		$request->addResultLoop('item_loop', $cnt, 'type', 'text');
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-		#$request->addResultLoop('item_loop', $cnt, 'actions', 'none');
 		$request->addResultLoop('item_loop', $cnt, 'text', $objectType eq 'artist' ? $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_REMOVEINFO_ARTIST') : $client->string('PLUGIN_DYNAMICPLAYLISTS3_PRESELECTION_REMOVEINFO_ALBUM'));
 		$cnt++;
 
@@ -4897,13 +4743,13 @@ sub getDynamicPlayLists {
 				}
 			}
 			if (defined($current->{'startactions'})) {
-				$currentResult{'startactions'} = $current->{'startactions'};
+				$currentResult{'startactions'}=$current->{'startactions'};
 			}
 			if (defined($current->{'stopactions'})) {
-				$currentResult{'stopactions'} = $current->{'stopactions'};
+				$currentResult{'stopactions'}=$current->{'stopactions'};
 			}
 			if (defined($current->{'contextmenulist'})) {
-				$currentResult{'contextmenulist'} = $current->{'contextmenulist'};
+				$currentResult{'contextmenulist'}=$current->{'contextmenulist'};
 			}
 			if ($current->{'groups'} && scalar($current->{'groups'})>0) {
 				$currentResult{'groups'} = $current->{'groups'};
@@ -4948,11 +4794,11 @@ sub getNextDynamicPlayListTracks {
 					$sth->bind_col(1,\$trackURL);
 					my @tracks = ();
 					while ($sth->fetch()) {
-						my $track = Slim::Schema->resultset('Track')->single({ 'url' => $trackURL });
+						my $track = Slim::Schema->resultset('Track')->objectForUrl($trackURL);
 						push @tracks, $track;
 					}
 					unless ($prefs->get('disableextrashuffle') || (defined($playlistTrackOrder) && $playlistTrackOrder eq 'ordered')) {
-						shuffle(\@tracks);
+						fisher_yates_shuffle(\@tracks);
 					}
 					push @result, @tracks;
 				}
@@ -4978,8 +4824,8 @@ sub getNextDynamicPlayListTracks {
 			$offset = 0;
 			my $dbh = getCurrentDBH();
 			my $rand = "random()";
-			my $clientid = $dbh->quote($client->id);
-			my $sql = "select tracks.id from playlist_track join tracks on playlist_track.track = tracks.url left join dynamicplaylist_history on tracks.id = dynamicplaylist_history.id and dynamicplaylist_history.client = $clientid where playlist_track.playlist = ".$dynamicplaylist->{'id'}." and dynamicplaylist_history.id is null group by playlist_track.track order by $rand";
+			my $clientid=$dbh->quote($client->id);
+			my $sql = "select tracks.id from playlist_track join tracks on playlist_track.track=tracks.url left join dynamicplaylist_history on tracks.id=dynamicplaylist_history.id and dynamicplaylist_history.client=$clientid where playlist_track.playlist=".$dynamicplaylist->{'id'}." and dynamicplaylist_history.id is null group by playlist_track.track order by $rand";
 			if (defined($limit)) {
 				$sql .= " limit $limit";
 			}
@@ -4996,7 +4842,7 @@ sub getNextDynamicPlayListTracks {
 					}
 					if (scalar(@trackIds) > 0) {
 						@tracks = Slim::Schema->resultset('Track')->search({'id' => {'in' => \@trackIds}});
-						shuffle(\@tracks);
+						fisher_yates_shuffle(\@tracks);
 					}
 				}
 				$sth->finish();
@@ -5148,7 +4994,7 @@ sub getInternalParameters {
 sub replaceParametersInSQL {
 	my ($sql, $parameters, $parameterType) = @_;
 	if (!defined($parameterType)) {
-		$parameterType = 'PlaylistParameter';
+		$parameterType='PlaylistParameter';
 	}
 
 	if (defined($parameters)) {
@@ -5156,7 +5002,7 @@ sub replaceParametersInSQL {
 			my $parameter = $parameters->{$key};
 			my $value = $parameter->{'value'};
 			if (!defined($value)) {
-				$value = '';
+				$value='';
 			}
 			my $parameterid = "\'$parameterType".$parameter->{'id'}."\'";
 			$log->debug('Replacing '.$parameterid.' with '.$value);
@@ -5396,8 +5242,8 @@ sub parseContent {
 						&& $playLists->{$playlistid}->{'parameters'}->{$p}->{'name'} eq $parameters{$p}->{'name'}
 						&& defined($playLists->{$playlistid}->{'parameters'}->{$p}->{'value'}))
 					{
-						$log->debug("Use already existing value PlaylistParameter$p = ".$playLists->{$playlistid}->{'parameters'}->{$p}->{'value'});
-						$parameters{$p}->{'value'} = $playLists->{$playlistid}->{'parameters'}->{$p}->{'value'};
+						$log->debug("Use already existing value PlaylistParameter$p=".$playLists->{$playlistid}->{'parameters'}->{$p}->{'value'});
+						$parameters{$p}->{'value'}=$playLists->{$playlistid}->{'parameters'}->{$p}->{'value'};
 					}
 				}
 			}
@@ -5706,12 +5552,38 @@ sub initDatabase {
 	my $tablexists;
 	while (my ($qual, $owner, $table, $type) = $st->fetchrow_array()) {
 		if ($table eq 'dynamicplaylist_history') {
-			$tablexists = 1;
+			$st->finish();
+
+			my $sth = $dbh->prepare (q{pragma table_info(dynamicplaylist_history)});
+			$sth->execute() or do {
+				$log->debug("Error executing");
+			};
+
+			my $colName;
+			my %colNames = ();
+			while ($sth->fetch()) {
+				$sth->bind_col(2, \$colName);
+				$colNames{$colName} = 1 if $colName;
+			}
+
+			$sth->finish();
+
+			if ($colNames{'skipped'}) {
+				$tablexists = 1;
+			} else {
+				my $sql = qq(drop table if exists dynamicplaylist_history );
+				eval {$dbh->do($sql)};
+				if ($@) {
+					msg("Couldn't drop DPL history database table: [$@]");
+				}
+			}
+		last;
 		}
 	}
 	$st->finish();
+
 	unless ($tablexists) {
-		my $sqlCreate = "create table if not exists dynamicplaylist_history (client varchar(20) not null, position integer primary key autoincrement, id int(10) not null unique, url text not null unique, added int(10) not null default null);";
+		my $sqlCreate = "create table if not exists dynamicplaylist_history (client varchar(20) not null, position integer primary key autoincrement, id int(10) not null unique, url text not null unique, added int(10) not null, skipped int(10) default null);";
 		$log->debug('Creating DPL history database table');
 		eval {$dbh->do($sqlCreate)};
 		if ($@) {
@@ -5728,13 +5600,13 @@ sub initDatabase {
 }
 
 sub addToPlayListHistory {
-	my ($client, $track, $addedTime) = @_;
+	my ($client, $track, $skipped, $addedTime) = @_;
 
 	if (Slim::Music::Import->stillScanning && (!UNIVERSAL::can('Slim::Music::Import', 'externalScannerRunning') || Slim::Music::Import->externalScannerRunning)) {
 		$log->debug('Adding track to queue: '.$track->url);
 		my $item = {
 			'url' => $track->url,
-			'urlmd5' => $track->urlmd5,
+			'skipped' => $skipped,
 			'addedTime' => $addedTime,
 		};
 		my $existing = $historyQueue->{$client->id};
@@ -5748,7 +5620,7 @@ sub addToPlayListHistory {
 	}
 
 	my $dbh = getCurrentDBH();
-	my $sth = $dbh->prepare("insert or replace into dynamicplaylist_history (client, id, url, added) values (?, ".$track->id.", ?, ".$addedTime.")");
+	my $sth = $dbh->prepare("insert or replace into dynamicplaylist_history (client, id, url, added, skipped) values (?,".$track->id.", ?, ".$addedTime.",".$skipped.")");
 	eval {
 		$sth->bind_param(1, $client->id);
 		$sth->bind_param(2, $track->url);
@@ -5816,7 +5688,7 @@ sub getNoOfItemsInHistory {
 	my $dbh = getCurrentDBH();
 	eval {
 		my $clientid = $dbh->quote($client->id);
-		my $sql = "select count(position) from dynamicplaylist_history where dynamicplaylist_history.client = $clientid";
+		my $sql = "select count(position) from dynamicplaylist_history where dynamicplaylist_history.client=$clientid and skipped=0";
 		my $sth = $dbh->prepare($sql);
 		$log->debug("Executing history count SQL: $sql");
 		$sth->execute() or do {
@@ -5937,9 +5809,9 @@ sub checkCustomSkipFilterType {
 					my $clientid = $dbh->quote($client->id);
 					my $noOfItems = getNoOfItemsInHistory($client);
 					if ($noOfItems <= $nooftracks) {
-						$sql = "select dynamicplaylist_history.position from dynamicplaylist_history join contributor_track on contributor_track.track = dynamicplaylist_history.id where contributor_track.contributor = $artistid and dynamicplaylist_history.client = $clientid";
+						$sql = "select dynamicplaylist_history.position from dynamicplaylist_history join contributor_track on contributor_track.track=dynamicplaylist_history.id where contributor_track.contributor=$artistid and dynamicplaylist_history.client=$clientid";
 					} else {
-						$sql = "select dynamicplaylist_history.position from dynamicplaylist_history join contributor_track on contributor_track.track = dynamicplaylist_history.id where contributor_track.contributor = $artistid and dynamicplaylist_history.client = $clientid and dynamicplaylist_history.position > (select position from dynamicplaylist_history where dynamicplaylist_history.client = $clientid order by position desc limit 1 offset $nooftracks)";
+						$sql = "select dynamicplaylist_history.position from dynamicplaylist_history join contributor_track on contributor_track.track=dynamicplaylist_history.id where contributor_track.contributor=$artistid and dynamicplaylist_history.client=$clientid and dynamicplaylist_history.position > (select position from dynamicplaylist_history where dynamicplaylist_history.client=$clientid and skipped=0 order by position desc limit 1 offset $nooftracks)";
 					}
 				}
 				last;
@@ -5958,9 +5830,9 @@ sub checkCustomSkipFilterType {
 					my $clientid = $dbh->quote($client->id);
 					my $noOfItems = getNoOfItemsInHistory($client);
 					if ($noOfItems <= $nooftracks) {
-						$sql = "select dynamicplaylist_history.position from dynamicplaylist_history join tracks on tracks.id = dynamicplaylist_history.id where tracks.album = $albumid and dynamicplaylist_history.client = $clientid";
+						$sql = "select dynamicplaylist_history.position from dynamicplaylist_history join tracks on tracks.id=dynamicplaylist_history.id where tracks.album=$albumid and dynamicplaylist_history.client=$clientid";
 					} else {
-						$sql = "select dynamicplaylist_history.position from dynamicplaylist_history join tracks on tracks.id = dynamicplaylist_history.id where tracks.album = $albumid and dynamicplaylist_history.client = $clientid and dynamicplaylist_history.position > (select position from dynamicplaylist_history where dynamicplaylist_history.client = $clientid order by position desc limit 1 offset $nooftracks)";
+						$sql = "select dynamicplaylist_history.position from dynamicplaylist_history join tracks on tracks.id=dynamicplaylist_history.id where tracks.album=$albumid and dynamicplaylist_history.client=$clientid and dynamicplaylist_history.position > (select position from dynamicplaylist_history where dynamicplaylist_history.client=$clientid and skipped=0 order by position desc limit 1 offset $nooftracks)";
 					}
 				}
 				last;
@@ -6045,13 +5917,12 @@ sub rescanDone {
 			my $queue = $historyQueue->{$clientId};
 			if (scalar(@{$queue}) > 0) {
 				foreach my $item (@{$queue}) {
-					my $track = Slim::Schema->rs('Track')->single({'urlmd5' => $item->{'urlmd5'}});
-					if (!$track && defined($item->{'url'})) {
-						$track = Slim::Schema->rs('Track')->objectForUrl($item->{'url'});
-					}
+					my $track = Slim::Schema->objectForUrl({
+							'url' => $item->{'url'},
+						});
 					if (defined($track)) {
 						$log->debug('Added play history of track: '.$item->{'url'});
-						addToPlayListHistory($addedClient, $track, $item->{'addedTime'});
+						addToPlayListHistory($addedClient, $track, $item->{'skipped'}, $item->{'addedTime'});
 					}
 				}
 			}
@@ -6289,6 +6160,17 @@ sub validateIntOrEmpty {
 		return $arg;
 	}
 	return undef;
+}
+
+sub fisher_yates_shuffle {
+	my $myArray = shift;
+	my $i = @{$myArray};
+	if (scalar(@{$myArray}) > 1) {
+		while (--$i) {
+			my $j = int rand ($i + 1);
+			@{$myArray}[$i, $j] = @{$myArray}[$j, $i];
+		}
+	}
 }
 
 sub objectForId {

@@ -163,7 +163,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_MINTRACKS_ALBUM_DESC
 	FR	Les <b>albums</b> qui ont moins de morceaux que le nombre minimum défini ici seront ignorés dans les listes de lecture dynamiques qui utilisent le paramètre <i>PlaylistMinAlbumTracks</i> (certaines listes de lecture intégrées l'utilisent)
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_ENABLEVOLATILEPARAMDPLSAVE
-	EN	Allow dynamic playlists with <i>volatile</i> parameters as <b>favorites</b>
+	EN	Allow dynamic playlists with <i>volatile</i> parameters as <b>favorites</b> 
 	FR	Permettre l'ajout de listes de lecture dynamiques avec des paramètres <i>volatiles</i> aux favoris
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS3_ENABLEVOLATILEPARAMDPLSAVE_DESC
@@ -420,44 +420,6 @@ PLUGIN_DYNAMICPLAYLISTS3_FAVADDONLY
 PLUGIN_DYNAMICPLAYLISTS3_FAVADDONLY_JIVE
 	EN	Add only, don't play
 	FR	Ajouter seulement, ne pas jouer
-
-
-PLUGIN_DYNAMICPLAYLISTS3_SAVEASSTATICPL_TITLE
-	EN	Save as static playlist
-	FR	Sauvegarder comme liste de lecture statique
-
-PLUGIN_DYNAMICPLAYLISTS3_NEWSTATICPLNAME
-	EN	Static playlist name
-	FR	Nom de la liste de lecture statique
-
-PLUGIN_DYNAMICPLAYLISTS3_SAVE_BTN
-	EN	Save
-	FR	Sauvegarder
-
-PLUGIN_DYNAMICPLAYLISTS3_NEWSTATICPLMAXTRACKLIMIT
-	EN	Max. number of tracks
-	FR	Nombre max. de morceaux
-
-PLUGIN_DYNAMICPLAYLISTS3_NEWSTATICPLSORTORDER
-	EN	Track sort order
-	FR	Ordre de tri des morceaux
-
-PLUGIN_DYNAMICPLAYLISTS3_NEWSTATICPLSORTORDER_NOSORT
-	EN	No sorting
-	FR	Pas de tri
-
-PLUGIN_DYNAMICPLAYLISTS3_NEWSTATICPLSORTORDER_SORT1
-	EN	Artist > album > disc no. > track no.
-	FR	Artiste > album > disque no. > morceau no.
-
-PLUGIN_DYNAMICPLAYLISTS3_NEWSTATICPLSORTORDER_SORT2
-	EN	Album > artist > disc no. > track no.
-	FR	Album > artiste > disque no. > morceau no.
-
-PLUGIN_DYNAMICPLAYLISTS3_NEWSTATICPLSORTORDER_SORT3
-	EN	Album > disc no. > track no.
-	FR	Album > disque no. > morceau no.
-
 
 
 PLUGIN_DYNAMICPLAYLISTS3_PRESELECTARTISTS

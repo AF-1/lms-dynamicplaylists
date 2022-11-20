@@ -1,8 +1,8 @@
-Dynamic Playlists 3
+Dynamic Playlists
 ====
 
 This plugin<sup>1</sup> lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i>.<br>
-*Dynamic Playlists 3* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started. At some point you'll probably want to create a dynamic playlist that's tailored to your very specific needs because the <i>built-in</i> dynamic playlists cannot cover all possible use cases.<br><br>
+*Dynamic Playlists* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started. At some point you'll probably want to create a dynamic playlist that's tailored to your very specific needs because the <i>built-in</i> dynamic playlists cannot cover all possible use cases.<br><br>
 Some preferences are not enabled by default. Please take a look at the preferences and their descriptions on the plugin's settings page.
 <br><br>
 [⬅️ **Back to the list of all plugins**](https://github.com/AF-1/)
@@ -17,7 +17,7 @@ Some preferences are not enabled by default. Please take a look at the preferenc
 ## Installation
 ⚠️ **Please read the [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq) *before* installing this plugin.**<br>
 
-You should be able to install **Dynamic Playlists 3** from the LMS main repository (LMS plugin library):<br>**LMS > Settings > Plugins**.<br>
+You should be able to install **Dynamic Playlists** from the LMS main repository (LMS plugin library):<br>**LMS > Settings > Plugins**.<br>
 
 If you want to test a new patch that hasn't made it into a release version yet or you need to install a previous version, you'll have to [install the plugin manually](https://github.com/AF-1/sobras/wiki/Manual-installation-of-LMS-plugins).
 
@@ -72,7 +72,7 @@ First see if you can find a <i>built-in</i> dynamic playlist that suits your nee
 In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format">wiki</b></a> for more information on the dynamic playlist <b>format</b>.<br><br>
 Or you could take a look at the <b>beta</b> version of the <b>Dynamic Playlist Creator</b> plugin that should help you create dynamic playlists using templates. Please read the requirements on its <a href="https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator---beta"><b>GitHub page</b></a> and decide for yourself whether you would like to become a beta tester and contribute to the development of that plugin.</p></details><br>
 
-<details><summary>»<b>I have a custom playlist definition (file). How do I add it to/ use it directly in DPLv3?</b>«</summary><br><p>
+<details><summary>»<b>I have a custom playlist definition (file). How do I add it to/ use it directly in DPL?</b>«</summary><br><p>
 
 - If you already have a dynamic playlist definition <b>file</b> (correct file extension: <b>.sql</b>, <u>not</u> <i>.xml.sql</i> or any other variation), you can skip the next 2 steps.<br>
 
@@ -91,11 +91,11 @@ So for <b>artists</b> and <b>albums</b> DPL will show a <b>second <i>context</i>
 </p></details><br>
 
 <details><summary>»<b>How does DPL work with the <i>Don't Stop the Music</i> plugin?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>What does the icon with the infinity symbol do?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>What does “<i>Create DSTM seed list and play</i>“ mean?</b>«</summary><br><p>
-The <i>Don't Stop the Music</i> (DSTM) plugin “will automatically add similar music to what you've been listening to ... once you've reached the end of your playlist“. DSTM takes a look at the existing tracks in your client's playlist (the <i>seed list</i>) to determine what kind of tracks to search for.<br><br>As long as <i>Dynamic Playlists 3</i> is <b>active</b>, i.e. playing a dynamic playlist, DSTM will <b>not</b> interfere and add tracks.<br><br>But now you can use <i>Dynamic Playlists 3</i> to create a DSTM seed list from any dynamic playlist and start a DSTM mix for you. There's a preference setting if you prefer to skip playback of all seed list tracks (but the last one).
+The <i>Don't Stop the Music</i> (DSTM) plugin “will automatically add similar music to what you've been listening to ... once you've reached the end of your playlist“. DSTM takes a look at the existing tracks in your client's playlist (the <i>seed list</i>) to determine what kind of tracks to search for.<br><br>As long as <i>Dynamic Playlists</i> is <b>active</b>, i.e. playing a dynamic playlist, DSTM will <b>not</b> interfere and add tracks.<br><br>But now you can use <i>Dynamic Playlists</i> to create a DSTM seed list from any dynamic playlist and start a DSTM mix for you. There's a preference setting if you prefer to skip playback of all seed list tracks (but the last one).
 </p></details><br>
 
 <details><summary>»<b>How do I know whether DPL is still <i>active</i>?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>What causes DPL to no longer be active?</b>«</summary><br><p>
-To find out whether <i>Dynamic Playlists 3</i> is still <b>active</b> just enter the DPL menu from the <i>Home/My Music</i> menu. If it's still active, it will display the active dynamic playlist at the top of the DPL menu.<br>Some actions/events that stop DPL (= no longer active): clearing your client playlist, DPL no longer finds tracks for the active dynamic playlist, you told DPL to stop adding tracks...
+To find out whether <i>Dynamic Playlists</i> is still <b>active</b> just enter the DPL menu from the <i>Home/My Music</i> menu. If it's still active, it will display the active dynamic playlist at the top of the DPL menu.<br>Some actions/events that stop DPL (= no longer active): clearing your client playlist, DPL no longer finds tracks for the active dynamic playlist, you told DPL to stop adding tracks...
 </p></details><br>
 
 <details><summary>»<b>I've added a dynamic playlist to my LMS favorites, but it no longer works.</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>There are some dynamic playlists that I can't add to LMS favorites.</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>DPL shows a favorite icon with a <i>p</i> (default skin) or an orange tint (classic skin) next to my dynamic playlists. Why?</b>«</summary><br><p>
@@ -116,7 +116,7 @@ The collection of <b>built-in</b> dynamic playlists includes only a large but li
 The <i>Not classified</i> group is a <i>catch-all group</i> for all dynamic playlist that are <b>not</b> assigned to any playlist <i>group</i>. You can <b>create your own custom playlist groups</b> by setting the <code>-- PlaylistGroups:</code> parameter in your dynamic playlist definition (see <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters"><b>wiki</b></a>).</p></details><br>
 
 <details><summary>»<b>Does DPL handle online tracks?</b>«</summary><br><p>
-<i>Dynamic Playlists 3</i> will process <b>online tracks</b> that have been <b>added to your LMS library as part of an album</b>. LMS does not import <b>single</b> online tracks or tracks of <i>online</i> <b>playlists</b> as <b>library</b> tracks and therefore they won't be processed by <i>Dynamic Playlists 3</i>.</p></details><br>
+<i>Dynamic Playlists</i> will process <b>online tracks</b> that have been <b>added to your LMS library as part of an album</b>. LMS does not import <b>single</b> online tracks or tracks of <i>online</i> <b>playlists</b> as <b>library</b> tracks and therefore they won't be processed by <i>Dynamic Playlists</i>.</p></details><br>
 
 <details><summary>»<b>Some dynamic playlist are not sorted in alphabetical order.</b>«</summary><br><p>
 In general <i>dynamic playlists</i> will <b>always</b> be listed in this order: 1. built-in  2. custom/user-provided  3. provided by other plugins. Dynamic playlists in the last two groups should be listed in <i>alphabetical</i> order.<br><b>Built-in</b> dynamic playlists are listed in a 'content-based' order created by me. For example, I try to group dynamic playlists together that are about ratings, play count or genre/decade selection. If you don't like how I ordered the built-in dynamic playlists, don't forget that you can clone these playlists and even put them in a custom playlist group just by adding the corresponding parameter (see <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters"><b>wiki</b></a>).<br>Static (saved) playlists will always be ordered alphabetically.
@@ -132,7 +132,7 @@ And <b>context menus</b> (= <i><b>M</b>ore</i> menu in the web UI or <i>click/to
 
 <details><summary>»<b>I want my dynamic playlist to use one of CustomSkip3's filter sets.</b>«</summary><br><p>
 Just add the necessary <b>action/CLI playlist parameters</b> to the SQLite code of your custom dynamic playlist as described <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters">here</a>.<br>
-If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create a CustomSkip3 filter set that will <i>only</i> be active if DPL3 plays a dynamic playlist. See CustomSkip3 <a href="https://github.com/AF-1/lms-customskip/wiki#i-want-customskip-to-filter-only-dynamic-playlist-tracks">Wiki</a>.
+If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create a CustomSkip3 filter set that will <i>only</i> be active if DPL plays a dynamic playlist. See CustomSkip3 <a href="https://github.com/AF-1/lms-customskip/wiki#i-want-customskip-to-filter-only-dynamic-playlist-tracks">Wiki</a>.
 </p></details><br>
 
 <details><summary>»<b>Is DPL v<i>3</i> compatible with my old plugins?</b>«</summary><br><p><b>Old plugins <i>might</i> work with DPL v3 but I won't guarantee that they do or will continue to do so.</b> And I won't spend time on making DPL v3 compatible with unsupported plugins</b>. <i>Somebody else</i> would have to maintain, test and update those plugins to keep them fully compatible with newer versions of DPL v<b>3</b> and provide support for them.<br>
@@ -142,13 +142,13 @@ If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create 
 - <b>CustomScan</b>: could work, not tested. Compatibility not guaranteed, not supported by me.<br>
 
 - <b>SQLPlayList</b>: compatibility not guaranteed, <b>not supported by me</b>.<br>
-If you can't find a similar built-in dynamic playlist in DPL3, you can create a <i>custom</i> dynamic playlist (and maybe use a built-in dynamic playlist as a template).<br>
+If you can't find a similar built-in dynamic playlist in DPL, you can create a <i>custom</i> dynamic playlist (and maybe use a built-in dynamic playlist as a template).<br>
 Or you could take a look at the <b>beta</b> version of the <b>Dynamic Playlist Creator</b> plugin. Please read the requirements on its <a href="https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator---beta"><b>GitHub page</b></a> and decide for yourself whether you would like to become a beta tester and contribute to the development of that plugin.<br>
 If SQLPlayList displays an error at the bottom of its main page where it used to display the currently playing dynamic playlist, just ignore this error.
 
 - <b>TrackStat</b>: no longer needed. LMS keeps track of ratings, play counts and date last played in its own database table.<br>
 
-- <b>MultiLibrary</b>: not tested. Compatibility not guaranteed, not supported by me. I recommend migrating from the <i>MultiLibrary</i> plugin to native LMS <b>virtual libraries</b> so you can use DPL v3 <i>playlist parameters</i> for virtual libraries (ID, name and user input selection). You can easily create new virtual libraries using saved <b>advanced search</b>es. Or, if you're a little familiar with SQLite, there's the [<b>SQLite Virtual Libraries</b>](https://github.com/AF-1/lms-sqlitevirtuallibraries) plugin that lets you use SQLite statements to create virtual libraries.
+- <b>MultiLibrary</b>: not tested. Compatibility not guaranteed, not supported by me. I recommend migrating from the <i>MultiLibrary</i> plugin to native LMS <b>virtual libraries</b> so you can use DPL <i>playlist parameters</i> for virtual libraries (ID, name and user input selection). You can easily create new virtual libraries using saved <b>advanced search</b>es. Or, if you're a little familiar with SQLite, there's the [<b>SQLite Virtual Libraries</b>](https://github.com/AF-1/lms-sqlitevirtuallibraries) plugin that lets you use SQLite statements to create virtual libraries.
 </p></details>
 
 <br><br><br><br>
