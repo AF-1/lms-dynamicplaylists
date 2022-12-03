@@ -34,9 +34,10 @@ If you want to test a new patch that hasn't made it into a release version yet o
 * Save dynamic playlists with (user input) parameters to LMS **favourites** (see [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq)).
 * Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
 * New playlist parameters (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
-* New preference options and UI changes.
-* Compatible with [**Custom Skip**](https://github.com/AF-1/lms-customskip#custom-skip), [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) and [**Dynamic Playlist Creator (beta)**](https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator---beta).
+* New preference options (e.g. balanced shuffle) and UI changes.
+* Compatible with [**Custom Skip**](https://github.com/AF-1/lms-customskip#custom-skip), [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) and [**Dynamic Playlist Creator (beta)**](https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator).
 * If you have installed the [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) plugin, you will see some additional dynamic playlists that use the data from this plugin.
+* Use dynamic playlists to create static playlists
 * …
 <br><br><br><br>
 
@@ -66,28 +67,56 @@ If you think that you've found a bug, open an [**issue here on GitHub**](https:/
 
 ## FAQ
 
-<details><summary>»<b>How do I create my own <i>custom</i> dynamic playlist?</b>«</summary><br><p>
-Dynamic playlist definitions are basically plain text files with a "<b>.sql</b>" file extension that contain your playlist definition, i.e. a couple of <b>parameters</b> (<i>general</i> parameters like the playlist name, group or category and <i>user input</i> parameters) and the <b>SQLite statement</b> itself to fetch tracks from the LMS database.<br><br>
-First see if you can find a <i>built-in</i> dynamic playlist that suits your needs. You can edit dynamic playlists in any (plain text) editor, add new playlist parameters or create more complex sqlite definitions. This will give you a great deal of freedom in creating dynamic playlists tailored to your specific needs.<br>
-In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format">wiki</b></a> for more information on the dynamic playlist <b>format</b>.<br><br>
-Or you could take a look at the <b>beta</b> version of the <b>Dynamic Playlist Creator</b> plugin that should help you create dynamic playlists using templates. Please read the requirements on its <a href="https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator---beta"><b>GitHub page</b></a> and decide for yourself whether you would like to become a beta tester and contribute to the development of that plugin.</p></details><br>
+<details><summary>»<b>What do I need to consider when <i>upgrading</i> from version 3 ➞ 4?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>Can I downgrade from version 4 ➞ 3?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>What's changed in version 4?</b>«</summary><br><p>
 
-<details><summary>»<b>I have a custom playlist definition (file). How do I add it to/ use it directly in DPL?</b>«</summary><br><p>
+- <b>Changes</b><br><br>For dynamic playlists that can retrieve <b>all</b> tracks matching your search parameters in <b>one initial</b> database query, DPL version <b>4</b> loads <b>all</b> tracks into the <b>cache</b>, thus eliminating the need for further database queries. Subsequent batches of new tracks for the active dynamic playlist will be retrieved <b>from the cache only</b>, and added to a client's playlist <b>much faster</b> as a result.<br>Dynamic playlists that retrieve each batch of new tracks from a different, randomly chosen artist, album, genre, year, decade or static playlist are <b>not</b> suitable for cache use because not all tracks can be retrieved in one initial database query.<br>Furthermore, you can use dynamic playlists to create <i>static</i> playlists and select LMS's <i>balanced shuffle mode</i> as the default plugin shuffle method in the settings now.<br><br>
+⚠️ Unlike previous versions, DPL <b>4</b> uses track <b>id</b>s (and not track <b>url</b>s) to cache, sort or shuffle (huge result sets of) tracks.<br>Therefore, version <b>4</b> is <b>no longer compatible with old plugins like SQLPlayList that return track <i>urls</i></b> instead of track <i>ids</i> (see <b>up</b>grading section below).
+<br><br>
 
-- If you already have a dynamic playlist definition <b>file</b> (correct file extension: <b>.sql</b>, <u>not</u> <i>.xml.sql</i> or any other variation), you can skip the next 2 steps.<br>
+- <b>Up</b>grading 3 ➞ <b>4</b><br><br>Please <b>don't use version 3 <i>and</i> version 4 <i>at the same time</i></b>. Uninstall version 3, then install version 4.<br>Since version <b>4</b> expects the <b>id</b> (instead of the <i>url</i>) and the primary artist (used for LMS's balanced shuffling) for each track, you need to <b>make your <i>custom</i> dynamic playlists compatible with version 4</b>. It's rather easy:<br>
+	- If you used the <b>Dynamic Playlist Creator</b> plugin to create your <i>custom</i> dynamic playlist, just click on the <b>Edit</b> button next to its name and simply <b>save</b> it again. <i>Dynamic Playlist Creator</i> will save it in a version compatible with the currently installed version of DPL. That's it.
 
-- Open a plain text editor of your choice and copy&paste (or edit) your playlist definition (parameters and SQLite statement).<br>
+	- If you have <b>manually created</b> <i>custom</i> dynamic playlists (<b>customized SQLite statements</b>) in the <b>DPL-custom-lists</b> folder, you simply need to replace instances of<br><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;<i>select <b>tracks.url</b> from tracks</i><br><br>
+	with<br><br>
+	&nbsp;&nbsp;&nbsp;&nbsp;<i>select <b>tracks.id, tracks.primary_artist</b> from tracks</i><br><br>
+	Save a backup of your manually created custom dynamic playlist <b>before</b> you change them. If you ever wish to downgrade to version 3, you can just use the old dynamic playlists from your backup.
+<br><br>
 
-- Save it as "nameofyourchoice.sql". The file extension <b>.sql</b> is important.<br>
+- <b>Down</b>grading 4 ➞ <b>3</b><br><br>The last version <b>3</b> of <i>Dynamic Playlists</i> will remain available for download here to allow you to downgrade at any time. It will, however, no longer be available from the LMS main repository because it won't receive further updates and should be considered deprecated.<br><br>
+You can either install the last version 3 manually or add the version 3 repository URL below at the bottom of *LMS* > *Settings* > *Plugins* and click *Apply*:<br><br>
+[**https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/repo.xml**](https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/repo.xml)<br><br>
+<i>Custom</i> dynamic playlists compatible with version <b>3</b> need to return track <b>urls</b>. So save them again with <i>Dynamic Playlist Creator</i> or, if manually created, make sure they return track urls. For details, refer to the <b>up</b>grade section above.
+</p></details><br>
 
-- Now put this file in DPL's <i>folder for custom dynamic playlists</i> called <b>DPL-custom-lists</b>. Unless you've changed its location in DPL's settings you'll find this folder in your <i>LMS playlist folder</i>.<br>
+<details><summary>»<b>How do I create / add my own <i>custom</i> dynamic playlist?</b>«</summary><br><p>
 
-- The new dynamic playlist should now be listed in DPL, either in the <i>Not classified</i> group or in other groups according to what the <code>-- PlaylistGroups</code> parameter in your playlist definition says.
+- If you prefer a <b>GUI</b> and want an <b>easy</b> way to create a <i>custom</i> dynamic playlist without having to deal with SQLite, take a look at the <b>Dynamic Playlist Creator</b> plugin that uses templates to create dynamic playlists and makes them available to DPL 3 and 4.<br>It's a <b>beta</b> version, meaning it may still contain the occasional bug. So please read the  <a href="https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator"><b>GitHub page</b></a> and decide for yourself whether you would like to use it.
+
+- If you are <b>familiar with database queries and SQLite</b>, you can create a fully customized dynamic playlist in a plain text editor of your choice and use it directly in DPL.<br>Dynamic playlist definitions are basically plain text files with an "<b>sql</b>" file extension that contain your playlist definition:<br>
+	- a couple of <b>parameters</b> (<i>general</i> parameters like the playlist name, group or category and <i>user input</i> parameters) and
+	- the <b>SQLite statement</b> itself to fetch tracks from the LMS database.<br><br>
+
+	Whether you use a <i>built-in</i> dynamic playlist as a template or start from scratch, this will give you a great deal of freedom in creating dynamic playlists tailored to your specific needs.<br>
+In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format">wiki</b></a> for more information on the dynamic playlist <b>format</b> and the few playlist parameters that you should definitely include.<br>Put your custom dynamic playlist <b>file</b> (with the <b>sql</b> file extension) in DPL's <i>folder for custom dynamic playlists</i> called <b>DPL-custom-lists</b>.<sup>2</sup> The new dynamic playlist should now be listed in DPL, either in the <i>Not classified</i> group or in other groups according to what the <code>-- PlaylistGroups</code> parameter in your playlist definition says.<br><br>
+</p></details><br>
+
+<details><summary>»<b>With which plugins does DPL work?</b>«</summary><br><p>
+
+All DPL versions are compatible with <a href="https://github.com/AF-1/lms-dynamicplaylistcreator"><b>Dynamic Playlist Creator</b></a>, <a href="https://github.com/AF-1/lms-alternativeplaycount"><b>Alternative Play Count</b></a> and <a href="https://github.com/AF-1/lms-customskip#custom-skip"><b>Custom Skip 3</b></a>.<br>
+
+- <b>CustomScan</b>: could work, not tested. Compatibility not guaranteed, not supported by me.<br>
+
+- <b>SQLPlayList</b>: does <b>NOT</b> work with DPL version <b>4</b>. Compatibility with DPL version 3 not guaranteed, <b>not supported by me</b>. Alternatively, you can give the <a href="https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator"><b>Dynamic Playlist Creator</b></a> plugin a try.<br>
+
+- <b>TrackStat</b>: <b>not</b> supported because no longer needed. LMS keeps track of ratings, play counts and date last played in its own database table.<br>
+
+- <b>MultiLibrary</b>: <b>not</b> supported because no longer needed. Please considering using native LMS <b>virtual libraries</b>. You can easily create new virtual libraries using saved <b>advanced search</b>es. Or, if you're a little familiar with SQLite, there's the [<b>SQLite Virtual Libraries</b>](https://github.com/AF-1/lms-sqlitevirtuallibraries) plugin that lets you use SQLite statements to create virtual libraries.
 </p></details><br>
 
 <details><summary>»<b>What's <i>preselection</i>? How does it work?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>There's more than one DPL context menu item.</b>«</summary><br><p>
 DPL has playlist parameters that allow you to select <b>multiple</b> genres, decades, years and static playlist. But even the smallest music libraries have a large number of <b>artists</b> and <b>albums</b> that would result in poorly browsable, far too long selection lists. The solution is to gather/select artists or albums <i>first</i> using the <b>preselection</b> context menu item and then start a dynamic playlist for preselected artists/albums.<br>
-So for <b>artists</b> and <b>albums</b> DPL will show a <b>second <i>context</i> menu</b> that allows you to <b>preselect</b> this artist/album while browsing your music library. DPL will remember your (pre)selection <i>until the next LMS restart/rescan</i> <sup>2</sup>.<br>Once you've finished preselecting artists/albums, go to DPL's home menu and use this selection with any dynamic playlist that makes use of the <code>PlaylistPreselectedArtists</code> or <code>PlaylistPreselectedAlbums</code> playlist parameter. There are some built-in dynamic playlists to get you started (in the <i>Songs</i> group). And it's very easy to add these playlist parameters to your custom dynamic playlists. Read this <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#user-input-parameters"><b>wiki</b></a> section for more information.
+So for <b>artists</b> and <b>albums</b> DPL will show a <b>second <i>context</i> menu</b> that allows you to <b>preselect</b> this artist/album while browsing your music library. DPL will remember your (pre)selection <i>until the next LMS restart/rescan</i> <sup>3</sup>.<br>Once you've finished preselecting artists/albums, go to DPL's home menu and use this selection with any dynamic playlist that makes use of the <code>PlaylistPreselectedArtists</code> or <code>PlaylistPreselectedAlbums</code> playlist parameter. There are some built-in dynamic playlists to get you started (in the <i>Songs</i> group). And it's very easy to add these playlist parameters to your custom dynamic playlists. Read this <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#user-input-parameters"><b>wiki</b></a> section for more information.
 </p></details><br>
 
 <details><summary>»<b>How does DPL work with the <i>Don't Stop the Music</i> plugin?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>What does the icon with the infinity symbol do?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>What does “<i>Create DSTM seed list and play</i>“ mean?</b>«</summary><br><p>
@@ -135,23 +164,7 @@ Just add the necessary <b>action/CLI playlist parameters</b> to the SQLite code 
 If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create a Custom Skip filter set that will <i>only</i> be active if DPL plays a dynamic playlist. See Custom Skip <a href="https://github.com/AF-1/lms-customskip/wiki#i-want-customskip-to-filter-only-dynamic-playlist-tracks">Wiki</a>.
 </p></details><br>
 
-<details><summary>»<b>Is DPL v<i>3</i> compatible with my old plugins?</b>«</summary><br><p><b>Old plugins <i>might</i> work with DPL v3 but I won't guarantee that they do or will continue to do so.</b> And I won't spend time on making DPL v3 compatible with unsupported plugins</b>. <i>Somebody else</i> would have to maintain, test and update those plugins to keep them fully compatible with newer versions of DPL v<b>3</b> and provide support for them.<br>
-
-- <b>CustomSkip</b>: DPL v<b>3</b> works with <a href="https://github.com/AF-1/lms-customskip"><b>CustomSkip 3</b></a>. Please read the CustomSkip <a href="https://github.com/AF-1/lms-customskip#faq">FAQ</a> first <b>before</b> installing it.<br>
-
-- <b>CustomScan</b>: could work, not tested. Compatibility not guaranteed, not supported by me.<br>
-
-- <b>SQLPlayList</b>: compatibility not guaranteed, <b>not supported by me</b>.<br>
-If you can't find a similar built-in dynamic playlist in DPL, you can create a <i>custom</i> dynamic playlist (and maybe use a built-in dynamic playlist as a template).<br>
-Or you could take a look at the <b>beta</b> version of the <b>Dynamic Playlist Creator</b> plugin. Please read the requirements on its <a href="https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator---beta"><b>GitHub page</b></a> and decide for yourself whether you would like to become a beta tester and contribute to the development of that plugin.<br>
-If SQLPlayList displays an error at the bottom of its main page where it used to display the currently playing dynamic playlist, just ignore this error.
-
-- <b>TrackStat</b>: no longer needed. LMS keeps track of ratings, play counts and date last played in its own database table.<br>
-
-- <b>MultiLibrary</b>: not tested. Compatibility not guaranteed, not supported by me. I recommend migrating from the <i>MultiLibrary</i> plugin to native LMS <b>virtual libraries</b> so you can use DPL <i>playlist parameters</i> for virtual libraries (ID, name and user input selection). You can easily create new virtual libraries using saved <b>advanced search</b>es. Or, if you're a little familiar with SQLite, there's the [<b>SQLite Virtual Libraries</b>](https://github.com/AF-1/lms-sqlitevirtuallibraries) plugin that lets you use SQLite statements to create virtual libraries.
-</p></details>
-
-<br><br><br><br>
+<br><br><br>
 ### Translation
 The [**strings.txt**](https://github.com/AF-1/lms-dynamicplaylists/blob/main/DynamicPlaylists3/strings.txt) file contains all localizable strings. Once you're done **testing** the plugin with your translated strings just create a pull request on GitHub.<br>
 * Please try not to use the [**single**](https://www.fileformat.info/info/unicode/char/27/index.htm) quote character (apostrophe) or the [**double**](https://www.fileformat.info/info/unicode/char/0022/index.htm) quote character (quotation mark) in your translated strings. They could cause problems. You can use the [*right single quotation mark*](https://www.fileformat.info/info/unicode/char/2019/index.htm) or the [*double quotation mark*](https://www.fileformat.info/info/unicode/char/201d/index.htm) instead. And if possible, avoid (special) characters that are used as [**metacharacters**](https://en.wikipedia.org/wiki/Metacharacter) in programming languages (Perl), regex or SQLite.
@@ -161,4 +174,5 @@ The [**strings.txt**](https://github.com/AF-1/lms-dynamicplaylists/blob/main/Dyn
 
 <br><br><br><hr>
 <sup>1</sup> Based on Erland's <i>DynamicPlayList</i> plugin.<br>
-<sup>2</sup> You can't save your preselection permanently, it's a <b>short</b>-term thing. If you have a fixed selection of artists or albums that you want to listen to frequently, you can "hard-code" them into <b>your own custom</b> dynamic playlist.
+<sup>2</sup> Unless you've changed its location in the settings, you'll find DPL's <i>folder for custom dynamic playlists</i> called <b>DPL-custom-lists</b> in your <i>LMS playlist folder</i>.<br>
+<sup>3</sup> You can't save your preselection permanently, it's a <b>short</b>-term thing. If you have a fixed selection of artists or albums that you want to listen to frequently, you can "hard-code" them into <b>your own custom</b> dynamic playlist.

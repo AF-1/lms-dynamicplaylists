@@ -1,0 +1,20 @@
+<?xml version='1.0'?>
+<extension>
+	<id>affc5872-2bcb-abee-35eb-56cb5ce1e125</id>
+	<name>PLUGIN_DYNAMICPLAYLISTS4</name>
+	<module>Plugins::DynamicPlaylists4::Plugin</module>
+	<version>4.0.0</version>
+	<description>PLUGIN_DYNAMICPLAYLISTS4_DESC</description>
+	<creator>AF</creator>
+	<optionsURL>plugins/DynamicPlaylists4/settings/basic.html</optionsURL>
+	<homepageURL>https://github.com/AF-1/lms-dynamicplaylists</homepageURL>
+	<defaultState>enabled</defaultState>
+	<icon>plugins/DynamicPlaylists4/html/images/dpl_icon_svg.png</icon>
+	<playerMenu>BROWSE_MUSIC</playerMenu>
+	<canConflictWithDSTM>1</canConflictWithDSTM>
+	<targetApplication>
+		<id>Logitech Media Server</id>
+		<minVersion>8.3</minVersion>
+		<maxVersion>*</maxVersion>
+	</targetApplication>
+</extension>
