@@ -27,7 +27,7 @@ If you want to test a new patch that hasn't made it into a release version yet o
 
 ## Features:
 * Use **your own custom dynamic playlist files/definitions directly in DPL** without intermediary plugins - you don't have to install other plugins to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
-* Comes with 190+ ready-to-use dynamic playlists (stand-alone + for context menus).
+* Comes with more than 200 ready-to-use dynamic playlists (stand-alone + for context menus).
 * **Multiple** selection of *genres*, *decades*, *years* and *static playlists*
 * **Pre**select multiple *artists* or *albums* from their context menu at your leisure. DPL remembers your **pre**selection so that you can easily use it later with dynamic playlists that use **preselection**.
 * Use LMS **virtual libraries**.
