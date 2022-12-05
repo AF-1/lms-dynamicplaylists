@@ -809,40 +809,40 @@ sub playRandom {
 	}
 
 	# If this is a new mix, clear playlist history
-	if (($addOnly && $addOnly == 2) || !$mixInfo{$masterClient} || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type)) {
+	if (($addOnly && $addOnly == 2) || !$mixInfo{$masterClient} || ($mixInfo{$masterClient} && keys %{$mixInfo{$masterClient}} == 0) || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type)) {
 		$continue = undef;
-			my @players = Slim::Player::Sync::slaves($masterClient);
-			push @players, $masterClient;
-			clearPlayListHistory(\@players);
-			clearCache(\@players);
+		my @players = Slim::Player::Sync::slaves($masterClient);
+		push @players, $masterClient;
+		clearPlayListHistory(\@players);
+		clearCache(\@players);
 
-			# Executing actions related to new mix
-			if (!$addOnly) {
-				my $startactions = undef;
-				if ($type && $type ne 'disable') {
-					my $playlist = getPlayList($client, $type);
-					if (defined($playlist)) {
-						if (defined($playlist->{'startactions'})) {
-							$startactions = $playlist->{'startactions'};
-						}
-					}
-				}
-				my @actions = ();
-				if (defined($stopactions)) {
-					push @actions, @{$stopactions};
-				}
-				if (defined($startactions)) {
-					push @actions, @{$startactions};
-				}
-				for my $action (@actions) {
-					if (defined($action->{'type'}) && lc($action->{'type'}) eq 'cli' && defined($action->{'data'})) {
-						$log->debug('Executing action: '.$action->{'type'}.', '.$action->{'data'});
-						my @parts = split(/ /, $action->{'data'});
-						my $request = $client->execute(\@parts);
-						$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+		# Executing actions related to new mix
+		if (!$addOnly) {
+			my $startactions = undef;
+			if ($type && $type ne 'disable') {
+				my $playlist = getPlayList($client, $type);
+				if (defined($playlist)) {
+					if (defined($playlist->{'startactions'})) {
+						$startactions = $playlist->{'startactions'};
 					}
 				}
 			}
+			my @actions = ();
+			if (defined($stopactions)) {
+				push @actions, @{$stopactions};
+			}
+			if (defined($startactions)) {
+				push @actions, @{$startactions};
+			}
+			for my $action (@actions) {
+				if (defined($action->{'type'}) && lc($action->{'type'}) eq 'cli' && defined($action->{'data'})) {
+					$log->debug('Executing action: '.$action->{'type'}.', '.$action->{'data'});
+					my @parts = split(/ /, $action->{'data'});
+					my $request = $client->execute(\@parts);
+					$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+				}
+			}
+		}
 	}
 	my $offset = $mixInfo{$masterClient}->{'offset'};
 	if (!$mixInfo{$masterClient}->{'type'} || $mixInfo{$masterClient}->{'type'} ne $type || (!$addOnly && !$continue)) {
