@@ -136,7 +136,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLUGINSHUFFLEMODE
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLUGINSHUFFLEMODE_DESC
 	EN	By default DPL shuffles tracks of built-in and custom dynamic playlists to <i>increase</i> randomness unless told otherwise. You can choose between different shuffle methods or disable <b>plugin</b> shuffle. This is a <b>global</b> settings for <b>all</b> dynamic playlists (built-in and custom).<br><br>To disable track shuffling only for <b>selected</b> custom dynamic playlists add this playlist parameter to your playlist definition:<br><i>-- PlaylistTrackOrder:ordered</i><br><br>Saved static playlists have a separate preference setting.<br><br>Randomization by functions/clauses in the SQLite code is not affected by any of this and can only be changed in the SQLite code.
-	FR	????
+	FR	Par défaut, DPL mélange les pistes des listes de lecture dynamiques intégrées et personnalisées pour <i>augmenter</i> le caractère aléatoire, sauf indication contraire. Vous pouvez choisir entre différentes méthodes de lecture aléatoire ou désactiver la lecture aléatoire du plugin. Il s'agit d'un paramètre <b>global</b> pour <b>toutes</b> les listes de lecture dynamiques (intégrées et personnalisées).<br><br>Pour désactiver le brassage des pistes uniquement pour les <b>sélectionnées</b> listes de lecture dynamiques personnalisées, ajoutez ce paramètre de liste de lecture à votre définition de liste de lecture:<br><i>-- PlaylistTrackOrder:ordered</i><br><br>Les listes de lecture statiques enregistrées ont un paramètre de préférence distinct.<br><br>La randomisation par les fonctions/clauses dans le code SQLite n'est pas affectée par tout cela et ne peut être modifiée que dans le code SQLite.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLUGINSHUFFLEMODE_NORMAL
 	EN	Faster, but less balanced shuffle
@@ -184,11 +184,11 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEVOLATILEPARAMDPLSAVE_DESC
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLESTATICPLSAVING
 	EN	Allow saving dynamic playlists as static playlists
-	FR	????
+	FR	Permettre l'enregistrement des listes de lecture dynamiques comme listes de lecture statiques
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLESTATICPLSAVING_DESC
 	EN	Save the result of a dynamic playlist query as a static playlist (min. 100, max. 4000 tracks). If you have a very large result set of tracks, saving the playlist may take a while to complete. Please be patient.
-	FR	????
+	FR	Enregistrez le résultat d'une requête de liste de lecture dynamique sous la forme d'une liste de lecture statique (min. 100, max. 4000 pistes). Si vous avez un très grand nombre de pistes, l'enregistrement de la liste de lecture peut prendre un certain temps. Veuillez être patient.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_REMEMBERACTIVEPLAYLIST
 	EN	Remember active dynamic playlist
@@ -232,11 +232,11 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_INCLUDESAVEDPLAYLISTS_DESC
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_RANDOMSAVEDPLAYLISTS
 	EN	Playback order for static playlists
-	FR	????
+	FR	Ordre de lecture pour les listes de lecture statiques
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_RANDOMSAVEDPLAYLISTS_DESC
 	EN	Play songs in static saved playlists in random order.<br><b>Random</b> order will use the <b>plugin shuffle method</b> you've selected in the settings above.
-	FR	Joue les morceaux des listes de lecture statiques dans un ordre aléatoire????
+	FR	Joue les morceaux des listes de lecture statiques dans un ordre aléatoire.<br><b>L'ordre aléatoire</b> utilisera la méthode de brassage que vous avez sélectionnée dans les paramètres ci-dessus.
 
 PLUGIN_DYNAMICPLAYLISTS4_SETTINGS_RANDOM
 	EN	Random
@@ -484,15 +484,15 @@ PLUGIN_DYNAMICPLAYLISTS4_ENTERNEWSTATICPLNAME
 
 PLUGIN_DYNAMICPLAYLISTS4_SAVINGSTATICPL_INPROGRESS
 	EN	Saving the static playlist. This may take a while...
-	FR	???? Enregistrement de la liste de lecture statique. Cela peut prendre un certain temps...
+	FR	Enregistrement de la liste de lecture statique. Cela peut prendre un certain temps...
 
 PLUGIN_DYNAMICPLAYLISTS4_SAVINGSTATICPL_DONE
 	EN	Finished saving static playlist
-	FR	????
+	FR	La liste de lecture statique a été sauvegardée.
 
 PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPL_SAVESTATUS
 	EN	Saving static playlist...
-	FR	????
+	FR	En train de sauvegarder la liste de lecture statique...
 
 
 PLUGIN_DYNAMICPLAYLISTS4_PRESELECTARTISTS
