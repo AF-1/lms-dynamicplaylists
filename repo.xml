@@ -3,13 +3,13 @@
 		<title lang="EN">Dynamic Playlists - latest version 3 (AF1)</title>
 	</details>
 	<plugins>
-		<plugin name="DynamicPlaylists3" version="3.7.7" minTarget="7.9" maxTarget="*">
+		<plugin name="DynamicPlaylists3" version="3.7.8" minTarget="7.9" maxTarget="*">
 			<title lang="EN">Dynamic Playlists 3 (deprecated)</title>
 			<desc lang="EN">Latest version 3 (deprecated). Use to downgrade from version 4 to version 3.</desc>
-			<url>https://github.com/AF-1/lms-dynamicplaylists/releases/download/3.7.7/lms-dynamicplaylists-3.7.7.zip</url>
+			<url>https://github.com/AF-1/lms-dynamicplaylists/releases/download/3.7.8/lms-dynamicplaylists-3.7.8.zip</url>
 			<creator>AF</creator>
 			<link>https://github.com/AF-1/lms-dynamicplaylists#faq</link>
-			<sha>f34e926c5be1e38527eed8123fc22d0c09a71ef5</sha>
+			<sha>fcb601b9998c266f43f5a074bb169bb377746730</sha>
 		</plugin>
 	</plugins>
 </extensions>
