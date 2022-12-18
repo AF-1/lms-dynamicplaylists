@@ -86,16 +86,16 @@ If you think that you've found a bug, open an [**issue here on GitHub**](https:/
 - <b>Down</b>grading 4 ➞ <b>3</b><br><br>The last version <b>3</b> of <i>Dynamic Playlists</i> will remain available for download here to allow you to downgrade at any time. It will, however, no longer be available from the LMS main repository because it won't receive further updates and should be considered deprecated.<br><br>
 You can either install the last version 3 manually or add the version 3 repository URL below at the bottom of *LMS* > *Settings* > *Plugins* and click *Apply*:<br><br>
 [**https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/repo.xml**](https://raw.githubusercontent.com/AF-1/lms-dynamicplaylists/main/repo.xml)<br><br>
-<i>Custom</i> dynamic playlists compatible with version <b>3</b> need to return track <b>urls</b>. So save them again with <i>Dynamic Playlist Creator</i> or, if manually created, make sure they return track urls. For details, refer to the <b>up</b>grade section above.
+<i>Custom</i> dynamic playlists compatible with version <b>3</b> need to return track <b>urls</b>. For details, refer to the <b>up</b>grade section above.
 </p></details><br>
 
 <details><summary>»<b>With which plugins does DPL work?</b>«</summary><br><p>
 
-All DPL versions are compatible with <a href="https://github.com/AF-1/lms-dynamicplaylistcreator"><b>Dynamic Playlist Creator</b></a>, <a href="https://github.com/AF-1/lms-alternativeplaycount"><b>Alternative Play Count</b></a> and <a href="https://github.com/AF-1/lms-customskip#custom-skip"><b>Custom Skip 3</b></a>.<br>
+DPL 4 is compatible with <a href="https://github.com/AF-1/lms-dynamicplaylistcreator"><b>Dynamic Playlist Creator</b></a>, <a href="https://github.com/AF-1/lms-alternativeplaycount"><b>Alternative Play Count</b></a> and <a href="https://github.com/AF-1/lms-customskip#custom-skip"><b>Custom Skip 3</b></a>.<br>
 
 - <b>CustomScan</b>: could work, not tested. Compatibility not guaranteed, not supported by me.<br>
 
-- <b>SQLPlayList</b>: does <b>NOT</b> work with DPL version <b>4</b>. Compatibility with DPL version 3 not guaranteed, <b>not supported by me</b>. Alternatively, you can give the <a href="https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator"><b>Dynamic Playlist Creator</b></a> plugin a try.<br>
+- <b>SQLPlayList</b>: does <b>NOT</b> work with DPL version <b>4</b>. Compatibility with DPL version 3 not guaranteed, <b>not supported by me</b>. Alternatively, you can give the <a href="https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator"><b>Dynamic Playlist Creator</b></a> plugin a try if you use DPL version **4**.<br>
 
 - <b>TrackStat</b>: <b>not</b> supported because no longer needed. LMS keeps track of ratings, play counts and date last played in its own database table.<br>
 
@@ -104,7 +104,7 @@ All DPL versions are compatible with <a href="https://github.com/AF-1/lms-dynami
 
 <details><summary>»<b>How do I create / add my own <i>custom</i> dynamic playlist?</b>«</summary><br><p>
 
-- If you prefer a <b>GUI</b> and want an <b>easy</b> way to create a <i>custom</i> dynamic playlist without having to deal with SQLite, take a look at the <a href="https://github.com/AF-1/lms-dynamicplaylistcreator"><b>Dynamic Playlist Creator</b></a> plugin that uses templates to create dynamic playlists and makes them available to DPL 3 and 4.
+- If you prefer a <b>GUI</b> and want an <b>easy</b> way to create a <i>custom</i> dynamic playlist without having to deal with SQLite, take a look at the <a href="https://github.com/AF-1/lms-dynamicplaylistcreator"><b>Dynamic Playlist Creator</b></a> plugin that uses templates to create dynamic playlists and makes them available to DPL 4.
 
 - If you are <b>familiar with database queries and SQLite</b>, you can create a fully customized dynamic playlist in a plain text editor of your choice and use it directly in DPL.<br>Dynamic playlist definitions are basically plain text files with an "<b>sql</b>" file extension that contain your playlist definition:<br>
 	- a couple of <b>parameters</b> (<i>general</i> parameters like the playlist name, group or category and <i>user input</i> parameters) and
