@@ -5268,6 +5268,7 @@ sub getDynamicPlaylists {
 		foreach my $playlist (sort keys %{$localDynamicPlaylists}) {
 			my $current = $localDynamicPlaylists->{$playlist};
 			my ($playlistid, $playlistsortname);
+			my $url = '';
 			if ($current->{'defaultplaylist'}) {
 				$playlistid = 'dpldefault_'.$playlist;
 				$playlistsortname = '0000001_'.$playlistid;
@@ -5287,6 +5288,7 @@ sub getDynamicPlaylists {
 				} else {
 					$playlistsortname = '0000003_dplccustom_'.$current->{'name'};
 				}
+				$url = "plugins/DynamicPlaylistCreator/webpagemethods_edititem.html?item=".escape($playlist)."&redirect=1"
 			}
 			my %currentResult = (
 				'id' => $playlist,
@@ -5295,13 +5297,14 @@ sub getDynamicPlaylists {
 				'menulisttype' => $current->{'menulisttype'},
 				'playlistcategory' => $current->{'playlistcategory'},
 				'apcplaylist' => $current->{'apcplaylist'},
+				'dplcplaylist' => $current->{'dplcplaylist'},
 				'playlistapcdupe' => $current->{'playlistapcdupe'},
 				'playlisttrackorder' => $current->{'playlisttrackorder'},
 				'playlistlimitoption' => $current->{'playlistlimitoption'},
 				'playlistvirtuallibrarynames' => $current->{'playlistvirtuallibrarynames'},
 				'playlistvirtuallibraryids' => $current->{'playlistvirtuallibraryids'},
 				'usecache' => $current->{'usecache'},
-				'url' => ''
+				'url' => $url
 			);
 			if (defined($current->{'parameters'})) {
 				my $parameters = $current->{'parameters'};
