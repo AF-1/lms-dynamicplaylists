@@ -196,6 +196,7 @@ sub initPrefs {
 		structured_savedplaylists => 1,
 		favouritesname => string('PLUGIN_DYNAMICPLAYLISTS4_FAVOURITES'),
 		pluginshufflemode => 1,
+		enablestaticplsaving => 1
 	});
 	refreshPluginPlaylistFolder();
 	createCustomPlaylistFolder();
