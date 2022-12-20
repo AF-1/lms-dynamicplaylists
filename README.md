@@ -115,7 +115,8 @@ In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplayl
 </p></details><br>
 
 <details><summary>»<b>Can I save the results of a dynamic playlist as a <i>static</i> playlist?</b>«</summary><br><p>
-Version <b>4</b> allows you to save the result set of any dynamic playlist as a <i>static</i> playlist. There's a control icon in the Dynamic Playlists menu (LMS default skin) next to the names of dynamic playlists that looks a bit like an old floppy disk. In Material and jivelite GUI controllers, you get a new option “<i>Save as static playlist</i>“ in addition to <i>Play</i> and <i>Add</i>. You only need to set the maximum number of tracks (max. 4000) and the name of your static playlist. Dynamic playlists <b>with</b> user-input parameters will request that input first and show you the static playlist options (max. track no., playlist name, track sort order) at the end.
+Version <b>4</b> allows you to save the result set of any dynamic playlist as a <i>static</i> playlist. There's a control icon in the Dynamic Playlists menu (LMS default skin) next to the names of dynamic playlists that looks a bit like an old floppy disk. In Material and jivelite GUI controllers, you get a new option “<i>Save as static playlist</i>“ in addition to <i>Play</i> and <i>Add</i>. You only need to set the maximum number of tracks (max. 4000) and the name of your static playlist. Dynamic playlists <b>with</b> user-input parameters will request that input first and show you the static playlist options (max. track no., playlist name, track sort order) at the end.<br>
+Depending on the complexity of your dynamic playlist and the max. track limit you set for your <i>static</i> playlist, saving it might take a while.
 </p></details><br>
 
 <details><summary>»<b>What's <i>preselection</i>? How does it work?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>There's more than one DPL context menu item.</b>«</summary><br><p>
