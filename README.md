@@ -37,7 +37,7 @@ If you want to test a new patch that hasn't made it into a release version yet o
 * New preference options (e.g. balanced shuffle) and UI changes.
 * Compatible with [**Custom Skip**](https://github.com/AF-1/lms-customskip#custom-skip), [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) and [**Dynamic Playlist Creator**](https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator).
 * If you have installed the [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) plugin, you will see some additional dynamic playlists that use the data from this plugin.
-* Use dynamic playlists to create *static* playlists (not enabled by default)
+* Use dynamic playlists to create *static* playlists
 * …
 <br><br><br><br>
 
@@ -115,9 +115,8 @@ In any case <b>please read the <a href="https://github.com/AF-1/lms-dynamicplayl
 </p></details><br>
 
 <details><summary>»<b>Can I save the results of a dynamic playlist as a <i>static</i> playlist?</b>«</summary><br><p>
-Version <b>4</b> allows you to save the result set of any dynamic playlist as a <i>static</i> playlist. Since this is not enabled by default, you'll have to go to the DPL settings and check the box for “Allow saving dynamic playlists as static playlists”. You should now see a new control icon in the Dynamic Playlists menu (LMS default skin) that looks a bit like an old floppy disk. In Material and jivelite GUI controllers, you get a new option “Save as static playlist” in addition to <i>Play</i> and <i>Add</i>. You only need to set the maximum number of tracks (max. 4000) and the name of your static playlist. Dynamic playlists <b>with</b> user-input parameters will request that input first and show you the static playlist options (max. track no., playlist name, track sort order) at the end.
+Version <b>4</b> allows you to save the result set of any dynamic playlist as a <i>static</i> playlist. There's a control icon in the Dynamic Playlists menu (LMS default skin) next to the names of dynamic playlists that looks a bit like an old floppy disk. In Material and jivelite GUI controllers, you get a new option “<i>Save as static playlist</i>“ in addition to <i>Play</i> and <i>Add</i>. You only need to set the maximum number of tracks (max. 4000) and the name of your static playlist. Dynamic playlists <b>with</b> user-input parameters will request that input first and show you the static playlist options (max. track no., playlist name, track sort order) at the end.
 </p></details><br>
-
 
 <details><summary>»<b>What's <i>preselection</i>? How does it work?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>There's more than one DPL context menu item.</b>«</summary><br><p>
 DPL has playlist parameters that allow you to select <b>multiple</b> genres, decades, years and static playlist. But even the smallest music libraries have a large number of <b>artists</b> and <b>albums</b> that would result in poorly browsable, far too long selection lists. The solution is to gather/select artists or albums <i>first</i> using the <b>preselection</b> context menu item and then start a dynamic playlist for preselected artists/albums.<br>
