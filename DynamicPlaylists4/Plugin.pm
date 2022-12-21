@@ -2611,19 +2611,6 @@ sub cliJiveHandler {
 			$nextGroup++;
 		}
 	}
-	my $baseMenu = {
-		'actions' => {
-			'play' => {
-				'cmd' => ['dynamicplaylist', 'playlist', 'play'],
-				'itemsParams' => 'params',
-			},
-			'add' => {
-				'cmd' => ['dynamicplaylist', 'playlist', 'add'],
-				'itemsParams' => 'params',
-			},
-		},
-	};
-	$request->addResult('base', $baseMenu);
 
 	my $cnt = 0;
 
@@ -3285,69 +3272,69 @@ sub _cliJiveActionsMenuHandler {
 
 	## save dpl with currently selected params as fav
 	# if we have params, display if params = non-volatile or pref setting = enabled
-	if ($paramCount > 0 && ($prefs->get('paramsdplsaveenabled') || $hasNoVolatileParams)) {
-		my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
-		my $input = {
-			initialText => $playLists->{$playlistID}->{'name'},
-			len => 1,
-			allowedChars => $client->string('JIVE_ALLOWEDCHARS_WITHCAPS'),
-		};
+	my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
+	my $input = {
+		initialText => $playLists->{$playlistID}->{'name'},
+		len => 1,
+		allowedChars => $client->string('JIVE_ALLOWEDCHARS_WITHCAPS'),
+	};
 
-		my $paramAppendix = '';
+	my $paramAppendix = '';
+	if ($paramCount > 0 && ($prefs->get('paramsdplsaveenabled') || $hasNoVolatileParams)) {
 		for (my $i = 1; $i <= $paramCount; $i++) {
 			$paramAppendix .= 'p'.$i.'='.$params->{'dynamicplaylist_parameter_'.$i};
 			$paramAppendix .= '&' unless $i == $paramCount;
 		}
-
-		# Save dpl as fav (play)
-		my $favUrl = 'dynamicplaylist://'.$playlistID.'?'.$paramAppendix;
-		my $actions_saveFavName = {
-			go => {
-				player => 0,
-				cmd => ['dynamicplaylist', 'jivesaveasfav'],
-				params => {
-					playlistName => '__TAGGEDINPUT__',
-					url => $favUrl,
-				},
-				itemsParams => 'params',
-			},
-		};
-		if ($materialCaller) {
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_MATERIAL'));
-		} else {
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV'));
-		}
-		$request->addResultLoop('item_loop', $cnt, 'input', $input);
-		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_saveFavName);
-		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
-		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'home');
-		$cnt++;
-
-		# Save dpl as fav (add)
-		my $favUrlAddOnly = 'dynamicplaylistaddonly://'.$playlistID.'?'.$paramAppendix;
-		my $actions_saveFavNameAddOnly = {
-			go => {
-				player => 0,
-				cmd => ['dynamicplaylist', 'jivesaveasfav'],
-				params => {
-					playlistName => '__TAGGEDINPUT__',
-					url => $favUrlAddOnly,
-					addOnly => 1,
-				},
-				itemsParams => 'params',
-			},
-		};
-		if ($materialCaller) {
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY_MATERIAL'));
-		} else {
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY'));
-		}
-		$request->addResultLoop('item_loop', $cnt, 'input', $input);
-		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_saveFavNameAddOnly);
-		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
-		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'home');
-		$cnt++;
 	}
+
+	# Save dpl as fav (play)
+	my $favUrl = $paramCount > 0 ? 'dynamicplaylist://'.$playlistID.'?'.$paramAppendix : 'dynamicplaylist://'.$playlistID;
+	my $actions_saveFavName = {
+		go => {
+			player => 0,
+			cmd => ['dynamicplaylist', 'jivesaveasfav'],
+			params => {
+				playlistName => '__TAGGEDINPUT__',
+				url => $favUrl,
+			},
+			itemsParams => 'params',
+		},
+	};
+	if ($materialCaller) {
+		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_MATERIAL'));
+	} else {
+		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV'));
+	}
+	$request->addResultLoop('item_loop', $cnt, 'input', $input);
+	$request->addResultLoop('item_loop', $cnt, 'actions', $actions_saveFavName);
+	$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
+	$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'home');
+	$cnt++;
+
+	# Save dpl as fav (add)
+	my $favUrlAddOnly = $paramCount > 0 ? 'dynamicplaylistaddonly://'.$playlistID.'?'.$paramAppendix : 'dynamicplaylistaddonly://'.$playlistID;
+	my $actions_saveFavNameAddOnly = {
+		go => {
+			player => 0,
+			cmd => ['dynamicplaylist', 'jivesaveasfav'],
+			params => {
+				playlistName => '__TAGGEDINPUT__',
+				url => $favUrlAddOnly,
+				addOnly => 1,
+			},
+			itemsParams => 'params',
+		},
+	};
+	if ($materialCaller) {
+		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY_MATERIAL'));
+	} else {
+		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY'));
+	}
+	$request->addResultLoop('item_loop', $cnt, 'input', $input);
+	$request->addResultLoop('item_loop', $cnt, 'actions', $actions_saveFavNameAddOnly);
+	$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
+	$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'home');
+	$cnt++;
 
 	$request->addResult('offset', 0);
 	$request->addResult('count', $cnt);
