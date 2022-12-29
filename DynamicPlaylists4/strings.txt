@@ -393,6 +393,18 @@ PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV_ADDONLY
 	EN	Saved dynamic playlist with selected parameters as add-only favourite
 	FR	La liste de lecture dynamique avec les paramètres sélectionnés était sauvagardée comme favori 'ajouter seulement'.
 
+PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV_ADDONLY_SUFFIX
+	EN	add-only
+	FR	ajouter seulement
+
+PLUGIN_DYNAMICPLAYLISTS4_FAVEXISTS
+	EN	A favorite for this dynamic playlist already exists.
+	FR	Il existe déjà un favori pour cette liste de lecture dynamique.
+
+PLUGIN_DYNAMICPLAYLISTS4_FAVEXISTS_PARAMS
+	EN	A favorite for this dynamic playlist with these parameters already exists.
+	FR	Il existe déjà un favori pour cette liste de lecture dynamique avec ces paramètres.
+
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DSTM_STARTINDEX_FIRST
 	EN	first song
 	FR	premier morceau

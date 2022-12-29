@@ -1,7 +1,7 @@
 #
 # Dynamic Playlists 4
 #
-# (c) 2021-2022 AF
+# (c) 2021 AF
 #
 # Some code based on the DynamicPlayList plugin by (c) 2006 Erland Isaksson
 #

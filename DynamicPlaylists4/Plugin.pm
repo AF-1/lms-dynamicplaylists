@@ -1,7 +1,7 @@
 #
 # Dynamic Playlists 4
 #
-# (c) 2021-2022 AF
+# (c) 2021 AF
 #
 # Some code based on the DynamicPlayList plugin by (c) 2006 Erland Isaksson
 #
@@ -526,7 +526,7 @@ sub getPlayList {
 
 # Find tracks matching parameters and add them to the playlist
 sub findAndAdd {
-	my ($client, $type, $offset, $limit, $addOnly, $continue, $unlimited) = @_;
+	my ($client, $type, $offset, $limit, $addOnly, $continue, $unlimited, $forcedAddDifferentPlaylist) = @_;
 	$log->debug("Starting random selection of max. $limit items for type: $type");
 	my $started = time();
 	Slim::Utils::Timers::killTimers($client, \&findAndAdd);
@@ -542,20 +542,24 @@ sub findAndAdd {
 	my ($totalTracksCompleteInfo, $newTracksCompleteInfo) = {};
 	my $totalTrackIDList = [];
 
+	my $dplUseCache = $playlist->{'usecache'};
+	$dplUseCache = undef if $forcedAddDifferentPlaylist;
+	$log->debug('dplUseCache = '.Dumper($dplUseCache));
+
 	# Get cache content if cache is used and filled
-	if ($playlist->{'usecache'}) {
+	if ($dplUseCache) {
 		my $getCacheContentStartTime = time();
 		$totalTrackIDList = $cache->get('dpl_totalTrackIDlist_' . $client->id) || [];
 		$totalTracksCompleteInfo = $cache->get('dpl_totalTracksCompleteInfo_' . $client->id) || {};
-		$log->debug('Getting cache content - exec time = '.(time() - $getCacheContentStartTime).' secs') if scalar(@{$totalTrackIDList} > 0 && keys %{$totalTracksCompleteInfo} > 0);
+		$log->info('Getting cache content - exec time = '.(time() - $getCacheContentStartTime).' secs') if scalar(@{$totalTrackIDList} > 0 && keys %{$totalTracksCompleteInfo} > 0);
 	}
 
 	if (scalar(@{$totalTrackIDList}) > 0) {
 		# dynamic playlists that use cache should not contain SQLite limit
 		$log->debug('Using (remaining) '.scalar(@{$totalTrackIDList}).' cached track IDs');
-	} elsif (!$client->pluginData('cacheFilled')) {
-		$log->debug('Cache '.($playlist->{'usecache'} ? 'empty' : 'not used').'. Getting track IDs');
-		my $noOfRetriesToGetUnplayedTracks = $playlist->{'usecache'} ? 1 : 20;
+	} elsif (!$client->pluginData('cacheFilled') || $forcedAddDifferentPlaylist) {
+		$log->debug('Cache '.($dplUseCache ? 'empty' : 'not used').'. Getting track IDs');
+		my $noOfRetriesToGetUnplayedTracks = $dplUseCache ? 1 : 20;
 		my $i = 1;
 		while ($i <= $noOfRetriesToGetUnplayedTracks) {
 			my $iterationStartTime = time();
@@ -579,7 +583,7 @@ sub findAndAdd {
 			}
 
 			# Filter track IDs
-			unless ($playlist->{'usecache'}) {
+			unless ($dplUseCache) {
 				my $filterTrackIDsStartTime = time();
 				$newTrackIDs = filterTrackIDs($masterClient, $newTrackIDs, $totalTrackIDList);
 				$log->debug("Iteration $i: returned ".(scalar @{$newTrackIDs}).((scalar @{$newTrackIDs}) == 1 ? ' item' : ' items').' after filtering. Filtering took '.(time()-$filterTrackIDsStartTime).' seconds');
@@ -603,9 +607,11 @@ sub findAndAdd {
 			$log->debug('Total track IDs found so far = '.scalar(@{$totalTrackIDList}));
 
 			# store totalTracksCompleteInfo in cache if cache is used
-			my $storingCacheCompleteInfoStartTime = time();
-			$cache->set('dpl_totalTracksCompleteInfo_' . $client->id, $totalTracksCompleteInfo, 'never') if $playlist->{'usecache'};
-			$log->debug('Storing complete info hash in cache exec time = '.(time() - $storingCacheCompleteInfoStartTime).' secs');
+			if ($dplUseCache) {
+				my $storingCacheCompleteInfoStartTime = time();
+				$cache->set('dpl_totalTracksCompleteInfo_' . $client->id, $totalTracksCompleteInfo, 'never');
+				$log->debug('Storing complete info hash in cache exec time = '.(time() - $storingCacheCompleteInfoStartTime).' secs');
+			}
 
 			# stop or get more tracks
 			if ($unlimited) {
@@ -626,18 +632,18 @@ sub findAndAdd {
 			$i++;
 			my $idleStartTime = time();
 			main::idleStreams();
-			$log->debug('Storing complete info hash in cache exec time = '.(time() - $idleStartTime).' secs');
+			$log->debug('idleStreams time = '.(time() - $idleStartTime).' secs');
 		}
 	}
 
 	$log->debug('Total exec time so far = '.(time() - $started).' secs');
 
 	if (scalar(@{$totalTrackIDList}) == 0) {
-		$log->debug('Found no (more) tracks matching your search parameter or playlist definition for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
+		$log->info('Found no (more) tracks matching your search parameters for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
 		return 0;
 	}
 
-	if ($playlist->{'usecache'}) {
+	if ($dplUseCache) {
 		## shuffle all track IDs
 		unless ($client->pluginData('cacheFilled') || $playlistTrackOrder && ($playlistTrackOrder eq 'ordered' || $playlistTrackOrder eq 'ordereddescrandom' || $playlistTrackOrder eq 'orderedascrandom') || $isStaticPL && $prefs->get('randomsavedplaylists') == 0) {
 			$log->debug('Shuffling ALL track IDs for cache');
@@ -655,7 +661,7 @@ sub findAndAdd {
 		$log->debug("Limiting the number of new tracks to be added to the specified limit ($limit)");
 		my $limitingExecStartTime = time();
 
-		if ($playlist->{'usecache'}) {
+		if ($dplUseCache) {
 			# get track ids from cache
 			@{$randomIDs2add} = splice @{$totalTrackIDList}, 0, $limit;
 			$cache->set('dpl_totalTrackIDlist_' . $client->id, $totalTrackIDList, 'never');
@@ -663,6 +669,20 @@ sub findAndAdd {
 			@{$randomIDs2add} = @{$totalTrackIDList}[0..($limit - 1)];
 		}
 		$log->debug('Limiting exec time: '.(time() - $limitingExecStartTime).' secs');
+	}
+
+	## add batch of cached tracks tp dpl history in case we get a forced add from a different dpl while the current one is still active
+	if ($dplUseCache) {
+		my $addToHistoryStartTime = time();
+		for my $trackID (@{$randomIDs2add}) {
+			my $addedTime = time();
+			addToPlayListHistory($client, $trackID, $addedTime);
+			my @players = Slim::Player::Sync::slaves($client);
+			foreach my $player (@players) {
+				addToPlayListHistory($player, $trackID, $addedTime);
+			}
+		}
+		$log->debug('Adding new tracks from cache to DPL history exec time: '.(time() - $addToHistoryStartTime).' secs');
 	}
 
 	## shuffle limited track ID selection
@@ -673,7 +693,7 @@ sub findAndAdd {
 	}
 
 	# sort shuffled track ID selection by play count
-	if ($playlist->{'usecache'} && $playlistTrackOrder && ($playlistTrackOrder eq 'ordereddescrandom' || $playlistTrackOrder eq 'orderedascrandom')) {
+	if ($dplUseCache && $playlistTrackOrder && ($playlistTrackOrder eq 'ordereddescrandom' || $playlistTrackOrder eq 'orderedascrandom')) {
 		my $sortingByPlayCountExecStartTime = time();
 		my $playCountSortOrder = $playlistTrackOrder eq 'ordereddescrandom' ? 2 : 1; # 1 = asc, 2 = desc
 		$randomIDs2add = sortByPlayCount($randomIDs2add, $totalTracksCompleteInfo, $playCountSortOrder);
@@ -810,7 +830,7 @@ sub playRandom {
 	}
 
 	# If this is a new mix, clear playlist history
-	if (($addOnly && $addOnly == 2) || !$mixInfo{$masterClient} || ($mixInfo{$masterClient} && keys %{$mixInfo{$masterClient}} == 0) || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type)) {
+	if (($addOnly && $addOnly == 2) || !$mixInfo{$masterClient} || ($mixInfo{$masterClient} && keys %{$mixInfo{$masterClient}} == 0) || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type && !$forcedAdd)) {
 		$continue = undef;
 		my @players = Slim::Player::Sync::slaves($masterClient);
 		push @players, $masterClient;
@@ -851,20 +871,15 @@ sub playRandom {
 	}
 
 	my $PlaylistTrackCount = Slim::Player::Playlist::count($client);
-	$log->debug('Current client playlist contains '.Slim::Player::Playlist::count($client).' tracks before adding new tracks');
-
 	my $songIndex = Slim::Player::Source::streamingSongIndex($client);
 	my $songsRemaining = Slim::Player::Playlist::count($client) - $songIndex - 1;
 	$songsRemaining = 0 if $songsRemaining < 0;
-	$log->debug("$songsRemaining songs remaining, songIndex = $songIndex");
-
 
 	## Work out how many items need adding
 	## If dpl has playlistLimitOption, use it. Otherwise fallback to pref values.
 	my $numItems = 0;
 	my $maxLimit = 2000; # prevents faulty playlist definitions from accidentally adding complete libraries
-	my $minLimit = 1;
-	my $unlimited;
+	my ($unlimited, $forcedAddDifferentPlaylist);
 	my $minNumberUnplayedSongs = $prefs->get('min_number_of_unplayed_tracks');
 	my $maxNumberUnplayedTracks = $prefs->get('max_number_of_unplayed_tracks');
 	my $playlistLimitOption = $playlist->{'playlistlimitoption'};
@@ -880,9 +895,6 @@ sub playRandom {
 			$maxNumberUnplayedTracks = $playlistLimitOption ? $playlistLimitOption : $prefs->get('max_number_of_unplayed_tracks');
 		}
 	}
-	$log->debug('minNumberUnplayedSongs = '.$minNumberUnplayedSongs);
-	$log->debug('maxNumberUnplayedTracks = '.$maxNumberUnplayedTracks);
-
 
 	if ($type && $type ne 'disable' && (!$mixInfo{$masterClient} || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type) || $songsRemaining < $minNumberUnplayedSongs)) {
 		# Add new tracks if there aren't enough after the current track
@@ -892,15 +904,25 @@ sub playRandom {
 			$numItems = $maxNumberUnplayedTracks - $songsRemaining;
 			$log->debug("$songsRemaining unplayed songs remaining < $minNumberUnplayedSongs minimum unplayed songs => adding ".$numItems.' new items');
 		} elsif ($addOnly && $forcedAdd) {
-			# Add a single track if add button is pushed when the playlist is full
-			$numItems = 1;
+			if ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type) {
+				$forcedAddDifferentPlaylist = 1;
+				$numItems = $maxNumberUnplayedTracks - $songsRemaining;
+				$numItems = 1 if $numItems == 0;
+				$log->debug("Adding $numItems new tracks from a dynamic playlist other than the currently active dynamic playlist if add button is pushed (forcedAdd) while songs remaining ($songsRemaining) > minNumberUnplayedSongs ($minNumberUnplayedSongs)");
+			} else {
+				$numItems = 1;
+				$log->debug("Adding single track of currently active dynamic playlist if add button is pushed (forcedAdd) while songs remaining ($songsRemaining) > minNumberUnplayedSongs ($minNumberUnplayedSongs)");
+			}
 		} else {
-			$log->debug("$songsRemaining items remaining so not adding new tracks");
+			$log->debug("$songsRemaining items remaining > minNumberUnplayedSongs ($minNumberUnplayedSongs). Not adding new tracks");
 		}
 	}
 
 	my $count = 0;
-	$log->debug('numItems = '.$numItems);
+	$numItems = 0 if $numItems < 0;
+
+	$log->debug("\nCurrent client playlist before adding new tracks:\ntracks in total: ".Slim::Player::Playlist::count($client)."\nsongs remaining: $songsRemaining\nsongIndex: $songIndex\nMIN. number of unplayed songs to be added: $minNumberUnplayedSongs\nMAX. number of new unplayed tracks to be added: $maxNumberUnplayedTracks\nActual number of tracks to be added (numItems): $numItems");
+
 	if ($numItems) {
 		if (!$addOnly || $addOnly == 2) {
 			if (Slim::Player::Source::playmode($client) ne 'stop') {
@@ -932,7 +954,8 @@ sub playRandom {
 				# 2nd time round just add tracks to end
 				$addOnly,
 				$continue,
-				$unlimited);
+				$unlimited,
+				$forcedAddDifferentPlaylist);
 		$log->debug('number of added items = '.$count);
 
 		$offset += $count;
@@ -995,6 +1018,7 @@ sub playRandom {
 		}
 		clearPlayListHistory(\@players);
 		clearCache(\@players);
+
 	} else {
 		if (!$numItems || $numItems == 0 || $count > 0) {
 			if (!$addOnly) {
@@ -1014,21 +1038,23 @@ sub playRandom {
 				}
 			}
 		} else {
-			if (defined($stopactions)) {
-				for my $action (@{$stopactions}) {
-					if (defined($action->{'type'}) && lc($action->{'type'}) eq 'cli' && defined($action->{'data'})) {
-						$log->debug('Executing action: '.$action->{'type'}.', '.$action->{'data'});
-						my @parts = split(/ /, $action->{'data'});
-						my $request = $client->execute(\@parts);
-						$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+			unless ($forcedAddDifferentPlaylist && $mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type) {
+				if (defined($stopactions)) {
+					for my $action (@{$stopactions}) {
+						if (defined($action->{'type'}) && lc($action->{'type'}) eq 'cli' && defined($action->{'data'})) {
+							$log->debug('Executing action: '.$action->{'type'}.', '.$action->{'data'});
+							my @parts = split(/ /, $action->{'data'});
+							my $request = $client->execute(\@parts);
+							$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+						}
 					}
 				}
-			}
 
-			stateStop($masterClient);
-			my @players = Slim::Player::Sync::slaves($client);
-			foreach my $player (@players) {
-				stateStop($player);
+				stateStop($masterClient);
+				my @players = Slim::Player::Sync::slaves($client);
+				foreach my $player (@players) {
+					stateStop($player);
+				}
 			}
 		}
 	}
@@ -1287,7 +1313,7 @@ sub getTrackIDsForPlaylist {
 
 	my $id = $playlist->{'dynamicplaylistid'};
 	my $plugin = $plugins{$id};
-	$log->debug("Calling: $plugin with: id = $id ,limit = $limit ,offset = $offset");
+	$log->debug("Calling: $plugin with: id = $id, limit = $limit, offset = $offset");
 	my ($result, $tracksCompleteInfo);
 	no strict 'refs';
 	if (UNIVERSAL::can("$plugin", 'getNextDynamicPlaylistTracks')) {
@@ -2623,7 +2649,7 @@ sub cliJiveHandler {
 
 	# display active dynamic playlist
 	if ($prefs->get('showactiveplaylistinmainmenu') && $playlist && $nextGroup == 1) {
-		my $text = $client->string('PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPL').$playlist->{'name'};
+		my $text = $client->string('PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPL').' '.$playlist->{'name'};
 		$log->debug('active dynamic playlist for client "'.$client->name.'" = '.$playlist->{'name'});
 		$request->addResultLoop('item_loop', $cnt, 'text', $text);
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
@@ -2754,7 +2780,6 @@ sub cliJiveHandler {
 				};
 				$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
 				$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
-				$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
 			}
 			$request->addResultLoop('item_loop', $cnt, 'params', \%itemParams);
 			$request->addResultLoop('item_loop', $cnt, 'text', $name);
@@ -3245,7 +3270,7 @@ sub _cliJiveActionsMenuHandler {
 	my $playlistID = $params->{'playlistid'};
 	my $hasNoVolatileParams = $playLists->{$playlistID}->{'hasnovolatileparams'};
 
-	if ($prefs->get('enablestaticplsaving') || ($paramCount > 0 && ($prefs->get('paramsdplsaveenabled') || $hasNoVolatileParams))) {
+	if ($prefs->get('enablestaticplsaving') || $paramCount == 0 || ($paramCount > 0 && ($prefs->get('paramsdplsaveenabled') || $hasNoVolatileParams))) {
 		# space/empty line
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
 		$request->addResultLoop('item_loop', $cnt, 'text', ' ');
@@ -3270,76 +3295,88 @@ sub _cliJiveActionsMenuHandler {
 		$cnt++;
 	}
 
-	## save dpl with currently selected params as fav
+
+	## save dpl as fav
 	# if we have params, display if params = non-volatile or pref setting = enabled
-	my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
-	my $input = {
-		initialText => $playLists->{$playlistID}->{'name'},
-		len => 1,
-		allowedChars => $client->string('JIVE_ALLOWEDCHARS_WITHCAPS'),
-	};
 
-	my $paramAppendix = '';
-	if ($paramCount > 0 && ($prefs->get('paramsdplsaveenabled') || $hasNoVolatileParams)) {
-		for (my $i = 1; $i <= $paramCount; $i++) {
-			$paramAppendix .= 'p'.$i.'='.$params->{'dynamicplaylist_parameter_'.$i};
-			$paramAppendix .= '&' unless $i == $paramCount;
+	if ($paramCount == 0 || ($paramCount > 0 && ($prefs->get('paramsdplsaveenabled') || $hasNoVolatileParams))) {
+
+		my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
+		my $input = {
+			initialText => $playLists->{$playlistID}->{'name'},
+			len => 1,
+			allowedChars => $client->string('JIVE_ALLOWEDCHARS_WITHCAPS'),
+		};
+
+		my $playlistName = $playLists->{$playlistID}->{'name'};
+		my $paramAppendix = '';
+		if ($paramCount > 0) {
+			for (my $i = 1; $i <= $paramCount; $i++) {
+				$paramAppendix .= 'p'.$i.'='.$params->{'dynamicplaylist_parameter_'.$i};
+				$paramAppendix .= '&' unless $i == $paramCount;
+			}
+			$playlistName = '__TAGGEDINPUT__';
 		}
-	}
 
-	# Save dpl as fav (play)
-	my $favUrl = $paramCount > 0 ? 'dynamicplaylist://'.$playlistID.'?'.$paramAppendix : 'dynamicplaylist://'.$playlistID;
-	my $actions_saveFavName = {
-		go => {
-			player => 0,
-			cmd => ['dynamicplaylist', 'jivesaveasfav'],
-			params => {
-				playlistName => '__TAGGEDINPUT__',
-				url => $favUrl,
+		# Save dpl as fav (play)
+		my $hasParams = 1 if $paramCount > 0 && $paramAppendix ne '';
+		my $favUrl = ($paramCount > 0 && $paramAppendix ne '') ? 'dynamicplaylist://'.$playlistID.'?'.$paramAppendix : 'dynamicplaylist://'.$playlistID;
+		my $actions_saveFavName = {
+			go => {
+				player => 0,
+				cmd => ['dynamicplaylist', 'jivesaveasfav'],
+				params => {
+					playlistName => $playlistName,
+					url => $favUrl,
+					hasParams => $hasParams
+				},
+				itemsParams => 'params',
 			},
-			itemsParams => 'params',
-		},
-	};
-	if ($materialCaller) {
-		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_MATERIAL'));
-	} else {
-		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV'));
-	}
-	$request->addResultLoop('item_loop', $cnt, 'input', $input);
-	$request->addResultLoop('item_loop', $cnt, 'actions', $actions_saveFavName);
-	$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
-	$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'home');
-	$cnt++;
+		};
+		if ($materialCaller && $paramCount > 0) {
+			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_MATERIAL'));
+		} else {
+			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV'));
+		}
+		$request->addResultLoop('item_loop', $cnt, 'input', $input) if $paramCount > 0;
+		$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay') unless $paramCount > 0;
+		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_saveFavName);
+		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
+		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'home');
+		$cnt++;
 
-	# Save dpl as fav (add)
-	my $favUrlAddOnly = $paramCount > 0 ? 'dynamicplaylistaddonly://'.$playlistID.'?'.$paramAppendix : 'dynamicplaylistaddonly://'.$playlistID;
-	my $actions_saveFavNameAddOnly = {
-		go => {
-			player => 0,
-			cmd => ['dynamicplaylist', 'jivesaveasfav'],
-			params => {
-				playlistName => '__TAGGEDINPUT__',
-				url => $favUrlAddOnly,
-				addOnly => 1,
+		# Save dpl as fav (add)
+		my $favUrlAddOnly = ($paramCount > 0 && $paramAppendix ne '') ? 'dynamicplaylistaddonly://'.$playlistID.'?'.$paramAppendix : 'dynamicplaylistaddonly://'.$playlistID;
+		my $actions_saveFavNameAddOnly = {
+			go => {
+				player => 0,
+				cmd => ['dynamicplaylist', 'jivesaveasfav'],
+				params => {
+					playlistName => $playlistName,
+					url => $favUrlAddOnly,
+					addOnly => 1,
+					hasParams => $hasParams
+				},
+				itemsParams => 'params',
 			},
-			itemsParams => 'params',
-		},
-	};
-	if ($materialCaller) {
-		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY_MATERIAL'));
-	} else {
-		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY'));
-	}
-	$request->addResultLoop('item_loop', $cnt, 'input', $input);
-	$request->addResultLoop('item_loop', $cnt, 'actions', $actions_saveFavNameAddOnly);
-	$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
-	$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'home');
-	$cnt++;
+		};
+		if ($materialCaller && $paramCount > 0) {
+			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY_MATERIAL'));
+		} else {
+			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY'));
+		}
+		$request->addResultLoop('item_loop', $cnt, 'input', $input) if $paramCount > 0;
+		$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay') unless $paramCount > 0;
+		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_saveFavNameAddOnly);
+		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
+		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'home');
+		$cnt++;
 
-	$request->addResult('offset', 0);
-	$request->addResult('count', $cnt);
-	$log->debug('Exiting cliJiveActionsMenuHandler');
-	$request->setStatusDone();
+		$request->addResult('offset', 0);
+		$request->addResult('count', $cnt);
+		$log->debug('Exiting cliJiveActionsMenuHandler');
+		$request->setStatusDone();
+	}
 }
 
 sub _cliJiveSaveFavWithParams {
@@ -3362,25 +3399,29 @@ sub _cliJiveSaveFavWithParams {
 
 	my $params = $request->getParamsCopy();
 	my $title = $params->{'playlistName'};
+	$title = $title.' ('.string('PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV_ADDONLY_SUFFIX').')' if $params->{'addOnly'};
 	my $url = $params->{'url'};
+	my $isFav = Slim::Utils::Favorites->new(undef)->hasUrl($url);
+	my $statusmsg = '';
 
-	my $isFav = Slim::Utils::Favorites->new($client)->findUrl($url);
 	if ($isFav) {
-		$log->info('Not adding dynamic playlist to LMS favorites. URL is already favorite.')
+		$statusmsg = $params->{'hasParams'} ? string('PLUGIN_DYNAMICPLAYLISTS4_FAVEXISTS_PARAMS') : string('PLUGIN_DYNAMICPLAYLISTS4_FAVEXISTS');
+		$log->info('Not adding dynamic playlist to LMS favorites. This URL is already a favorite: '.$url);
 	} else {
+		$statusmsg = $params->{'addOnly'} ? string('PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV_ADDONLY') : string('PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV');
 		$log->debug('Saving this url to LMS favorites: '.$url);
-		my $showTimePerChar = $prefs->get('showtimeperchar') / 1000;
-		if ($showTimePerChar > 0) {
-			my $statusmsg = $params->{'addOnly'} ? string('PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV_ADDONLY') : string('PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV');
-			if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
-				$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4'),
-									 $statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4').$statusmsg));
-			}
-			if ($material_enabled) {
-				Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id, 'timeout:'.getMsgDisplayTime($statusmsg)]);
-			}
-		}
 		$client->execute(['favorites', 'add', 'url:'.$url, 'title:'.$title, 'type:audio']);
+	}
+
+	my $showTimePerChar = $prefs->get('showtimeperchar') / 1000;
+	if ($showTimePerChar > 0) {
+		if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4'),
+								 $statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4').$statusmsg));
+		}
+		if ($material_enabled) {
+			Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id, 'timeout:'.getMsgDisplayTime($statusmsg)]);
+		}
 	}
 
 	$log->debug('Exiting cliJiveSaveFavWithParams');
