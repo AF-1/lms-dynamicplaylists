@@ -896,10 +896,13 @@ sub playRandom {
 		}
 	}
 
-	if ($type && $type ne 'disable' && (!$mixInfo{$masterClient} || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type) || $songsRemaining < $minNumberUnplayedSongs)) {
+	$log->debug('requested dpl = '.$type.' -- currently active dpl = '.Dumper($mixInfo{$masterClient}->{'type'}).' complete client mixinfo dump = '.Dumper($mixInfo{$masterClient}));
+
+	if ($type && $type ne 'disable' && (!$mixInfo{$masterClient} || ($mixInfo{$masterClient} && keys %{$mixInfo{$masterClient}} == 0) || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type) || $songsRemaining < $minNumberUnplayedSongs)) {
 		# Add new tracks if there aren't enough after the current track
 		if ((!$addOnly && !$continue) || ($addOnly && $addOnly == 2)) {
 			$numItems = $maxNumberUnplayedTracks;
+			$log->debug('Play or DSTM play -- numItems = maxNumberUnplayedTracks = '.$numItems);
 		} elsif ($songsRemaining < $minNumberUnplayedSongs) {
 			$numItems = $maxNumberUnplayedTracks - $songsRemaining;
 			$log->debug("$songsRemaining unplayed songs remaining < $minNumberUnplayedSongs minimum unplayed songs => adding ".$numItems.' new items');
