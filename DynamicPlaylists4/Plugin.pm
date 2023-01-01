@@ -551,7 +551,7 @@ sub findAndAdd {
 		my $getCacheContentStartTime = time();
 		$totalTrackIDList = $cache->get('dpl_totalTrackIDlist_' . $client->id) || [];
 		$totalTracksCompleteInfo = $cache->get('dpl_totalTracksCompleteInfo_' . $client->id) || {};
-		$log->info('Getting cache content - exec time = '.(time() - $getCacheContentStartTime).' secs') if scalar(@{$totalTrackIDList} > 0 && keys %{$totalTracksCompleteInfo} > 0);
+		$log->debug('Getting cache content - exec time = '.(time() - $getCacheContentStartTime).' secs') if scalar(@{$totalTrackIDList} > 0 && keys %{$totalTracksCompleteInfo} > 0);
 	}
 
 	if (scalar(@{$totalTrackIDList}) > 0) {
@@ -669,6 +669,9 @@ sub findAndAdd {
 			@{$randomIDs2add} = @{$totalTrackIDList}[0..($limit - 1)];
 		}
 		$log->debug('Limiting exec time: '.(time() - $limitingExecStartTime).' secs');
+	} else {
+		$log->debug('Removing cache because last batch of new track IDs in cache ('.scalar(@{$totalTrackIDList}).") <= limit ($limit)");
+		$cache->remove('dpl_totalTrackIDlist_'.$client->id) if $dplUseCache;
 	}
 
 	## add batch of cached tracks tp dpl history in case we get a forced add from a different dpl while the current one is still active
@@ -2263,12 +2266,20 @@ sub getPlayListsForContext {
 	my ($client, $params, $currentItems, $level, $playlisttype) = @_;
 	my @result = ();
 
+	my $isContextMenu = $params->{'iscontextmenu'} || 0;
+	$log->debug('params iscontextmenu = '.$isContextMenu.' -- level = '.Dumper($level));
+	$log->debug('playlisttype = '.Dumper($playlisttype));
+	$log->debug('params flatlist = '.Dumper($params->{'flatlist'}));
+
 	if ($prefs->get('flatlist') || $params->{'flatlist'}) {
 		foreach my $itemKey (keys %{$playLists}) {
 			my $playlist = $playLists->{$itemKey};
 			if (!defined($playlisttype) || (defined($playlist->{'parameters'}) && defined($playlist->{'parameters'}->{'1'}) && ($playlist->{'parameters'}->{'1'}->{'type'} eq $playlisttype || ($playlist->{'parameters'}->{'1'}->{'type'} =~ /^custom(.+)$/ && $1 eq $playlisttype)))) {
-				$log->debug('Adding playlist: '.$itemKey);
-				push @result, $playlist;
+				my $dplMenuListType = $playlist->{'menulisttype'} || '';
+				unless ($isContextMenu == 1 && $dplMenuListType ne 'contextmenu') {
+					$log->debug('Adding playlist: '.$itemKey);
+					push @result, $playlist;
+				}
 			}
 		}
 	} else {
@@ -2289,14 +2300,18 @@ sub getPlayListsForContext {
 				if (defined($item->{'playlist'})) {
 					my $playlist = $item->{'playlist'};
 					if (!defined($playlisttype) || (defined($playlist->{'parameters'}) && defined($playlist->{'parameters'}->{'1'}) && ($playlist->{'parameters'}->{'1'}->{'type'} eq $playlisttype || ($playlist->{'parameters'}->{'1'}->{'type'} =~ /^custom(.+)$/ && $1 eq $playlisttype)))) {
-						$log->debug('Adding playlist: '.$itemKey);
-						push @result, $item->{'playlist'};
+						my $dplMenuListType = $playlist->{'menulisttype'} || '';
+						unless ($isContextMenu == 1 && $dplMenuListType ne 'contextmenu') {
+							$log->debug('Adding playlist: '.$itemKey);
+							push @result, $playlist;
+						}
 					}
 				}
 			}
 		}
 	}
 	@result = sort {lc($a->{'playlistsortname'}) cmp lc($b->{'playlistsortname'})} @result;
+	#$log->info('result = '.Dumper(\@result));
 	return \@result;
 }
 
@@ -2430,7 +2445,6 @@ sub savePlayListGroups {
 }
 
 
-
 ### jive ###
 
 sub registerJiveMenu {
@@ -2451,135 +2465,6 @@ sub registerJiveMenu {
 		},
 	);
 	Slim::Control::Jive::registerPluginMenu(\@menuItems, 'myMusic');
-}
-
-sub registerStandardContextMenus {
-	Slim::Menu::AlbumInfo->registerInfoProvider(dynamicplaylists4 => (
-		after => 'addalbum',
-		func => sub {
-			if (scalar(@_) < 6) {
-				return objectInfoHandler(@_, undef, 'album');
-			} else {
-				return objectInfoHandler(@_, 'album');
-			}
-		},
-	));
-	Slim::Menu::ArtistInfo->registerInfoProvider(dynamicplaylists4 => (
-		after => 'addartist',
-		func => sub {
-			return objectInfoHandler(@_, undef, 'artist');
-		},
-	));
-	Slim::Menu::YearInfo->registerInfoProvider(dynamicplaylists4 => (
-		after => 'addyear',
-		func => sub {
-			return objectInfoHandler(@_, undef, 'year');
-		},
-	));
-	Slim::Menu::PlaylistInfo->registerInfoProvider(dynamicplaylists4 => (
-		after => 'addplaylist',
-		func => sub {
-			return objectInfoHandler(@_, 'playlist');
-		},
-	));
-	Slim::Menu::GenreInfo->registerInfoProvider(dynamicplaylists4 => (
-		after => 'addgenre',
-		func => sub {
-			return objectInfoHandler(@_, undef, 'genre');
-		},
-	));
-
-	Slim::Menu::AlbumInfo->registerInfoProvider(dynamicplaylists4cacheobj => (
-		after => 'dynamicplaylists4',
-		func => sub {
-			if (scalar(@_) < 6) {
-				return registerPreselectionMenu(@_, undef, 'album');
-			} else {
-				return registerPreselectionMenu(@_, 'album');
-			}
-		},
-	));
-	Slim::Menu::ArtistInfo->registerInfoProvider(dynamicplaylists4cacheobj => (
-		after => 'dynamicplaylists4',
-		func => sub {
-			return registerPreselectionMenu(@_, undef, 'artist');
-		},
-	));
-}
-
-sub objectInfoHandler {
-	my ($client, $url, $obj, $remoteMeta, $tags, $filter, $objectType) = @_;
-	$tags ||= {};
-
-	my $iscontextmenu = 1;
-	my $objectName = undef;
-	my $objectId = undef;
-	my $parameterId = $objectType.'_id';
-	if ($objectType eq 'genre' || $objectType eq 'artist') {
-		$objectName = $obj->name;
-		$objectId = $obj->id;
-	} elsif ($objectType eq 'album' || $objectType eq 'playlist') {
-		$objectName = $obj->title;
-		$objectId = $obj->id;
-		if ($objectType eq 'playlist') {
-			$parameterId = $objectType;
-		}
-	} elsif ($objectType eq 'year') {
-		$objectName = ($obj?$obj:$client->string('UNK'));
-		$objectId = $obj;
-		$parameterId = $objectType;
-	} else {
-		return undef;
-	}
-
-	if (!$playListTypes) {
-		initPlayListTypes();
-	}
-
-	if ($playListTypes->{$objectType} && ($objectType ne 'artist' || Slim::Schema->variousArtistsObject->id ne $objectId)) {
-		my $jive = {};
-
-		if ($tags->{menuMode}) {
-			my $actions = {
-				go => {
-					player => 0,
-					cmd => ['dynamicplaylist', 'contextmenujive'],
-					params => {
-						$parameterId => $objectId,
-					},
-				},
-			};
-			$jive->{actions} = $actions;
-		}
-
-		my $paramItem = {
-			id => $objectId,
-			name => $objectName
-		};
-
-		return {
-			type => 'redirect',
-			jive => $jive,
-			name => $client->string('PLUGIN_DYNAMICPLAYLISTS4'),
-			favorites => 0,
-
-			player => {
-				mode => 'PLUGIN.DynamicPlaylists4.Mixer',
-				modeParams => {
-					'dynamicplaylist_parameter_1' => $paramItem,
-					'playlisttype' => $objectType,
-					'flatlist' => 1,
-					'extrapopmode' => 1,
-				},
-			},
-			web => {
-				group => 'mixers',
-				url => 'plugins/DynamicPlaylists4/dynamicplaylist_list.html?playlisttype='.$objectType.'&flatlist=1&dynamicplaylist_parameter_1='.$objectId.'&iscontextmenu='.$iscontextmenu,
-				item => $obj,
-			},
-		};
-	}
-	return undef;
 }
 
 sub cliJiveHandler {
@@ -3112,11 +2997,15 @@ sub cliContextMenuJiveHandler {
 	}
 	$log->debug('Executing CLI mixjive command');
 
+	my $useContextMenu = $request->getParam('useContextMenu') || 0;
+	$log->debug('useContextMenu = '.$useContextMenu);
 	my $cnt = 0;
 	if (defined($playlisttype)) {
 		foreach my $flatItem (sort keys %{$playLists}) {
 			my $playlist = $playLists->{$flatItem};
-			next if ($request->getParam('useContextMenu') && ($request->getParam('useContextMenu') == 1) && $playlist->{'menulisttype'} && $playlist->{'menulisttype'} ne 'contextmenu');
+			my $dplMenuListType = $playlist->{'menulisttype'} || '';
+			$log->debug('menulisttype for playlist "'.$playlist->{'dynamicplaylistid'}.' = '.$dplMenuListType);
+			next if ($useContextMenu == 1 && $dplMenuListType ne 'contextmenu');
 			if ($playlist->{'dynamicplaylistenabled'}) {
 				if (defined($playlist->{'parameters'}) && defined($playlist->{'parameters'}->{'1'}) && ($playlist->{'parameters'}->{'1'}->{'type'} eq $playlisttype || ($playlist->{'parameters'}->{'1'}->{'type'} =~ /^custom(.+)$/ && $1 eq $playlisttype))) {
 					my $name;
@@ -3431,6 +3320,138 @@ sub _cliJiveSaveFavWithParams {
 	$request->setStatusDone();
 }
 
+
+## context menus
+
+sub registerStandardContextMenus {
+	Slim::Menu::AlbumInfo->registerInfoProvider(dynamicplaylists4 => (
+		after => 'addalbum',
+		func => sub {
+			if (scalar(@_) < 6) {
+				return objectInfoHandler(@_, undef, 'album');
+			} else {
+				return objectInfoHandler(@_, 'album');
+			}
+		},
+	));
+	Slim::Menu::ArtistInfo->registerInfoProvider(dynamicplaylists4 => (
+		after => 'addartist',
+		func => sub {
+			return objectInfoHandler(@_, undef, 'artist');
+		},
+	));
+	Slim::Menu::YearInfo->registerInfoProvider(dynamicplaylists4 => (
+		after => 'addyear',
+		func => sub {
+			return objectInfoHandler(@_, undef, 'year');
+		},
+	));
+	Slim::Menu::PlaylistInfo->registerInfoProvider(dynamicplaylists4 => (
+		after => 'addplaylist',
+		func => sub {
+			return objectInfoHandler(@_, 'playlist');
+		},
+	));
+	Slim::Menu::GenreInfo->registerInfoProvider(dynamicplaylists4 => (
+		after => 'addgenre',
+		func => sub {
+			return objectInfoHandler(@_, undef, 'genre');
+		},
+	));
+
+	Slim::Menu::AlbumInfo->registerInfoProvider(dynamicplaylists4cacheobj => (
+		after => 'dynamicplaylists4',
+		func => sub {
+			if (scalar(@_) < 6) {
+				return registerPreselectionMenu(@_, undef, 'album');
+			} else {
+				return registerPreselectionMenu(@_, 'album');
+			}
+		},
+	));
+	Slim::Menu::ArtistInfo->registerInfoProvider(dynamicplaylists4cacheobj => (
+		after => 'dynamicplaylists4',
+		func => sub {
+			return registerPreselectionMenu(@_, undef, 'artist');
+		},
+	));
+}
+
+sub objectInfoHandler {
+	my ($client, $url, $obj, $remoteMeta, $tags, $filter, $objectType) = @_;
+	$tags ||= {};
+
+	my $iscontextmenu = 1;
+	my $objectName = undef;
+	my $objectId = undef;
+	my $parameterId = $objectType.'_id';
+	if ($objectType eq 'genre' || $objectType eq 'artist') {
+		$objectName = $obj->name;
+		$objectId = $obj->id;
+	} elsif ($objectType eq 'album' || $objectType eq 'playlist') {
+		$objectName = $obj->title;
+		$objectId = $obj->id;
+		if ($objectType eq 'playlist') {
+			$parameterId = $objectType;
+		}
+	} elsif ($objectType eq 'year') {
+		$objectName = ($obj?$obj:$client->string('UNK'));
+		$objectId = $obj;
+		$parameterId = $objectType;
+	} else {
+		return undef;
+	}
+
+	if (!$playListTypes) {
+		initPlayListTypes();
+	}
+
+	if ($playListTypes->{$objectType} && ($objectType ne 'artist' || Slim::Schema->variousArtistsObject->id ne $objectId)) {
+		my $jive = {};
+
+		if ($tags->{menuMode}) {
+			my $actions = {
+				go => {
+					player => 0,
+					cmd => ['dynamicplaylist', 'contextmenujive'],
+					params => {
+						$parameterId => $objectId,
+						useContextMenu => 1,
+					},
+				},
+			};
+			$jive->{actions} = $actions;
+		}
+
+		my $paramItem = {
+			id => $objectId,
+			name => $objectName
+		};
+
+		return {
+			type => 'redirect',
+			jive => $jive,
+			name => $client->string('PLUGIN_DYNAMICPLAYLISTS4'),
+			favorites => 0,
+
+			player => {
+				mode => 'PLUGIN.DynamicPlaylists4.Mixer',
+				modeParams => {
+					'dynamicplaylist_parameter_1' => $paramItem,
+					'playlisttype' => $objectType,
+					'flatlist' => 1,
+					'extrapopmode' => 1,
+				},
+			},
+			web => {
+				group => 'mixers',
+				url => 'plugins/DynamicPlaylists4/dynamicplaylist_list.html?playlisttype='.$objectType.'&flatlist=1&dynamicplaylist_parameter_1='.$objectId.'&iscontextmenu='.$iscontextmenu,
+				item => $obj,
+			},
+		};
+	}
+	return undef;
+}
 
 
 ## CLI common ##
