@@ -208,7 +208,7 @@ sub initPrefs {
 			mkdir($customPlaylistFolder, 0755) unless (-d $customPlaylistFolder);
 			chdir($customPlaylistFolder);
 		} or do {
-			$log->warn("Could not create or access custom playlist folder in parent folder '$_[1]'!");
+			$log->error("Could not create or access custom playlist folder in parent folder '$_[1]'!");
 			return;
 		};
 		$prefs->set('customplaylistfolder', $customPlaylistFolder);
@@ -279,7 +279,7 @@ sub initPlayLists {
 			$log->debug("Getting dynamic playlists for: $plugin");
 			my $items = eval {&{"${plugin}::getDynamicPlaylists"}($client)};
 			if ($@) {
-				$log->warn("Error getting playlists from $plugin: $@");
+				$log->error("Error getting playlists from $plugin: $@");
 			}
 			for my $item (keys %{$items}) {
 				$plugins{$item} = "${plugin}";
@@ -1274,7 +1274,7 @@ sub addParameterValues {
 			my $sth = $dbh->prepare($sql);
 			$log->debug("Executing value list: $sql");
 			$sth->execute() or do {
-				$log->warn("Error executing: $sql");
+				$log->error("Error executing: $sql");
 				$sql = undef;
 			};
 			if (defined($sql)) {
@@ -1309,7 +1309,7 @@ sub addParameterValues {
 			$sth->finish();
 		};
 		if ($@) {
-			$log->warn("Database error: $DBI::errstr");
+			$log->error("Database error: $DBI::errstr");
 		}
 	}
 }
@@ -4811,7 +4811,7 @@ sub getDecades {
 			$log->debug('caching new temp_decadelist = '.Dumper($client->pluginData('temp_decadelist')));
 		};
 		if ($@) {
-			$log->warn("Database error: $DBI::errstr\n$@");
+			$log->error("Database error: $DBI::errstr\n$@");
 			return 'error';
 		}
 	}
@@ -5453,7 +5453,7 @@ sub getNextDynamicPlaylistTracks {
 
 			#$log->info('idListCompleteInfo = '.Dumper(\%idListCompleteInfo));
 			if ($@) {
-				$log->warn("Database error: $DBI::errstr\n$@");
+				$log->error("Database error: $DBI::errstr\n$@");
 				return 'error';
 			}
 			$log->debug("sql statement $i: exec time = ".(time() - $sqlExecTime).' secs');
@@ -5918,10 +5918,10 @@ sub parseContent {
 	} else {
 		if ($@) {
 			$errorMsg = "Incorrect information in playlist data: $@";
-			$log->warn("Unable to read playlist configuration:\n$@");
+			$log->error("Unable to read playlist configuration:\n$@");
 		} else {
 			$errorMsg = 'Incorrect information in playlist data';
-			$log->warn('Unable to to read playlist configuration');
+			$log->error('Unable to to read playlist configuration');
 		}
 	}
 	return undef;
@@ -6033,8 +6033,8 @@ sub parseMenuListType {
 			$MenuListType =~ s/^\s+//;
 			return $MenuListType;
 		} else {
-			$log->debug("No value or error in MenuListType: $line");
-			$log->debug('Option values: MenuListType = '.Dumper($MenuListType));
+			$log->warn("No value or error in MenuListType: $line");
+			$log->warn('Option values: MenuListType = '.Dumper($MenuListType));
 			return undef;
 		}
 	}
@@ -6052,8 +6052,8 @@ sub parseCategory {
 			$category =~ s/^\s+//;
 			return $category;
 		} else {
-			$log->debug("No value or error in category: $line");
-			$log->debug('Option values: category = '.Dumper($category));
+			$log->warn("No value or error in category: $line");
+			$log->warn('Option values: category = '.Dumper($category));
 			return undef;
 		}
 	}
@@ -6071,8 +6071,8 @@ sub parseAPCdupe {
 			$APCdupe =~ s/^\s+//;
 			return $APCdupe;
 		} else {
-			$log->debug("No value or error in APCdupe: $line");
-			$log->debug('Option values: APCdupe = '.Dumper($APCdupe));
+			$log->warn("No value or error in APCdupe: $line");
+			$log->warn('Option values: APCdupe = '.Dumper($APCdupe));
 			return undef;
 		}
 	}
@@ -6090,8 +6090,8 @@ sub parseTrackOrder {
 			$trackOrder =~ s/^\s+//;
 			return $trackOrder;
 		} else {
-			$log->debug("No value or error in trackOrder: $line");
-			$log->debug('Option values: trackOrder = '.Dumper($trackOrder));
+			$log->warn("No value or error in trackOrder: $line");
+			$log->warn('Option values: trackOrder = '.Dumper($trackOrder));
 			return undef;
 		}
 	}
@@ -6109,8 +6109,8 @@ sub parseLimitOption {
 			$limitOption =~ s/^\s+//;
 			return $limitOption;
 		} else {
-			$log->debug("No value or error in limitOption: $line");
-			$log->debug('Option values: limitOption = '.Dumper($limitOption));
+			$log->warn("No value or error in limitOption: $line");
+			$log->warn('Option values: limitOption = '.Dumper($limitOption));
 			return undef;
 		}
 	}
@@ -6272,7 +6272,7 @@ sub addToPlayListHistory {
 		commit($dbh);
 	};
 	if ($@) {
-		$log->warn("Database error: $DBI::errstr");
+		$log->error("Database error: $DBI::errstr");
 		eval {
 			rollback($dbh); # just die if rollback is failing
 		};
@@ -6318,7 +6318,7 @@ sub clearPlayListHistory {
 		commit($dbh);
 	};
 	if ($@) {
-		$log->warn("Database error: $DBI::errstr");
+		$log->error("Database error: $DBI::errstr");
 		eval {
 			rollback($dbh); #just die if rollback is failing
 		};
@@ -6516,7 +6516,7 @@ sub checkCustomSkipFilterType {
 			my $sth = $dbh->prepare($sql);
 			$log->debug("Executing skip filter SQL: $sql");
 			$sth->execute() or do {
-				$log->warn("Error executing: $sql");
+				$log->error("Error executing: $sql");
 				$sql = undef;
 			};
 			if (defined($sql)) {
@@ -6528,7 +6528,7 @@ sub checkCustomSkipFilterType {
 			}
 		};
 		if ($@) {
-			$log->warn("Error executing filter: $@");
+			$log->error("Error executing filter: $@");
 		}
 	}
 	return $result;
