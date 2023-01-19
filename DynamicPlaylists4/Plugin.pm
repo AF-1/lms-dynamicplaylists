@@ -161,17 +161,21 @@ sub initPlugin {
 
 sub postinitPlugin {
 	my $class = shift;
+	$dplc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::DynamicPlaylistCreator::Plugin');
+	$log->debug('Plugin "Dynamic Playlist Creator" is enabled') if $dplc_enabled;
+	$apc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::AlternativePlayCount::Plugin');
+	$log->debug('Plugin "Alternative Play Count" is enabled') if $apc_enabled;
+	$material_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin');
+	$log->debug('Plugin "Material Skin" is enabled') if $material_enabled;
+	$dstm_enabled = Slim::Utils::PluginManager->isEnabled('Slim::Plugin::DontStopTheMusic::Plugin');
+	$log->debug('DSTM is enabled') if $dstm_enabled;
+	Slim::Utils::Timers::setTimer(undef, Time::HiRes::time() + 3, sub {
+		clearCache();
+	});
 	initPlayLists();
 	initPlayListTypes();
 	registerJiveMenu($class);
 	registerStandardContextMenus();
-	Slim::Utils::Timers::setTimer(undef, Time::HiRes::time() + 3, sub {
-		$dplc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::DynamicPlaylistCreator::Plugin');
-		$apc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::AlternativePlayCount::Plugin');
-		$material_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::MaterialSkin::Plugin');
-		$dstm_enabled = Slim::Utils::PluginManager->isEnabled('Slim::Plugin::DontStopTheMusic::Plugin');
-		clearCache();
-	});
 }
 
 sub initPrefs {
@@ -5135,7 +5139,7 @@ sub _preselectionMenuWeb {
 
 sub _preselectionMenuJive {
 	my $request = shift;
-	#$log->debug('request = '.Dumper($request));
+	$log->debug('request = '.Dumper($request));
 	my $client = $request->client();
 	my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
 
@@ -5204,7 +5208,7 @@ sub _preselectionMenuJive {
 			};
 
 			$request->addResultLoop('item_loop', $cnt, 'type', 'text');
-			$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
+			$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
 			$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
 			$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'parent');
 			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CLEAR_LIST'));
@@ -5234,7 +5238,7 @@ sub _preselectionMenuJive {
 			} else {
 				$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'refresh');
 			}
-			$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
+			$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
 			$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
 			$request->addResultLoop('item_loop', $cnt, 'params', \%itemParams);
 			$request->addResultLoop('item_loop', $cnt, 'text', $text);

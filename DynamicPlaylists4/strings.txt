@@ -1565,6 +1565,14 @@ PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTLASTADDEDPERIOD_YEARS
 	EN	Limit to years with last ADDED songs?
 	FR	Limiter aux années avec les derniers morceaux ajoutés?
 
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTMAXDPSV
+	EN	Select maximum dynamic played/skipped value
+	FR	Sélectionner la DPSV maximale
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTMINDPSV
+	EN	Select minimum dynamic played/skipped value
+	FR	Sélectionner la DPSV minimale
+
 
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL
@@ -1831,6 +1839,14 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_PLAYEDLONGAGO_APC
 	EN	Playlists - played long ago (APC)
 	FR	Listes de lecture - jouées il y a longtemps (APC)
 
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_DPSV_APC
+	EN	Songs - random (by dynamic played/skipped value range) (APC)
+	FR	Morceaux - aléatoire (par gamme de DPSV) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE_DECADE_DPSV_APC
+	EN	Songs - random (by genre, decade & dynamic played/skipped value range) (APC)
+	FR	Morceaux - aléatoire (par genre, décennie et gamme de DPSV) (APC)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED_MINRATING_APC
 	EN	Songs - most played (min. rating) (APC)
