@@ -17,7 +17,7 @@ select tracks.id, tracks.primary_artist from tracks
 		and not exists (select * from tracks t2,genre_track,genres
 						where
 							t2.id = tracks.id and
-							tracks.id = genre_track.track and 
+							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.name in ('PlaylistExcludedGenres'))
 		and

@@ -9,7 +9,7 @@ drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select tracks.album as album, sum(ifnull(alternativeplaycount.playCount,0)) as sumplaycount, count(distinct tracks.id) as totaltrackcount from tracks
 	join contributor_track on
-		contributor_track.track = tracks.id and	contributor_track.contributor = 'PlaylistParameter1'
+		contributor_track.track = tracks.id and contributor_track.contributor = 'PlaylistParameter1'
 	left join library_track on
 		library_track.track = tracks.id
 	join alternativeplaycount on

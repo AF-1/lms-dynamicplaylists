@@ -17,7 +17,7 @@ create temporary table dynamicplaylist_random_years as
 		where
 			tracks.audio = 1
 			and dynamicplaylist_history.id is null
-			and	ifnull(tracks.year, 0) != 0
+			and ifnull(tracks.year, 0) != 0
 			and not exists (select * from tracks t2,genre_track,genres
 							where
 								t2.id = tracks.id and

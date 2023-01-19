@@ -15,8 +15,8 @@ create temporary table dynamicplaylist_random_albums as
 		left join dynamicplaylist_history on
 			dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 		where
- 			playlist_track.playlist = 'PlaylistParameter1'
- 			and tracks.audio = 1
+			playlist_track.playlist = 'PlaylistParameter1'
+			and tracks.audio = 1
 			and dynamicplaylist_history.id is null
 			and
 				case
