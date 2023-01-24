@@ -214,7 +214,7 @@ href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html?
 		var newState = numSelected != numCheckBoxes;
 
 		for (var i=0; i < f.elements.length; i++) {
-			if (f.elements[i].type == 'checkbox') {
+			if (f.elements[i].type == 'checkbox' && f.elements[i].disabled == false) {
 				f.elements[i].checked = newState;
 			}
 		}
@@ -222,7 +222,7 @@ href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html?
 			numSelected = numCheckBoxes;
 			f.selectAllButton.value = selectNoneString;
 			for (var i=0; i < f.elements.length; i++) {
-				if (f.elements[i].type == 'checkbox') {
+				if (f.elements[i].type == 'checkbox' && f.elements[i].disabled == false) {
 					if(!selectedItems.some(el => el === f.elements[i].id)) selectedItems.push(f.elements[i].id);
 				}
 			}
@@ -230,7 +230,7 @@ href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html?
 			numSelected = 0;
 			f.selectAllButton.value = selectAllString;
 			for (var i=0; i < f.elements.length; i++) {
-				if (f.elements[i].type == 'checkbox') {
+				if (f.elements[i].type == 'checkbox' && f.elements[i].disabled == false) {
 					selectedItems = selectedItems.filter(function(item) {
 						return item !== f.elements[i].id
 					});

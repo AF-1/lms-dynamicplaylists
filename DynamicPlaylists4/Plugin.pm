@@ -1934,13 +1934,17 @@ sub handleWebMixParameters {
 		my $parameter = $playlist->{'parameters'}->{$i};
 		my %value;
 		if ($parameter && $parameter->{'type'} && $parameter->{'type'} eq 'multipledecades') {
+
 			# add years to decades
 			my @decadeValues = split(/,/, $params->{'dynamicplaylist_parameter_'.$i});
 			my @yearsArray;
+
 			foreach my $decade (@decadeValues) {
 				push @yearsArray, $decade;
-				for (1..9) {
-					push @yearsArray, $decade + $_;
+				unless ($decade == 0) {
+					for (1..9) {
+						push @yearsArray, $decade + $_;
+					}
 				}
 			}
 			my $multipleDecadesString = join (',', @yearsArray);
@@ -3267,12 +3271,12 @@ sub _cliJiveActionsMenuHandler {
 		$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
 		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'home');
 		$cnt++;
-
-		$request->addResult('offset', 0);
-		$request->addResult('count', $cnt);
-		$log->debug('Exiting cliJiveActionsMenuHandler');
-		$request->setStatusDone();
 	}
+
+	$request->addResult('offset', 0);
+	$request->addResult('count', $cnt);
+	$log->debug('Exiting cliJiveActionsMenuHandler');
+	$request->setStatusDone();
 }
 
 sub _cliJiveSaveFavWithParams {
@@ -4937,8 +4941,10 @@ sub getMultipleSelectionString {
 			my @yearsArray;
 			foreach my $decade (@selectedDecadesArray) {
 				push @yearsArray, $decade;
-				for (1..9) {
-					push @yearsArray, $decade + $_;
+				unless ($decade == 0) {
+					for (1..9) {
+						push @yearsArray, $decade + $_;
+					}
 				}
 			}
 			$multipleSelectionString = join (',', @yearsArray);
