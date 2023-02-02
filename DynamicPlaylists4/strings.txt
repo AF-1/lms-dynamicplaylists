@@ -1501,6 +1501,10 @@ PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTMINRATING
 	EN	Select minimum rating (stars)
 	FR	Sélectionner la note minimum (étoiles)
 
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTMAXRATING
+	EN	Select maximum rating (stars)
+	FR	Sélectionner la note maximum (étoiles)
+
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTEXACTRATING
 	EN	Select exact rating (stars)
 	FR	Sélectionner la note exacte (étoiles)
