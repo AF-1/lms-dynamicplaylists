@@ -78,13 +78,13 @@ PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED
 
 PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED_LONG
 	EN	Found no songs matching your criteria for dynamic playlist:
-	FR	Aucun morceaux trouvé qui correspond à vos critères de liste de lecture dynamique :
+	FR	Aucun morceau trouvé qui correspond à vos critères de liste de lecture dynamique :
 
 
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MAX_NUMBER_OF_UNPLAYED_TRACKS
 	EN	<i>Max.</i> number of <u>un</u>played songs
-	FR	Nombre <i>max</i> de morceaux <u>non</u> joués
+	FR	Nombre <i>max.</i> de morceaux <u>non</u> joués
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MAX_NUMBER_OF_UNPLAYED_TRACKS_DESC
 	EN	DPL will add new tracks to the end of your dynamic playlist up to <b>this</b> number of <b>total unplayed tracks</b> in your dynamic playlist (provided it finds enough tracks matching your search criteria).<br><br>To add an <b>unlimited</b> number of tracks (only recommended for playlists that add complete albums) add this playlist parameter to the beginning of your playlist definition:<br><i>-- PlaylistLimitOption:unlimited</i>
@@ -136,7 +136,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLUGINSHUFFLEMODE
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLUGINSHUFFLEMODE_DESC
 	EN	By default DPL shuffles tracks of built-in and custom dynamic playlists to <i>increase</i> randomness unless told otherwise. You can choose between different shuffle methods or disable <b>plugin</b> shuffle. This is a <b>global</b> settings for <b>all</b> dynamic playlists (built-in and custom).<br><br>To disable track shuffling only for <b>selected</b> custom dynamic playlists add this playlist parameter to your playlist definition:<br><i>-- PlaylistTrackOrder:ordered</i><br><br>Saved static playlists have a separate preference setting.<br><br>Randomization by functions/clauses in the SQLite code is not affected by any of this and can only be changed in the SQLite code.
-	FR	Par défaut, DPL mélange les pistes des listes de lecture dynamiques intégrées et personnalisées pour <i>augmenter</i> le caractère aléatoire, sauf indication contraire. Vous pouvez choisir entre différentes méthodes de lecture aléatoire ou désactiver la lecture aléatoire du plugin. Il s'agit d'un paramètre <b>global</b> pour <b>toutes</b> les listes de lecture dynamiques (intégrées et personnalisées).<br><br>Pour désactiver le brassage des pistes uniquement pour les <b>sélectionnées</b> listes de lecture dynamiques personnalisées, ajoutez ce paramètre de liste de lecture à votre définition de liste de lecture:<br><i>-- PlaylistTrackOrder:ordered</i><br><br>Les listes de lecture statiques enregistrées ont un paramètre de préférence distinct.<br><br>La randomisation par les fonctions/clauses dans le code SQLite n'est pas affectée par tout cela et ne peut être modifiée que dans le code SQLite.
+	FR	Par défaut, DPL mélange les pistes des listes de lecture dynamiques intégrées et personnalisées pour <i>augmenter</i> le caractère aléatoire sauf indication contraire. Vous pouvez choisir entre différentes méthodes de lecture aléatoire ou désactiver la lecture aléatoire du plugin. Il s'agit d'un paramètre <b>global</b> pour <b>toutes</b> les listes de lecture dynamiques (intégrées et personnalisées).<br><br>Pour désactiver le mélange des pistes uniquement pour les listes de lecture dynamiques personnalisées <b>sélectionnées</b>, ajoutez ce paramètre à la définition de votre liste de lecture:<br><i>-- PlaylistTrackOrder:ordered</i><br><br>Les listes de lecture statiques enregistrées ont un paramètre de préférence distinct.<br><br>Le mélange par les fonctions/clauses dans le code SQLite n'est pas affectée par tout cela et ne peut être modifiée que dans le code SQLite.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLUGINSHUFFLEMODE_NORMAL
 	EN	Faster, but less balanced shuffle
@@ -156,7 +156,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PERIOD_PLAYEDLONGAGO
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PERIOD_PLAYEDLONGAGO_DESC
 	EN	Set the time period for tracks to be considered <b>played long ago</b> in dynamic playlists that use the <i>PeriodPlayedLongAgo</i> parameter (some built-in playlists use this).
-	FR	Définit la période pour les morceaux soient considérés comme <b>joués il y a longtemps</b> dans les listes de lecture qui utilisent le paramètre <i>PeriodPlayedLongAgo</i> (certaines listes de lecture intégrées l'utilisent)
+	FR	Définit la période pour que les morceaux soient considérés comme <b>joués il y a longtemps</b> dans les listes de lecture qui utilisent le paramètre <i>PeriodPlayedLongAgo</i> (certaines listes de lecture intégrées l'utilisent)
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MINTRACKS_ARTIST
 	EN	Min. artist tracks
@@ -180,7 +180,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEVOLATILEPARAMDPLSAVE
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEVOLATILEPARAMDPLSAVE_DESC
 	EN	<b>By default</b>, you <b>can't add</b> dynamic playlists to LMS favorites that will ask for <b>volatile</b> user-input parameters at run-time whose values <b>could change after a rescan</b> (artist, album, genre, multiplegenres, playlist or multiplestaticplaylists).<br><br>With this setting enabled, you can even add dynamic playlists with <b>volatile</b> parameters to LMS favorites. However, keep in mind that such favorites may no longer work after a rescan. More information in the FAQ.
-	FR	Par défaut, vous ne pouvez pas ajouter aux favoris LMS des listes de lecture dynamiques qui demanderont des paramètres <b>volatiles</b> au moment de l'exécution et dont les valeurs pourraient changer après une nouvelle analyse (artiste, album, genre, genres multiples, liste de lecture ou listes de lecture multiple statiques).<br><br>Avec ce paramètre activé, vous pouvez même ajouter des listes de lecture dynamiques avec des paramètres <b>volatiles</b> aux favoris LMS. Cependant, n'oubliez pas qu'il est possible que ces favoris ne fonctionnent plus après un rescan. Plus d'informations dans la FAQ.
+	FR	Par défaut, vous ne pouvez pas ajouter aux favoris LMS des listes de lecture dynamiques qui demanderont des paramètres <b>volatiles</b> au moment de l'exécution et dont les valeurs pourraient changer après une nouvelle analyse (artiste, album, genre, genres multiples, liste de lecture ou listes de lecture multiples statiques).<br><br>Avec ce paramètre activé, vous pouvez ajouter des listes de lecture dynamiques même avec des paramètres <b>volatiles</b> aux favoris LMS. Cependant, n'oubliez pas qu'il est possible que ces favoris ne fonctionnent plus après un rescan. Plus d'informations dans la FAQ.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLESTATICPLSAVING
 	EN	Allow saving dynamic playlists as static playlists
@@ -188,7 +188,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLESTATICPLSAVING
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLESTATICPLSAVING_DESC
 	EN	Save the result of a dynamic playlist query as a static playlist (min. 100, max. 4000 tracks). If you have a very large result set of tracks, saving the playlist may take a while to complete. Please be patient.
-	FR	Enregistrez le résultat d'une requête de liste de lecture dynamique sous la forme d'une liste de lecture statique (min. 100, max. 4000 pistes). Si vous avez un très grand nombre de pistes, l'enregistrement de la liste de lecture peut prendre un certain temps. Veuillez être patient.
+	FR	Enregistrez le résultat d'une requête de liste de lecture dynamique sous la forme d'une liste de lecture statique (min. 100, max. 4000 morceaux). Si vous avez un très grand nombre de morceaux, l'enregistrement de la liste de lecture peut prendre un certain temps. Veuillez être patient.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_REMEMBERACTIVEPLAYLIST
 	EN	Remember active dynamic playlist
@@ -212,7 +212,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPCUSTOMPLAYLISTS
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPCUSTOMPLAYLISTS_DESC
 	EN	Put <i>user-provided/custom</i> dynamic playlists that have no group classification into the 'Not classified' group. Otherwise DPL will list them at the top menu level. Built-in dynamic playlists are <i>always</i> grouped.
-	FR	Met les listes de lecture dynamiques <i>personnalisées</i> qui n'ont pas de classification dans le groupe 'Non classifiées'. Sinon DPL les listera au menu principal. Les listes de lecture intégrées sont <i>toujours</i> groupées.
+	FR	Met les listes de lecture dynamiques <i>personnalisées</i> qui n'ont pas de classification dans le groupe 'Non classées'. Sinon DPL les listera au menu principal. Les listes de lecture intégrées sont <i>toujours</i> groupées.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CUSTOMDIRPARENTFOLDERPATH
 	EN	<u>Parent</u> folder path for folder <wbr>with&nbsp;custom&nbsp;dynamic&nbsp;playlist&nbsp;files
@@ -236,7 +236,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_RANDOMSAVEDPLAYLISTS
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_RANDOMSAVEDPLAYLISTS_DESC
 	EN	Play songs in static saved playlists in random order.<br><b>Random</b> order will use the <b>plugin shuffle method</b> you've selected in the settings above.
-	FR	Joue les morceaux des listes de lecture statiques dans un ordre aléatoire.<br><b>L'ordre aléatoire</b> utilisera la méthode de brassage que vous avez sélectionnée dans les paramètres ci-dessus.
+	FR	Joue les morceaux des listes de lecture statiques dans un ordre aléatoire.<br><b>L'ordre aléatoire</b> utilisera la méthode de mélange que vous avez sélectionnée dans les paramètres ci-dessus.
 
 PLUGIN_DYNAMICPLAYLISTS4_SETTINGS_RANDOM
 	EN	Random
@@ -260,7 +260,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_EXCLUDEDGENRES
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_EXCLUDEDGENRES_DESC
 	EN	Choose genres to exclude from dynamic playlists that use the <i>ExcludedGenres</i> parameter (built-in playlists use this).
-	FR	Choisit les genres à exclure des listes de lecture dynamiques qui utilisent le paramètre <i>ExcludedGenres</i> (les listes de lecture intégrées l'utilise)
+	FR	Choisit les genres à exclure des listes de lecture dynamiques qui utilisent le paramètre <i>ExcludedGenres</i> (les listes de lecture intégrées l'utilisent)
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SHOWTIMEPERCHAR
 	EN	Status message display time
@@ -335,7 +335,7 @@ PLUGIN_DYNAMICPLAYLISTS4_NEXT
 
 PLUGIN_DYNAMICPLAYLISTS4_PLAY
 	EN	Play
-	FR	Lire
+	FR	Jouer
 
 PLUGIN_DYNAMICPLAYLISTS4_ADD
 	EN	Add
@@ -347,7 +347,7 @@ PLUGIN_DYNAMICPLAYLISTS4_PLAY_OR_ADD
 
 PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY
 	EN	Create DSTM seed list and play
-	FR	Créer une list DSTM et la lire
+	FR	Créer une liste DSTM et la jouer
 
 PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_STATUSMSG
 	EN	Starting DSTM mix with seed list created from
@@ -359,7 +359,7 @@ PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_FAILED
 
 PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_FAILED_LONG
 	EN	Can't start DSTM. No DSTM provider enabled.
-	FR	Impossible de démarrer ls DSTM. Aucun fournisseur DSTM activé
+	FR	Impossible de démarrer DSTM. Aucun fournisseur DSTM activé
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DSTM_STARTINDEX
 	EN	Start DSTM mix with
@@ -367,7 +367,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DSTM_STARTINDEX
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DSTM_STARTINDEX_DESC
 	EN	After DPL has created a seed list for the <i>Don't Stop The Music</i> plugin, i.e. added tracks to the client's playlist choose if you want to start your DSTM mix with the <b>first</b> or the <b>last</b> song of that seed list.<br>Choosing the <i>last</i> song should trigger DSTM to add new tracks right away while skipping playback of all seed list tracks (but the last one).
-	FR	Après que DPL ait créé une liste pour le plugin <i>Don't Stop The Music</i>, i.e. ajoute des morceaux à la liste de lecture du client choisissez si vous voulez commencer votre mix DSTM avec le <b>premier</b> ou le <b>dernier</b> morceau de cette liste.<br>Choisir le <i>dernier</i> morceaux déclenchera le DSTM pour ajouter des nouveaux morceaux directement tout en sautant la lecture des morceaux de la iste (sauf le dernier).
+	FR	Après que DPL ait créé une liste pour le plugin <i>Don't Stop The Music</i>, i.e. ajouté des morceaux à la liste de lecture du client, choisissez si vous voulez commencer votre mix DSTM avec le <b>premier</b> ou le <b>dernier</b> morceau de cette liste.<br>Choisir le <i>dernier</i> morceaux déclenchera DSTM pour ajouter des nouveaux morceaux directement tout en sautant la lecture des morceaux de la liste (sauf le dernier).
 
 PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV
 	EN	Save as favourite
@@ -387,11 +387,11 @@ PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY_MATERIAL
 
 PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV
 	EN	Saved dynamic playlist with selected parameters as favourite
-	FR	La liste de lecture dynamique avec les paramètres sélectionnés était sauvagardée comme favori.
+	FR	La liste de lecture dynamique avec les paramètres sélectionnés a été sauvegardée comme favori.
 
 PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV_ADDONLY
 	EN	Saved dynamic playlist with selected parameters as add-only favourite
-	FR	La liste de lecture dynamique avec les paramètres sélectionnés était sauvagardée comme favori 'ajouter seulement'.
+	FR	La liste de lecture dynamique avec les paramètres sélectionnés a été sauvegardée comme favori 'ajouter seulement'.
 
 PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV_ADDONLY_SUFFIX
 	EN	add-only
@@ -504,7 +504,7 @@ PLUGIN_DYNAMICPLAYLISTS4_SAVINGSTATICPL_DONE
 
 PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPL_SAVESTATUS
 	EN	Saving static playlist...
-	FR	En train de sauvegarder la liste de lecture statique...
+	FR	Sauvegarde de la liste de lecture statique en cours...
 
 
 PLUGIN_DYNAMICPLAYLISTS4_PRESELECTARTISTS
@@ -574,7 +574,7 @@ PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_JIVE_DPLACTIVE
 
 PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_NOTCLASSIFIED
 	EN	<span class="categoryheader">not</span> classified
-	FR	<span class="categoryheader">non</span> classifié
+	FR	<span class="categoryheader">non</span> classé
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_TRACKS
 	EN	Songs
@@ -1531,43 +1531,43 @@ PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDECOMPIS
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SONGS_LASTPLAYED
 	EN	Limit to last played songs?
-	FR	Limiter aux derniers morceaux joués?
+	FR	Limiter aux derniers morceaux joués ?
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_ALBUMS_RECENTLYPLAYED
 	EN	Limit to albums that contain recently PLAYED songs?
-	FR	Limiter aux albums contenant les morceaux joués récemment?
+	FR	Limiter aux albums contenant les morceaux joués récemment ?
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_ARTISTS_RECENTLYPLAYED
 	EN	Limit to artists with recently PLAYED songs?
-	FR	Limiter aux artistes contenant les morceaux joués récemment?
+	FR	Limiter aux artistes avec des morceaux joués récemment ?
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_GENRES_RECENTLYPLAYED
 	EN	Limit to genres that contain recently PLAYED songs?
-	FR	Limiter aux genres contenant les morceaux joués récemment?
+	FR	Limiter aux genres avec des morceaux joués récemment ?
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_YEARS_RECENTLYPLAYED
 	EN	Limit to years that contain recently PLAYED songs?
-	FR	Limiter aux années contenant les morceaux joués récemment?
+	FR	Limiter aux années avec des morceaux joués récemment ?
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTLASTADDEDPERIOD_SONGS
 	EN	Limit to last ADDED songs?
-	FR	Limiter aux derniers morceaux ajoutés?
+	FR	Limiter aux derniers morceaux ajoutés ?
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTLASTADDEDPERIOD_ALBUMS
 	EN	Limit to last ADDED albums?
-	FR	Limiter aux derniers albums ajoutés?
+	FR	Limiter aux derniers albums ajoutés ?
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTLASTADDEDPERIOD_ARTISTS
 	EN	Limit to artists with last ADDED songs?
-	FR	Limiter aux artistes avec les derniers morceaux ajoutés?
+	FR	Limiter aux artistes avec les derniers morceaux ajoutés ?
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTLASTADDEDPERIOD_GENRES
 	EN	Limit to genres with last ADDED songs?
-	FR	Limiter aux genres avec les derniers morceaux ajoutés?
+	FR	Limiter aux genres avec les derniers morceaux ajoutés ?
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTLASTADDEDPERIOD_YEARS
 	EN	Limit to years with last ADDED songs?
-	FR	Limiter aux années avec les derniers morceaux ajoutés?
+	FR	Limiter aux années avec les derniers morceaux ajoutés ?
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTMAXDPSV
 	EN	Select maximum dynamic played/skipped value
@@ -1609,7 +1609,7 @@ PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_1WEEK_NOT
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_2WEEKS
 	EN	Played in the last 2 weeks
-	FR	Joués dans les 4 dernières semaines
+	FR	Joués dans les 2 dernières semaines
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_2WEEKS_NOT
 	EN	NOT played in the last 2 weeks
