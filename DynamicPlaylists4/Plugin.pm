@@ -2147,6 +2147,18 @@ sub handleWebMixParameters {
 			for (my $i = 1; $i < $parameterId; $i++) {
 				$playlist->{'parameters'}->{$i}->{'value'} = $client->modeParam('dynamicplaylist_parameter_'.$i)->{'id'};
 			}
+
+			unless ($params->{'addOnly'} == 1) {
+				my $masterClient = masterOrSelf($client);
+
+				# Clear any current mix type in case user is restarting an already playing mix
+				stateStop($masterClient);
+				my @players = Slim::Player::Sync::slaves($client);
+				foreach my $player (@players) {
+					stateStop($player);
+				}
+			}
+
 			playRandom($client, $params->{'type'}, $params->{'addOnly'}, 1, 1);
 		}
 		$log->debug('Exiting handleWebMixParameters');
@@ -3563,6 +3575,15 @@ sub cliPlayPlaylist {
 		} else {
 			$log->debug("Got: $k = ".$params->{$k});
 		}
+	}
+
+	my $masterClient = masterOrSelf($client);
+
+	# Clear any current mix type in case user is restarting an already playing mix
+	stateStop($masterClient);
+	my @players = Slim::Player::Sync::slaves($client);
+	foreach my $player (@players) {
+		stateStop($player);
 	}
 
 	playRandom($client, $playlistId, 0, 1);
