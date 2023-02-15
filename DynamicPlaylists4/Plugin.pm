@@ -589,7 +589,7 @@ sub findAndAdd {
 			# Filter track IDs
 			unless ($dplUseCache) {
 				my $filterTrackIDsStartTime = time();
-				$newTrackIDs = filterTrackIDs($masterClient, $newTrackIDs, $totalTrackIDList);
+				$newTrackIDs = filterTrackIDs($masterClient, $newTrackIDs, $totalTrackIDList, $forcedAddDifferentPlaylist ? 1 : 0);
 				$log->debug("Iteration $i: returned ".(scalar @{$newTrackIDs}).((scalar @{$newTrackIDs}) == 1 ? ' item' : ' items').' after filtering. Filtering took '.(time()-$filterTrackIDsStartTime).' seconds');
 			}
 
@@ -647,14 +647,13 @@ sub findAndAdd {
 		return 0;
 	}
 
-	if ($dplUseCache) {
-		## shuffle all track IDs
-		unless ($client->pluginData('cacheFilled') || $playlistTrackOrder && ($playlistTrackOrder eq 'ordered' || $playlistTrackOrder eq 'ordereddescrandom' || $playlistTrackOrder eq 'orderedascrandom') || $isStaticPL && $prefs->get('randomsavedplaylists') == 0) {
-			$log->debug('Shuffling ALL track IDs for cache');
-			my $shuffledIDlist = shuffleIDlist($totalTrackIDList, $totalTracksCompleteInfo);
-			@{$totalTrackIDList} = @{$shuffledIDlist};
-		}
-		$client->pluginData('cacheFilled' => 1);
+	## shuffle all track IDs
+	unless ($dplUseCache && $client->pluginData('cacheFilled') || $playlistTrackOrder && ($playlistTrackOrder eq 'ordered' || $playlistTrackOrder eq 'ordereddescrandom' || $playlistTrackOrder eq 'orderedascrandom') || $isStaticPL && $prefs->get('randomsavedplaylists') == 0) {
+		$log->debug('Shuffling ALL track IDs for cache');
+		my $shuffledIDlist = shuffleIDlist($totalTrackIDList, $totalTracksCompleteInfo);
+		@{$totalTrackIDList} = @{$shuffledIDlist};
+
+		$client->pluginData('cacheFilled' => 1) if $dplUseCache;
 	}
 
 	## limit results if necessary
@@ -678,8 +677,8 @@ sub findAndAdd {
 		$cache->remove('dpl_totalTrackIDlist_'.$client->id) if $dplUseCache;
 	}
 
-	## add batch of cached tracks tp dpl history in case we get a forced add from a different dpl while the current one is still active
-	if ($dplUseCache) {
+	## add new tracks (cache or force-added) to DPL history in case we get a forced add for a different dynamic playlist while the current one is still active
+	if ($dplUseCache || $forcedAddDifferentPlaylist) {
 		my $addToHistoryStartTime = time();
 		for my $trackID (@{$randomIDs2add}) {
 			my $addedTime = time();
@@ -790,7 +789,8 @@ sub filterTrackIDs {
 
 	$log->debug('Found these new non-dupe tracks: '.Dumper(\@{$newTrackIDs}));
 
-	# add new non-dupe tracks to DPL client history - unless it's a saved static PL
+	# add new non-dupe tracks to DPL client history
+	# unless it's a saved static PL or a forced add for a different dpl than the currently active one
 	unless ($dontAddToHistory) {
 		my $addToHistoryStartTime = time();
 		for my $trackID (@{$newTrackIDs}) {
