@@ -59,9 +59,9 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 <br><br><br><br>
 
 
-## Reporting a bug
+## Reporting a new issue
 
-If you think that you've found a bug, open an [**issue here on GitHub**](https://github.com/AF-1/lms-dynamicplaylists/issues) and fill out the ***Bug report* issue template**. Please post bug reports **only** on **GitHub**.
+If you want to report a new issue, please fill out this [**issue report template**](https://github.com/AF-1/lms-dynamicplaylists/issues/new?template=bug_report.md&title=%5BISSUE%5D+).
 <br><br><br><br>
 
 

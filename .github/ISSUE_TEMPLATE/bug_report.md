@@ -1,7 +1,7 @@
 ---
-name: Bug report
-about: Create a report to help improve this plugin
-title: "[BUG] "
+name: Report a new issue
+about: Please only use THIS template to report issues
+title: "[ISSUE] "
 labels: ''
 assignees: ''
 
