@@ -19,7 +19,7 @@ Some preferences are not enabled by default. Please take a look at the preferenc
 
 You should be able to install **Dynamic Playlists** from the LMS main repository (LMS plugin library):<br>**LMS > Settings > Plugins**.<br>
 
-If you want to test a new patch that hasn't made it into a release version yet or you need to install a previous version, you'll have to [install the plugin manually](https://github.com/AF-1/sobras/wiki/Manual-installation-of-LMS-plugins).
+If you want to test a new patch that hasn't made it into a release version yet, you'll have to [install the plugin manually](https://github.com/AF-1/sobras/wiki/Manual-installation-of-LMS-plugins).
 
 It usually takes a few hours for a *new* release to be listed on the LMS plugin page.
 <br><br><br><br>
@@ -162,7 +162,7 @@ Just add the necessary <b>action/CLI playlist parameters</b> to the SQLite code 
 If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create a Custom Skip filter set that will <i>only</i> be active if DPL plays a dynamic playlist. See Custom Skip <a href="https://github.com/AF-1/lms-customskip/wiki#i-want-customskip-to-filter-only-dynamic-playlist-tracks">Wiki</a>.
 </p></details><br>
 
-<br><br><br><hr>
-<sup>1</sup> If you want localized strings in your language, read <a href="https://github.com/AF-1/sobras/wiki/Adding-localization-to-LMS-plugins"><b>this</b></a>. Based on Erland's <i>DynamicPlayList</i> plugin.<br>
-<sup>2</sup> Unless you've changed its location in the settings, you'll find DPL's <i>folder for custom dynamic playlists</i> called <b>DPL-custom-lists</b> in your <i>LMS playlist folder</i>.<br>
-<sup>3</sup> You can't save your preselection permanently, it's a <b>short</b>-term thing. If you have a fixed selection of artists or albums that you want to listen to frequently, you can "hard-code" them into <b>your own custom</b> dynamic playlist.
+<br><br><hr>
+<sub><sup>1</sup> If you want localized strings in your language, please read <a href="https://github.com/AF-1/sobras/wiki/Adding-localization-to-LMS-plugins"><b>this</b></a>. Based on Erland's <i>DynamicPlayList</i> plugin.</sub><br>
+<sub><sup>2</sup> Unless you've changed its location in the settings, you'll find DPL's <i>folder for custom dynamic playlists</i> called <b>DPL-custom-lists</b> in your <i>LMS playlist folder</i>.</sub><br>
+<sub><sup>3</sup> You can't save your preselection permanently, it's a <b>short</b>-term thing. If you have a fixed selection of artists or albums that you want to listen to frequently, you can "hard-code" them into <b>your own custom</b> dynamic playlist.</sub>
