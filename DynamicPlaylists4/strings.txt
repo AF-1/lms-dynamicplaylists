@@ -941,6 +941,10 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGERAT
 	EN	Songs - not RATED (by genre + decade with % of rated songs)
 	FR	Morceaux - non notés (par genre + décennie avec un % de morceaux notés)
 
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_YEAR_PERCENTAGERATED
+	EN	Songs - not RATED (by genre + year with % of rated songs)
+	FR	Morceaux - non notés (par genre + année avec un % de morceaux notés)
+
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_LASTADDED_GENRE_MINRATING
 	EN	Songs - last added (by genre + min. rating)
 	FR	Morceaux - derniers ajouts (par genre + note min.)
@@ -1851,6 +1855,10 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_DPSV_APC
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE_DECADE_DPSV_APC
 	EN	Songs - random (by genre, decade & dynamic played/skipped value range) (APC)
 	FR	Morceaux - aléatoire (par genre, décennie et gamme de DPSV) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_YEAR_PERCENTAGERATED_MINDPSV_APC
+	EN	Songs - not RATED (by genre, year + min. DPSV with % of rated songs) (APC)
+	FR	Morceaux - non notés (par genre, année + DPSV min. avec un % de morceaux notés) (APC)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED_MINRATING_APC
 	EN	Songs - most played (min. rating) (APC)
