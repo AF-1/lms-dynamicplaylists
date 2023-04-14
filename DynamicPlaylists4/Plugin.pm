@@ -5010,12 +5010,13 @@ sub getVirtualLibraries {
 	$log->debug('ALL virtual libraries: '.Dumper($libraries));
 
 	while (my ($k, $v) = each %{$libraries}) {
-		my $count = Slim::Utils::Misc::delimitThousands(Slim::Music::VirtualLibraries->getTrackCount($k)) + 0;
+		my $count = Slim::Music::VirtualLibraries->getTrackCount($k);
 		my $name = Slim::Music::VirtualLibraries->getNameForId($k);
-		$log->debug('VL: '.$name.' ('.$count.')');
+		my $displayName = Slim::Utils::Unicode::utf8decode($name, 'utf8').' ('.Slim::Utils::Misc::delimitThousands($count).($count == 1 ? ' '.string("PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_TRACK") : ' '.string("PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_TRACKS")).')';
+		$log->debug("VL: ".$displayName);
 
 		push @items, {
-			name => Slim::Utils::Unicode::utf8decode($name, 'utf8').' ('.$count.($count == 1 ? ' '.string("PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_TRACK").')' : ' '.string("PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_TRACKS").')'),
+			name => $displayName,
 			sortName => Slim::Utils::Unicode::utf8decode($name, 'utf8'),
 			value => qq('$k'),
 			id => qq('$k'),
