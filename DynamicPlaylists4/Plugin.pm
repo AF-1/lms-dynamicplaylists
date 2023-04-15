@@ -643,7 +643,7 @@ sub findAndAdd {
 	$log->debug('Total exec time so far = '.(time() - $started).' secs');
 
 	if (scalar(@{$totalTrackIDList}) == 0) {
-		$log->info('Found no (more) tracks matching your search parameters for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
+		$log->info('Have not found any (other) tracks that match your search parameters for dynamic playlist "'.$playlist->{'name'}.'" (query time = '.(time()-$started).' seconds).');
 		return 0;
 	}
 
