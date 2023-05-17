@@ -212,7 +212,7 @@ sub initPrefs {
 			mkdir($customPlaylistFolder, 0755) unless (-d $customPlaylistFolder);
 			chdir($customPlaylistFolder);
 		} or do {
-			$log->error("Could not create or access custom playlist folder in parent folder '$_[1]'!");
+			$log->error("Could not create or access custom playlist folder in parent folder '$_[1]'! Please make sure that LMS has read/write permissions (755) for the parent folder.");
 			return;
 		};
 		$prefs->set('customplaylistfolder', $customPlaylistFolder);
@@ -6740,7 +6740,7 @@ sub createCustomPlaylistFolder {
 		mkdir($customPlaylistFolder, 0755) unless (-d $customPlaylistFolder);
 		chdir($customPlaylistFolder);
 	} or do {
-		$log->error("Could not create or access custom playlist folder in parent folder '$customPlaylistFolder_parentfolderpath'!");
+		$log->error("Could not create or access custom playlist folder in parent folder '$customPlaylistFolder_parentfolderpath'! Please make sure that LMS has read/write permissions (755) for the parent folder.");
 		return;
 	};
 	$prefs->set('customplaylistfolder', $customPlaylistFolder);
