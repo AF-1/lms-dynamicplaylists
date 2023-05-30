@@ -7,7 +7,10 @@ assignees: ''
 
 ---
 
-**Please read the *FAQ* (if available) and take a look at the *closed* issues first to avoid duplicates. Thank you.**
+## Checklist
+
+❗️ **Please take a quick look at [**this checklist**](https://github.com/AF-1/sobras/wiki/Checklist-to-eliminate-common-causes-of-LMS-(plugin)-problems) to eliminate common causes of LMS (plugin) problems. Thank you.**
+<br><br><br>
 
 ---
 
