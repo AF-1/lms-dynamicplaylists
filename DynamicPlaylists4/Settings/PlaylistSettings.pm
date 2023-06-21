@@ -34,7 +34,6 @@ use Slim::Utils::Log;
 use Slim::Utils::Prefs;
 use Slim::Utils::Misc;
 use Slim::Utils::Strings qw(string);
-use Data::Dumper;
 
 my $prefs = preferences('plugin.dynamicplaylists4');
 my $log = logger('plugin.dynamicplaylists4');

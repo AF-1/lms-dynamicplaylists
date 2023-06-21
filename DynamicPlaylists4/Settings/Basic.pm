@@ -34,7 +34,6 @@ use Slim::Utils::Log;
 use Slim::Utils::Prefs;
 use Slim::Utils::Misc;
 use Slim::Utils::Strings;
-use Data::Dumper;
 
 my $prefs = preferences('plugin.dynamicplaylists4');
 my $log = logger('plugin.dynamicplaylists4');
@@ -95,7 +94,7 @@ sub handler {
 				push (@{$excludegenres_namelist}, $genre);
 			}
 		}
-		$log->debug("*** SAVED *** excludegenres_namelist = ".Dumper($excludegenres_namelist));
+		main::DEBUGLOG && $log->is_debug && $log->debug("*** SAVED *** excludegenres_namelist = ".Data::Dump::dump($excludegenres_namelist));
 		$prefs->set('excludegenres_namelist', $excludegenres_namelist);
 
 		$result = $class->SUPER::handler($client, $paramRef);
@@ -109,11 +108,11 @@ sub beforeRender {
 	my ($class, $paramRef) = @_;
 
 	my $genrelist = getGenres();
-	$log->debug("genrelist (all genres) = ".Dumper($genrelist));
+	main::DEBUGLOG && $log->is_debug && $log->debug("genrelist (all genres) = ".Data::Dump::dump($genrelist));
 	$paramRef->{'genrelist'} = $genrelist;
 
 	my $genrelistsorted = [getSortedGenres()];
-	$log->debug("genrelistsorted (just names) = ".Dumper($genrelistsorted));
+	main::DEBUGLOG && $log->is_debug && $log->debug("genrelistsorted (just names) = ".Data::Dump::dump($genrelistsorted));
 	$paramRef->{'genrelistsorted'} = $genrelistsorted;
 }
 

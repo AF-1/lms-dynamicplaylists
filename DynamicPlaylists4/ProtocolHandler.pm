@@ -26,7 +26,6 @@ use strict;
 use warnings;
 use utf8;
 use base qw(FileHandle);
-use Data::Dumper;
 use Slim::Utils::Log;
 
 my $log = logger('plugin.dynamicplaylists4');
@@ -62,7 +61,7 @@ sub overridePlayback {
 		$cnt++;
 	}
 
-	$log->debug('fav list client command = '.Dumper($command));
+	main::DEBUGLOG && $log->is_debug && $log->debug('fav list client command = '.Data::Dump::dump($command));
 	$client->execute($command);
 	return 1;
 }
