@@ -208,9 +208,8 @@ sub initPrefs {
 		my $customPlaylistFolder = catdir($_[1], 'DPL-custom-lists');
 		eval {
 			mkdir($customPlaylistFolder, 0755) unless (-d $customPlaylistFolder);
-			chdir($customPlaylistFolder);
 		} or do {
-			$log->error("Could not create or access custom playlist folder in parent folder '$_[1]'! Please make sure that LMS has read/write permissions (755) for the parent folder.");
+			$log->error("Could not create custom playlist folder in parent folder '$_[1]'! Please make sure that LMS has read/write permissions (755) for the parent folder.");
 			return;
 		};
 		$prefs->set('customplaylistfolder', $customPlaylistFolder);
