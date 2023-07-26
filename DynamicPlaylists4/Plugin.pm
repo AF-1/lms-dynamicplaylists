@@ -1268,7 +1268,7 @@ sub addParameterValues {
 	}
 
 	if (defined($sql)) {
-		my $dbh = getCurrentDBH();
+		my $dbh = Slim::Schema->dbh;
 		my $paramType = lc($parameter->{'type'});
 		main::DEBUGLOG && $log->is_debug && $log->debug('parameter type = '.lc($parameter->{'type'}));
 		eval {
@@ -4803,7 +4803,7 @@ sub getSortedGenres {
 
 sub getDecades {
 	my ($client, $limitingParamSelVLID) = @_;
-	my $dbh = getCurrentDBH();
+	my $dbh = Slim::Schema->dbh;
 	my $decades = {};
 	my $decadesQueryResult = $client->pluginData('temp_decadelist') || {};
 	$decadesQueryResult = {} if $limitingParamSelVLID;
@@ -5424,7 +5424,7 @@ sub getNextDynamicPlaylistTracks {
 	my @idList = ();
 	my $dynamicplaylistID = $dynamicplaylist->{'dynamicplaylistid'};
 	my $localDynamicPlaylistID = $dynamicplaylist->{'id'};
-	my $dbh = getCurrentDBH();
+	my $dbh = Slim::Schema->dbh;
 
 	if ((starts_with($dynamicplaylistID, 'dpldefault_') == 0) || (starts_with($dynamicplaylistID, 'dplusercustom_') == 0) || (starts_with($dynamicplaylistID, 'dplccustom_') == 0)) {
 		main::DEBUGLOG && $log->is_debug && $log->debug('Getting tracks for dynamic playlist: \''.$dynamicplaylist->{'name'}.'\' with ID: '.$dynamicplaylist->{'id'});
@@ -5515,7 +5515,7 @@ sub getNextDynamicPlaylistTracks {
 
 sub getInternalParameters {
 	my ($client, $dynamicplaylist, $limit, $offset) = @_;
-	my $dbh = getCurrentDBH();
+	my $dbh = Slim::Schema->dbh;
 
 	my $playlistTrackOrder = $dynamicplaylist->{'playlisttrackorder'};
 	main::DEBUGLOG && $log->is_debug && $log->debug('playlistTrackOrder = '.Data::Dump::dump($playlistTrackOrder));
@@ -6223,7 +6223,7 @@ sub parseUseCache {
 ### DPL history & cache ###
 
 sub initDatabase {
-	my $dbh = getCurrentDBH();
+	my $dbh = Slim::Schema->dbh;
 	my $st = $dbh->table_info();
 	my $tablexists;
 	while (my ($qual, $owner, $table, $type) = $st->fetchrow_array()) {
@@ -6293,7 +6293,7 @@ sub addToPlayListHistory {
 		return;
 	}
 
-	my $dbh = getCurrentDBH();
+	my $dbh = Slim::Schema->dbh;
 	my $sth = $dbh->prepare("insert or replace into dynamicplaylist_history (client, id, added) values (?, ".$trackID.", ".$addedTime.")");
 	eval {
 		$sth->bind_param(1, $client->id);
@@ -6311,7 +6311,7 @@ sub addToPlayListHistory {
 
 sub clearPlayListHistory {
 	my $clients = shift;
-	my $dbh = getCurrentDBH();
+	my $dbh = Slim::Schema->dbh;
 
 	if (Slim::Music::Import->stillScanning && (!UNIVERSAL::can('Slim::Music::Import', 'externalScannerRunning') || Slim::Music::Import->externalScannerRunning)) {
 		if (defined($clients)) {
@@ -6358,7 +6358,7 @@ sub clearPlayListHistory {
 sub getNoOfItemsInHistory {
 	my $client = shift;
 	my $result = 0;
-	my $dbh = getCurrentDBH();
+	my $dbh = Slim::Schema->dbh;
 	eval {
 		my $clientid = $dbh->quote($client->id);
 		my $sql = "select count(position) from dynamicplaylist_history where dynamicplaylist_history.client = $clientid";
@@ -6496,7 +6496,7 @@ sub checkCustomSkipFilterType {
 	my $parameters = $filter->{'parameter'};
 	my $sql = undef;
 	my $result = 0;
-	my $dbh = getCurrentDBH();
+	my $dbh = Slim::Schema->dbh;
 	if ($filter->{'id'} eq 'dynamicplaylist_recentlyaddedartist') {
 		my $matching = 0;
 		for my $parameter (@{$parameters}) {
@@ -6903,10 +6903,6 @@ sub isInt {
 		}
 	}
 	return $val;
-}
-
-sub getCurrentDBH {
-	return Slim::Schema->storage->dbh();
 }
 
 sub commit {
