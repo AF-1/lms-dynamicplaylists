@@ -953,6 +953,10 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_IGNORE_SELECTEDPL
 	EN	Songs - random - ignore songs in selected playlist
 	FR	Morceaux - aléatoire - ignorer les morceaux dans la liste de lecture sélectionnée
 
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PERCENTAGEPLAYLIST_GENRE_DECADE_MINRATING_NOTRECENTLYPLAYED
+	EN	Songs - mix of songs from selected (online) playlists and from the local library (filters: genres, decades, min. rating, recently played)
+	FR	Morceaux - mélange de morceaux des listes de lecture sélectionnées et du reste de la bibliothèque (filtres: genres, décennies, note min., récemment écoutées)
+
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_VLIB_RANDOM
 	EN	Songs - random from selected virtual library
 	FR	Morceaux - aléatoire sur la bibliothèque virtuelle sélectionnée
@@ -1489,6 +1493,10 @@ PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTGENRES
 	EN	Select genres
 	FR	Sélectionner les genres
 
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTGENRES_LOCAL
+	EN	Select genres for local library tracks
+	FR	Sélectionner les genres pour les morceaux de la bibliothèque locale
+
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPLAYLIST
 	EN	Select playlist
 	FR	Sélectionner la liste de lecture
@@ -1537,6 +1545,10 @@ PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SONGS_LASTPLAYED
 	EN	Limit to last played songs?
 	FR	Limiter aux derniers morceaux joués ?
 
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SONGS_IGNORERECENTLYPLAYED
+	EN	Ignore recently played songs?
+	FR	Ignorer des morceaux joués récemment ?
+
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_ALBUMS_RECENTLYPLAYED
 	EN	Limit to albums that contain recently PLAYED songs?
 	FR	Limiter aux albums contenant les morceaux joués récemment ?
@@ -1581,6 +1593,9 @@ PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTMINDPSV
 	EN	Select minimum dynamic played/skipped value
 	FR	Sélectionner la DPSV minimale
 
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPERCENTAGEPLAYLIST
+	EN	Select percentage of songs from playlists
+	FR	Sélectionner le pourcentage de morceaux des listes de lecture
 
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL
@@ -1859,6 +1874,10 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE_DECADE_DPSV_APC
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_YEAR_PERCENTAGERATED_MINDPSV_APC
 	EN	Songs - not RATED (by genre, year + min. DPSV with % of rated songs) (APC)
 	FR	Morceaux - non notés (par genre, année + DPSV min. avec un % de morceaux notés) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PERCENTAGEPLAYLIST_GENRE_DECADE_MINRATING_NOTRECENTLYPLAYED_APC
+	EN	Songs - mix of songs from selected (online) playlists and from the local library (filters: genres, decades, min. rating, recently played) (APC)
+	FR	Morceaux - mélange de morceaux des listes de lecture sélectionnées et du reste de la bibliothèque (filtres: genres, décennies, note min., récemment écoutées) (APC)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED_MINRATING_APC
 	EN	Songs - most played (min. rating) (APC)

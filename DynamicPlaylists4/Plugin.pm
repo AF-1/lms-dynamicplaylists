@@ -43,6 +43,7 @@ use HTML::Entities; # for parsing
 use List::Util qw(first);
 use POSIX qw(strftime);
 use Time::HiRes qw(time);
+use Digest::MD5 qw(md5_hex);
 
 my $prefs = preferences('plugin.dynamicplaylists4');
 my $serverPrefs = preferences('server');
@@ -4906,7 +4907,6 @@ sub getStaticPlaylists {
 	my $selectedStaticPlaylists = $client->pluginData('selected_staticplaylists') || [];
 	my %selected = map { $_ => 1 } @{$selectedStaticPlaylists};
 	foreach my $staticPlaylist ( @{ $request->getResult('playlists_loop') || [] } ) {
-		next if $staticPlaylist->{'remote'} != 0;
 		my $staticPlaylistID = $staticPlaylist->{id};
 		$staticPlaylists->{$staticPlaylistID} = {
 			'name' => $staticPlaylist->{'playlist'},
@@ -5503,9 +5503,38 @@ sub getNextDynamicPlaylistTracks {
 		my @tracks = $iterator->slice(0, $iterator->count);
 
 		for my $track (@tracks) {
-			push @trackIDs, $track->id;
-			$tracksCompleteInfo{$track->id}{'id'} = $track->id;
-			$tracksCompleteInfo{$track->id}{'primary_artist'} = $track->artistid if $track->artistid;
+			my $trackID = $track->id;
+			my $artistID;
+
+			my $isRemoteTrack = Slim::Music::Info::isRemoteURL($track->url);
+			main::DEBUGLOG && $log->is_debug && $log->debug('isRemoteURL = '.Data::Dump::dump($isRemoteTrack));
+			if ($isRemoteTrack && $isRemoteTrack == 1) {
+				$trackID = undef;
+				my ($trackTitle, $extID);
+				my $urlmd5 = $track->urlmd5 || md5_hex($track->url);
+				my $dbh = Slim::Schema->dbh;
+				my $sqlstatement = "select tracks.title, tracks.id, tracks.primary_artist, tracks.extid from tracks where tracks.urlmd5 = \"$urlmd5\"";
+				eval {
+					my $sth = $dbh->prepare($sqlstatement);
+					$sth->execute() or do {$sqlstatement = undef;};
+					$sth->bind_columns(undef, \$trackTitle, \$trackID, \$artistID, \$extID);
+					$sth->fetchrow;
+					$sth->finish();
+				};
+				if ($@) {
+					main::DEBUGLOG && $log->is_debug && $log->debug("error: $@");
+					next;
+				}
+				main::DEBUGLOG && $log->is_debug && $log->debug('track ID = '.Data::Dump::dump($trackID).' ##### extID = '.Data::Dump::dump($extID).' ##### track url = '.$track->url);
+				next if (!$trackID || !$extID);
+				main::DEBUGLOG && $log->is_debug && $log->debug("Remote track is part of LMS library: ".$trackTitle);
+			} else {
+				$artistID = $track->artistid;
+			}
+
+			push @trackIDs, $trackID;
+			$tracksCompleteInfo{$track->id}{'id'} = $trackID;
+			$tracksCompleteInfo{$track->id}{'primary_artist'} = $artistID if $artistID;
 		}
 
 		main::DEBUGLOG && $log->is_debug && $log->debug('Got '.scalar(@trackIDs).' track IDs');
