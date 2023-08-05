@@ -24,7 +24,7 @@ create temporary table randomweightedlibrarylocal as select tracks.id, tracks.pr
 		and ifnull(tracks.year, 0) in ('PlaylistParameter3')
 		and
 			case
-				when 'PlaylistParameter5' > 0 then (ifnull(tracks_persistent.lastPlayed, 0) >= (strftime('%s',DATE('NOW')) - ('PlaylistParameter5')))
+				when 'PlaylistParameter5' > 0 then (ifnull(tracks_persistent.lastPlayed, 0) < (strftime('%s',DATE('NOW')) - ('PlaylistParameter5')))
 				else 1
 			end
 	group by tracks.id
@@ -44,7 +44,7 @@ create temporary table randomweightedplaylisttracks as select tracks.id, tracks.
 		and ifnull(tracks.year, 0) in ('PlaylistParameter3')
 		and
 			case
-				when 'PlaylistParameter5' > 0 then (ifnull(tracks_persistent.lastPlayed, 0) >= (strftime('%s',DATE('NOW')) - ('PlaylistParameter5')))
+				when 'PlaylistParameter5' > 0 then (ifnull(tracks_persistent.lastPlayed, 0) < (strftime('%s',DATE('NOW')) - ('PlaylistParameter5')))
 				else 1
 			end
 	group by tracks.id
