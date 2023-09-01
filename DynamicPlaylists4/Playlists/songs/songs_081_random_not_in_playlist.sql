@@ -31,7 +31,7 @@ select tracks.id, tracks.primary_artist from tracks
 						where
 							t3.url = tracks.url and
 							tracks.url = playlist_track.track and
-							playlist_track.playlist != 'PlaylistParameter1')
+							playlist_track.playlist = 'PlaylistParameter1')
 		and not exists (select * from tracks t2,genre_track,genres
 						where
 							t2.id = tracks.id and
