@@ -553,7 +553,7 @@ sub findAndAdd {
 		my $getCacheContentStartTime = time();
 		$totalTrackIDList = $cache->get('dpl_totalTrackIDlist_' . $client->id) || [];
 		$totalTracksCompleteInfo = $cache->get('dpl_totalTracksCompleteInfo_' . $client->id) || {};
-		main::DEBUGLOG && $log->is_debug && $log->debug('Getting cache content - exec time = '.(time() - $getCacheContentStartTime).' secs') if scalar(@{$totalTrackIDList} > 0 && keys %{$totalTracksCompleteInfo} > 0);
+		main::DEBUGLOG && $log->is_debug && $log->debug('Getting cache content - exec time = '.(time() - $getCacheContentStartTime).' secs') if (scalar(@{$totalTrackIDList}) > 0 && keys %{$totalTracksCompleteInfo} > 0);
 	}
 
 	if (scalar(@{$totalTrackIDList}) > 0) {
@@ -901,7 +901,9 @@ sub playRandom {
 		}
 	}
 
-	main::DEBUGLOG && $log->is_debug && $log->debug('requested dpl = '.$type.' -- currently active dpl = '.Data::Dump::dump($mixInfo{$masterClient}->{'type'}).' complete client mixinfo dump = '.Data::Dump::dump($mixInfo{$masterClient}));
+	main::DEBUGLOG && $log->is_debug && $log->debug('requested dpl = '.$type);
+	main::DEBUGLOG && $log->is_debug && $log->debug('complete client mixinfo dump = '.Data::Dump::dump($mixInfo{$masterClient}));
+	if ($mixInfo{$masterClient} && $mixInfo{$masterClient}->{'type'}) { main::DEBUGLOG && $log->is_debug && $log->debug('currently active dpl = '.Data::Dump::dump($mixInfo{$masterClient}->{'type'})); }
 
 	if ($type && $type ne 'disable' && (!$mixInfo{$masterClient} || ($mixInfo{$masterClient} && keys %{$mixInfo{$masterClient}} == 0) || ($mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne $type) || $songsRemaining < $minNumberUnplayedSongs)) {
 		# Add new tracks if there aren't enough after the current track
