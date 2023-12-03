@@ -1,15 +1,16 @@
-<style>.boldtitle{font-weight:600;}.padleft{padding-left:20px;}.vcenter{vertical-align: middle;}.trpadbottom{padding-bottom:5px;}.dpl3btn{padding:2px;}.lastparamsep{width:45%;text-align:left;margin-left:0;}
-@-webkit-keyframes Pulse{from{color:#630030;-webkit-text-shadow:0 0 2px transparent}50%{color:#e33100;-webkit-text-shadow:0 0 5px #e33100}to{color:#630030;-webkit-text-shadow:0 0 2px transparent}}@keyframes Pulse{from{color:#630030;text-shadow:0 0 2px transparent}50%{color:#e33100;text-shadow:0 0 5px #e33100}to{color:#630030;text-shadow:0 0 2px transparent}}.inprogress{padding-left:15px;-webkit-animation-name:Pulse;animation-name:Pulse;-webkit-animation-duration:2s;animation-duration:2s;-webkit-animation-iteration-count:infinite;animation-iteration-count:infinite}
-.status{visibility:hidden;}
-.error{color:red;}
-</style>
-
+<link href="[% webroot %]plugins/DynamicPlaylists4/html/dpl.css" rel="stylesheet" />
 [% pagetitle = 'PLUGIN_DYNAMICPLAYLISTS4' | string; pageicon = 'PLUGIN_DYNAMICPLAYLISTS4' %]
 
 [% pwd_list = BLOCK %]/
 	<a href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?player=[% player | uri %]">
 		[% "PLUGIN_DYNAMICPLAYLISTS4" | string %]
 	</a>
+	[%- FOREACH group IN pluginDynamicPlaylists4Groups %]
+		[% IF group.id == '_' _ currentgroup %]>
+			<a href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?[% group.url %]&amp;player=[% player | uri %]">[% group.displayname %]</a>
+		[% END %]
+	[% END -%]
+	[% IF pluginDynamicPlaylists4Playlist.name %]> [% pluginDynamicPlaylists4Playlist.name | html %][% END %]
 [% END %]
 [% PROCESS pageheader.html %]
 
@@ -27,6 +28,8 @@ href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html?
 <form[% IF lastparameter && addOnly == 77 %] onsubmit="return checkBeforeSubmit();"[% END %] action="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html" name="editForm" accept-charset="iso8859-1">
 	<input type="hidden" name="type" value="[% pluginDynamicPlaylists4PlaylistId %]">
 	<input type="hidden" name="addOnly" value="[% pluginDynamicPlaylists4AddOnly %]">
+	<input type="hidden" name="queue" value="[% pluginDynamicPlaylists4Queue %]">
+	<input type="hidden" name="group" value="[% currentgroup %]">
 
 [% FOREACH param IN pluginDynamicPlaylists4MixParameters %]
 	[% IF param.parameter.type == "multiplegenres" || param.parameter.type == "multipledecades" || param.parameter.type == "multipleyears" || param.parameter.type == "multiplestaticplaylists" %]
@@ -179,7 +182,7 @@ href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html?
 	</table>
 [% END %]
 	<br>
-	<input id="formsubmitbtn" type="submit" class="dpl3btn" value="[% IF lastparameter %][% IF addOnly == 1 %][% "PLUGIN_DYNAMICPLAYLISTS4_ADD" | string %][% ELSIF addOnly == 99 %][% "PLUGIN_DYNAMICPLAYLISTS4_ADDTOLMSFAVORITES_BTN" | string %][% ELSIF addOnly == 77 %][% "PLUGIN_DYNAMICPLAYLISTS4_SAVE_BTN" | string %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS4_PLAY" | string %][% END %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS4_NEXT" | string %][% END %]">
+	<input id="formsubmitbtn" type="submit" class="dpl3btn" value="[% IF lastparameter %][% IF addOnly == 1 %][% "PLUGIN_DYNAMICPLAYLISTS4_ADD" | string %][% ELSIF addOnly == 99 %][% "PLUGIN_DYNAMICPLAYLISTS4_ADDTOLMSFAVORITES_BTN" | string %][% ELSIF addOnly == 88 %][% "PLUGIN_DYNAMICPLAYLISTS4_QUEUE_DPL" | string %][% ELSIF addOnly == 77 %][% "PLUGIN_DYNAMICPLAYLISTS4_SAVE_BTN" | string %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS4_PLAY" | string %][% END %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS4_NEXT" | string %][% END %]">
 
 <script type="text/javascript">
 	// prevent multiple submits

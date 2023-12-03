@@ -86,4 +86,14 @@ sub getIcon {
 	return Plugins::DynamicPlaylists4::Plugin->_pluginDataFor('icon');
 }
 
+sub getMetadataFor {
+	my ( $class, $client, $url ) = @_;
+
+	return unless $client && $url;
+
+	return {
+		cover => $class->getIcon(),
+	};
+}
+
 1;

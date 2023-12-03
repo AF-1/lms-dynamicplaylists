@@ -81,6 +81,11 @@
 [% END %]
 <div class="filler"></div>
 
+[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEDPLQUEUEING" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEDPLQUEUEING_DESC" %]
+	<input name="pref_enabledplqueueing" id="enabledplqueueing" type="checkbox" [% IF prefs.enabledplqueueing %]checked="checked" [% END %] value="1" class="stdedit">
+[% END %]
+<div class="filler"></div>
+
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_REMEMBERACTIVEPLAYLIST" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_REMEMBERACTIVEPLAYLIST_DESC" %]
 	<input name="pref_rememberactiveplaylist" id="rememberactiveplaylist" type="checkbox" [% IF prefs.rememberactiveplaylist %]checked="checked" [% END %] value="1" class="stdedit">
 [% END %]

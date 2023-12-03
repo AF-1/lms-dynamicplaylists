@@ -1,0 +1,45 @@
+.boldtitle{font-weight:600;}
+.filler{height:3px;}
+.selectorMarker,.mouseOver{cursor:default !important;}
+@font-face {
+	font-family: 'fontawesome-light';
+	src: url('fonts/fontawesome-light.woff?jx2tsp') format('woff');
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
+}
+[class^="icon-"], [class*=" icon-"] {
+	font-family: 'fontawesome-light' !important;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.icon-dynamicplaylistfolder:before {
+	content: "\f114";
+	margin-right: 3px;
+}
+.icon-dynamicplaylistfolder-org:before {
+	content: "\f07b";
+	margin-right: 3px;
+}
+.icon-dynamicplaylist:before {
+	content: "\f0ca";
+	margin-right: 4px;
+}
+.icon-homemenutoplevellist:before {
+	content: "\f0c9";
+	margin-right: 3px;
+}
+.padleft{padding-left:20px;}
+.vcenter{vertical-align: middle;}
+.trpadbottom{padding-bottom:5px;}
+.dpl3btn{padding:2px;}
+.lastparamsep{width:45%;text-align:left;margin-left:0;}
+@-webkit-keyframes Pulse{from{color:#630030;-webkit-text-shadow:0 0 2px transparent}50%{color:#e33100;-webkit-text-shadow:0 0 5px #e33100}to{color:#630030;-webkit-text-shadow:0 0 2px transparent}}@keyframes Pulse{from{color:#630030;text-shadow:0 0 2px transparent}50%{color:#e33100;text-shadow:0 0 5px #e33100}to{color:#630030;text-shadow:0 0 2px transparent}}.inprogress{padding-left:15px;-webkit-animation-name:Pulse;animation-name:Pulse;-webkit-animation-duration:2s;animation-duration:2s;-webkit-animation-iteration-count:infinite;animation-iteration-count:infinite}
+.status{visibility:hidden;}
+.error{color:red;}

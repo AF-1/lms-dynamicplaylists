@@ -1,4 +1,4 @@
-<style>.emphbold{font-weight:600;}</style>
+<link href="[% webroot %]plugins/DynamicPlaylists4/html/dpl.css" rel="stylesheet" />
 [% BLOCK contentanchor %]
 	<p>[% content %]</p>
 [% END %]
@@ -20,6 +20,9 @@
 		[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="99" parameters=playlist.parameters %]
 		[% END %]
 	[% END %]
+	[% IF pluginDynamicPlaylists4DPLqueueingEnabled %]
+		[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="88" parameters=playlist.parameters %]
+	[% END %]
 	[% IF pluginDynamicPlaylists4staticPLsavingEnabled && playlist.playlistcategory != 'static LMS playlists' %]
 		[% IF !playlist.parameters %]
 			[% PROCESS dynamicPlayListSaveStaticNoParamsLink type="$playlist.dynamicplaylistid" %]
@@ -40,6 +43,9 @@
 [% BLOCK controlspreselection %]
 	[% PROCESS dynamicPlayListPreselectionLink objectid=item.id %]
 [% END %]
+[% BLOCK controlsdplqueue %]
+	[% PROCESS dynamicPlayListQueueLink objecturlmd5=item.urlmd5 %]
+[% END %]
 [% BLOCK dpcontentcontainer %]
 	[% WRAPPER contentcontainer %]
 		[% content %]
@@ -47,13 +53,13 @@
 [% END %]
 
 [% BLOCK dpcontentitemgroup %]
-	<a href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?[% group.url %]&amp;player=[% player | uri %]">[% IF group.name != group.groupsortname %]<span class="emphbold">[% END %][% group.displayname %]/[% IF group.name != group.groupsortname %]</span>[% END %]</a>
+	<a href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?[% group.url %]&amp;player=[% player | uri %]"><span class="icon-dynamicplaylistfolder[% IF group.name != group.groupsortname %]-org[% END %]"></span> [% group.displayname %]</a>
 [% END %]
 
 [% BLOCK dpcontentitemplaylist %]
 	[% IF playlist.url %]
-		<a href="[% webroot %][% playlist.url %]&amp;player=[% player | uri %][% playlist.urlcontext %]">[% playlist.name %]</a>
+		<a href="[% webroot %][% playlist.url %]&amp;player=[% player | uri %][% playlist.urlcontext %]"><span class="icon-dynamicplaylist"></span> [% playlist.name %]</a>
 	[% ELSE %]
-		[% playlist.name %]
+		<span class="icon-dynamicplaylist"></span> [% playlist.name %]
 	[% END %]
 [% END %]
