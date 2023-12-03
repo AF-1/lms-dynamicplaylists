@@ -1,4 +1,4 @@
-<style>.selectorMarker,.mouseOver{cursor:default !important;}</style>
+<link href="[% webroot %]plugins/DynamicPlaylists4/html/dpl.css" rel="stylesheet" />
 [% PROCESS plugins/DynamicPlaylists4/dpcomponents.html %]
 [%- pagetitle = 'PLUGIN_DYNAMICPLAYLISTS4' | string; pageicon = 'PLUGIN_DYNAMICPLAYLISTS4' -%]
 
@@ -29,7 +29,7 @@
 			[% END %]
 			[% FOREACH item IN pluginDynamicPlaylists4dplQueue %]
 				[%- WRAPPER contentitem controls='controlsdplqueue' %]
-					[% item.title %]
+					<span class="icon-dynamicplaylist"></span> [% item.title %]
 					[% odd = (not odd) %]
 				[% END %]
 			[% END %]

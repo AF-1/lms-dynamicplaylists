@@ -34,9 +34,16 @@
 		[% END %]
 [% END %]
 
-[% BLOCK dynamicPlayListQueueLink %]
-	[% link='cmdlink' cmdimage='b_delete.gif';IF objectid; cmdtitle='PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_REMOVE_DPL';ELSE;cmdtitle='PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_CLEAR_QUEUE';END %]
+[% BLOCK dynamicPlayListQueueRemoveLink %]
+	[% link='cmdlink' cmdimage='b_delete.gif';IF objecturlmd5; cmdtitle='PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_REMOVE_DPL';ELSE;cmdtitle='PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_CLEAR_QUEUE';END %]
 		[% WRAPPER $link noTarget=1 %]
 			href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_dplqueue.html?objecturlmd5=[% objecturlmd5 %]&amp;action=[% IF objecturlmd5 %]1[% ELSE %]2[% END %]&amp;player=[% player |uri%]" onClick="setTimeout('document.location.reload(true)',500)"
+		[% END %]
+[% END %]
+
+[% BLOCK dynamicPlayListQueueMoveLink %]
+	[% IF move==-1;link='cmdlink' cmdimage='b_up.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_MOVEUP';ELSIF move==1;link='cmdlink' cmdimage='b_down.gif';cmdtitle='PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_MOVEDOWN';END %]
+		[% WRAPPER $link noTarget=1 %]
+			href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_dplqueue.html?objecturlmd5=[% objecturlmd5 %]&amp;move=[% move %]&amp;player=[% player |uri%]" onClick="setTimeout('document.location.reload(true)',500)"
 		[% END %]
 [% END %]

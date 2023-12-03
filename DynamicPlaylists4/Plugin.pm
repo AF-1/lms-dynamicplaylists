@@ -5420,6 +5420,7 @@ sub _dplQueueMenuWeb {
 	my ($client, $params) = @_;
 	my $objecturlmd5 = $params->{'objecturlmd5'};
 	my $action = $params->{'action'};
+	my $move = $params->{'move'};
 
 	my $dplQueue = $client->pluginData('dplQueue') || [];
 
@@ -5429,6 +5430,26 @@ sub _dplQueueMenuWeb {
 	} elsif ($action && $action == 2) {
 		$client->pluginData('dplQueue', []);
 	}
+
+	if ($move) {
+		my $index;
+		for my $i (keys @{$dplQueue}) {
+			if (@{$dplQueue}[$i]->{'urlmd5'} eq $objecturlmd5) {
+				$index = $i;
+				last;
+			}
+		}
+		main::DEBUGLOG && $log->is_debug && $log->debug('current index = '.Data::Dump::dump($index));
+		main::DEBUGLOG && $log->is_debug && $log->debug('indexChange = '.($move == 1 ? 'down' : 'up'));
+
+		my $newIndex = $index + $move;
+		$newIndex = 0 if $newIndex < 0;
+		$newIndex = (scalar @{$dplQueue} - 1) if $newIndex > (scalar @{$dplQueue} - 1);
+		main::DEBUGLOG && $log->is_debug && $log->debug('new index = '.$newIndex);
+		splice(@{$dplQueue}, $newIndex, 0, splice(@{$dplQueue}, $index, 1));
+		$client->pluginData('dplQueue', $dplQueue);
+	}
+
 	$dplQueue = $client->pluginData('dplQueue') || [];
 	main::DEBUGLOG && $log->is_debug && $log->debug("pluginData 'dplQueue' (web) = ".Data::Dump::dump($dplQueue));
 	$params->{'dplqueueitemcount'} = scalar @{$dplQueue};
