@@ -99,6 +99,10 @@ DPL 4 is compatible with <a href="https://github.com/AF-1/lms-dynamicplaylistcre
 If you're familiar with SQLite and know how to create <i>custom</i> dynamic playlists, you can use data from any LMS database table.
 </p></details><br>
 
+<details><summary>»<b>How do I queue dynamic playlists?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>I've queued dynamic playlists and they disappeared.</b>«</summary><br><p>
+You can queue up to 5 dynamic playlists. When all tracks matching the search criteria for the <i>active</i> dynamic playlist have been added to your client playlist and you have queued dynamic playlist, DPL will add a short silent track and (a placeholder for) the next queued dynamic playlist to your client playlist. The silent track should help with a smooth transition so the last track before the new dynamic playlist isn't cut short.<br><br><b>Please note:</b> The list with queued dynamic playlists is <b>cleared</b> when you <b>restart the server</b>.
+</p></details><br>
+
 <details><summary>»<b>How does DPL work with the <i>Don't Stop the Music</i> plugin?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>What does the icon with the infinity symbol do?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>What does “<i>Create DSTM seed list and play</i>“ mean?</b>«</summary><br><p>
 The <i>Don't Stop the Music</i> (DSTM) plugin “will automatically add similar music to what you've been listening to ... once you've reached the end of your playlist“. DSTM takes a look at the existing tracks in your client's playlist (the <i>seed list</i>) to determine what kind of tracks to search for.<br><br>As long as <i>Dynamic Playlists</i> is <b>active</b>, i.e. playing a dynamic playlist, DSTM will <b>not</b> interfere and add tracks.<br><br>But now you can use <i>Dynamic Playlists</i> to create a DSTM seed list from any dynamic playlist and start a DSTM mix for you. There's a preference setting if you prefer to skip playback of all seed list tracks (but the last one).
 </p></details><br>
