@@ -38,6 +38,7 @@ It usually takes a few hours for a *new* release to be listed on the LMS plugin 
 * Compatible with [**Custom Skip**](https://github.com/AF-1/lms-customskip#custom-skip), [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) and [**Dynamic Playlist Creator**](https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator).
 * If you have installed the [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) plugin, you will see some additional dynamic playlists that use the data from this plugin.
 * Use dynamic playlists to create *static* playlists
+* Queue dynamic playlists (see FAQ)
 * …
 <br><br><br><br>
 
