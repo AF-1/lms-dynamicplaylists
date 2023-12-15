@@ -194,7 +194,6 @@ sub initPrefs {
 		dstmstartindex => 1,
 		rememberactiveplaylist => 1,
 		groupunclassifiedcustomplaylists => 1,
-		showactiveplaylistinmainmenu => 1,
 		showtimeperchar => 70,
 		randomsavedplaylists => 1,
 		flatlist => 0,
@@ -1515,11 +1514,9 @@ sub handleWebList {
 	my $name = undef;
 	if ($playlist) {
 		$name = $playlist->{'name'};
-		if ($prefs->get('showactiveplaylistinmainmenu')) {
-			$params->{'activeClientMixName'} = $name;
-			$params->{'activeClientName'} = $client->name;
-			main::DEBUGLOG && $log->is_debug && $log->debug('active dynamic playlist for client "'.$client->name.'" = '.$name);
-		}
+		$params->{'activeClientMixName'} = $name;
+		$params->{'activeClientName'} = $client->name;
+		main::DEBUGLOG && $log->is_debug && $log->debug('active dynamic playlist for client "'.$client->name.'" = '.$name);
 	}
 
 	if (defined($params->{'group1'})) {
@@ -2194,7 +2191,7 @@ sub cliJiveHandler {
 	}
 
 	# display active dynamic playlist
-	if ($prefs->get('showactiveplaylistinmainmenu') && $playlist && $nextGroup == 1) {
+	if ($playlist && $nextGroup == 1) {
 		my $text = $client->string('PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPL').' '.$playlist->{'name'};
 		main::DEBUGLOG && $log->is_debug && $log->debug('active dynamic playlist for client "'.$client->name.'" = '.$playlist->{'name'});
 		$request->addResultLoop('item_loop', $cnt, 'text', $text);
@@ -4413,14 +4410,14 @@ sub saveAsStaticPlaylist {
 	## Save tracks as static playlist ###
 
 	# if PL with same name exists, add epoch time to PL name
-	my $newStaticPL = Slim::Schema->rs('Playlist')->single({'title' => $staticPLname});
+	my $newStaticPL = Slim::Schema->search('Playlist', {'title' => $staticPLname })->first();
 	if ($newStaticPL) {
 		my $timestamp = strftime "%Y-%m-%d--%H-%M-%S", localtime time;
 		$staticPLname = $staticPLname.'_'.$timestamp;
 	}
-	$newStaticPL = Slim::Schema->rs('Playlist')->single({'title' => $staticPLname});
+	$newStaticPL = Slim::Schema->search('Playlist', {'title' => $staticPLname })->first();
 	Slim::Control::Request::executeRequest(undef, ['playlists', 'new', 'name:'.$staticPLname]) if !$newStaticPL;
-	$newStaticPL = Slim::Schema->rs('Playlist')->single({'title' => $staticPLname});
+	$newStaticPL = Slim::Schema->search('Playlist', {'title' => $staticPLname })->first();
 
 	my $setTracksStartTime = time();
 	$newStaticPL->setTracks(\@totalTracks);

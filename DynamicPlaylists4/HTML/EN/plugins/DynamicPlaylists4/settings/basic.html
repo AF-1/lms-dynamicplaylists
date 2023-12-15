@@ -72,30 +72,41 @@
 [% END %]
 
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEVOLATILEPARAMDPLSAVE" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEVOLATILEPARAMDPLSAVE_DESC" %]
-	<input name="pref_paramsdplsaveenabled" id="paramsdplsaveenabled" type="checkbox" [% IF prefs.paramsdplsaveenabled %]checked="checked" [% END %] value="1" class="stdedit">
+	<select class="stdedit" name="pref_paramsdplsaveenabled" id="paramsdplsaveenabled">
+		<option [% IF NOT prefs.paramsdplsaveenabled %]selected [% END %]value="0">[% 'NO' | getstring %]</option>
+		<option [% IF prefs.paramsdplsaveenabled %]selected [% END %]value="1">[% 'YES' | getstring %]</option>
+	</select>
 [% END %]
 <div class="filler"></div>
 
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLESTATICPLSAVING" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLESTATICPLSAVING_DESC" %]
-	<input name="pref_enablestaticplsaving" id="enablestaticplsaving" type="checkbox" [% IF prefs.enablestaticplsaving %]checked="checked" [% END %] value="1" class="stdedit">
+	<select class="stdedit" name="pref_enablestaticplsaving" id="enablestaticplsaving">
+		<option [% IF NOT prefs.enablestaticplsaving %]selected [% END %]value="0">[% 'NO' | getstring %]</option>
+		<option [% IF prefs.enablestaticplsaving %]selected [% END %]value="1">[% 'YES' | getstring %]</option>
+	</select>
 [% END %]
 <div class="filler"></div>
 
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEDPLQUEUEING" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEDPLQUEUEING_DESC" %]
-	<input name="pref_enabledplqueueing" id="enabledplqueueing" type="checkbox" [% IF prefs.enabledplqueueing %]checked="checked" [% END %] value="1" class="stdedit">
+	<select class="stdedit" name="pref_enabledplqueueing" id="enabledplqueueing">
+		<option [% IF NOT prefs.enabledplqueueing %]selected [% END %]value="0">[% 'NO' | getstring %]</option>
+		<option [% IF prefs.enabledplqueueing %]selected [% END %]value="1">[% 'YES' | getstring %]</option>
+	</select>
 [% END %]
 <div class="filler"></div>
 
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_REMEMBERACTIVEPLAYLIST" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_REMEMBERACTIVEPLAYLIST_DESC" %]
-	<input name="pref_rememberactiveplaylist" id="rememberactiveplaylist" type="checkbox" [% IF prefs.rememberactiveplaylist %]checked="checked" [% END %] value="1" class="stdedit">
-[% END %]
-
-[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SHOWACTIVEPLAYLISTINMAINMENU" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SHOWACTIVEPLAYLISTINMAINMENU_DESC" %]
-	<input name="pref_showactiveplaylistinmainmenu" id="showactiveplaylistinmainmenu" type="checkbox" [% IF prefs.showactiveplaylistinmainmenu %]checked="checked" [% END %] value="1" class="stdedit">
+	<select class="stdedit" name="pref_rememberactiveplaylist" id="rememberactiveplaylist">
+		<option [% IF NOT prefs.rememberactiveplaylist %]selected [% END %]value="0">[% 'NO' | getstring %]</option>
+		<option [% IF prefs.rememberactiveplaylist %]selected [% END %]value="1">[% 'YES' | getstring %]</option>
+	</select>
 [% END %]
 
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPCUSTOMPLAYLISTS" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPCUSTOMPLAYLISTS_DESC" %]
-	<input name="pref_groupunclassifiedcustomplaylists" id="groupunclassifiedcustomplaylists" type="checkbox" [% IF prefs.groupunclassifiedcustomplaylists %]checked="checked" [% END %] value="1" class="stdedit">
+	<select class="stdedit" name="pref_groupunclassifiedcustomplaylists" id="groupunclassifiedcustomplaylists">
+		<option [% IF NOT prefs.groupunclassifiedcustomplaylists %]selected [% END %]value="0">[% 'NO' | getstring %]</option>
+		<option [% IF prefs.groupunclassifiedcustomplaylists %]selected [% END %]value="1">[% 'YES' | getstring %]</option>
+	</select>
 [% END %]
 <div class="filler"></div>
 
@@ -105,7 +116,10 @@
 <div class="filler"></div>
 
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_INCLUDESAVEDPLAYLISTS" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_INCLUDESAVEDPLAYLISTS_DESC" %]
-	<input name="pref_includesavedplaylists" id="includesavedplaylists" type="checkbox" [% IF prefs.includesavedplaylists %] checked [% END %]>
+	<select class="stdedit" name="pref_includesavedplaylists" id="includesavedplaylists">
+		<option [% IF NOT prefs.includesavedplaylists %]selected [% END %]value="0">[% 'NO' | getstring %]</option>
+		<option [% IF prefs.includesavedplaylists %]selected [% END %]value="1">[% 'YES' | getstring %]</option>
+	</select>
 [% END %]
 
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_RANDOMSAVEDPLAYLISTS" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_RANDOMSAVEDPLAYLISTS_DESC" %]
@@ -120,7 +134,10 @@
 [% END %]
 
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_STRUCTURED_SAVEDPLAYLISTS" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_STRUCTURED_SAVEDPLAYLISTS_DESC" %]
-	<input name="pref_structured_savedplaylists" id="structured_savedplaylists" type="checkbox" [% IF prefs.structured_savedplaylists %] checked [% END %]>
+	<select class="stdedit" name="pref_structured_savedplaylists" id="structured_savedplaylists">
+		<option [% IF NOT prefs.structured_savedplaylists %]selected [% END %]value="0">[% 'NO' | getstring %]</option>
+		<option [% IF prefs.structured_savedplaylists %]selected [% END %]value="1">[% 'YES' | getstring %]</option>
+	</select>
 [% END %]
 <div class="filler"></div>
 
