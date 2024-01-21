@@ -71,11 +71,12 @@ select tracks.id, tracks.primary_artist from tracks
 							genre_track.genre = genres.id and
 							genres.name in ('PlaylistExcludedGenres'))
 	group by tracks.id
-	order by
+	order by dynamicplaylist_random_albums.album,
 		case
-			when 'PlaylistTrackOrder' = 1 then "dynamicplaylist_random_albums.album, tracks.disc, tracks.tracknum"
+			when 'PlaylistTrackOrder' = 1 then
+				case when ifnull(tracks.disc,0) != 0 THEN tracks.disc || "," || tracks.tracknum ELSE tracks.tracknum END
 		else
-			"dynamicplaylist_random_albums.album, random()"
+			random()
 		end
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_albums;
