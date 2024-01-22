@@ -66,12 +66,6 @@ select tracks.id, tracks.primary_artist from tracks
 				else 1
 			end
 	group by tracks.id
-	order by dynamicplaylist_random_albums.album,
-		case
-			when 'PlaylistTrackOrder' = 1 then
-				case when ifnull(tracks.disc,0) != 0 THEN tracks.disc || "," || tracks.tracknum ELSE tracks.tracknum END
-		else
-			random()
-		end
+	order by dynamicplaylist_random_albums.album,tracks.disc,tracks.tracknum
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_albums;

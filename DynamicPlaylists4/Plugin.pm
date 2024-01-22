@@ -588,9 +588,11 @@ sub findAndAdd {
 
 			# Filter track IDs
 			unless ($dplUseCache) {
+				#main::DEBUGLOG && $log->is_debug && $log->debug('newTrackIDs = '.Data::Dump::dump($newTrackIDs));
 				my $filterTrackIDsStartTime = time();
 				$newTrackIDs = filterTrackIDs($masterClient, $newTrackIDs, $totalTrackIDList, $forcedAddDifferentPlaylist ? 1 : 0);
 				main::DEBUGLOG && $log->is_debug && $log->debug("Iteration $i: returned ".(scalar @{$newTrackIDs}).((scalar @{$newTrackIDs}) == 1 ? ' item' : ' items').' after filtering. Filtering took '.(time()-$filterTrackIDsStartTime).' seconds');
+				#main::DEBUGLOG && $log->is_debug && $log->debug('newTrackIDs after filtering = '.Data::Dump::dump($newTrackIDs));
 			}
 
 			# Add new tracks to total track vars
@@ -1399,6 +1401,7 @@ sub getTrackIDsForPlaylist {
 	}
 
 	use strict 'refs';
+	#main::DEBUGLOG && $log->is_debug && $log->debug('result = '.Data::Dump::dump($result));
 	return $result, $tracksCompleteInfo;
 }
 
@@ -5779,7 +5782,7 @@ sub getNextDynamicPlaylistTracks {
 				$sth->finish();
 			};
 
-			#main::INFOLOG && $log->is_info && $log->info('idListCompleteInfo = '.Data::Dump::dump(\%idListCompleteInfo));
+			#main::DEBUGLOG && $log->is_debug && $log->debug('idListCompleteInfo = '.Data::Dump::dump(\%idListCompleteInfo));
 			if ($@) {
 				$log->error("Database error: $DBI::errstr\n$@");
 				return 'error';
@@ -5787,6 +5790,7 @@ sub getNextDynamicPlaylistTracks {
 			main::DEBUGLOG && $log->is_debug && $log->debug("sql statement $i: exec time = ".(time() - $sqlExecTime).' secs');
 		}
 		main::DEBUGLOG && $log->is_debug && $log->debug('Got '.scalar(@idList).' track IDs');
+		#main::DEBUGLOG && $log->is_debug && $log->debug('idList = '.Data::Dump::dump(\@idList));
 
 		return \@idList, \%idListCompleteInfo;
 
@@ -5845,11 +5849,6 @@ sub getInternalParameters {
 	my ($client, $dynamicplaylist, $limit, $offset) = @_;
 	my $dbh = Slim::Schema->dbh;
 
-	my $playlistTrackOrder = $dynamicplaylist->{'playlisttrackorder'};
-	main::DEBUGLOG && $log->is_debug && $log->debug('playlistTrackOrder = '.Data::Dump::dump($playlistTrackOrder));
-	$playlistTrackOrder = 1 if $playlistTrackOrder && $playlistTrackOrder eq 'ordered';
-	$playlistTrackOrder = 2 if $playlistTrackOrder && ($playlistTrackOrder eq 'orderedascrandom' || $playlistTrackOrder eq 'ordereddescrandom');
-
 	my $playlistLimitOption = $dynamicplaylist->{'playlistlimitoption'};
 	main::DEBUGLOG && $log->is_debug && $log->debug('playlistLimitOption = '.Data::Dump::dump($playlistLimitOption));
 	my $playlistVLnames = $dynamicplaylist->{'playlistvirtuallibrarynames'};
@@ -5870,10 +5869,6 @@ sub getInternalParameters {
 	my %limitParameter = (
 		'id' => 'Limit',
 		'value' => $limit
-	);
-	my %trackOrder = (
-		'id' => 'TrackOrder',
-		'value' => $playlistTrackOrder ? $playlistTrackOrder : 0,
 	);
 	my %VAstring = (
 		'id' => 'VariousArtistsString',
@@ -5953,7 +5948,6 @@ sub getInternalParameters {
 	$predefinedParameters->{'PlaylistPlayer'} = \%player;
 	$predefinedParameters->{'PlaylistOffset'} = \%offsetParameter;
 	$predefinedParameters->{'PlaylistLimit'} = \%limitParameter;
-	$predefinedParameters->{'PlaylistTrackOrder'} = \%trackOrder;
 	$predefinedParameters->{'PlaylistVariousArtistsString'} = \%VAstring;
 	$predefinedParameters->{'PlaylistVariousArtistsID'} = \%VAid;
 	$predefinedParameters->{'PlaylistTrackMinDuration'} = \%minTrackDuration;
