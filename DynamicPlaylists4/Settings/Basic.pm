@@ -118,27 +118,44 @@ sub beforeRender {
 
 sub getGenres {
 	my $genres = {};
-	my $query = ['genres', 0, 999_999];
-
-	my $request = Slim::Control::Request::executeRequest(undef, $query);
+	my $genreSQL = "select genres.id,genres.name,genres.namesearch from genres order by namesort asc";
 
 	my $excludenamelist = $prefs->get('excludegenres_namelist');
-	# Extract each genre name into a hash
 	my %exclude;
 	if (defined $excludenamelist) {
-		%exclude = map { $_ => 1 } @{$excludenamelist};
+		%exclude = map { $_ => 1 } @{$excludenamelist}; # Extract each genre name into a hash
 	}
 
 	my $i = 0;
-	foreach my $genre ( @{ $request->getResult('genres_loop') || [] } ) {
-		my $name = $genre->{genre};
-		$genres->{$name} = {
-			'name' => $name,
-			'id' => $genre->{id},
-			'chosen' => $exclude{$name} ? 'yes' : '',
-			'sort' => $i++,
+	my $sth = Slim::Schema->dbh->prepare($genreSQL);
+	main::DEBUGLOG && $log->is_debug && $log->debug("Executing: $genreSQL");
+	eval {
+		$sth->execute() or do {
+			$log->error("Error executing: $genreSQL");
+			$genreSQL = undef;
 		};
+
+		my ($id, $name, $namesearch);
+		$sth->bind_col(1, \$id);
+		$sth->bind_col(2, \$name);
+		$sth->bind_col(3, \$namesearch);
+		while($sth->fetch()) {
+			my %item = (
+				'id' => Slim::Utils::Unicode::utf8decode($id, 'utf8'),
+				'name' => Slim::Utils::Unicode::utf8decode($name, 'utf8'),
+				'namesearch' => Slim::Utils::Unicode::utf8decode($namesearch, 'utf8'),
+				'chosen' => $exclude{$namesearch} ? 'yes' : '',
+				'sort' => $i++,
+			);
+			$genres->{$namesearch} = \%item;
+		}
+		$sth->finish();
+	};
+	if ($@) {
+		$log->error("Database error: $DBI::errstr");
 	}
+
+	main::DEBUGLOG && $log->is_debug && $log->debug('genre list before render = '.Data::Dump::dump($genres));
 	return $genres;
 }
 

@@ -27,7 +27,7 @@ create temporary table randomweightedratingslow as select tracks.id, tracks.prim
 							t2.id = tracks.id and
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
-							genres.name in ('PlaylistExcludedGenres'))
+							genres.namesearch in ('PlaylistExcludedGenres'))
 	group by tracks.id
 	order by random()
 	limit (100-'PlaylistParameter1');
@@ -53,7 +53,7 @@ create temporary table randomweightedratingshigh as select tracks.id, tracks.pri
 							t2.id = tracks.id and
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
-							genres.name in ('PlaylistExcludedGenres'))
+							genres.namesearch in ('PlaylistExcludedGenres'))
 	group by tracks.id
 	order by random()
 	limit 'PlaylistParameter1';

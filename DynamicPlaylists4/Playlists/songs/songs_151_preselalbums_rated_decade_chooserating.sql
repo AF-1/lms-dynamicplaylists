@@ -29,7 +29,7 @@ select tracks.id, tracks.primary_artist from tracks
 							t2.id = tracks.id and
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
-							genres.name in ('PlaylistExcludedGenres'))
+							genres.namesearch in ('PlaylistExcludedGenres'))
 		and
 			case
 				when 'PlaylistParameter3' = 1 then ifnull(tracks_persistent.playCount, 0) = 0

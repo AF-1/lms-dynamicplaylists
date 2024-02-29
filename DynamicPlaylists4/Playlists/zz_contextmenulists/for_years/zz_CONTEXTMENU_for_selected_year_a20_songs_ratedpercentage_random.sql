@@ -38,7 +38,7 @@ create temporary table randomweightedratingslow as
 							t2.id = tracks.id and
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
-							genres.name in ('PlaylistExcludedGenres'))
+							genres.namesearch in ('PlaylistExcludedGenres'))
 	group by tracks.id
 	order by random()
 	limit (100-'PlaylistParameter2');
@@ -72,7 +72,7 @@ create temporary table randomweightedratingshigh as
 							t2.id = tracks.id and
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
-							genres.name in ('PlaylistExcludedGenres'))
+							genres.namesearch in ('PlaylistExcludedGenres'))
 	group by tracks.id
 	order by random()
 	limit 'PlaylistParameter2';

@@ -30,7 +30,7 @@ create temporary table dynamicplaylist_random_albums as
 							t2.id = tracks.id and
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
-							genres.name in ('PlaylistExcludedGenres'))
+							genres.namesearch in ('PlaylistExcludedGenres'))
 	group by tracks.album
 		having totaltrackcount >= 'PlaylistMinArtistTracks' and sumplaycount = 0
 	order by random()
@@ -57,7 +57,7 @@ select tracks.id, tracks.primary_artist from tracks
 							t2.id = tracks.id and
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
-							genres.name in ('PlaylistExcludedGenres'))
+							genres.namesearch in ('PlaylistExcludedGenres'))
 	group by tracks.id
 	order by dynamicplaylist_random_albums.album,tracks.disc,tracks.tracknum
 	limit 'PlaylistLimit';

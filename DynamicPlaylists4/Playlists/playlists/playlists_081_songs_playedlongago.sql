@@ -27,7 +27,7 @@ create temporary table dynamicplaylist_random_playlists as
 								t2.id = tracks.id and
 								tracks.id = genre_track.track and
 								genre_track.genre = genres.id and
-								genres.name in ('PlaylistExcludedGenres'))
+								genres.namesearch in ('PlaylistExcludedGenres'))
 		group by playlist_track.playlist
 			having ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-ifnull(tracks_persistent.lastPlayed,0)) > 0)
 		order by random()
@@ -64,7 +64,7 @@ select tracks.id, tracks.primary_artist from tracks
 							t2.id = tracks.id and
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
-							genres.name in ('PlaylistExcludedGenres'))
+							genres.namesearch in ('PlaylistExcludedGenres'))
 	group by tracks.id
 	order by random()
 	limit 'PlaylistLimit';

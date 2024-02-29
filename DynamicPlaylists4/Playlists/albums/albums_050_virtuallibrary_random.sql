@@ -29,7 +29,7 @@ create temporary table dynamicplaylist_random_albums as
 								t2.id = tracks.id and
 								tracks.id = genre_track.track and
 								genre_track.genre = genres.id and
-								genres.name in ('PlaylistExcludedGenres'))
+								genres.namesearch in ('PlaylistExcludedGenres'))
 		group by tracks.album
 			having totaltrackcount >= 'PlaylistMinAlbumTracks'
 			and

@@ -21,7 +21,7 @@ create temporary table dynamicplaylist_random_years as
 								t2.id = tracks.id and
 								tracks.id = genre_track.track and
 								genre_track.genre = genres.id and
-								genres.name in ('PlaylistExcludedGenres'))
+								genres.namesearch in ('PlaylistExcludedGenres'))
 			and
 				case
 					when ('PlaylistCurrentVirtualLibraryForClient' != '' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
@@ -63,7 +63,7 @@ select tracks.id, tracks.primary_artist from tracks
 							t2.id = tracks.id and
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
-							genres.name in ('PlaylistExcludedGenres'))
+							genres.namesearch in ('PlaylistExcludedGenres'))
 	group by tracks.id
 	order by random()
 	limit 'PlaylistLimit';

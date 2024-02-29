@@ -20,7 +20,7 @@ create temporary table dynamicplaylist_random_genres as
 								t2.id = tracks.id and
 								tracks.id = genre_track.track and
 								genre_track.genre = genres.id and
-								genres.name in ('PlaylistExcludedGenres'))
+								genres.namesearch in ('PlaylistExcludedGenres'))
 			and
 				case
 					when ('PlaylistCurrentVirtualLibraryForClient' != '' and 'PlaylistCurrentVirtualLibraryForClient' is not null)

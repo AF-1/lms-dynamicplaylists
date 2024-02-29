@@ -32,7 +32,7 @@ create temporary table dynamicplaylist_random_contributors as
 								t2.id = tracks.id and
 								tracks.id = genre_track.track and
 								genre_track.genre = genres.id and
-								genres.name in ('PlaylistExcludedGenres'))
+								genres.namesearch in ('PlaylistExcludedGenres'))
 		group by contributor_track.contributor
 			having totaltrackcount >= 'PlaylistMinArtistTracks' and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-max(ifnull(alternativeplaycount.lastPlayed,0))) > 0)
 		order by random()
