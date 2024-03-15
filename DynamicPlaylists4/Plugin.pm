@@ -198,7 +198,6 @@ sub initPrefs {
 		randomsavedplaylists => 1,
 		flatlist => 0,
 		structured_savedplaylists => 1,
-		favouritesname => string('PLUGIN_DYNAMICPLAYLISTS4_FAVOURITES'),
 		pluginshufflemode => 1,
 		enablestaticplsaving => 1
 	});
@@ -256,7 +255,7 @@ sub initPrefs {
 		'Not classified' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPNAME_NOTCLASSIFIED')
 	);
 
-	%customsortnames = ($prefs->get('favouritesname') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
+	%customsortnames = (string('PLUGIN_DYNAMICPLAYLISTS4_FAVOURITES') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
 }
 
 
@@ -368,13 +367,13 @@ sub initPlayLists {
 					my @emptyArray = ();
 					$groups = \@emptyArray;
 				}
-				if ($favourite && $prefs->get('favouritesname')) {
+				if ($favourite) {
 					my @favouriteGroups = ();
 					for my $g (@{$groups}) {
 						push @favouriteGroups, $g;
 					}
 					my @favouriteGroup = ();
-					push @favouriteGroup, $prefs->get('favouritesname');
+					push @favouriteGroup, string('PLUGIN_DYNAMICPLAYLISTS4_FAVOURITES');
 					push @favouriteGroups, \@favouriteGroup;
 					$groups = \@favouriteGroups;
 				}
@@ -1782,7 +1781,7 @@ sub handleWebMixParameters {
 		return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html', $params);
 	} else {
 
-		# save as favourite
+		# save as favorite
 		if ($params->{'addOnly'} == 99) {
 			my $title = $params->{'dpl_customfavtitle'} || $playlist->{'name'};
 			$title = Slim::Utils::Misc::cleanupFilename($title);

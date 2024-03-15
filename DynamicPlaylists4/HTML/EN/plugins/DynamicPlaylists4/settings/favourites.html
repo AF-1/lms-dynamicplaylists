@@ -3,11 +3,10 @@
 [% PROCESS settings/header.html %]
 
 [% PROCESS plugins/DynamicPlaylists4/settings/subpage_chooser.html %]
-	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_FAVOURITESNAME" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_FAVOURITESNAME_DESC" %]
-		<input type="text" class="stdedit" name="pref_favouritesname" id="favouritesname" value="[% prefs.favouritesname %]" size="40">
-	[% END %]
-
 	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_FAVOURITES" desc="" %]
+		[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_FAVOURITESNAME_INFO" | string %]
+	[% END %]
+	[% WRAPPER setting title="" desc="" %]
 		[% FOREACH category = ['songs', 'artists', 'albums', 'genres', 'years', 'playlists'] %]
 			<details><summary><span class="categoryheader">[% categorylangstrings.$category %]</span></summary>
 				<table border="0">

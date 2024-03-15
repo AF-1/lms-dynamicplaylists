@@ -51,7 +51,7 @@ sub name {
 }
 
 sub prefs {
-	return ($prefs, qw(favouritesname));
+	return $prefs;
 }
 
 sub page {
