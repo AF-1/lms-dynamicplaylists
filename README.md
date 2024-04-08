@@ -149,7 +149,7 @@ Just add the necessary <b>action/CLI playlist parameters</b> to the SQLite code 
 If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create a Custom Skip filter set that will <i>only</i> be active if DPL plays a dynamic playlist. See Custom Skip <a href="https://github.com/AF-1/lms-customskip/wiki#i-want-customskip-to-filter-only-dynamic-playlist-tracks">Wiki</a>.
 </p></details><br>
 
-<br><br><br>
+<br><br>
 
 [^1]:If you want localized strings in your language, please read <a href="https://github.com/AF-1/sobras/wiki/Adding-localization-to-LMS-plugins"><b>this</b></a>. Based on Erland's <i>DynamicPlayList</i> plugin.
 [^2]: The screenshots might not correspond to the current UI in every detail.
