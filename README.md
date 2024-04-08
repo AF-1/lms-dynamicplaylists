@@ -1,7 +1,7 @@
 Dynamic Playlists
 ====
 
-This plugin<sup>1</sup> lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i> (smart playlists).<br>
+This plugin[^1] lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i> (smart playlists).<br>
 *Dynamic Playlists* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started. At some point you'll probably want to create a dynamic playlist that's tailored to your very specific needs because the <i>built-in</i> dynamic playlists cannot cover all possible use cases.<br><br>
 Some preferences are not enabled by default. Please take a look at the preferences and their descriptions on the plugin's settings page.
 <br><br>
@@ -43,7 +43,7 @@ It usually takes a few hours for a *new* release to be listed on the LMS plugin 
 <br><br><br><br>
 
 
-## Context Menus
+## Screenshots - Context Menus[^2]
 While the Dynamic Playlists menu in the LMS home menu is easy to find, its **context menus** can easily be overlooked. You'll find the **Dynamic Playlists menus** in the *context menus* for **artists**, **albums**, **genres**, **years** (for years and decades) and **static playlists**. Some of them are presented below.
 <br><br>
 
@@ -149,9 +149,7 @@ Just add the necessary <b>action/CLI playlist parameters</b> to the SQLite code 
 If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create a Custom Skip filter set that will <i>only</i> be active if DPL plays a dynamic playlist. See Custom Skip <a href="https://github.com/AF-1/lms-customskip/wiki#i-want-customskip-to-filter-only-dynamic-playlist-tracks">Wiki</a>.
 </p></details><br>
 
-<br><br><hr>
+<br><br><br>
+
 [^1]:If you want localized strings in your language, please read <a href="https://github.com/AF-1/sobras/wiki/Adding-localization-to-LMS-plugins"><b>this</b></a>. Based on Erland's <i>DynamicPlayList</i> plugin.
-
-<sub><sup>3</sup> <b>not</b> supported because no longer needed. Please consider using native LMS <b>virtual libraries</b>. You can easily create new virtual libraries using the [<b>Virtual Library Creator</b>](https://github.com/AF-1/lms-virtuallibrarycreator) plugin or saved <b>advanced search</b>es.</sub><br>
-
-<sub><sup>5</sup> You can't save your preselection permanently, it's a <b>short</b>-term thing. If you have a fixed selection of artists or albums that you want to listen to frequently, you can "hard-code" them into <b>your own custom</b> dynamic playlist.</sub>
+[^2]: The screenshots might not correspond to the current UI in every detail.
