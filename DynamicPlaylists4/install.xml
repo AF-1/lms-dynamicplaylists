@@ -13,7 +13,7 @@
 	<playerMenu>BROWSE_MUSIC</playerMenu>
 	<canConflictWithDSTM>1</canConflictWithDSTM>
 	<targetApplication>
-		<id>Logitech Media Server</id>
+		<id>Lyrion Music Server</id>
 		<minVersion>8.0</minVersion>
 		<maxVersion>*</maxVersion>
 	</targetApplication>
