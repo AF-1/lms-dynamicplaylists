@@ -6,11 +6,11 @@
 		[% "PLUGIN_DYNAMICPLAYLISTS4" | string %]
 	</a>
 	[%- FOREACH group IN pluginDynamicPlaylists4Groups %]
-		[% IF group.id == '_' _ currentgroup %]>
+		[% IF group.id == '_' _ currentgroup %][% IF systemSkin == 'Classic' %]/[% ELSE %]>[% END %]
 			<a href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?[% group.url %]&amp;player=[% player | uri %]">[% group.displayname %]</a>
 		[% END %]
 	[% END -%]
-	[% IF pluginDynamicPlaylists4Playlist.name %]> [% pluginDynamicPlaylists4Playlist.name | html %][% END %]
+	[% IF pluginDynamicPlaylists4Playlist.name %][% IF systemSkin == 'Classic' %]/[% ELSE %]>[% END %] [% pluginDynamicPlaylists4Playlist.name | html %][% END %]
 [% END %]
 [% PROCESS pageheader.html %]
 

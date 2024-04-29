@@ -5,7 +5,7 @@
 [%- pwd_list = BLOCK -%]
 	<a href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?player=[% player | uri %]">[% "PLUGIN_DYNAMICPLAYLISTS4" | string %]</a>
 	[%- FOREACH group IN pluginDynamicPlaylists4Context %]
-		[% IF group.dynamicplaylistenabled %]>
+		[% IF group.dynamicplaylistenabled %][% IF systemSkin == 'Classic' %]/[% ELSE %]>[% END %]
 			<a href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?[% group.url %]&amp;player=[% player | uri %]">[% group.displayname %]</a>
 		[% END %]
 	[% END -%]
