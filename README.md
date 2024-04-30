@@ -8,40 +8,6 @@ Some preferences are not enabled by default. Please take a look at the preferenc
 [⬅️ **Back to the list of all plugins**](https://github.com/AF-1/)
 <br><br>
 
-## Requirements
-
-- LMS version >= **8**.0
-- LMS database = **SQLite**
-<br><br><br>
-
-## Installation
-⚠️ **Please read the [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq) *before* installing this plugin.**<br>
-
-You should be able to install **Dynamic Playlists** from the LMS main repository (LMS plugin library):<br>**LMS > Settings > Plugins**.<br>
-
-If you want to test a new patch that hasn't made it into a release version yet, you'll have to [install the plugin manually](https://github.com/AF-1/sobras/wiki/Manual-installation-of-LMS-plugins).
-
-It usually takes a few hours for a *new* release to be listed on the LMS plugin page.
-<br><br><br><br>
-
-
-## Features:
-* Use **your own custom dynamic playlist files/definitions directly in DPL** without intermediary plugins - you don't have to install other plugins to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
-* Comes with more than 200 ready-to-use dynamic playlists (stand-alone + for context menus).
-* **Multiple** selection of *genres*, *decades*, *years* and *static playlists*
-* **Pre**select multiple *artists* or *albums* from their context menu at your leisure. DPL remembers your **pre**selection so that you can easily use it later with dynamic playlists that use **preselection**.
-* Use LMS **virtual libraries**.
-* Save dynamic playlists with (user input) parameters to LMS **favourites** (see [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq)).
-* Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
-* New playlist parameters (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
-* New preference options (e.g. balanced shuffle) and UI changes.
-* Compatible with [**Custom Skip**](https://github.com/AF-1/lms-customskip#custom-skip), [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) and [**Dynamic Playlist Creator**](https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator).
-* If you have installed the [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) plugin, you will see some additional dynamic playlists that use the data from this plugin.
-* Use dynamic playlists to create *static* playlists
-* Queue dynamic playlists (see FAQ)
-* …
-<br><br><br><br>
-
 
 ## Screenshots - Context Menus[^2]
 While the Dynamic Playlists menu in the LMS home menu is easy to find, its **context menus** can easily be overlooked. You'll find the **Dynamic Playlists menus** in the *context menus* for **artists**, **albums**, **genres**, **years** (for years and decades) and **static playlists**. Some of them are presented below.
@@ -57,6 +23,55 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 
 ### Material Web UI
 ![Material Web UI](screenshots/material.gif)
+<br><br><br><br>
+
+
+## Features
+
+* Use **your own custom dynamic playlist files/definitions directly in DPL** without intermediary plugins - you don't have to install other plugins to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
+
+* Comes with more than 200 ready-to-use dynamic playlists (stand-alone + for context menus).
+
+* **Multiple** selection of *genres*, *decades*, *years* and *static playlists*
+
+* **Pre**select multiple *artists* or *albums* from their context menu at your leisure. DPL remembers your **pre**selection so that you can easily use it later with dynamic playlists that use **preselection**.
+
+* Use LMS **virtual libraries**.
+
+* Save dynamic playlists with (user input) parameters to LMS **favourites** (see [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq)).
+
+* Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
+
+* New playlist parameters (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
+
+* New preference options (e.g. balanced shuffle) and UI changes.
+
+* Compatible with [**Custom Skip**](https://github.com/AF-1/lms-customskip#custom-skip), [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) and [**Dynamic Playlist Creator**](https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator).
+
+* If you have installed the [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) plugin, you will see some additional dynamic playlists that use the data from this plugin.
+
+* Use dynamic playlists to create *static* playlists
+
+* Queue dynamic playlists (see FAQ)
+
+<br><br><br><br>
+
+
+## Requirements
+
+- LMS version >= **8**.0
+- LMS database = **SQLite**
+<br><br><br>
+
+
+## Installation
+⚠️ **Please read the [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq) *before* installing this plugin.**<br>
+
+You should be able to install **Dynamic Playlists** from the LMS main repository (LMS plugin library):<br>**LMS > Settings > Plugins**.<br>
+
+If you want to test a new patch that hasn't made it into a release version yet, you'll have to [install the plugin manually](https://github.com/AF-1/sobras/wiki/Manual-installation-of-LMS-plugins).
+
+It usually takes a few hours for a *new* release to be listed on the LMS plugin page.
 <br><br><br><br>
 
 
@@ -152,4 +167,4 @@ If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create 
 <br><br>
 
 [^1]:If you want localized strings in your language, please read <a href="https://github.com/AF-1/sobras/wiki/Adding-localization-to-LMS-plugins"><b>this</b></a>. Based on Erland's <i>DynamicPlayList</i> plugin.
-[^2]: The screenshots might not correspond to the current UI in every detail.
+[^2]: The screenshots might not correspond to the UI of the latest release in every detail.
