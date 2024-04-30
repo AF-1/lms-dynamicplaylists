@@ -2,7 +2,7 @@ Dynamic Playlists
 ====
 
 This plugin[^1] lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i> (smart playlists).<br>
-*Dynamic Playlists* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started. At some point you'll probably want to create a dynamic playlist that's tailored to your very specific needs because the <i>built-in</i> dynamic playlists cannot cover all possible use cases.<br><br>
+*Dynamic Playlists* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started. Since the <i>built-in</i> dynamic playlists cannot cover all possible use cases, you'll probably want to create a dynamic playlist that's tailored to your very specific needs at some point using [**Dynamic Playlist Creator**](https://github.com/AF-1/lms-dynamicplaylistcreator) or a file with SQLite statements (see [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq)). <br><br>
 Some preferences are not enabled by default. Please take a look at the preferences and their descriptions on the plugin's settings page.
 <br><br>
 [⬅️ **Back to the list of all plugins**](https://github.com/AF-1/)
