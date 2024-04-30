@@ -2,11 +2,11 @@ Dynamic Playlists
 ====
 
 This plugin[^1] lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i> (smart playlists).<br>
-*Dynamic Playlists* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started. Since the <i>built-in</i> dynamic playlists cannot cover all possible use cases, you'll probably want to create a dynamic playlist that's tailored to your very specific needs at some point using [**Dynamic Playlist Creator**](https://github.com/AF-1/lms-dynamicplaylistcreator) or a file with SQLite statements (see [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq)). <br><br>
+*Dynamic Playlists* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started. Since the <i>built-in</i> dynamic playlists cannot cover all possible use cases, you'll probably want to create a dynamic playlist that's tailored to your very specific needs at some point using [**Dynamic Playlist Creator**](https://github.com/AF-1/lms-dynamicplaylistcreator) or a file with SQLite statements (see [FAQ](#faq)). <br><br>
 Some preferences are not enabled by default. Please take a look at the preferences and their descriptions on the plugin's settings page.
 <br><br>
 [⬅️ **Back to the list of all plugins**](https://github.com/AF-1/)
-<br><br>
+<br><br><br>
 
 
 ## Screenshots - Context Menus[^2]
@@ -28,7 +28,7 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 
 ## Features
 
-* Use **your own custom dynamic playlist files/definitions directly in DPL** without intermediary plugins - you don't have to install other plugins to get dynamic playlists. See [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq).
+* Use **your own custom dynamic playlist files/definitions directly in DPL** without intermediary plugins - you don't have to install other plugins to get dynamic playlists. See [FAQ](#faq).
 
 * Comes with more than 200 ready-to-use dynamic playlists (stand-alone + for context menus).
 
@@ -38,7 +38,7 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 
 * Use LMS **virtual libraries**.
 
-* Save dynamic playlists with (user input) parameters to LMS **favourites** (see [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq)).
+* Save dynamic playlists with (user input) parameters to LMS **favourites** (see [FAQ](#faq)).
 
 * Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
 
@@ -52,7 +52,7 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 
 * Use dynamic playlists to create *static* playlists.
 
-* Queue dynamic playlists (see FAQ).
+* Queue dynamic playlists (see [FAQ](#faq)).
 
 <br><br><br><br>
 
@@ -74,7 +74,7 @@ If you want to test a new patch that hasn't made it into a release version yet, 
 
 ## Reporting a new issue
 
-If you want to report a new issue, please read the [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq) *first* and then fill out this [**issue report template**](https://github.com/AF-1/lms-dynamicplaylists/issues/new?template=bug_report.md&title=%5BISSUE%5D+).
+If you want to report a new issue, please read the [FAQ](#faq) *first* and then fill out this [**issue report template**](https://github.com/AF-1/lms-dynamicplaylists/issues/new?template=bug_report.md&title=%5BISSUE%5D+).
 <br><br><br><br>
 
 
