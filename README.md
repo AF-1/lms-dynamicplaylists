@@ -7,7 +7,7 @@ Some preferences are not enabled by default. Please take a look at the preferenc
 <br><br>
 [⬅️ **Back to the list of all plugins**](https://github.com/AF-1/)
 
-<br><br><br><br>
+<br><br><br>
 
 
 ## Screenshots - Context Menus[^2]
