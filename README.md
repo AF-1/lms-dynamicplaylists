@@ -32,7 +32,7 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 
 * Comes with more than 200 ready-to-use dynamic playlists (stand-alone + for context menus).
 
-* **Multiple** selection of *genres*, *decades*, *years* and *static playlists*
+* **Multiple** selection of *genres*, *decades*, *years* and *static playlists*.
 
 * **Pre**select multiple *artists* or *albums* from their context menu at your leisure. DPL remembers your **pre**selection so that you can easily use it later with dynamic playlists that use **preselection**.
 
@@ -50,9 +50,9 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 
 * If you have installed the [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) plugin, you will see some additional dynamic playlists that use the data from this plugin.
 
-* Use dynamic playlists to create *static* playlists
+* Use dynamic playlists to create *static* playlists.
 
-* Queue dynamic playlists (see FAQ)
+* Queue dynamic playlists (see FAQ).
 
 <br><br><br><br>
 
@@ -65,7 +65,6 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 
 
 ## Installation
-⚠️ **Please read the [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq) *before* installing this plugin.**<br>
 
 **Dynamic Playlists** is available from the LMS plugin library: **LMS > Settings > Manage Plugins**.<br>
 
@@ -75,7 +74,7 @@ If you want to test a new patch that hasn't made it into a release version yet, 
 
 ## Reporting a new issue
 
-If you want to report a new issue, please fill out this [**issue report template**](https://github.com/AF-1/lms-dynamicplaylists/issues/new?template=bug_report.md&title=%5BISSUE%5D+).
+If you want to report a new issue, please read the [FAQ](https://github.com/AF-1/lms-dynamicplaylists#faq) *first* and then fill out this [**issue report template**](https://github.com/AF-1/lms-dynamicplaylists/issues/new?template=bug_report.md&title=%5BISSUE%5D+).
 <br><br><br><br>
 
 
