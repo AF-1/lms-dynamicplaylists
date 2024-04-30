@@ -6,7 +6,8 @@ This plugin[^1] lets you play continuous music mixes based on selection criteria
 Some preferences are not enabled by default. Please take a look at the preferences and their descriptions on the plugin's settings page.
 <br><br>
 [⬅️ **Back to the list of all plugins**](https://github.com/AF-1/)
-<br><br><br>
+<br><br>
+<br><br>
 
 
 ## Screenshots - Context Menus[^2]
