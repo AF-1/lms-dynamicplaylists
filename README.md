@@ -37,23 +37,21 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 
 * **Pre**select multiple *artists* or *albums* from their context menu at your leisure. DPL remembers your **pre**selection so that you can easily use it later with dynamic playlists that use **preselection**.
 
+* Use dynamic playlists to create *static* playlists.
+
 * Use LMS **virtual libraries**.
 
 * Save dynamic playlists with (user input) parameters to LMS **favourites** (see [FAQ](#faq)).
 
 * Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
 
-* New playlist parameters (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
+* Queue dynamic playlists (see [FAQ](#faq)).
 
-* New preference options (e.g. balanced shuffle) and UI changes.
+* New playlist parameters (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
 
 * Compatible with [**Custom Skip**](https://github.com/AF-1/lms-customskip#custom-skip), [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) and [**Dynamic Playlist Creator**](https://github.com/AF-1/lms-dynamicplaylistcreator#dynamic-playlist-creator).
 
 * If you have installed the [**Alternative Play Count**](https://github.com/AF-1/lms-alternativeplaycount) plugin, you will see some additional dynamic playlists that use the data from this plugin.
-
-* Use dynamic playlists to create *static* playlists.
-
-* Queue dynamic playlists (see [FAQ](#faq)).
 
 <br><br><br>
 
