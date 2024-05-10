@@ -28,7 +28,7 @@
 </div>
 <br>
 	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS" desc="" %]
-		[% FOREACH category = ['songs', 'artists', 'albums', 'genres', 'years', 'playlists'] %]
+		[% FOREACH category = playlistcategories %]
 			<details><summary><span class="categoryheader">[% categorylangstrings.$category %]</span></summary>
 				<table border="0">
 					[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]

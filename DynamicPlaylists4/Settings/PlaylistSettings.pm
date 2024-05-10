@@ -81,6 +81,7 @@ sub handler {
 		'songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_TRACKS"),
 		'artists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_ARTISTS"),
 		'albums' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_ALBUMS"),
+		'works' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_WORKS"),
 		'genres' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_GENRES"),
 		'years' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_YEARS"),
 		'playlists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_PLAYLISTS")
@@ -91,6 +92,10 @@ sub handler {
 	$paramRef->{'unclassifiedPlaylists'} = $unclassifiedPlaylists->{'unclassifiedPlaylists'};
 	$paramRef->{'unclassifiedContextMenuPlaylists'} = $unclassifiedPlaylists->{'unclassifiedContextMenuPlaylists'};
 	$paramRef->{'pluginDynamicPlaylists4Groups'} = Plugins::DynamicPlaylists4::Plugin::getPlayListGroups(\@groupPath, $playListItems, \@groupResult);
+
+	my @playlistCategories = ('songs', 'artists', 'albums', 'genres', 'years', 'playlists');
+	splice @playlistCategories, 3, 0, 'works' if (versionToInt($::VERSION) >= versionToInt('9.0.0'));
+	$paramRef->{'playlistcategories'} = \@playlistCategories;
 
 	if ($paramRef->{'saveSettings'}) {
 		my $first = 1;
@@ -186,6 +191,17 @@ sub beforeRender {
 	my ($class, $paramRef) = @_;
 	my $apc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::AlternativePlayCount::Plugin');
 	$paramRef->{'apcenabled'} = 'yes' if $apc_enabled;
+}
+
+sub versionToInt {
+	my $versionString = shift;
+	my @parts = split /\./, $versionString;
+	my $formatted = 0;
+	foreach my $p (@parts) {
+		$formatted *= 100;
+		$formatted += int($p);
+	}
+	return $formatted;
 }
 
 *escape = \&URI::Escape::uri_escape_utf8;

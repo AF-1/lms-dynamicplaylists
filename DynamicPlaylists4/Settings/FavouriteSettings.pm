@@ -79,6 +79,7 @@ sub handler {
 		'songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_TRACKS"),
 		'artists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_ARTISTS"),
 		'albums' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_ALBUMS"),
+		'works' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_WORKS"),
 		'genres' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_GENRES"),
 		'years' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_YEARS"),
 		'playlists' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_PLAYLISTS")
@@ -87,6 +88,10 @@ sub handler {
 	$paramRef->{'pluginDynamicPlaylists4PlayLists'} = $playLists;
 	$paramRef->{'savedstaticPlaylists'} = $savedstaticPlaylists;
 	$paramRef->{'unclassifiedPlaylists'} = $unclassifiedPlaylists->{'unclassifiedPlaylists'};
+
+	my @playlistCategories = ('songs', 'artists', 'albums', 'genres', 'years', 'playlists');
+	splice @playlistCategories, 3, 0, 'works' if (versionToInt($::VERSION) >= versionToInt('9.0.0'));
+	$paramRef->{'playlistcategories'} = \@playlistCategories;
 
 	if ($paramRef->{'saveSettings'}) {
 		my $first = 1;
@@ -104,6 +109,17 @@ sub handler {
 		}
 
 	return $class->SUPER::handler($client, $paramRef);
+}
+
+sub versionToInt {
+	my $versionString = shift;
+	my @parts = split /\./, $versionString;
+	my $formatted = 0;
+	foreach my $p (@parts) {
+		$formatted *= 100;
+		$formatted += int($p);
+	}
+	return $formatted;
 }
 
 1;

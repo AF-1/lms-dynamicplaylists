@@ -746,6 +746,11 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_ALBUMS
 	FR	Albums
 	DE	Alben
 
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_WORKS
+	EN	Works
+	FR	Œuvres
+	DE	Werke
+
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_GENRES
 	EN	Genres
 	FR	Genres
@@ -1192,15 +1197,20 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_YEARS
 	FR	Morceaux - notés (par genre + année)
 	DE	Titel - bewertet (nach Stilrichtung und Jahr)
 
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_PERCENTAGERATED
+	EN	Songs - not RATED (with % of rated songs)
+	FR	Morceaux - non notés (avec un % de morceaux notés)
+	DE	Titel - nicht bewertet (mit % Bewertung)
+
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGERATED
 	EN	Songs - not RATED (by genre + decade with % of rated songs)
 	FR	Morceaux - non notés (par genre + décennie avec un % de morceaux notés)
-	DE	Titel - nicht bewertet (nach Stilrichtung und Jahrzehnt mit % TOP Bewertung)
+	DE	Titel - nicht bewertet (nach Stilrichtung und Jahrzehnt mit % Bewertung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_YEAR_PERCENTAGERATED
 	EN	Songs - not RATED (by genre + year with % of rated songs)
 	FR	Morceaux - non notés (par genre + année avec un % de morceaux notés)
-	DE	Titel - nicht bewertet (nach Stilrichtung und Jahr mit % TOP Bewertung)
+	DE	Titel - nicht bewertet (nach Stilrichtung und Jahr mit % Bewertung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_LASTADDED_GENRE_MINRATING
 	EN	Songs - last added (by genre + min. rating)
@@ -1252,6 +1262,11 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ARTISTS_SONGS_RANDOM
 	FR	Morceaux - des artistes présélectionnés - aléatoire
 	DE	Titel - zufällig von vorausgewählten Interpreten
 
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ARTISTS_SONGS_RATEDPERCENTAGE
+	EN	Songs - from preselected artists - with % of rated songs
+	FR	Morceaux - des artistes présélectionnés - avec un % de morceaux notés
+	DE	Titel - zufällig von vorausgewählten Interpreten mit % Bewertung
+
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ARTISTS_SONGS_MINRATING_DECADE
 	EN	Songs - from preselected artists - choose minimum rating & decade
 	FR	Morceaux - des artistes présélectionnés - choisir la note minimum et la décennie
@@ -1261,6 +1276,11 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ALBUMS_SONGS_RANDOM
 	EN	Songs - from preselected albums - random
 	FR	Morceaux - des albums présélectionnés - aléatoire
 	DE	Titel - zufällig von vorausgewählten Alben
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ALBUMS_SONGS_RATEDPERCENTAGE
+	EN	Songs - from preselected albums - with % of rated songs
+	FR	Morceaux - des albums présélectionnés - avec un % de morceaux notés
+	DE	Titel - zufällig von vorausgewählten Alben mit % Bewertung
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ALBUMS_SONGS_MINRATING_DECADE
 	EN	Songs - from preselected albums - choose minimum rating & decade
@@ -1342,6 +1362,87 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_PLAYEDLONGAGO
 	EN	Years - played long ago
 	FR	Années - jouées il y a longtemps
 	DE	Jahre - vor langer Zeit gespielt
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_RANDOM
+	EN	Works - random
+	FR	Œuvres - aléatoire
+	DE	Werke - zufällig
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_GENRE_DECADE
+	EN	Works - random (by genre + decade)
+	FR	Œuvres - aléatoire (par genre + décennie)
+	DE	Werke - zufällig (Stilrichtung + Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_TOPRATEDAVG
+	EN	Works - with top average rating
+	FR	Œuvres - avec les meilleures notes moyennes
+	DE	Werke - mit Top Bewertungen
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTRATEDSONGS
+	EN	Works - with most rated songs
+	FR	Œuvres - avec les morceaux les mieux notés
+	DE	Werke - mit den meisten bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_RATEDSONGS
+	EN	Works - that contain rated songs
+	FR	Œuvres - contenant les morceaux notés
+	DE	Werke - mit bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_TOPRATEDSONGS
+	EN	Works - that contain top rated songs
+	FR	Œuvres - contenant les morceaux les mieux notés
+	DE	Werke - mit TOP bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_UNRATED
+	EN	Works - not rated
+	FR	Œuvres - non notés
+	DE	Werke - nicht bewertet
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_PARTLYPLAYED_GENRE_DECADE
+	EN	Works - partly played (by genre + decade)
+	FR	Œuvres - partiellement joués (par genre + décennie)
+	DE	Werke - teilweise gespielt (nach Stilrichtung und Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTPLAYED
+	EN	Works - most played (absolute count)
+	FR	Œuvres - les plus joués (compte absolu)
+	DE	Werke - meistgespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTPLAYEDAVG
+	EN	Works - most played (average count)
+	FR	Œuvres - les plus joués (compte moyen)
+	DE	Werke - meistgespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_LEASTPLAYED
+	EN	Works - least played (absolute count)
+	FR	Œuvres - les moins joués (compte absolu)
+	DE	Werke - am wenigsten gespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_LEASTPLAYEDAVG
+	EN	Works - least played (average count)
+	FR	Œuvres - les moins joués (compte moyen)
+	DE	Werke - am wenigsten gespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_VLIB_RANDOM
+	EN	Works - random from selected virtual library
+	FR	Œuvres - aléatoire sur la bibliothèque virtuelle sélectionnée
+	DE	Werke - zufällig aus ausgewählter virtueller Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_RECENTLYPLAYEDORLASTADDEDSONGS
+	EN	Works - recently played or lasted added songs
+	FR	Œuvres - joués récemment ou derniers morceaux ajoutés
+	DE	Werke - neulich gespielt oder hinzugefügt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_NEVERPLAYED
+	EN	Works - never played
+	FR	Œuvres - jamais joués
+	DE	Werke - nie gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_PLAYEDLONGAGO
+	EN	Works - played long ago
+	FR	Œuvres - joués il y a longtemps
+	DE	Werke - vor langer Zeit gespielt
 
 
 
@@ -2602,6 +2703,47 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_PLAYEDLONGAGO_A
 	EN	Songs - played long ago (APC) (from selected playlist)
 	FR	Morceaux - joués il y a longtemps (APC) (de la liste de lecture sélectionnée)
 	DE	Titel - vor langer Zeit gespielt (APC) (aus gewählter Stilrichtung)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_PARTLYPLAYED_GENRE_DECADE_APC
+	EN	Works - partly played (by genre + decade) (APC)
+	FR	Œuvres - partiellement joués (par genre + décennie)
+	DE	Werke - teilweise gespielt (nach Stilrichtung und Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTPLAYED_APC
+	EN	Works - most played (absolute count) (APC)
+	FR	Œuvres - les plus joués (compte absolu) (APC)
+	DE	Werke - meistgespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTPLAYEDAVG_APC
+	EN	Works - most played (average count) (APC)
+	FR	Œuvres - les plus joués (compte moyen) (APC)
+	DE	Werke - meistgespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_LEASTPLAYED_APC
+	EN	Works - least played (absolute count) (APC)
+	FR	Œuvres - les moins joués (compte absolu) (APC)
+	DE	Werke - am wenigsten gespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_LEASTPLAYEDAVG_APC
+	EN	Works - least played (average count) (APC)
+	FR	Œuvres - les moins joués (compte moyen) (APC)
+	DE	Âlben - am wenigsten gespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_RECENTLYPLAYEDORLASTADDEDSONGS_APC
+	EN	Works - recently played or lasted added songs (APC)
+	FR	Œuvres - joués récemment ou derniers morceaux ajoutés (APC)
+	DE	Werke - neulich gespielt oder zuletzt hinzugefügt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_NEVERPLAYED_APC
+	EN	Works - never played (APC)
+	FR	Œuvres - jamais joués (APC)
+	DE	Werke - nie gespielt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_PLAYEDLONGAGO_APC
+	EN	Works - played long ago (APC)
+	FR	Œuvres - joués il y a longtemps (APC)
+	DE	Werke - vor langer Zeit gespielt (APC)
 
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_MOSTPLAYED_APC

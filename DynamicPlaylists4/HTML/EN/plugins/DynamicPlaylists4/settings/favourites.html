@@ -7,7 +7,7 @@
 		[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_FAVOURITESNAME_INFO" | string %]
 	[% END %]
 	[% WRAPPER setting title="" desc="" %]
-		[% FOREACH category = ['songs', 'artists', 'albums', 'genres', 'years', 'playlists'] %]
+		[% FOREACH category = playlistcategories %]
 			<details><summary><span class="categoryheader">[% categorylangstrings.$category %]</span></summary>
 				<table border="0">
 					[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]

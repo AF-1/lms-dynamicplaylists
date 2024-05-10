@@ -248,6 +248,7 @@ sub initPrefs {
 		'Songs' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_TRACKS'),
 		'Artists' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_ARTISTS'),
 		'Albums' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_ALBUMS'),
+		'Works' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_WORKS'),
 		'Genres' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_GENRES'),
 		'Years' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_YEARS'),
 		'Playlists' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_PLAYLISTS'),
@@ -255,7 +256,7 @@ sub initPrefs {
 		'Not classified' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPNAME_NOTCLASSIFIED')
 	);
 
-	%customsortnames = (string('PLUGIN_DYNAMICPLAYLISTS4_FAVOURITES') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Genres' => '00005_Genres', 'Years' => '00006_Years', 'Playlists' => '00007_PLaylists', 'Static Playlists' => '00008_static_LMS_playlists', 'Not classified' => '00009_not_classified', 'Context menu lists' => '00010_contextmenulists');
+	%customsortnames = (string('PLUGIN_DYNAMICPLAYLISTS4_FAVOURITES') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Works' => '00005_Works', 'Genres' => '00006_Genres', 'Years' => '00007_Years', 'Playlists' => '00008_PLaylists', 'Static Playlists' => '00009_static_LMS_playlists', 'Not classified' => '00010_not_classified', 'Context menu lists' => '00011_contextmenulists');
 }
 
 
@@ -289,6 +290,13 @@ sub initPlayLists {
 				$plugins{$item} = "${plugin}";
 				my $playlist = $items->{$item};
 				main::DEBUGLOG && $log->is_debug && $log->debug('Got dynamic playlist: '.$playlist->{'name'});
+
+				# skip playlists if current LMS version < required LMS version
+				if ($playlist->{'minlmsversion'} && (versionToInt($::VERSION) < versionToInt($playlist->{'minlmsversion'}))) {
+					$log->info('LMS version = '.$::VERSION.' -- min. required LMS version for playlist "'.$playlist->{'name'}.'" = '.$playlist->{'minlmsversion'});
+					next;
+				}
+
 				$playlist->{'dynamicplaylistid'} = $item;
 				$playlist->{'dynamicplaylistplugin'} = $plugin;
 				my $isStaticPL;
@@ -2025,7 +2033,7 @@ sub getPlayListGroups {
 			} else {
 				if (starts_with($groupName, 'Static Playlists/') == 0) {
 					my $groupSortName = $groupName;
-					$groupSortName =~ s/Static Playlists/00008_static_LMS_playlists/g;
+					$groupSortName =~ s/Static Playlists/00009_static_LMS_playlists/g;
 					$sortname = $groupSortName.$item->{'name'}.'/';
 				} else {
 					$sortname = $groupName.$item->{'name'}.'/';
@@ -3076,10 +3084,14 @@ sub objectInfoHandler {
 	my $objectName = undef;
 	my $objectId = undef;
 	my $parameterId = $objectType.'_id';
+	my ($workID, $grouping);
 	if ($objectType eq 'genre' || $objectType eq 'artist') {
 		$objectName = $obj->name;
 		$objectId = $obj->id;
 	} elsif ($objectType eq 'album' || $objectType eq 'playlist') {
+		if ($objectType eq 'album' && defined($filter->{'work_id'})) {
+			return undef; # no context menu for works
+		}
 		$objectName = $obj->title;
 		$objectId = $obj->id;
 		if ($objectType eq 'playlist') {
@@ -5212,12 +5224,13 @@ sub checkForLimitingVL {
 ## preselection ##
 
 sub registerPreselectionMenu {
-	my ($client, $url, $obj, $remoteMeta, $tags, $whatever, $objectType) = @_;
+	my ($client, $url, $obj, $remoteMeta, $tags, $filter, $objectType) = @_;
 	$tags ||= {};
 
 	unless ($objectType && ($objectType eq 'artist' || $objectType eq 'album')) {
 		return undef;
 	}
+	return undef if $objectType eq 'album' && defined($filter->{'work_id'}); # no context menu for works
 
 	my $objectName = $objectType eq 'artist' ? $obj->name : $obj->title;
 	my $objectID = $obj->id;
@@ -5678,6 +5691,7 @@ sub getDynamicPlaylists {
 				'playlistsortname' => $playlistsortname,
 				'menulisttype' => $current->{'menulisttype'},
 				'playlistcategory' => $current->{'playlistcategory'},
+				'minlmsversion' => $current->{'minlmsversion'},
 				'apcplaylist' => $current->{'apcplaylist'},
 				'dplcplaylist' => $current->{'dplcplaylist'},
 				'playlistapcdupe' => $current->{'playlistapcdupe'},
@@ -6078,6 +6092,7 @@ sub parseContent {
 		my @groups = ();
 		my %parameters = ();
 		my $menuListType = '';
+		my $playlistLMSminVersion = undef;
 		my $playlistCategory = '';
 		my $playlistAPCdupe = '';
 		my $playlistTrackOrder = '';
@@ -6090,7 +6105,6 @@ sub parseContent {
 		my $repeat;
 
 		for my $line (@playlistDataArray) {
-			# Add linefeed again, to make sure playlist looks ok when editing
 			if (!$name) {
 				$name = $parseStrings ? parsePlaylistName($line, 'parseStrings') : parsePlaylistName($line);
 				if (!$name) {
@@ -6112,6 +6126,7 @@ sub parseContent {
 			my $action = parseAction($line);
 			my $listType = parseMenuListType($line);
 			my $category = parseCategory($line);
+			my $LMSminVersion = parseLMSminVersion($line);
 			my $APCdupe = parseAPCdupe($line);
 			my $trackOrder = parseTrackOrder($line);
 			my $limitOption = parseLimitOption($line);
@@ -6149,6 +6164,9 @@ sub parseContent {
 			}
 			if ($category) {
 				$playlistCategory = $category;
+			}
+			if ($LMSminVersion) {
+				$playlistLMSminVersion = $LMSminVersion;
 			}
 			if ($APCdupe) {
 				$playlistAPCdupe = $APCdupe;
@@ -6232,6 +6250,9 @@ sub parseContent {
 			}
 			if ($playlistCategory) {
 				$playlist{'playlistcategory'} = $playlistCategory;
+			}
+			if ($playlistLMSminVersion) {
+				$playlist{'minlmsversion'} = $playlistLMSminVersion;
 			}
 			if ($playlistAPCdupe) {
 				$playlist{'playlistapcdupe'} = $playlistAPCdupe;
@@ -6374,6 +6395,25 @@ sub parseAction {
 		} else {
 			$log->warn("No action defined or error in action: $line");
 			$log->warn('Action values: ID = '.Data::Dump::dump($actionId).' -- Type = '.Data::Dump::dump($actionType).' -- Definition = '.Data::Dump::dump($actionDefinition));
+			return undef;
+		}
+	}
+	return undef;
+}
+
+sub parseLMSminVersion {
+	my $line = shift;
+	if ($line =~ /^\s*--\s*PlaylistLMSminVersion\s*[:=]\s*/) {
+		$line =~ m/^\s*--\s*PlaylistLMSminVersion\s*[:=]\s*([^:]+)\s*(.*)$/;
+		my $minVersion = $1;
+
+		if ($minVersion && $minVersion =~ /(\d+)\.(\d+).*/) {
+			$minVersion =~ s/\s+$//;
+			$minVersion =~ s/^\s+//;
+			return $minVersion;
+		} else {
+			main::DEBUGLOG && $log->is_debug && $log->debug("No value or error in minVersion: $line");
+			main::DEBUGLOG && $log->is_debug && $log->debug('Option values: minVersion = '.Data::Dump::dump($minVersion));
 			return undef;
 		}
 	}
@@ -7275,6 +7315,17 @@ sub starts_with {
 	# complete_string, start_string, position
 	return rindex($_[0], $_[1], 0);
 	# 0 for yes, -1 for no
+}
+
+sub versionToInt {
+	my $versionString = shift;
+	my @parts = split /\./, $versionString;
+	my $formatted = 0;
+	foreach my $p (@parts) {
+		$formatted *= 100;
+		$formatted += int($p);
+	}
+	return $formatted;
 }
 
 *escape = \&URI::Escape::uri_escape_utf8;
