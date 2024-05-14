@@ -6,13 +6,12 @@
 -- PlaylistLimitOption:unlimited
 -- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists dynamicplaylist_random_works;
-create temporary table dynamicplaylist_random_works as 
+create temporary table dynamicplaylist_random_works as
 	select tracks.album as album, tracks.work as work, tracks.grouping as grouping, count(distinct tracks.id) as totaltrackcount from tracks
 		left join library_track on
 			library_track.track = tracks.id
 		left join dynamicplaylist_history on
 			dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
-	
 		where
 			tracks.audio = 1
 			and dynamicplaylist_history.id is null

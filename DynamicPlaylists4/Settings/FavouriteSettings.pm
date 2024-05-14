@@ -90,7 +90,7 @@ sub handler {
 	$paramRef->{'unclassifiedPlaylists'} = $unclassifiedPlaylists->{'unclassifiedPlaylists'};
 
 	my @playlistCategories = ('songs', 'artists', 'albums', 'genres', 'years', 'playlists');
-	splice @playlistCategories, 3, 0, 'works' if (versionToInt($::VERSION) >= versionToInt('9.0.0'));
+	splice @playlistCategories, 3, 0, 'works' if (Slim::Utils::Versions->compareVersions($::VERSION, '9.0') >= 0);
 	$paramRef->{'playlistcategories'} = \@playlistCategories;
 
 	if ($paramRef->{'saveSettings'}) {
@@ -109,17 +109,6 @@ sub handler {
 		}
 
 	return $class->SUPER::handler($client, $paramRef);
-}
-
-sub versionToInt {
-	my $versionString = shift;
-	my @parts = split /\./, $versionString;
-	my $formatted = 0;
-	foreach my $p (@parts) {
-		$formatted *= 100;
-		$formatted += int($p);
-	}
-	return $formatted;
 }
 
 1;

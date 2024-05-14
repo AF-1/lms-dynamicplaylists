@@ -94,7 +94,7 @@ sub handler {
 	$paramRef->{'pluginDynamicPlaylists4Groups'} = Plugins::DynamicPlaylists4::Plugin::getPlayListGroups(\@groupPath, $playListItems, \@groupResult);
 
 	my @playlistCategories = ('songs', 'artists', 'albums', 'genres', 'years', 'playlists');
-	splice @playlistCategories, 3, 0, 'works' if (versionToInt($::VERSION) >= versionToInt('9.0.0'));
+	splice @playlistCategories, 3, 0, 'works' if (Slim::Utils::Versions->compareVersions($::VERSION, '9.0') >= 0);
 	$paramRef->{'playlistcategories'} = \@playlistCategories;
 
 	if ($paramRef->{'saveSettings'}) {
@@ -191,17 +191,6 @@ sub beforeRender {
 	my ($class, $paramRef) = @_;
 	my $apc_enabled = Slim::Utils::PluginManager->isEnabled('Plugins::AlternativePlayCount::Plugin');
 	$paramRef->{'apcenabled'} = 'yes' if $apc_enabled;
-}
-
-sub versionToInt {
-	my $versionString = shift;
-	my @parts = split /\./, $versionString;
-	my $formatted = 0;
-	foreach my $p (@parts) {
-		$formatted *= 100;
-		$formatted += int($p);
-	}
-	return $formatted;
 }
 
 *escape = \&URI::Escape::uri_escape_utf8;

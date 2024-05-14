@@ -292,7 +292,7 @@ sub initPlayLists {
 				main::DEBUGLOG && $log->is_debug && $log->debug('Got dynamic playlist: '.$playlist->{'name'});
 
 				# skip playlists if current LMS version < required LMS version
-				if ($playlist->{'minlmsversion'} && (versionToInt($::VERSION) < versionToInt($playlist->{'minlmsversion'}))) {
+				if ($playlist->{'minlmsversion'} && Slim::Utils::Versions->compareVersions($::VERSION, $playlist->{'minlmsversion'}) == -1) {
 					$log->info('LMS version = '.$::VERSION.' -- min. required LMS version for playlist "'.$playlist->{'name'}.'" = '.$playlist->{'minlmsversion'});
 					next;
 				}
@@ -6879,7 +6879,7 @@ sub getCustomSkipFilterTypes {
 }
 
 sub checkCustomSkipFilterType {
-	my ($client, $filter, $track) = @_;
+	my ($client, $filter, $track, $lookaheadonly, $index) = @_;
 	my $currentTime = time();
 	my $parameters = $filter->{'parameter'};
 	my $sql = undef;
@@ -7315,17 +7315,6 @@ sub starts_with {
 	# complete_string, start_string, position
 	return rindex($_[0], $_[1], 0);
 	# 0 for yes, -1 for no
-}
-
-sub versionToInt {
-	my $versionString = shift;
-	my @parts = split /\./, $versionString;
-	my $formatted = 0;
-	foreach my $p (@parts) {
-		$formatted *= 100;
-		$formatted += int($p);
-	}
-	return $formatted;
 }
 
 *escape = \&URI::Escape::uri_escape_utf8;
