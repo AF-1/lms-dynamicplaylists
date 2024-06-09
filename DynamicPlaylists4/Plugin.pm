@@ -3084,7 +3084,7 @@ sub objectInfoHandler {
 	my $objectName = undef;
 	my $objectId = undef;
 	my $parameterId = $objectType.'_id';
-	my ($workID, $grouping);
+	my ($workID, $performance);
 	if ($objectType eq 'genre' || $objectType eq 'artist') {
 		$objectName = $obj->name;
 		$objectId = $obj->id;
@@ -5624,18 +5624,14 @@ sub getDynamicPlaylists {
 		}
 		foreach my $playlist (@{$playLists}) {
 			my $playlistid = 'dplstaticpl_'.sha1_base64($playlist->url);
-			my $id = $playlist->id;
-			my $name = $playlist->title;
-			my $playlisturl;
-			$playlisturl = 'clixmlbrowser/clicmd=browselibrary+items&linktitle=SAVED_PLAYLISTS&mode=playlistTracks&playlist_id='.$playlist->id;
 
 			my %currentResult = (
-				'id' => $id,
-				'name' => $name,
-				'playlistsortname' => $name,
+				'id' => $playlist->id,
+				'name' => $playlist->title,
+				'playlistsortname' => $playlist->title,
 				'playlistcategory' => 'static LMS playlists',
 				'usecache' => 1,
-				'url' => $playlisturl,
+				'url' => 'clixmlbrowser/clicmd=browselibrary+items&linktitle=SAVED_PLAYLISTS&mode=playlistTracks&playlist_id='.$playlist->id,
 				'groups' => [['Static Playlists']]
 			);
 

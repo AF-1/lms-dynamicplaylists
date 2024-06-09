@@ -7,7 +7,7 @@
 -- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists dynamicplaylist_random_works;
 create temporary table dynamicplaylist_random_works as
-	select tracks.album as album, tracks.work as work, tracks.grouping as grouping, count(distinct tracks.id) as totaltrackcount from tracks
+	select tracks.album as album, tracks.work as work, tracks.performance as performance, count(distinct tracks.id) as totaltrackcount from tracks
 		join tracks_persistent on
 			tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) >= 'PlaylistTopRatedMinRating'
 		left join library_track on
@@ -24,12 +24,12 @@ create temporary table dynamicplaylist_random_works as
 					then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 					else 1
 				end
-		group by case when tracks.grouping is not null then tracks.grouping else tracks.work end
+		group by case when tracks.performance is not null then tracks.performance else tracks.work end
 			having totaltrackcount >= 'PlaylistMinAlbumTracks'
 		order by random()
 		limit 1;
 select tracks.id, tracks.primary_artist from tracks
-	join dynamicplaylist_random_works on (tracks.album = dynamicplaylist_random_works.album and tracks.work = dynamicplaylist_random_works.work and case when dynamicplaylist_random_works.grouping is not null then tracks.grouping = dynamicplaylist_random_works.grouping else 1 end)
+	join dynamicplaylist_random_works on (tracks.album = dynamicplaylist_random_works.album and tracks.work = dynamicplaylist_random_works.work and case when dynamicplaylist_random_works.performance is not null then tracks.performance = dynamicplaylist_random_works.performance else 1 end)
 	join tracks_persistent on
 		tracks_persistent.urlmd5 = tracks.urlmd5
 	left join library_track on

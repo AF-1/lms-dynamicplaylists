@@ -7,7 +7,7 @@
 -- PlaylistLimitOption:unlimited
 drop table if exists dynamicplaylist_random_works;
 create temporary table dynamicplaylist_random_works as
-	select tracks.album as album, tracks.work as work, tracks.grouping as grouping, sum(ifnull(tracks_persistent.playCount,0)) as sumplaycount, count(distinct tracks.id) as totaltrackcount from tracks
+	select tracks.album as album, tracks.work as work, tracks.performance as performance, sum(ifnull(tracks_persistent.playCount,0)) as sumplaycount, count(distinct tracks.id) as totaltrackcount from tracks
 		left join library_track on
 			library_track.track = tracks.id
 		join tracks_persistent on
@@ -18,7 +18,7 @@ create temporary table dynamicplaylist_random_works as
 			tracks.audio = 1
 			and dynamicplaylist_history.id is null
 			and tracks.work is not null
-			and case when tracks.grouping is not null then tracks.grouping else tracks.work end
+			and case when tracks.performance is not null then tracks.performance else tracks.work end
 				case
 					when ('PlaylistCurrentVirtualLibraryForClient' != '' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
 					then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
@@ -29,7 +29,7 @@ create temporary table dynamicplaylist_random_works as
 		order by random()
 		limit 1;
 select tracks.id, tracks.primary_artist from tracks
-	join dynamicplaylist_random_works on (tracks.album = dynamicplaylist_random_works.album and tracks.work = dynamicplaylist_random_works.work and case when dynamicplaylist_random_works.grouping is not null then tracks.grouping = dynamicplaylist_random_works.grouping else 1 end)
+	join dynamicplaylist_random_works on (tracks.album = dynamicplaylist_random_works.album and tracks.work = dynamicplaylist_random_works.work and case when dynamicplaylist_random_works.performance is not null then tracks.performance = dynamicplaylist_random_works.performance else 1 end)
 	left join library_track on
 		library_track.track = tracks.id
 	left join dynamicplaylist_history on
