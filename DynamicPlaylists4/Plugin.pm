@@ -3248,31 +3248,43 @@ sub cliPlayPlaylist {
 	}
 
 	my $params = $request->getParamsCopy();
+	main::DEBUGLOG && $log->is_debug && $log->debug('params = '.Data::Dump::dump($params));
+
+	my $dplUserReqParamCount = keys %{$playLists->{$playlistId}->{'parameters'}};
+	main::DEBUGLOG && $log->is_debug && $log->debug('number of user req params = '.$dplUserReqParamCount);
+
+	my $providedUserReqParamValues = 0;
 	for my $k (keys %{$params}) {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			my $parameterId = $1;
 			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
 				main::DEBUGLOG && $log->is_debug && $log->debug("Using: $k = ".$params->{$k});
 				$playLists->{$playlistId}->{'parameters'}->{$1}->{'value'} = $params->{$k};
+				$providedUserReqParamValues++;
 			}
 		} else {
 			main::DEBUGLOG && $log->is_debug && $log->debug("Got: $k = ".$params->{$k});
 		}
 	}
 
-	my $masterClient = masterOrSelf($client);
+	if ($dplUserReqParamCount && $dplUserReqParamCount != $providedUserReqParamValues) {
+		$request->setStatusDone();
+		$log->warn('This dynamic playlist requires user input but the CLI command did not provide '.($providedUserReqParamValues == 0 ? 'any' : 'all').' parameter values.');
+	} else {
+		my $masterClient = masterOrSelf($client);
 
-	# Clear any current mix type in case user is restarting an already playing mix
-	stateStop($masterClient);
-	my @players = Slim::Player::Sync::slaves($client);
-	foreach my $player (@players) {
-		stateStop($player);
+		# Clear any current mix type in case user is restarting an already playing mix
+		stateStop($masterClient);
+		my @players = Slim::Player::Sync::slaves($client);
+		foreach my $player (@players) {
+			stateStop($player);
+		}
+
+		playRandom($client, $playlistId, 0, 1);
+
+		$request->setStatusDone();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliPlayPlaylist');
 	}
-
-	playRandom($client, $playlistId, 0, 1);
-
-	$request->setStatusDone();
-	main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliPlayPlaylist');
 }
 
 sub cliContinuePlaylist {
@@ -3305,23 +3317,34 @@ sub cliContinuePlaylist {
 	}
 
 	my $params = $request->getParamsCopy();
+	main::DEBUGLOG && $log->is_debug && $log->debug('params = '.Data::Dump::dump($params));
 
+	my $dplUserReqParamCount = keys %{$playLists->{$playlistId}->{'parameters'}};
+	main::DEBUGLOG && $log->is_debug && $log->debug('number of user req params = '.$dplUserReqParamCount);
+
+	my $providedUserReqParamValues = 0;
 	for my $k (keys %{$params}) {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			my $parameterId = $1;
 			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
 				main::DEBUGLOG && $log->is_debug && $log->debug("Using: $k = ".$params->{$k});
 				$playLists->{$playlistId}->{'parameters'}->{$1}->{'value'} = $params->{$k};
+				$providedUserReqParamValues++;
 			}
 		} else {
 			main::DEBUGLOG && $log->is_debug && $log->debug("Got: $k = ".$params->{$k});
 		}
 	}
 
-	playRandom($client, $playlistId, 0, 1, undef, 1);
+	if ($dplUserReqParamCount && $dplUserReqParamCount != $providedUserReqParamValues) {
+		$request->setStatusDone();
+		$log->warn('This dynamic playlist requires user input but the CLI command did not provide '.($providedUserReqParamValues == 0 ? 'any' : 'all').' parameter values.');
+	} else {
+		playRandom($client, $playlistId, 0, 1, undef, 1);
 
-	$request->setStatusDone();
-	main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliContinuePlaylist');
+		$request->setStatusDone();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliContinuePlaylist');
+	}
 }
 
 sub cliAddPlaylist {
@@ -3354,23 +3377,34 @@ sub cliAddPlaylist {
 	}
 
 	my $params = $request->getParamsCopy();
+	main::DEBUGLOG && $log->is_debug && $log->debug('params = '.Data::Dump::dump($params));
 
+	my $dplUserReqParamCount = keys %{$playLists->{$playlistId}->{'parameters'}};
+	main::DEBUGLOG && $log->is_debug && $log->debug('number of user req params = '.$dplUserReqParamCount);
+
+	my $providedUserReqParamValues = 0;
 	for my $k (keys %{$params}) {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			my $parameterId = $1;
 			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
 				main::DEBUGLOG && $log->is_debug && $log->debug("Using: $k = ".$params->{$k});
 				$playLists->{$playlistId}->{'parameters'}->{$1}->{'value'} = $params->{$k};
+				$providedUserReqParamValues++;
 			}
 		} else {
 			main::DEBUGLOG && $log->is_debug && $log->debug("Got: $k = ".$params->{$k});
 		}
 	}
 
-	playRandom($client, $playlistId, 1, 1, 1);
+	if ($dplUserReqParamCount && $dplUserReqParamCount != $providedUserReqParamValues) {
+		$request->setStatusDone();
+		$log->warn('This dynamic playlist requires user input but the CLI command did not provide '.($providedUserReqParamValues == 0 ? 'any' : 'all').' parameter values.');
+	} else {
+		playRandom($client, $playlistId, 1, 1, 1);
 
-	$request->setStatusDone();
-	main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliAddPlaylist');
+		$request->setStatusDone();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliAddPlaylist');
+	}
 }
 
 sub cliDstmSeedListPlay {
@@ -3403,23 +3437,34 @@ sub cliDstmSeedListPlay {
 	}
 
 	my $params = $request->getParamsCopy();
+	main::DEBUGLOG && $log->is_debug && $log->debug('params = '.Data::Dump::dump($params));
 
+	my $dplUserReqParamCount = keys %{$playLists->{$playlistId}->{'parameters'}};
+	main::DEBUGLOG && $log->is_debug && $log->debug('number of user req params = '.$dplUserReqParamCount);
+
+	my $providedUserReqParamValues = 0;
 	for my $k (keys %{$params}) {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			my $parameterId = $1;
 			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
 				main::DEBUGLOG && $log->is_debug && $log->debug("Using: $k = ".$params->{$k});
 				$playLists->{$playlistId}->{'parameters'}->{$1}->{'value'} = $params->{$k};
+				$providedUserReqParamValues++;
 			}
 		} else {
 			main::DEBUGLOG && $log->is_debug && $log->debug("Got: $k = ".$params->{$k});
 		}
 	}
 
-	playRandom($client, $playlistId, 2, 1, 1);
+	if ($dplUserReqParamCount && $dplUserReqParamCount != $providedUserReqParamValues) {
+		$request->setStatusDone();
+		$log->warn('This dynamic playlist requires user input but the CLI command did not provide '.($providedUserReqParamValues == 0 ? 'any' : 'all').' parameter values.');
+	} else {
+		playRandom($client, $playlistId, 2, 1, 1);
 
-	$request->setStatusDone();
-	main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliDstmSeedListPlay');
+		$request->setStatusDone();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliDstmSeedListPlay');
+	}
 }
 
 sub cliQueuePlaylist {
@@ -5382,7 +5427,7 @@ sub _preselectionMenuJive {
 			my $selectedItem = $preselectionList->{$itemID};
 			my $itemName = $selectedItem->{'name'};
 			my $itemArtistName = $selectedItem->{'artistname'};
-			my $text = $objectType eq 'artist' ? $itemName : $itemName.'  -- '.$client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_INFO_BY').'  '.$itemArtistName;
+			my $text = $objectType eq 'artist' ? $itemName : $itemName.' -- '.$client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_INFO_BY').' '.$itemArtistName;
 			my %itemParams = (
 				'objecttype' => $objectType,
 				'removeid' => $itemID,
