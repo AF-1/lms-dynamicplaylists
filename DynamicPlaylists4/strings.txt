@@ -845,7 +845,12 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_GENRE_DECADE
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_TOPRATEDAVG
 	EN	Albums - with top average rating
 	FR	Albums - avec les meilleures notes moyennes
-	DE	Alben - mit Top Bewertungen
+	DE	Alben - mit Top Durchschnittsbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_TOPRATEDTOTAL
+	EN	Albums - with top total rating
+	FR	Albums - avec les meilleures notes
+	DE	Alben - mit Top Gesamtbewertung
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_MOSTRATEDSONGS
 	EN	Albums - with most rated songs
@@ -873,7 +878,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_PARTLYPLAYED_GENRE_DECADE
 	DE	Alben - teilweise gespielt (nach Stilrichtung und Jahrzehnt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_MOSTPLAYED
-	EN	Albums - most played (absolute count)
+	EN	Albums - most played (total count)
 	FR	Albums - les plus joués (compte absolu)
 	DE	Alben - meistgespielt (absolut)
 
@@ -883,7 +888,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_MOSTPLAYEDAVG
 	DE	Alben - meistgespielt (Durchschnitt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_LEASTPLAYED
-	EN	Albums - least played (absolute count)
+	EN	Albums - least played (total count)
 	FR	Albums - les moins joués (compte absolu)
 	DE	Alben - am wenigsten gespielt (absolut)
 
@@ -928,18 +933,23 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_TOPRATEDAVG
 	FR	Artistes - avec les meilleures notes moyennes
 	DE	Interpreten - mit Top Durchschnittsbewertung
 
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_TOPRATEDTOTAL
+	EN	Artists - with top total rating
+	FR	Artistes - avec les meilleures notes
+	DE	Interpreten - mit Top Gesamtbewertung
+
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_MOSTRATEDSONGS
 	EN	Artists - with most rated songs
 	FR	Artistes - avec les morceaux les mieux notés
 	DE	Interpreten - mit den meisten bewerteten Titeln
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_RATED
-	EN	Artists - with rated songs
+	EN	Artists - that have rated songs
 	FR	Artistes - avec des morceaux notés
 	DE	Interpreten - mit bewerteten Titeln
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_TOPRATED
-	EN	Artists - with top rated songs
+	EN	Artists - that have top rated songs
 	FR	Artistes - avec les morceaux les mieux notés
 	DE	Interpreten - mit TOP bewerteten Titeln
 
@@ -954,7 +964,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_PARTLYPLAYED_GENRE_DECADE
 	DE	Interpreten - teilweise gespielt (nach Stilrichtung und Jahrzehnt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_MOSTPLAYED
-	EN	Artists - most played (absolute count)
+	EN	Artists - most played (total count)
 	FR	Artistes - les plus joués (compte absolu)
 	DE	Interpreten - meistgespielt (absolut)
 
@@ -1004,6 +1014,10 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_TOPRATEDAVG
 	FR	Genres - avec les meilleures notes moyennes
 	DE	Stilrichtungen - mit TOP Durchschnittsbewertung
 
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_TOPRATEDTOTAL
+	EN	Genres - with top total rating
+	FR	Genres - avec les meilleures notes
+	DE	Stilrichtungen - mit Top Gesamtbewertung
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_MOSTRATEDSONGS
 	EN	Genres - with most rated songs
@@ -1026,7 +1040,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_UNRATED
 	DE	Stilrichtungen - nicht bewertet
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_MOSTPLAYED
-	EN	Genres - most played (absolute count)
+	EN	Genres - most played (total count)
 	FR	Genres - les plus joués (compte absolu)
 	DE	Stilrichtungen - meistgespielt (absolut)
 
@@ -1036,7 +1050,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_MOSTPLAYEDAVG
 	DE	Stilrichtungen - meistgespielt (Durchschnitt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_LEASTPLAYED
-	EN	Genres - least played (absolute count)
+	EN	Genres - least played (total count)
 	FR	Genres - les moins joués (compte absolu)
 	DE	Stilrichtungen - am wenigsten gespielt (absolut)
 
@@ -1076,6 +1090,11 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_TOPRATEDAVG
 	FR	Listes de lecture - avec les meilleures notes moyennes
 	DE	Wiedergabelisten - mit TOP Durchschnittsbewertung
 
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_TOPRATEDTOTAL
+	EN	Playlists - with top total rating
+	FR	Listes - avec les meilleures notes
+	DE	Wiedergabelisten - mit Top Gesamtbewertung
+
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_RATEDSONGS
 	EN	Playlists - that contain rated songs
 	FR	Listes de lecture - contenant les morceaux notés
@@ -1092,7 +1111,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_UNRATED
 	DE	Wiedergabelisten - nicht bewertet
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_MOSTPLAYED
-	EN	Playlists - most played (absolute count)
+	EN	Playlists - most played (total count)
 	FR	Listes de lecture - les plus jouées (compte absolu)
 	DE	Wiedergabelisten - meistgespielt (absolut)
 
@@ -1102,7 +1121,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_MOSTPLAYEDAVG
 	DE	Wiedergabelisten - meistgespielt (Durchschnitt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_LEASTPLAYED
-	EN	Playlists - least played (absolute count)
+	EN	Playlists - least played (total count)
 	FR	Listes de lecture - les moins jouées (compte absolu)
 	DE	Wiedergabelisten - am wenigsten gespielt (absolut)
 
@@ -1301,7 +1320,12 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_RANDOM
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_TOPRATEDAVG
 	EN	Years - with top average rating
 	FR	Années - avec les meilleures notes moyennes
-	DE	Jahre - mit TOP durschnittlicher Bewertung
+	DE	Jahre - mit TOP Durchschnittsbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_TOPRATEDTOTAL
+	EN	Years - with top total rating
+	FR	Années - avec les meilleures notes
+	DE	Jahre - mit Top Gesamtbewertung
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_MOSTRATEDSONGS
 	EN	Years - with most rated songs
@@ -1324,7 +1348,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_UNRATED
 	DE	Jahre - unbewertet
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_MOSTPLAYED
-	EN	Years - most played (absolute count)
+	EN	Years - most played (total count)
 	FR	Années - les plus jouées (compte absolu)
 	DE	Jahre - meistgespielt (absolut)
 
@@ -1334,7 +1358,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_MOSTPLAYEDAVG
 	DE	Jahre - meistgespielt (Durchschnitt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_LEASTPLAYED
-	EN	Years - least played (absolute count)
+	EN	Years - least played (total count)
 	FR	Années - les moins jouées (compte absolu)
 	DE	Jahre - am wenigsten gespielt (absolut)
 
@@ -1377,7 +1401,12 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_GENRE_DECADE
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_TOPRATEDAVG
 	EN	Works - with top average rating
 	FR	Œuvres - avec les meilleures notes moyennes
-	DE	Werke - mit Top Bewertungen
+	DE	Werke - mit Top Durchschnittsbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_TOPRATEDTOTAL
+	EN	Works - with top total rating
+	FR	Œuvres - avec les meilleures notes
+	DE	Werke - mit Top Gesamtbewertung
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTRATEDSONGS
 	EN	Works - with most rated songs
@@ -1405,7 +1434,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_PARTLYPLAYED_GENRE_DECADE
 	DE	Werke - teilweise gespielt (nach Stilrichtung und Jahrzehnt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTPLAYED
-	EN	Works - most played (absolute count)
+	EN	Works - most played (total count)
 	FR	Œuvres - les plus joués (compte absolu)
 	DE	Werke - meistgespielt (absolut)
 
@@ -1415,7 +1444,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTPLAYEDAVG
 	DE	Werke - meistgespielt (Durchschnitt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_LEASTPLAYED
-	EN	Works - least played (absolute count)
+	EN	Works - least played (total count)
 	FR	Œuvres - les moins joués (compte absolu)
 	DE	Werke - am wenigsten gespielt (absolut)
 
@@ -1537,13 +1566,18 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_RANDOM
 	FR	Albums - aléatoire (de l'artiste sélectionné)
 	DE	Alben - zufällig (von gewähltem Interpreten)
 
-PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_TOPRATED
-	EN	Albums - top rated (average) (by selected artist)
-	FR	Albums - mieux notés (moyenne) (de l'artiste sélectionné)
-	DE	Alben - TOP bewertet (von gewähltem Interpreten)
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_TOPRATEDAVG
+	EN	Albums - with top average rating (by selected artist)
+	FR	Albums - avec les meilleures notes moyennes (de l'artiste sélectionné)
+	DE	Alben - mit TOP Durchschnittsbewertung (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_TOPRATEDTOTAL
+	EN	Albums - with top total rating (by selected artist)
+	FR	Albums - mieux notés (de l'artiste sélectionné)
+	DE	Alben - mit TOP Gesamtbewertung (von gewähltem Interpreten)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYED
-	EN	Albums - most played (absolute count) (by selected artist)
+	EN	Albums - most played (total count) (by selected artist)
 	FR	Albums - les plus joués (compte absolu) (de l'artiste sélectionné)
 	DE	Alben - zufällig (von gewähltem Interpreten)
 
@@ -1553,7 +1587,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYEDAVG
 	DE	Alben - meistgespielt (von gewähltem Interpreten)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYED
-	EN	Albums - least played (absolute count) (by selected artist)
+	EN	Albums - least played (total count) (by selected artist)
 	FR	Albums - les moins joués (compte absolu) (de l'artiste sélectionné)
 	DE	Alben - am wenigsten gespielt (absolut) (von gewähltem Interpreten)
 
@@ -1629,13 +1663,18 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_RANDOM
 	DE	Alben - zufällig (von gewählter Stilrichtung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_TOPRATEDAVG
-	EN	Albums - top rated (average) (in selected genre)
-	FR	Albums - mieux notés (moyenne) (dans le genre sélectionné)
-	DE	Alben - TOP bewertet (von gewählter Stilrichtung)
+	EN	Albums - with top average rating (in selected genre)
+	FR	Albums - avec les meilleures notes moyennes (dans le genre sélectionné)
+	DE	Alben - mit TOP Durchschnittsbewertung (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_TOPRATEDTOTAL
+	EN	Albums - with top total rating (in selected genre)
+	FR	Albums - mieux notés (dans le genre sélectionné)
+	DE	Alben - mit TOP Gesamtbewertung (von gewählter Stilrichtung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_MOSTPLAYED
-	EN	Albums - most played (absolute count) (in selected genre)
-	FR	Albums - les plus joués (compte absolu) (dans le genre sélectionné)
+	EN	Albums - most played (total count) (in selected genre)
+	FR	Albums - avec les meilleures notes moyennes (dans le genre sélectionné)
 	DE	Alben - meistgespielt (absolut) (von gewählter Stilrichtung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_MOSTPLAYEDAVG
@@ -1644,7 +1683,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_MOSTPLAYEDAVG
 	DE	Alben - meistgespielt (Durchschnitt) (von gewählter Stilrichtung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_LEASTPLAYED
-	EN	Albums - least played (absolute count) (in selected genre)
+	EN	Albums - least played (total count) (in selected genre)
 	FR	Albums - les moins joués (compte absolu) (dans le genre sélectionné)
 	DE	Alben - am wenigsten gespielt (absolut) (von gewählter Stilrichtung)
 
@@ -1669,12 +1708,17 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_RANDOM
 	DE	Interpreten - zufällig (von gewählter Stilrichtung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_TOPRATEDAVG
-	EN	Artists - top rated (average) (in selected genre)
-	FR	Artistes - mieux notés (moyenne) (dans le genre sélectionné)
-	DE	Interpreten - TOP bewertet (von gewählter Stilrichtung)
+	EN	Artists - with top average rating (in selected genre)
+	FR	Artistes - avec les meilleures notes moyennes (dans le genre sélectionné)
+	DE	Interpreten - mit TOP Durchschnittsbewertung (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_TOPRATEDTOTAL
+	EN	Artists - with top total rating (in selected genre)
+	FR	Artistes - mieux notés (dans le genre sélectionné)
+	DE	Interpreten - mit TOP Gesamtbewertung (von gewählter Stilrichtung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_MOSTPLAYED
-	EN	Artists - most played (absolute count) (in selected genre)
+	EN	Artists - most played (total count) (in selected genre)
 	FR	Artistes - les plus joués (compte absolu) (dans le genre sélectionné)
 	DE	Interpreten - meistgespielt (absolut) (von gewählter Stilrichtung)
 
@@ -1684,7 +1728,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_MOSTPLAYEDAVG
 	DE	Interpreten - meistgespielt (Durchschnitt) (von gewählter Stilrichtung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_LEASTPLAYED
-	EN	Artists - least played (absolute count) (in selected genre)
+	EN	Artists - least played (total count) (in selected genre)
 	FR	Artistes - les moins joués (compte absolu) (dans le genre sélectionné)
 	DE	Interpreten - am wenigsten gespielt (absolut) (von gewählter Stilrichtung)
 
@@ -1875,22 +1919,32 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_RANDOM
 	DE	Alben - (aus gewähltem Jahr)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_TOPRATEDAVG
-	EN	Albums - top rated (average) (from selected year)
-	FR	Albums - mieux notés (moyen) (de l'année sélectionnée)
-	DE	Alben - TOP bewertet (Durchschnitt) (aus gewähltem Jahr)
+	EN	Albums - with top average rating (from selected year)
+	FR	Albums - avec les meilleures notes moyennes (de l'année sélectionnée)
+	DE	Alben - mit TOP Durchschnittsbewertung (aus gewähltem Jahr)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_TOPRATEDAVG
-	EN	Albums - top rated (average) (from this DECADE)
-	FR	Albums - mieux notés (moyenne) (de cette décennie)
-	DE	Alben - TOP bewertet (aus diesem Jahrzehnt)
+	EN	Albums - with top average rating (from this DECADE)
+	FR	Albums - avec les meilleures notes moyennes (de cette décennie)
+	DE	Alben - mit TOP Durchschnittsbewertung (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_TOPRATEDTOTAL
+	EN	Albums - with top total rating (from selected year)
+	FR	Albums - mieux notés (de l'année sélectionnée)
+	DE	Alben - mit TOP Gesamtbewertung (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_TOPRATEDTOTAL
+	EN	Albums - with top total rating (from this DECADE)
+	FR	Albums - mieux notés (de cette décennie)
+	DE	Alben - mit TOP Gesamtbewertung (aus diesem Jahrzehnt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_MOSTPLAYED
-	EN	Albums - most played (absolute count) (from selected year)
+	EN	Albums - most played (total count) (from selected year)
 	FR	Albums - les plus joués (compte absolu) (de l'année sélectionnée)
 	DE	Alben - meistgespielt (aus gewähltem Jahr)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_MOSTPLAYED
-	EN	Albums - most played (absolute count) (from this DECADE)
+	EN	Albums - most played (total count) (from this DECADE)
 	FR	Albums - les plus joués (compte absolu) (de cette décennie)
 	DE	Alben - meistgespielt (aus diesem Jahrzehnt)
 
@@ -1905,12 +1959,12 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_MOSTPLAYEDAVG
 	DE	Alben - meistgespielt (Durchschnitt) (aus diesem Jahrzehnt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_LEASTPLAYED
-	EN	Albums - least played (absolute count) (from selected year)
+	EN	Albums - least played (total count) (from selected year)
 	FR	Albums - les moins joués (compte absolu) (de l'année sélectionnée)
 	DE	Alben - am wenigsten gespielt (aus gewähltem Jahr)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_LEASTPLAYED
-	EN	Albums - least played (absolute count) (from this DECADE)
+	EN	Albums - least played (total count) (from this DECADE)
 	FR	Albums - les moins joués (compte absolu) (de cette décennie)
 	DE	Alben - am wenigsten gespielt (absolut) (aus diesem Jahrzehnt)
 
@@ -2311,7 +2365,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_PARTLYPLAYED_GENRE_DECADE_APC
 	DE	Alben - teilweise gespielt (nach Stilrichtung und Jahrzehnt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_MOSTPLAYED_APC
-	EN	Albums - most played (absolute count) (APC)
+	EN	Albums - most played (total count) (APC)
 	FR	Albums - les plus joués (compte absolu) (APC)
 	DE	Alben - meistgespielt (absolut) (APC)
 
@@ -2321,7 +2375,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_MOSTPLAYEDAVG_APC
 	DE	Alben - meistgespielt (Durchschnitt) (APC)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_LEASTPLAYED_APC
-	EN	Albums - least played (absolute count) (APC)
+	EN	Albums - least played (total count) (APC)
 	FR	Albums - les moins joués (compte absolu) (APC)
 	DE	Alben - am wenigsten gespielt (absolut) (APC)
 
@@ -2352,7 +2406,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_PARTLYPLAYED_GENRE_DECADE_APC
 	DE	Interpreten - teilweise gespielt (nach Stilrichtung und Jahrzehnt) (APC)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_MOSTPLAYED_APC
-	EN	Artists - most played (absolute count) (APC)
+	EN	Artists - most played (total count) (APC)
 	FR	Artistes - les plus joués (compte absolu) (APC)
 	DE	Interpreten - meistgespielt (absolut) (APC)
 
@@ -2388,7 +2442,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_PLAYEDLONGAGO_APC
 
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_MOSTPLAYED_APC
-	EN	Genres - most played (absolute count) (APC)
+	EN	Genres - most played (total count) (APC)
 	FR	Genres - les plus joués (compte absolu) (APC)
 	DE	Stilrichtungen - meistgespielt (absolut) (APC)
 
@@ -2398,7 +2452,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_MOSTPLAYEDAVG_APC
 	DE	Stilrichtungen - meistgespielt (Durchschnitt) (APC)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_LEASTPLAYED_APC
-	EN	Genres - least played (absolute count) (APC)
+	EN	Genres - least played (total count) (APC)
 	FR	Genres - les moins joués (compte absolu) (APC)
 	DE	Stilrichtungen - am wenigsten gespielt (absolut) (APC)
 
@@ -2424,7 +2478,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_PLAYEDLONGAGO_APC
 
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_MOSTPLAYED_APC
-	EN	Playlists - most played (absolute count) (APC)
+	EN	Playlists - most played (total count) (APC)
 	FR	Listes de lecture - les plus jouées (compte absolu) (APC)
 	DE	Wiedergabelisten - meistgespielt (absolut) (APC)
 
@@ -2434,7 +2488,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_MOSTPLAYEDAVG_APC
 	DE	Wiedergabelisten - meistgespielt (Durchschnitt) (APC)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_LEASTPLAYED_APC
-	EN	Playlists - least played (absolute count) (APC)
+	EN	Playlists - least played (total count) (APC)
 	FR	Listes de lecture - les moins jouées (compte absolu) (APC)
 	DE	Wiedergabelisten - am wenigsten gespielt (absolut) (APC)
 
@@ -2496,7 +2550,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PLAYEDLONGAGO_APC
 
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_MOSTPLAYED_APC
-	EN	Years - most played (absolute count) (APC)
+	EN	Years - most played (total count) (APC)
 	FR	Années - les plus jouées (compte absolu) (APC)
 	DE	Jahre - meistgespielt (absolut) (APC)
 
@@ -2506,7 +2560,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_MOSTPLAYEDAVG_APC
 	DE	Jahre - meistgespielt (Durchschnitt) (APC)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_LEASTPLAYED_APC
-	EN	Years - least played (absolute count) (APC)
+	EN	Years - least played (total count) (APC)
 	FR	Années - les moins jouées (compte absolu) (APC)
 	DE	Jahre - am wenigsten gespielt (absolut) (APC)
 
@@ -2573,7 +2627,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_PLAYEDLONGAGO_APC
 	DE	Titel - vor langer Zeit gespielt (APC) (von gewähltem Interpret)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYED_APC
-	EN	Albums - most played (absolute count) (APC) (by selected artist)
+	EN	Albums - most played (total count) (APC) (by selected artist)
 	FR	Albums - les plus joués (compte absolu) (APC) (de l'artiste sélectionné)
 	DE	Alben - meistgespielt (absolut) (APC) (von gewähltem Interpret)
 
@@ -2583,7 +2637,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYEDAVG_AP
 	DE	Alben - meistgespielt (Durchschnitt) (APC) (von gewähltem Interpret)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYED_APC
-	EN	Albums - least played (absolute count) (APC) (by selected artist)
+	EN	Albums - least played (total count) (APC) (by selected artist)
 	FR	Albums - les moins joués (compte absolu) (APC) (de l'artiste sélectionné)
 	DE	Alben - am wenigsten gespielt (absolut) (APC) (von gewähltem Interpret)
 
@@ -2624,7 +2678,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_PLAYEDLONGAGO_APC
 	DE	Titel - vor langer Zeit gespielt (APC) (aus gewählter Stilrichtung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_MOSTPLAYED_APC
-	EN	Albums - most played (absolute count) (APC) (in selected genre)
+	EN	Albums - most played (total count) (APC) (in selected genre)
 	FR	Albums - les plus joués (compte absolu) (APC) (dans le genre sélectionné)
 	DE	Alben - meistgespielt (absolut) (APC) (aus gewählter Stilrichtung)
 
@@ -2634,7 +2688,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_MOSTPLAYEDAVG_APC
 	DE	Alben - meistgespielt (Durchschnitt) (APC) (aus gewählter Stilrichtung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_LEASTPLAYED_APC
-	EN	Albums - least played (absolute count) (APC) (in selected genre)
+	EN	Albums - least played (total count) (APC) (in selected genre)
 	FR	Albums - les moins joués (compte absolu) (APC) (dans le genre sélectionné)
 	DE	Alben - am wenigsten gespielt (absolut) (APC) (aus gewählter Stilrichtung)
 
@@ -2654,7 +2708,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_PLAYEDLONGAGO_APC
 	DE	Alben - vor langer Zeit gespielt (APC) (aus gewählter Stilrichtung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_MOSTPLAYED_APC
-	EN	Artists - most played (absolute count) (APC) (in selected genre)
+	EN	Artists - most played (total count) (APC) (in selected genre)
 	FR	Artistes - les plus joués (compte absolu) (APC) (dans le genre sélectionné)
 	DE	Interpreten - meistgespielt (absolut) (APC) (aus gewählter Stilrichtung)
 
@@ -2664,7 +2718,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_MOSTPLAYEDAVG_AP
 	DE	Interpreten - meistgespielt (Durchschnitt) (APC) (aus gewählter Stilrichtung)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_LEASTPLAYED_APC
-	EN	Artists - least played (absolute count) (APC) (in selected genre)
+	EN	Artists - least played (total count) (APC) (in selected genre)
 	FR	Artistes - les moins joués (compte absolu) (APC) (dans le genre sélectionné)
 	DE	Interpreten - am wenigsten gespielt (absolut) (APC) (aus gewählter Stilrichtung)
 
@@ -2711,7 +2765,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_PARTLYPLAYED_GENRE_DECADE_APC
 	DE	Werke - teilweise gespielt (nach Stilrichtung und Jahrzehnt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTPLAYED_APC
-	EN	Works - most played (absolute count) (APC)
+	EN	Works - most played (total count) (APC)
 	FR	Œuvres - les plus joués (compte absolu) (APC)
 	DE	Werke - meistgespielt (absolut) (APC)
 
@@ -2721,7 +2775,7 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTPLAYEDAVG_APC
 	DE	Werke - meistgespielt (Durchschnitt) (APC)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_LEASTPLAYED_APC
-	EN	Works - least played (absolute count) (APC)
+	EN	Works - least played (total count) (APC)
 	FR	Œuvres - les moins joués (compte absolu) (APC)
 	DE	Werke - am wenigsten gespielt (absolut) (APC)
 
@@ -2787,12 +2841,12 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_PLAYEDLONGAGO_APC
 	DE	Titel - vor langer Zeit gespielt (APC) (aus diesem Jahrzehnt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_MOSTPLAYED_APC
-	EN	Albums - most played (absolute count) (APC) (from selected year)
+	EN	Albums - most played (total count) (APC) (from selected year)
 	FR	Albums - les plus joués (compte absolu) (APC) (de l'année sélectionnée)
 	DE	Alben - meistgespielt (APC) (aus gewähltem Jahr)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_MOSTPLAYED_APC
-	EN	Albums - most played (absolute count) (APC) (from this DECADE)
+	EN	Albums - most played (total count) (APC) (from this DECADE)
 	FR	Albums - les plus joués (compte absolu) (APC) (de cette décennie)
 	DE	Alben - meistgespielt (absolut) (APC) (aus diesem Jahrzehnt)
 
@@ -2807,12 +2861,12 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_MOSTPLAYEDAVG_AP
 	DE	Alben - meistgespielt (Durchschnitt) (APC) (aus diesem Jahrzehnt)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_LEASTPLAYED_APC
-	EN	Albums - least played (absolute count) (APC) (from selected year)
+	EN	Albums - least played (total count) (APC) (from selected year)
 	FR	Albums - les moins joués (compte absolu) (APC) (de l'année sélectionnée)
 	DE	Alben - am wenigsten gespielt (absolut) (APC) (aus gewähltem Jahr)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_LEASTPLAYED_APC
-	EN	Albums - least played (absolute count) (APC) (from this DECADE)
+	EN	Albums - least played (total count) (APC) (from this DECADE)
 	FR	Albums - les moins joués (compte absolu) (APC) (de cette décennie)
 	DE	Alben - am wenigsten gespielt (absolut) (APC) (aus diesem Jahrzehnt)
 

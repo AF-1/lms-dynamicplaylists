@@ -1,4 +1,4 @@
--- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_TOPRATEDAVG
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_TOPRATEDTOTAL
 -- PlaylistGroups:Context menu lists/ artist
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:artists
@@ -8,7 +8,7 @@
 -- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
-	select tracks.album as album, avg(ifnull(tracks_persistent.rating,0)) as avgrating, count(distinct tracks.id) as totaltrackcount from tracks
+	select tracks.album as album, sum(ifnull(tracks_persistent.rating,0)) as totalrating, count(distinct tracks.id) as totaltrackcount from tracks
 	join contributor_track on
 		contributor_track.track = tracks.id and contributor_track.contributor = 'PlaylistParameter1'
 	left join library_track on
@@ -34,7 +34,7 @@ create temporary table dynamicplaylist_random_albums as
 							genres.namesearch in ('PlaylistExcludedGenres'))
 	group by tracks.album
 		having totaltrackcount >= 'PlaylistMinArtistTracks'
-	order by avgrating desc, random()
+	order by totalrating desc, random()
 	limit 1;
 select tracks.id, tracks.primary_artist from tracks
 	join dynamicplaylist_random_albums on
