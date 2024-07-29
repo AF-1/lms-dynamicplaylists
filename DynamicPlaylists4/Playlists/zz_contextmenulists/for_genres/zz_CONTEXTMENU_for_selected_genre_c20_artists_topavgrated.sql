@@ -8,16 +8,11 @@ drop table if exists dynamicplaylist_random_contributors;
 create temporary table dynamicplaylist_random_contributors as
 	select topavgrated.contributor as contributor from
 		(select contributor_track.contributor as contributor, avg(ifnull(tracks_persistent.rating,0)) as avgrating, count(distinct tracks.id) as totaltrackcount from tracks
-		join contributor_track on
-			contributor_track.track = tracks.id and contributor_track.role in (1,4,5,6)
-		join genre_track on
-			genre_track.track = tracks.id and genre_track.genre = 'PlaylistParameter1'
-		left join library_track on
-			library_track.track = tracks.id
-		join tracks_persistent on
-			tracks_persistent.urlmd5 = tracks.urlmd5
-		left join dynamicplaylist_history on
-			dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+		join contributor_track on contributor_track.track = tracks.id and contributor_track.role in (1,4,5,6)
+		join genre_track on genre_track.track = tracks.id and genre_track.genre = 'PlaylistParameter1'
+		left join library_track on library_track.track = tracks.id
+		join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
+		left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 		where
 			tracks.audio = 1
 			and dynamicplaylist_history.id is null
@@ -41,18 +36,12 @@ create temporary table dynamicplaylist_random_contributors as
 	order by random()
 	limit 1;
 select tracks.id, tracks.primary_artist from tracks
-	join contributor_track on
-		contributor_track.track = tracks.id and contributor_track.role in (1,4,5,6)
-	join dynamicplaylist_random_contributors on
-		dynamicplaylist_random_contributors.contributor = contributor_track.contributor
-	join genre_track on
-		genre_track.track = tracks.id and genre_track.genre = 'PlaylistParameter1'
-	left join library_track on
-		library_track.track = tracks.id
-	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	join contributor_track on contributor_track.track = tracks.id and contributor_track.role in (1,4,5,6)
+	join dynamicplaylist_random_contributors on dynamicplaylist_random_contributors.contributor = contributor_track.contributor
+	join genre_track on genre_track.track = tracks.id and genre_track.genre = 'PlaylistParameter1'
+	left join library_track on library_track.track = tracks.id
+	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.audio = 1
 		and tracks.secs >= 'PlaylistTrackMinDuration'

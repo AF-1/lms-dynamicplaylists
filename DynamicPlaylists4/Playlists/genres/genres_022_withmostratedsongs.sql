@@ -6,14 +6,10 @@ drop table if exists dynamicplaylist_random_genres;
 create temporary table dynamicplaylist_random_genres as
 	select mostrated.genre as genre from
 		(select genre_track.genre as genre, count(distinct tracks.id) as totaltrackcount from genre_track
-		join tracks on
-			genre_track.track = tracks.id
-		join tracks_persistent on
-			tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) > 0
-		left join library_track on
-			library_track.track = tracks.id
-		left join dynamicplaylist_history on
-			dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+		join tracks on genre_track.track = tracks.id
+		join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) > 0
+		left join library_track on library_track.track = tracks.id
+		left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 		where
 			genre_track.genre is not null
 			and dynamicplaylist_history.id is null
@@ -35,16 +31,11 @@ create temporary table dynamicplaylist_random_genres as
 	order by random()
 	limit 1;
 select tracks.id, tracks.primary_artist from tracks
-	join genre_track on
-		genre_track.track = tracks.id
-	join dynamicplaylist_random_genres on
-		dynamicplaylist_random_genres.genre = genre_track.genre
-	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5
-	left join library_track on
-		library_track.track = tracks.id
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	join genre_track on genre_track.track = tracks.id
+	join dynamicplaylist_random_genres on dynamicplaylist_random_genres.genre = genre_track.genre
+	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
+	left join library_track on library_track.track = tracks.id
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.audio = 1
 		and tracks.secs >= 'PlaylistTrackMinDuration'

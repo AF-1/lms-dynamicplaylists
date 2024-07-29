@@ -6,12 +6,9 @@
 -- PlaylistAPCdupe:yes
 -- PlaylistParameter1:album:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTALBUM:
 select tracks.id, tracks.primary_artist from tracks
-	left join library_track on
-		library_track.track = tracks.id
-	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.playCount, 0) = 0
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	left join library_track on library_track.track = tracks.id
+	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.playCount, 0) = 0
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.audio = 1
 		and tracks.album = 'PlaylistParameter1'

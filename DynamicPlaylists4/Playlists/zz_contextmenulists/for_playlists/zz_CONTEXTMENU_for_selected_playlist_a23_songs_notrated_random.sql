@@ -6,14 +6,10 @@
 -- PlaylistParameter1:playlist:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPLAYLIST:
 -- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
 select tracks.id, tracks.primary_artist from tracks
-	join playlist_track on
-		playlist_track.track = tracks.url
-	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) = 0
-	left join library_track on
-		library_track.track = tracks.id
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	join playlist_track on playlist_track.track = tracks.url
+	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) = 0
+	left join library_track on library_track.track = tracks.id
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		playlist_track.playlist = 'PlaylistParameter1'
 		and tracks.audio = 1

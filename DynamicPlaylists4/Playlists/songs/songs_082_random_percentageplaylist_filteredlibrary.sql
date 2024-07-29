@@ -11,12 +11,9 @@ drop table if exists randomweightedplaylisttracks;
 drop table if exists randomweightedlibrarylocal;
 drop table if exists randomweightedlibrarycombined;
 create temporary table randomweightedlibrarylocal as select tracks.id, tracks.primary_artist from tracks
-	join genre_track on
-		genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter2')
-	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) >= 'PlaylistParameter6'
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	join genre_track on genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter2')
+	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) >= 'PlaylistParameter6'
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.audio = 1
 		and dynamicplaylist_history.id is null
@@ -31,12 +28,9 @@ create temporary table randomweightedlibrarylocal as select tracks.id, tracks.pr
 	order by random()
 	limit (100 - 'PlaylistParameter4');
 create temporary table randomweightedplaylisttracks as select tracks.id, tracks.primary_artist from tracks
-	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) >= 'PlaylistParameter6'
-	join playlist_track on
-		playlist_track.track = tracks.url and playlist_track.playlist in ('PlaylistParameter1')
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) >= 'PlaylistParameter6'
+	join playlist_track on playlist_track.track = tracks.url and playlist_track.playlist in ('PlaylistParameter1')
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.audio = 1
 		and dynamicplaylist_history.id is null

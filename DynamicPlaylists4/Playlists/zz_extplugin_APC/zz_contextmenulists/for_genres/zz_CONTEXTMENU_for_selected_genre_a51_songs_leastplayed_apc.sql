@@ -6,14 +6,10 @@
 -- PlaylistTrackOrder:orderedascrandom
 -- PlaylistParameter1:genre:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTGENRE:
 select tracks.id, tracks.primary_artist, alternativeplaycount.playCount from tracks
-	join genre_track on
-		genre_track.track = tracks.id and genre_track.genre = 'PlaylistParameter1'
-	join alternativeplaycount on
-		alternativeplaycount.urlmd5 = tracks.urlmd5
-	left join library_track on
-		library_track.track = tracks.id
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	join genre_track on genre_track.track = tracks.id and genre_track.genre = 'PlaylistParameter1'
+	join alternativeplaycount on alternativeplaycount.urlmd5 = tracks.urlmd5
+	left join library_track on library_track.track = tracks.id
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.audio = 1
 		and tracks.secs >= 'PlaylistTrackMinDuration'

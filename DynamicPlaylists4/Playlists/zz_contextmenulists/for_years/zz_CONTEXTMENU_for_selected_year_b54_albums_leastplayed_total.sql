@@ -11,12 +11,9 @@ drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select leastplayed.album as album from
 		(select tracks.album as album, sum(ifnull(tracks_persistent.playCount,0)) as sumcount, count(distinct tracks.id) as totaltrackcount from tracks
-		left join library_track on
-			library_track.track = tracks.id
-		join tracks_persistent on
-			tracks_persistent.urlmd5 = tracks.urlmd5
-		left join dynamicplaylist_history on
-			dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+		left join library_track on library_track.track = tracks.id
+		join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
+		left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 		where
 			tracks.audio = 1
 			and tracks.year = 'PlaylistParameter1'
@@ -40,14 +37,10 @@ create temporary table dynamicplaylist_random_albums as
 	order by random()
 	limit 1;
 select tracks.id, tracks.primary_artist from tracks
-	join dynamicplaylist_random_albums on
-		dynamicplaylist_random_albums.album = tracks.album
-	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5
-	left join library_track on
-		library_track.track = tracks.id
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	join dynamicplaylist_random_albums on dynamicplaylist_random_albums.album = tracks.album
+	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
+	left join library_track on library_track.track = tracks.id
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.audio = 1
 		and tracks.secs >= 'PlaylistTrackMinDuration'

@@ -5,10 +5,8 @@
 drop table if exists dynamicplaylist_random_years;
 create temporary table dynamicplaylist_random_years as
 	select tracks.year as year from tracks
-		left join library_track on
-			library_track.track = tracks.id
-		left join dynamicplaylist_history on
-			dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+		left join library_track on library_track.track = tracks.id
+		left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 		where
 			tracks.audio = 1
 			and ifnull(tracks.year, 0) != 0
@@ -29,14 +27,10 @@ create temporary table dynamicplaylist_random_years as
 		order by random()
 		limit 1;
 select tracks.id, tracks.primary_artist from tracks
-	join dynamicplaylist_random_years on
-		tracks.year = dynamicplaylist_random_years.year
-	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5
-	left join library_track on
-		library_track.track = tracks.id
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	join dynamicplaylist_random_years on tracks.year = dynamicplaylist_random_years.year
+	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
+	left join library_track on library_track.track = tracks.id
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.audio = 1
 		and tracks.year = dynamicplaylist_random_years.year

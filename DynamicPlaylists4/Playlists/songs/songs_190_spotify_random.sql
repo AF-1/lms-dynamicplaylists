@@ -3,8 +3,7 @@
 -- PlaylistCategory:songs
 -- PlaylistUseCache: 1
 select tracks.id, tracks.primary_artist from tracks
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.content_type = 'spt'
 		and tracks.secs >= 'PlaylistTrackMinDuration'

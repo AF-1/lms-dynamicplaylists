@@ -10,14 +10,10 @@
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select tracks.album as album, count(distinct tracks.id) as totaltrackcount from tracks
-		join albums on
-			albums.id = tracks.album
-		join genre_track on
-			genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter2')
-		left join library_track on
-			library_track.track = tracks.id
-		left join dynamicplaylist_history on
-			dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+		join albums on albums.id = tracks.album
+		join genre_track on genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter2')
+		left join library_track on library_track.track = tracks.id
+		left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 		where
 			tracks.audio = 1
 			and dynamicplaylist_history.id is null
@@ -45,16 +41,11 @@ create temporary table dynamicplaylist_random_albums as
 		order by random()
 		limit 1;
 select tracks.id, tracks.primary_artist from tracks
-	join dynamicplaylist_random_albums on
-		dynamicplaylist_random_albums.album = tracks.album
-	join genre_track on
-		genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter2')
-	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5
-	left join library_track on
-		library_track.track = tracks.id
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	join dynamicplaylist_random_albums on dynamicplaylist_random_albums.album = tracks.album
+	join genre_track on genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter2')
+	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
+	left join library_track on library_track.track = tracks.id
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.audio = 1
 		and tracks.secs >= 'PlaylistTrackMinDuration'

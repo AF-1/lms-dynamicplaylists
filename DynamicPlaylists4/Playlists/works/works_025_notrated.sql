@@ -9,12 +9,9 @@ drop table if exists dynamicplaylist_random_works;
 create temporary table dynamicplaylist_random_works as
 	select notrated.album as album, notrated.work as work, notrated.performance as performance, notrated.sumrating as sumrating from
 		(select tracks.album as album, tracks.work as work, tracks.performance as performance, sum(ifnull(tracks_persistent.rating,0)) as sumrating, count(distinct tracks.id) as totaltrackcount from tracks
-			join tracks_persistent on
-				tracks_persistent.urlmd5 = tracks.urlmd5
-			left join library_track on
-				library_track.track = tracks.id
-			left join dynamicplaylist_history on
-				dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+			join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
+			left join library_track on library_track.track = tracks.id
+			left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 			where
 				tracks.audio = 1
 				and dynamicplaylist_history.id is null
@@ -34,12 +31,9 @@ create temporary table dynamicplaylist_random_works as
 	limit 1;
 select tracks.id, tracks.primary_artist from tracks
 	join dynamicplaylist_random_works on (tracks.album = dynamicplaylist_random_works.album and tracks.work = dynamicplaylist_random_works.work and case when dynamicplaylist_random_works.performance is not null then tracks.performance = dynamicplaylist_random_works.performance else 1 end)
-	join tracks_persistent on
-		tracks_persistent.urlmd5 = tracks.urlmd5
-	left join library_track on
-		library_track.track = tracks.id
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
+	left join library_track on library_track.track = tracks.id
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.audio = 1
 		and dynamicplaylist_history.id is null

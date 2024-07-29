@@ -3,7 +3,7 @@
 	<id>affc5872-2bcb-abee-35eb-56cb5ce1e125</id>
 	<name>PLUGIN_DYNAMICPLAYLISTS4</name>
 	<module>Plugins::DynamicPlaylists4::Plugin</module>
-	<version>4.4.5</version>
+	<version>4.4.6</version>
 	<description>PLUGIN_DYNAMICPLAYLISTS4_DESC</description>
 	<creator>AF</creator>
 	<optionsURL>plugins/DynamicPlaylists4/settings/basic.html</optionsURL>

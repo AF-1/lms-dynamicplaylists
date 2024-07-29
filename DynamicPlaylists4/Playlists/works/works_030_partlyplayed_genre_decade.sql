@@ -9,16 +9,11 @@
 drop table if exists dynamicplaylist_random_works;
 create temporary table dynamicplaylist_random_works as
 	select tracks.album as album, tracks.work as work, tracks.performance as performance, count(distinct tracks.id) as totaltrackcount from tracks
-		join albums on
-			albums.id = tracks.album
-		join genre_track on
-			genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter1')
-		left join library_track on
-			library_track.track = tracks.id
-		join tracks_persistent on
-			tracks_persistent.urlmd5 = tracks.urlmd5
-		left join dynamicplaylist_history on
-			dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+		join albums on albums.id = tracks.album
+		join genre_track on genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter1')
+		left join library_track on library_track.track = tracks.id
+		join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
+		left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 		where
 			tracks.audio = 1
 			and dynamicplaylist_history.id is null
@@ -37,12 +32,9 @@ create temporary table dynamicplaylist_random_works as
 		limit 1;
 select tracks.id, tracks.primary_artist from tracks
 	join dynamicplaylist_random_works on (tracks.album = dynamicplaylist_random_works.album and tracks.work = dynamicplaylist_random_works.work and case when dynamicplaylist_random_works.performance is not null then tracks.performance = dynamicplaylist_random_works.performance else 1 end)
-	join genre_track on
-		genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter1')
-	left join library_track on
-		library_track.track = tracks.id
-	left join dynamicplaylist_history on
-		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	join genre_track on genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter1')
+	left join library_track on library_track.track = tracks.id
+	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.audio = 1
 		and tracks.secs >= 'PlaylistTrackMinDuration'
