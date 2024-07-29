@@ -7,7 +7,7 @@
 drop table if exists dynamicplaylist_random_contributors;
 create temporary table dynamicplaylist_random_contributors as
 	select toptotalrated.contributor as contributor from
-		(select contributor_track.contributor as contributor, sum(ifnull(tracks_persistent.rating,0)) as totalrating, count(distinct tracks.id) as totaltrackcount from tracks
+		(select contributor_track.contributor as contributor, sum(ifnull(tracks_persistent.rating,0))/count(distinct contributor_track.role) as totalrating, count(distinct tracks.id) as totaltrackcount from tracks
 		join contributor_track on
 			contributor_track.track = tracks.id and contributor_track.role in (1,4,5,6)
 		join genre_track on

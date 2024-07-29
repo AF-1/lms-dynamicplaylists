@@ -1,4 +1,4 @@
--- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYED
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYED
 -- PlaylistGroups:Context menu lists/ artist
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:artists
@@ -9,36 +9,33 @@
 -- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
-	select leastplayed.album as album from
-		(select tracks.album as album, sum(ifnull(tracks_persistent.playCount,0)) as sumcount, count(distinct tracks.id) as totaltrackcount from tracks
-		join contributor_track on
-			contributor_track.track = tracks.id and contributor_track.contributor = 'PlaylistParameter1'
-		left join library_track on
-			library_track.track = tracks.id
-		join tracks_persistent on
-			tracks_persistent.urlmd5 = tracks.urlmd5
-		left join dynamicplaylist_history on
-			dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
-		where
-			tracks.audio = 1
-			and dynamicplaylist_history.id is null
-			and
-				case
-					when ('PlaylistCurrentVirtualLibraryForClient' != '' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
-					then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
-					else 1
-				end
-			and not exists (select * from tracks t2,genre_track,genres
-							where
-								t2.id = tracks.id and
-								tracks.id = genre_track.track and
-								genre_track.genre = genres.id and
-								genres.namesearch in ('PlaylistExcludedGenres'))
-		group by tracks.album
-			having totaltrackcount >= 'PlaylistMinArtistTracks'
-		order by sumcount asc, random()
-		limit 30) as leastplayed
-	order by random()
+	select tracks.album as album, sum(ifnull(tracks_persistent.playCount,0))/count(distinct contributor_track.role) as sumcount, count(distinct tracks.id) as totaltrackcount from tracks
+	join contributor_track on
+		contributor_track.track = tracks.id and contributor_track.contributor = 'PlaylistParameter1'
+	left join library_track on
+		library_track.track = tracks.id
+	join tracks_persistent on
+		tracks_persistent.urlmd5 = tracks.urlmd5
+	left join dynamicplaylist_history on
+		dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	where
+		tracks.audio = 1
+		and dynamicplaylist_history.id is null
+		and
+			case
+				when ('PlaylistCurrentVirtualLibraryForClient' != '' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
+				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
+				else 1
+			end
+		and not exists (select * from tracks t2,genre_track,genres
+						where
+							t2.id = tracks.id and
+							tracks.id = genre_track.track and
+							genre_track.genre = genres.id and
+							genres.namesearch in ('PlaylistExcludedGenres'))
+	group by tracks.album
+		having totaltrackcount >= 'PlaylistMinArtistTracks'
+	order by sumcount desc, random()
 	limit 1;
 select tracks.id, tracks.primary_artist from tracks
 	join dynamicplaylist_random_albums on

@@ -1,4 +1,4 @@
--- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_MOSTPLAYED_APC
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_LEASTPLAYED_APC
 -- PlaylistGroups:Context menu lists/ genre
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:genres
@@ -6,8 +6,8 @@
 -- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists dynamicplaylist_random_contributors;
 create temporary table dynamicplaylist_random_contributors as
-	select mostplayed.contributor as contributor from
-		(select contributor_track.contributor as contributor, sum(ifnull(alternativeplaycount.playCount,0)) as sumcount, count(distinct tracks.id) as totaltrackcount from tracks
+	select leastplayed.contributor as contributor from
+		(select contributor_track.contributor as contributor, sum(ifnull(alternativeplaycount.playCount,0))/count(distinct contributor_track.role) as sumcount, count(distinct tracks.id) as totaltrackcount from tracks
 		join contributor_track on
 			contributor_track.track = tracks.id and contributor_track.role in (1,4,5,6)
 		join genre_track on
@@ -36,8 +36,8 @@ create temporary table dynamicplaylist_random_contributors as
 								genres.namesearch in ('PlaylistExcludedGenres'))
 		group by contributor_track.contributor
 			having totaltrackcount >= 'PlaylistMinArtistTracks'
-		order by sumcount desc, random()
-		limit 30) as mostplayed
+		order by sumcount asc, random()
+		limit 30) as leastplayed
 	order by random()
 	limit 1;
 select tracks.id, tracks.primary_artist from tracks

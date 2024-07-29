@@ -5,7 +5,7 @@
 drop table if exists dynamicplaylist_random_contributors;
 create temporary table dynamicplaylist_random_contributors as
 	select mostplayed.contributor as contributor from
-		(select contributor_track.contributor as contributor, sum(ifnull(alternativeplaycount.playCount,0)) as sumcount, count(distinct tracks.id) as totaltrackcount from tracks
+		(select contributor_track.contributor as contributor, sum(ifnull(alternativeplaycount.playCount,0))/count(distinct contributor_track.role) as sumcount, count(distinct tracks.id) as totaltrackcount from tracks
 		join contributor_track on
 			contributor_track.track = tracks.id and contributor_track.role in (1,4,5,6)
 		left join library_track on

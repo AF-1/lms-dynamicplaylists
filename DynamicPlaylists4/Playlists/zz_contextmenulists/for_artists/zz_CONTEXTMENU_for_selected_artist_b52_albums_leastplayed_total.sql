@@ -1,7 +1,8 @@
--- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYED_APC
+-- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYED
 -- PlaylistGroups:Context menu lists/ artist
 -- PlaylistMenuListType:contextmenu
 -- PlaylistCategory:artists
+-- PlaylistAPCdupe:yes
 -- PlaylistTrackOrder:ordered
 -- PlaylistLimitOption:unlimited
 -- PlaylistParameter1:artist:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTARTIST:
@@ -9,13 +10,13 @@
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
 	select leastplayed.album as album from
-		(select tracks.album as album, sum(ifnull(alternativeplaycount.playCount,0)) as sumcount, count(distinct tracks.id) as totaltrackcount from tracks
+		(select tracks.album as album, sum(ifnull(tracks_persistent.playCount,0))/count(distinct contributor_track.role) as sumcount, count(distinct tracks.id) as totaltrackcount from tracks
 		join contributor_track on
 			contributor_track.track = tracks.id and contributor_track.contributor = 'PlaylistParameter1'
 		left join library_track on
 			library_track.track = tracks.id
-		join alternativeplaycount on
-			alternativeplaycount.urlmd5 = tracks.urlmd5
+		join tracks_persistent on
+			tracks_persistent.urlmd5 = tracks.urlmd5
 		left join dynamicplaylist_history on
 			dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 		where
@@ -42,8 +43,8 @@ create temporary table dynamicplaylist_random_albums as
 select tracks.id, tracks.primary_artist from tracks
 	join dynamicplaylist_random_albums on
 		dynamicplaylist_random_albums.album = tracks.album
-	join alternativeplaycount on
-		alternativeplaycount.urlmd5 = tracks.urlmd5
+	join tracks_persistent on
+		tracks_persistent.urlmd5 = tracks.urlmd5
 	left join library_track on
 		library_track.track = tracks.id
 	left join dynamicplaylist_history on
@@ -54,8 +55,8 @@ select tracks.id, tracks.primary_artist from tracks
 		and dynamicplaylist_history.id is null
 		and
 			case
-				when 'PlaylistParameter2' = 1 then ifnull(alternativeplaycount.playCount, 0) = 0
-				when 'PlaylistParameter2' = 2 then ifnull(alternativeplaycount.playCount, 0) > 0
+				when 'PlaylistParameter2' = 1 then ifnull(tracks_persistent.playCount, 0) = 0
+				when 'PlaylistParameter2' = 2 then ifnull(tracks_persistent.playCount, 0) > 0
 				else 1
 			end
 		and

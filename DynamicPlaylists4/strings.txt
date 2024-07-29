@@ -40,14 +40,14 @@ PLUGIN_DYNAMICPLAYLISTS4_CHOOSE_BELOW
 	DE	Dynamische Wiedergabeliste auswählen:
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_FAQ_LINK_TEXT
-	EN	Click here to read the FAQ.
+	EN	Click here for more information (incl. FAQ).
 	FR	Cliquez ici pour lire la FAQ.
 	DE	Hier klicken für die FAQ.
 
 PLUGIN_DYNAMICPLAYLISTS4_FAQ_LINK
-	EN	https://github.com/AF-1/lms-dynamicplaylists#faq
-	FR	https://github.com/AF-1/lms-dynamicplaylists#faq
-	DE	https://github.com/AF-1/lms-dynamicplaylists#faq
+	EN	https://github.com/AF-1/#-dynamic-playlists
+	FR	https://github.com/AF-1/#-dynamic-playlists
+	DE	https://github.com/AF-1/#-dynamic-playlists
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SECTION
 	EN	Settings Section

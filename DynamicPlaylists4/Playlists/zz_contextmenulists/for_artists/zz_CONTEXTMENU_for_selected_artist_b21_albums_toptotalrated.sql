@@ -8,7 +8,7 @@
 -- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
-	select tracks.album as album, sum(ifnull(tracks_persistent.rating,0)) as totalrating, count(distinct tracks.id) as totaltrackcount from tracks
+	select tracks.album as album, sum(ifnull(tracks_persistent.rating,0))/count(distinct contributor_track.role) as totalrating, count(distinct tracks.id) as totaltrackcount from tracks
 	join contributor_track on
 		contributor_track.track = tracks.id and contributor_track.contributor = 'PlaylistParameter1'
 	left join library_track on
