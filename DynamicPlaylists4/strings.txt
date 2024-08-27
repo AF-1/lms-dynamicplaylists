@@ -2518,6 +2518,11 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE_DECADE_DPSV_APC
 	FR	Morceaux - aléatoire (par genre, décennie et gamme de DPSV) (APC)
 	DE	Titel - zufällig (nach Stilrichtung, Jahrzehnt, und dynamisch gespielt/übersprungen Wertebereich) (APC)
 
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGERATED_MINDPSV_APC
+	EN	Songs - not RATED (by genre, decade + min. DPSV with % of rated songs) (APC)
+	FR	Morceaux - non notés (par genre, décennie + DPSV min. avec un % de morceaux notés) (APC)
+	DE	Titel - unbewertet (nach Stilrichtung, Jahrzehnt und DPSV mit Anteil bewerteter Titel) (APC)
+
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_YEAR_PERCENTAGERATED_MINDPSV_APC
 	EN	Songs - not RATED (by genre, year + min. DPSV with % of rated songs) (APC)
 	FR	Morceaux - non notés (par genre, année + DPSV min. avec un % de morceaux notés) (APC)
