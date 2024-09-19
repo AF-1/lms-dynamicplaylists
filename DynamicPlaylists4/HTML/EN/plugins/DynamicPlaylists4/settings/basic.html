@@ -79,6 +79,14 @@
 [% END %]
 <div class="filler"></div>
 
+[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPLTRANSFER_ALLOWSYNCEDTARGETPLAYERS" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPLTRANSFER_ALLOWSYNCEDTARGETPLAYERS_DESC" %]
+	<select class="stdedit" name="pref_transferunsyncedtargetplayers" id="transferunsyncedtargetplayers">
+		<option [% IF NOT prefs.transferunsyncedtargetplayers %]selected [% END %]value="0">[% 'NO' | getstring %]</option>
+		<option [% IF prefs.transferunsyncedtargetplayers %]selected [% END %]value="1">[% 'YES' | getstring %]</option>
+	</select>
+[% END %]
+<div class="filler"></div>
+
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLESTATICPLSAVING" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLESTATICPLSAVING_DESC" %]
 	<select class="stdedit" name="pref_enablestaticplsaving" id="enablestaticplsaving">
 		<option [% IF NOT prefs.enablestaticplsaving %]selected [% END %]value="0">[% 'NO' | getstring %]</option>

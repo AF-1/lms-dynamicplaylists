@@ -32,38 +32,46 @@ href="[% webroot %]
 			[%- WRAPPER contentitem controls='stopaddingcontrols' %]
 				[% "PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_ACTIVEDPL" | string %] "[% activeClientName %]": <span class="boldtitle">[% activeClientMixName %]</span>
 			[% END %]
-		<br><br>
+		<br>
+			[%- IF pluginDynamicPlaylists4transferdpl && clientnotsynced && targetplayerlist -%]
+				[%- WRAPPER contentitem controls='transferdplcontrols' %]
+					<form action="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_transferactivedpl.html" id="transferDPLform" accept-charset="iso8859-1">
+					<input type="hidden" name="activedplid" value="[% activeClientMixID %]">
+					[% "PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_TRANSFERDPL" | string %]: &nbsp;
+					<select name="targetplayer">
+					[% FOREACH player IN targetplayerlist %]
+						<option value="[% player.id %]">[% player.name | html %]</option>
+					[% END %]
+					</select>
+					</form>
+				[%- END %]
+				<br>
+			[%- END -%]
 		[%- END -%]
 
 		[% IF pluginDynamicPlaylists4DPLqueueingEnabled && pluginDynamicPlaylists4dplQueue %]
 			[%- WRAPPER contentitem %]
 				<span class="icon-homemenutoplevellist"></span>
-				<span class="boldtitle">
 				<a style="text-decoration:none;" href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_dplqueue.html?player=[% player | uri %]">
 				[% "PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_CURRENTLYQUEUED" | string %]
 				</a>
-				</span>
 			[% END %]
 		[% END %]
 
 		[% IF pluginDynamicPlaylists4preselectionListArtists %]
 			[%- WRAPPER contentitem %]
 				<span class="icon-homemenutoplevellist"></span>
-				<span class="boldtitle">
 				<a style="text-decoration:none;" href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_preselectionmenu.html?objecttype=artist&amp;source=dplhome&amp;player=[% player | uri %]">
 					[% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ARTISTS_LIST" | string %]
 				</a>
-				</span>
 			[% END %]
 		[% END %]
 		[% IF pluginDynamicPlaylists4preselectionListAlbums %]
 			[%- WRAPPER contentitem %]
 				<span class="icon-homemenutoplevellist"></span>
-				<span class="boldtitle">
 				<a style="text-decoration:none;" href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_preselectionmenu.html?objecttype=album&amp;source=dplhome&amp;player=[% player | uri %]">
 				[% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ALBUMS_LIST" | string %]
 				</a>
-				</span>
 			[% END %]
 		[% END %]
 		[% IF pluginDynamicPlaylists4dplQueue || pluginDynamicPlaylists4preselectionListAlbums || pluginDynamicPlaylists4preselectionListArtists %]<br>[% END %]
@@ -94,4 +102,16 @@ href="[% webroot %]
 		[% END %]
 	[% END %]
 [% END %]
+
+<script type="text/javascript">
+	// prevent multiple submits
+	var alreadySubmitted = false;
+	function transferdpl(){
+		if(!alreadySubmitted) {
+			alreadySubmitted = true;
+			document.getElementById('transferDPLform').submit();
+		}
+	}
+</script>
+
 [% PROCESS pagefooter.html %]

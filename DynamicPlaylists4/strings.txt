@@ -222,6 +222,16 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEVOLATILEPARAMDPLSAVE_DESC
 	FR	Par défaut, vous ne pouvez pas ajouter aux favoris LMS des listes de lecture dynamiques qui demanderont des paramètres <b>volatiles</b> au moment de l'exécution et dont les valeurs pourraient changer après une nouvelle analyse (artiste, album, genre, genres multiples, liste de lecture ou listes de lecture multiples statiques).<br><br>Avec ce paramètre activé, vous pouvez ajouter des listes de lecture dynamiques même avec des paramètres <b>volatiles</b> aux favoris LMS. Cependant, n'oubliez pas qu'il est possible que ces favoris ne fonctionnent plus après un rescan. Plus d'informations dans la FAQ.
 	DE	Standardmäßig können Sie keine dynamischen Wiedergabelisten zu den LMS-Favoriten hinzufügen, die beim Start Benutzereingabeparameter abfragen, deren Werte sich nach einem erneuten Scan ändern könnten (Künstler, Album, Genre, mehrere Genres, Wiedergabeliste oder mehrere statische Wiedergabelisten).<br><br>Wenn diese Einstellung aktiviert ist, können Sie sogar dynamische Wiedergabelisten mit solchen Parametern zu LMS-Favoriten hinzufügen. Beachten Sie jedoch, dass solche Favoriten nach einem erneuten Scan möglicherweise nicht mehr funktionieren. Weitere Informationen finden Sie in den FAQ.
 
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPLTRANSFER_ALLOWSYNCEDTARGETPLAYERS
+	EN	Allow transfer of active dynamic playlist to <i>synced</i> players
+	FR	Permettre le transfert de la liste de lecture active vers les lecteurs <i>synchronisés</i>
+	DE	Übertragung der aktiven dynamischen Wiedergabeliste auf <i>synchronisierte</i> Player erlauben
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPLTRANSFER_ALLOWSYNCEDTARGETPLAYERS_DESC
+	EN	By default, you can only transfer the active dynamic playlist to <b>un</b>synchronized players (recommended). You can change this here.
+	FR	Par défaut, vous ne pouvez transférer que la liste de lecture dynamique active vers des lecteurs <i>non</i> synchronisés (recommandé). Vous pouvez modifier cela ici.
+	DE	Standardmäßig können Sie die aktive dynamische Wiedergabeliste nur an <i>nicht</i> synchronisierte Player übertragen (empfohlen). Hier können Sie das ändern.
+
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLESTATICPLSAVING
 	EN	Allow saving dynamic playlists as static playlists
 	FR	Permettre l'enregistrement des listes de lecture dynamiques comme listes de lecture statiques
@@ -627,14 +637,14 @@ PLUGIN_DYNAMICPLAYLISTS4_PRESELECTALBUMS
 	DE	Dynamische Wiedergabeliste - Vorauswahl Album
 
 PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ARTISTS_LIST
-	EN	Currently preselected artists
-	FR	Artistes présélectionnés
-	DE	Aktuell vorausgewählte Interpreten
+	EN	Currently preselected <b>artists</b>
+	FR	<b>Artistes</b> présélectionnés
+	DE	Aktuell vorausgewählte <b>Interpreten</b>
 
 PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ALBUMS_LIST
-	EN	Currently preselected albums
-	FR	Albums présélectionnés
-	DE	Aktuell vorausgewählte Alben
+	EN	Currently preselected <b>albums</b>
+	FR	<b>Albums</b> présélectionnés
+	DE	Aktuell vorausgewählte <b>Alben</b>
 
 PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CLEAR_LIST
 	EN	** Clear list **
@@ -730,6 +740,21 @@ PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_NOTCLASSIFIED
 	EN	<span class="categoryheader">not</span> classified
 	FR	<span class="categoryheader">non</span> classé
 	DE	<span class="categoryheader">nicht</span> gruppiert
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_TRANSFERDPL
+	EN	Transfer active dynamic playlist to this player
+	FR	Transférer liste de lecture dynamique active sur ce lecteur
+	DE	Aktive dynamische Wiedergabeliste an diesen Player übertragen
+
+PLUGIN_DYNAMICPLAYLISTS4_TRANSFERDPL_MAIN
+	EN	Transfer active dynamic playlist to another player
+	FR	Transférer liste de lecture dynamique active sur un autre lecteur
+	DE	Aktive dynamische Wiedergabeliste an anderen Player übertragen
+
+PLUGIN_DYNAMICPLAYLISTS4_TRANSFERDPL_SELECTPLAYER
+	EN	Select player
+	FR	Sélectionne lecteur
+	DE	Player auswählen
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_TRACKS
 	EN	Songs
@@ -2517,6 +2542,11 @@ PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE_DECADE_DPSV_APC
 	EN	Songs - random (by genre, decade & dynamic played/skipped value range) (APC)
 	FR	Morceaux - aléatoire (par genre, décennie et gamme de DPSV) (APC)
 	DE	Titel - zufällig (nach Stilrichtung, Jahrzehnt, und dynamisch gespielt/übersprungen Wertebereich) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_MINDPSV_PERCENTAGETOPRATED_APC
+	EN	Songs - RATED (by genre + min. DPSV with % of top rated songs) (APC)
+	FR	Morceaux - notés (par genre + DPSV min. avec un % de morceaux bien notés) (APC)
+	DE	Titel - bewertet (nach Stilrichtung und min. DPSV mit % TOP Bewertung) (APC)
 
 PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGERATED_MINDPSV_APC
 	EN	Songs - not RATED (by genre, decade + min. DPSV with % of rated songs) (APC)

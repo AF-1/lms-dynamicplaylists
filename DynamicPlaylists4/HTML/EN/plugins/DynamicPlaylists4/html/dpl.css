@@ -38,7 +38,7 @@
 .padleft{padding-left:20px;}
 .vcenter{vertical-align: middle;}
 .trpadbottom{padding-bottom:5px;}
-.dpl3btn{padding:2px;}
+.dplbtn{padding:2px;}
 .lastparamsep{width:45%;text-align:left;margin-left:0;}
 @-webkit-keyframes Pulse{from{color:#630030;-webkit-text-shadow:0 0 2px transparent}50%{color:#e33100;-webkit-text-shadow:0 0 5px #e33100}to{color:#630030;-webkit-text-shadow:0 0 2px transparent}}@keyframes Pulse{from{color:#630030;text-shadow:0 0 2px transparent}50%{color:#e33100;text-shadow:0 0 5px #e33100}to{color:#630030;text-shadow:0 0 2px transparent}}.inprogress{padding-left:15px;-webkit-animation-name:Pulse;animation-name:Pulse;-webkit-animation-duration:2s;animation-duration:2s;-webkit-animation-iteration-count:infinite;animation-iteration-count:infinite}
 .status{visibility:hidden;}

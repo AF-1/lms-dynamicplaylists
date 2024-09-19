@@ -16,14 +16,21 @@
 [% BLOCK dynamicPlayListSaveStaticNoParamsLink %]
 	[% link='cmdlink' cmdimage='dpl_saveasstaticpl.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS4_SAVEASSTATICPL_TITLE' %]
 		[% WRAPPER $link noTarget=1 %]
-			href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_staticnoparams.html?type=[% type %]&amp;player=[% player |uri%]"
+			href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_staticnoparams.html?type=[% type %]&amp;player=[% player | uri %]"
 		[% END %]
 [% END %]
 
 [% BLOCK dynamicPlayListStopAddingLink %]
 	[% link='cmdlink' cmdimage='dpl_stop.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS4_DISABLE' %]
 		[% WRAPPER $link noTarget=1 %]
-			href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?p0=dynamicplaylist&amp;p1=playlist&amp;p2=play&amp;p3=disable&amp;player=[% player |uri%]" onClick="setTimeout('document.location.reload(true)',500)"
+			href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?p0=dynamicplaylist&amp;p1=playlist&amp;p2=play&amp;p3=disable&amp;player=[% player | uri %]" onClick="setTimeout('document.location.reload(true)',500)"
+		[% END %]
+[% END %]
+
+[% BLOCK dynamicPlayListTransferDplLink %]
+	[% link='cmdlink' cmdimage='dpl_transfer.gif' cmdtitle='PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_TRANSFERDPL' %]
+		[% WRAPPER $link noTarget=1 %]
+			onClick="transferdpl();setTimeout('window.open(\'[% webroot %]home.html\', \'_self\')', 500)"
 		[% END %]
 [% END %]
 

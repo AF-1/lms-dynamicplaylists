@@ -53,32 +53,14 @@ my $log = Slim::Utils::Log->addLogCategory({
 	'description' => 'PLUGIN_DYNAMICPLAYLISTS4',
 });
 
-my %stopcommands = ();
-my %mixInfo = ();
-my $htmlTemplate = 'plugins/DynamicPlaylists4/dynamicplaylist_list.html';
-my ($playLists, $localDynamicPlaylists, $localBuiltinDynamicPlaylists, $playListTypes, $playListItems, $jiveMenu);
+my ($playLists, $localDynamicPlaylists, $localBuiltinDynamicPlaylists, $playListTypes, $playListItems, $jiveMenu, $dplc_enabled, $dstm_enabled, $apc_enabled, $material_enabled);
 my $rescan = 0;
 
-my %plugins = ();
-my %disablePlaylist = (
-	'dynamicplaylistid' => 'disable',
-	'name' => ''
-);
-my %disable = (
-	'playlist' => \%disablePlaylist
-);
-
-my $historyQueue = {};
-my $deleteQueue = {};
+my ($historyQueue, $deleteQueue) = {};
+my (%mixInfo, %stopcommands, %plugins, %empty) = ();
+my (%choiceMapping, %disable, %categorylangstrings, %customsortnames);
 my $deleteAllQueues = 0;
 my $cache = Slim::Utils::Cache->new();
-
-my %empty = ();
-my %choiceMapping;
-
-my ($dplc_enabled, $dstm_enabled, $apc_enabled, $material_enabled);
-my %categorylangstrings;
-my %customsortnames;
 
 sub initPlugin {
 	my $class = shift;
@@ -143,6 +125,7 @@ sub initPlugin {
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'queue'], [1, 0, 1, \&cliQueuePlaylist]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'continue'], [1, 0, 1, \&cliContinuePlaylist]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'stop'], [1, 0, 0, \&cliStopPlaylist]);
+	Slim::Control::Request::addDispatch(['dynamicplaylist', 'transfer'], [1, 0, 1, \&cliTransferActivePlaylist]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'browsejive', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJiveHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'jiveplaylistparameters', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJivePlaylistParametersHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'actionsmenu'], [1, 1, 1, \&_cliJiveActionsMenuHandler]);
@@ -196,7 +179,6 @@ sub initPrefs {
 		groupunclassifiedcustomplaylists => 1,
 		showtimeperchar => 70,
 		randomsavedplaylists => 1,
-		flatlist => 0,
 		structured_savedplaylists => 1,
 		pluginshufflemode => 1,
 		enablestaticplsaving => 1
@@ -255,6 +237,11 @@ sub initPrefs {
 		'Static Playlists' => string('PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_STATICPLAYLISTS'),
 		'Not classified' => string('SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPNAME_NOTCLASSIFIED')
 	);
+
+	%disable = ('playlist' => {
+		'dynamicplaylistid' => 'disable',
+		'name' => ''
+	});
 
 	%customsortnames = (string('PLUGIN_DYNAMICPLAYLISTS4_FAVOURITES') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Works' => '00005_Works', 'Genres' => '00006_Genres', 'Years' => '00007_Years', 'Playlists' => '00008_PLaylists', 'Static Playlists' => '00009_static_LMS_playlists', 'Not classified' => '00010_not_classified', 'Context menu lists' => '00011_contextmenulists');
 }
@@ -649,6 +636,7 @@ sub findAndAdd {
 		}
 	}
 
+	main::DEBUGLOG && $log->is_debug && $log->debug('total tracks in cache = '.Data::Dump::dump(scalar(@{$totalTrackIDList}))) if $dplUseCache;
 	main::DEBUGLOG && $log->is_debug && $log->debug('Total exec time so far = '.(time() - $started).' secs');
 
 	if (scalar(@{$totalTrackIDList}) == 0) {
@@ -1187,7 +1175,9 @@ sub handlePlayOrAdd {
 		stateStop($player);
 	}
 
-	playRandom($client, $item, $add, 1, 1);
+	if ($item && $item ne 'transfer') {
+		playRandom($client, $item, $add, 1, 1);
+	}
 }
 
 sub addParameterValues {
@@ -1377,6 +1367,10 @@ sub getTrackIDsForPlaylist {
 	my ($client, $playlist, $limit, $offset) = @_;
 
 	my $id = $playlist->{'dynamicplaylistid'};
+	if (!$id) {
+		$log->warn('No playlist (ID) provided. Aborting.');
+		return;
+	}
 	my $plugin = $plugins{$id};
 	main::DEBUGLOG && $log->is_debug && $log->debug("Calling: $plugin with: id = $id, limit = $limit, offset = $offset");
 	my ($result, $tracksCompleteInfo);
@@ -1468,6 +1462,7 @@ sub stateStop {
 	my $client = shift;
 
 	Slim::Utils::Timers::killTimers($client, \&findAndAdd);
+	Slim::Utils::Timers::killTimers($client, \&playRandom);
 	main::DEBUGLOG && $log->is_debug && $log->debug('stateStop');
 	$mixInfo{$client} = undef;
 	$prefs->client($client)->remove('playlist');
@@ -1496,15 +1491,14 @@ sub webPages {
 		'dynamicplaylist_preselectionmenu\.html' => \&_preselectionMenuWeb,
 		'dynamicplaylist_dplqueue\.html' => \&_dplQueueMenuWeb,
 		'dynamicplaylist_staticnoparams\.html' => \&_saveAsStaticNoParamsWeb,
+		'dynamicplaylist_transferactivedpl\.html' => \&_transferActivePlaylistWeb,
 	);
-
-	my $value = $htmlTemplate;
 
 	for my $page (keys %pages) {
 		Slim::Web::Pages->addPageFunction($page, $pages{$page});
 	}
 
-	Slim::Web::Pages->addPageLinks('browse', {'PLUGIN_DYNAMICPLAYLISTS4' => $value});
+	Slim::Web::Pages->addPageLinks('browse', {'PLUGIN_DYNAMICPLAYLISTS4' => 'plugins/DynamicPlaylists4/dynamicplaylist_list.html'});
 	Slim::Web::Pages->addPageLinks('icons', {'PLUGIN_DYNAMICPLAYLISTS4' => 'plugins/DynamicPlaylists4/html/images/dpl_icon_svg.png'});
 }
 
@@ -1521,12 +1515,16 @@ sub handleWebList {
 	if (defined($client) && defined($mixInfo{$masterClient}) && defined($mixInfo{$masterClient}->{'type'})) {
 		$playlist = getPlayList($client, $mixInfo{$masterClient}->{'type'});
 	}
-	my $name = undef;
 	if ($playlist) {
-		$name = $playlist->{'name'};
-		$params->{'activeClientMixName'} = $name;
+		$params->{'activeClientMixName'} = $playlist->{'name'};
 		$params->{'activeClientName'} = $client->name;
-		main::DEBUGLOG && $log->is_debug && $log->debug('active dynamic playlist for client "'.$client->name.'" = '.$name);
+		$params->{'activeClientMixID'} = $playlist->{'dynamicplaylistid'};
+		main::DEBUGLOG && $log->is_debug && $log->debug('active dynamic playlist for client "'.$client->name.'" = '.$playlist->{'name'});
+
+		# transfer playlist between (unsynced) clients
+		$params->{'clientnotsynced'} = $client->isSynced() ? 0 : 1;
+		my $targetPlayerList = _getTargetPlayerList($client);
+		$params->{'targetplayerlist'} = $targetPlayerList if scalar @{$targetPlayerList} > 0;
 	}
 
 	if (defined($params->{'group1'})) {
@@ -1552,6 +1550,7 @@ sub handleWebList {
 		main::DEBUGLOG && $log->is_debug && $log->debug("pluginData 'cachedAlbums' (web) = ".Data::Dump::dump($preselectionListAlbums));
 		$params->{'pluginDynamicPlaylists4preselectionListArtists'} = 'display' if (keys %{$preselectionListArtists} > 0);
 		$params->{'pluginDynamicPlaylists4preselectionListAlbums'} = 'display' if (keys %{$preselectionListAlbums} > 0);
+		$params->{'pluginDynamicPlaylists4transferdpl'} = 'display';
 
 		my $dplQueue = $client->pluginData('dplQueue') || [];
 		$params->{'pluginDynamicPlaylists4dplQueue'} = 'display' if (scalar @{$dplQueue} > 0);
@@ -1565,7 +1564,7 @@ sub handleWebList {
 	$params->{'pluginDynamicPlaylists4Groups'} = getPlayListGroupsForContext($client, $params, $playListItems, 1);
 	$params->{'pluginDynamicPlaylists4PlayLists'} = getPlayListsForContext($client, $params, $playListItems, 1, $params->{'playlisttype'});
 
-	return Slim::Web::HTTP::filltemplatefile($htmlTemplate, $params);
+	return Slim::Web::HTTP::filltemplatefile('plugins/DynamicPlaylists4/dynamicplaylist_list.html', $params);
 }
 
 sub handleWebMix {
@@ -1899,7 +1898,7 @@ sub getPlayListGroupsForContext {
 	my ($client, $params, $currentItems, $level) = @_;
 	my @result = ();
 
-	if ($prefs->get('flatlist') || $params->{'flatlist'}) {
+	if ($params->{'flatlist'}) {
 		return \@result;
 	}
 
@@ -1960,7 +1959,7 @@ sub getPlayListsForContext {
 	main::DEBUGLOG && $log->is_debug && $log->debug('playlisttype = '.Data::Dump::dump($playlisttype));
 	main::DEBUGLOG && $log->is_debug && $log->debug('params flatlist = '.Data::Dump::dump($params->{'flatlist'}));
 
-	if ($prefs->get('flatlist') || $params->{'flatlist'}) {
+	if ($params->{'flatlist'}) {
 		foreach my $itemKey (keys %{$playLists}) {
 			my $playlist = $playLists->{$itemKey};
 			if (!defined($playlisttype) || (defined($playlist->{'parameters'}) && defined($playlist->{'parameters'}->{'1'}) && ($playlist->{'parameters'}->{'1'}->{'type'} eq $playlisttype || ($playlist->{'parameters'}->{'1'}->{'type'} =~ /^custom(.+)$/ && $1 eq $playlisttype)))) {
@@ -2168,15 +2167,7 @@ sub cliJiveHandler {
 	$client->pluginData('selected_years' => []);
 	$client->pluginData('selected_staticplaylists' => []);
 
-	my $menuGroupResult;
-	my $showFlat = $prefs->get('flatlist');
-	if ($showFlat) {
-		my @empty = ();
-		$menuGroupResult = \@empty;
-	} else {
-		$menuGroupResult = getPlayListGroupsForContext($client, $params, $playListItems, 1);
-	}
-
+	my $menuGroupResult = getPlayListGroupsForContext($client, $params, $playListItems, 1);
 	my $menuResult = getPlayListsForContext($client, $params, $playListItems, 1);
 	my $count = scalar(@{$menuGroupResult}) + scalar(@{$menuResult});
 
@@ -2202,9 +2193,8 @@ sub cliJiveHandler {
 
 	# display active dynamic playlist
 	if ($playlist && $nextGroup == 1) {
-		my $text = $client->string('PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPL').' '.$playlist->{'name'};
 		main::DEBUGLOG && $log->is_debug && $log->debug('active dynamic playlist for client "'.$client->name.'" = '.$playlist->{'name'});
-		$request->addResultLoop('item_loop', $cnt, 'text', $text);
+		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPL').' '.$playlist->{'name'});
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
 		$request->addResultLoop('item_loop', $cnt, 'action', 'none');
 		$cnt++;
@@ -2227,6 +2217,27 @@ sub cliJiveHandler {
 		$request->addResultLoop('item_loop', $cnt, 'actions', $stopAddingAction);
 		$request->addResultLoop('item_loop', $cnt, 'text', '* '.$client->string('PLUGIN_DYNAMICPLAYLISTS4_DISABLE').' *');
 		$cnt++;
+
+		# transfer playlist between (unsynced) clients
+		my $targetPlayerList = _getTargetPlayerList($client);
+		if (scalar @{$targetPlayerList} > 0 && !$client->isSynced()) {
+			my %transferParams = (
+				'playlistid' => $playlist->{'id'},
+				'showtargetplayerlist' => 1,
+			);
+			my $showTargetPlayerListAction = {
+				'go' => {
+					'player' => 0,
+					'cmd' => ['dynamicplaylist', 'transfer'],
+					'params' => \%transferParams,
+					'itemsParams' => 'params',
+				},
+			};
+			$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
+			$request->addResultLoop('item_loop', $cnt, 'actions', $showTargetPlayerListAction);
+			$request->addResultLoop('item_loop', $cnt, 'text', '* '.$client->string('PLUGIN_DYNAMICPLAYLISTS4_TRANSFERDPL_MAIN').' *');
+			$cnt++;
+		}
 	}
 
 	# currently preselected artists/albums list link
@@ -3523,6 +3534,83 @@ sub cliQueuePlaylist {
 	main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliQueuePlaylist');
 }
 
+sub cliTransferActivePlaylist {
+	main::DEBUGLOG && $log->is_debug && $log->debug('Entering cliTransferActivePlaylist');
+	my $request = shift;
+	my $client = $request->client();
+
+	if ($request->isNotCommand([['dynamicplaylist'], ['transfer']])) {
+		$log->warn('Incorrect command');
+		$request->setStatusBadDispatch();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliTransferActivePlaylist');
+		return;
+	}
+	if (!defined $client) {
+		$log->warn('Client required');
+		$request->setStatusNeedsClient();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliTransferActivePlaylist');
+		return;
+	}
+
+	my $playlistId = $request->getParam('playlistid');
+	if (!defined($playlistId)) {
+		$playlistId = $request->getParam('_p3');
+		if (!defined($playlistId)) {
+			$playlistId = $request->getParam('_p0');
+		}
+	}
+	if ($playlistId =~ /^?playlistid:(.+)$/) {
+		$playlistId = $1;
+	}
+	return if !$playlistId;
+
+	if ($request->getParam('showtargetplayerlist')) {
+		my $cnt = 0;
+		my $targetPlayerList = _getTargetPlayerList($client);
+
+		foreach (@{$targetPlayerList}) {
+			my %transferParams = (
+				'targetplayerid' => $_->{'id'},
+				'playlistid' => $playlistId,
+			);
+
+			my $actions = {
+				'go' => {
+					'cmd' => ['dynamicplaylist', 'transfer'],
+					'params' => \%transferParams,
+					'itemsParams' => 'params',
+				},
+			};
+			$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
+			$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'grandparent');
+			$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
+			$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
+			$request->addResultLoop('item_loop', $cnt, 'params', \%transferParams);
+			$request->addResultLoop('item_loop', $cnt, 'text', $_->{'name'});
+			$cnt++;
+		}
+
+		if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC') {
+			$request->addResult('window', {textarea => '* '.string('PLUGIN_DYNAMICPLAYLISTS4_TRANSFERDPL_SELECTPLAYER').' *'});
+		} else {
+			$request->addResult('window', {text => string('PLUGIN_DYNAMICPLAYLISTS4_TRANSFERDPL_SELECTPLAYER')});
+		}
+		$request->addResult('offset', 0);
+		$request->addResult('count', $cnt);
+
+	} else {
+
+		my $params = $request->getParamsCopy();
+		my $targetPlayerID = $params->{'targetplayerid'};
+		return if !$targetPlayerID;
+
+		_transferActivePlaylist($client->id, $targetPlayerID, $playlistId);
+	}
+
+	$request->setStatusDone();
+	main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliTransferActivePlaylist');
+}
+
 sub cliStopPlaylist {
 	main::DEBUGLOG && $log->is_debug && $log->debug('Entering cliStopPlaylist');
 	my $request = shift;
@@ -3594,8 +3682,7 @@ sub setModeMixer {
 	initPlayLists($client);
 	initPlayListTypes();
 	my $playlisttype = $client->modeParam('playlisttype');
-	my $showFlat = $prefs->get('flatlist');
-	if ($showFlat || defined($client->modeParam('flatlist'))) {
+	if (defined($client->modeParam('flatlist'))) {
 		foreach my $flatItem (sort { ($playLists->{$a}->{'playlistsortname'} || '') cmp ($playLists->{$b}->{'playlistsortname'} || ''); } keys %{$playLists}) {
 			my $playlist = $playLists->{$flatItem};
 			if ($playlist->{'dynamicplaylistenabled'}) {
@@ -3677,7 +3764,7 @@ sub setModeMixer {
 		modeName => 'PLUGIN.DynamicPlaylists4',
 		onPlay => sub {
 			my ($client, $item) = @_;
-			if (defined($item->{'playlist'})) {
+			if (defined($item->{'playlist'}) && $item->{'playlist'}->{'dynamicplaylistid'} ne 'transfer') {
 				my $playlist = $item->{'playlist'};
 				if (defined($playlist->{'parameters'})) {
 					my %parameterValues = ();
@@ -3698,10 +3785,10 @@ sub setModeMixer {
 		onAdd => sub {
 			my ($client, $item) = @_;
 			my $playlist = $item->{'playlist'};
-			if (defined($item->{'playlist'})) {
+			if (defined($item->{'playlist'}) && $item->{'playlist'}->{'dynamicplaylistid'} ne 'transfer') {
 				if (defined($playlist->{'parameters'})) {
 					my %parameterValues = ();
-					my $i = 1;
+					my $i = 0;
 					while (defined($client->modeParam('dynamicplaylist_parameter_'.$i))) {
 						$parameterValues{'dynamicplaylist_parameter_'.$i} = $client->modeParam('dynamicplaylist_parameter_'.$i);
 						$i++;
@@ -3732,12 +3819,15 @@ sub setModeMixer {
 					$parameterValues{'extrapopmode'} = $client->modeParam('extrapopmode');
 				}
 				requestFirstParameter($client, $item->{'playlist'}, 0, \%parameterValues)
+			} elsif (defined($item->{'playlist'}) && $item->{'playlist'}->{'dynamicplaylistid'} && $item->{'playlist'}->{'dynamicplaylistid'} eq 'transfer') {
+				Slim::Buttons::Common::pushModeLeft($client, 'PLUGIN.DynamicPlaylists4.Choice', getTargetPlayerMenu($client, $mixInfo{$masterClient}->{'type'}));
 			} else {
 				$client->bumpRight();
 			}
 		},
 		onFavorites => sub {
 			my ($client, $item, $arg) = @_;
+			return if $item->{'playlist'}->{'dynamicplaylistid'} && $item->{'playlist'}->{'dynamicplaylistid'} ne 'transfer';
 			if (defined $arg && $arg =~ /^add$|^add(\d+)/) {
 				addFavorite($client, $item, $1);
 			} elsif (Slim::Buttons::Common::mode($client) ne 'FAVORITES') {
@@ -3756,12 +3846,54 @@ sub setModeMixer {
 		$params{'extrapopmode'} = $client->modeParam('extrapopmode');
 	}
 
-	# if we have an active mode, temporarily add the disable option to the list.
+	# if we have an active dpl, temporarily add the disable option to the list.
 	if ($mixInfo{$masterClient} && $mixInfo{$masterClient}->{'type'} && $mixInfo{$masterClient}->{'type'} ne '') {
-		push @{$params{listRef}}, \%disable;
+		# transfer playlist between (unsynced) clients
+		my $targetPlayerList = _getTargetPlayerList($masterClient);
+		if (scalar @{$targetPlayerList} > 0 && !$masterClient->isSynced()) {
+			my %activePlaylist = ('playlist' => {
+				'dynamicplaylistid' => 'transfer',
+				'name' => ''
+			});
+			unshift @{$params{listRef}}, \%activePlaylist;
+		}
+
+		unshift @{$params{listRef}}, \%disable;
 	}
 
 	Slim::Buttons::Common::pushMode($client, 'PLUGIN.DynamicPlaylists4.Choice', \%params);
+}
+
+sub getTargetPlayerMenu {
+	my ($client, $activeDplID) = @_;
+	my $targetPlayerList = _getTargetPlayerList($client);
+	my @listRef;
+
+	foreach (@{$targetPlayerList}) {
+		push @listRef, ({
+			'targetplayerid' => $_->{'id'},
+			'playlistid' => $activeDplID,
+			'name' => $_->{'name'},
+			'value' => $_->{'id'},
+		});
+	}
+
+	my %transferParams = (
+		header => string('PLUGIN_DYNAMICPLAYLISTS4_TRANSFERDPL_SELECTPLAYER'),
+		headerAddCount => scalar @{$targetPlayerList},
+		listRef => \@listRef,
+		modeName => 'PLUGIN.DynamicPlaylists4.Choice',
+		onRight => sub {
+			my ($client, $item) = @_;
+			_transferActivePlaylist($client->id, $item->{'targetplayerid'}, $activeDplID);
+			Slim::Utils::Timers::setTimer($client, Time::HiRes::time() + 1, \&stepOut, 3);
+		},
+		onPlay => sub {return;},
+		onAdd => sub {return;},
+		playlistid => $activeDplID,
+	);
+
+	return \%transferParams;
 }
 
 sub addFavorite {
@@ -4110,6 +4242,7 @@ sub getSetModeDataForSubItems {
 			}
 		},
 	);
+
 	return \%params;
 }
 
@@ -4212,6 +4345,8 @@ sub getDisplayText {
 	# if a mode is active, handle the temporarily added disable option
 	} elsif ($id && $id eq 'disable' && $mixInfo{$masterClient}) {
 		return string('PLUGIN_DYNAMICPLAYLISTS4_PRESS_RIGHT');
+	} elsif ($id && $id eq 'transfer' && $mixInfo{$masterClient}) {
+		return string('PLUGIN_DYNAMICPLAYLISTS4_TRANSFERDPL_MAIN');
 	} else {
 		return $name;
 	}
@@ -4236,7 +4371,7 @@ sub getOverlay {
 	# Put the right arrow by genre filter and notesymbol by mixes
 	if (defined($item->{'childs'})) {
 		return [$client->symbols('rightarrow'), undef];
-	} elsif (defined($item->{'playlist'}) && $item->{'playlist'}->{'dynamicplaylistid'} eq 'disable') {
+	} elsif (defined($item->{'playlist'}) && ($item->{'playlist'}->{'dynamicplaylistid'} eq 'disable' || $item->{'playlist'}->{'dynamicplaylistid'} eq 'transfer')) {
 		return [undef, $client->symbols('rightarrow')];
 	} elsif (!defined($item->{'playlist'})) {
 		return [undef, $client->symbols('rightarrow')];
@@ -5645,6 +5780,103 @@ sub _queuePlaylist {
 	}
 }
 
+
+## transfer active dpl to another player ##
+
+sub _transferActivePlaylistWeb {
+	my ($client, $params) = @_;
+
+	my $targetClient = Slim::Player::Client::getClient($params->{'targetplayer'})->master();
+
+	if ($params->{'player'} && $params->{'targetplayer'} && $params->{'activedplid'}) {
+		_transferActivePlaylist($params->{'player'}, $params->{'targetplayer'}, $params->{'activedplid'});
+		$params->{'targetplayer'} = undef;
+	}
+}
+
+sub _transferActivePlaylist {
+	my ($thisPlayerID, $targetPlayerID, $activeDplID) = @_;
+	main::DEBUGLOG && $log->is_debug && $log->debug('Transfering dynamic playlist "'.$activeDplID.'" from player "'.$thisPlayerID.'" to player "'.$targetPlayerID.'"');
+
+	my $thisClient = Slim::Player::Client::getClient($thisPlayerID)->master();
+	my $targetClient = Slim::Player::Client::getClient($targetPlayerID)->master();
+
+	$targetClient->execute(['power', 1]) unless $targetClient->power;
+
+	## transfer params/values
+	my $thisClientPlaying = $thisClient->isPlaying();
+
+	# prefs
+	$mixInfo{$targetClient} = $mixInfo{$thisClient};
+	$prefs->client($targetClient)->set('playlist', $prefs->client($thisClient)->get('playlist'));
+	$prefs->client($targetClient)->set('playlist_parameters', $prefs->client($thisClient)->get('playlist_parameters'));
+	$prefs->client($targetClient)->set('offset', $prefs->client($thisClient)->get('offset'));
+
+	# pluginData
+	my @pluginDataPoints = ('type', 'repeatcounter', 'cacheFilled', 'dplQueue', 'cachedArtists', 'cachedAlbums', 'selected_genres', 'selected_decades', 'temp_decadelist', 'selected_years', 'selected_staticplaylists');
+
+	foreach (@pluginDataPoints) {
+		$targetClient->pluginData($_ => $thisClient->pluginData($_));
+	}
+
+	# cache
+	main::DEBUGLOG && $log->is_debug && $log->debug('THIS client - number of cached tracks = '.Data::Dump::dump(scalar(@{$cache->get('dpl_totalTrackIDlist_' . $thisClient->id)})));
+	main::DEBUGLOG && $log->is_debug && $log->debug('THIS client - NoOfItemsInHistory '.Data::Dump::dump(getNoOfItemsInHistory($thisClient)));
+
+	$cache->set('dpl_totalTrackIDlist_' . $targetClient->id, ($cache->get('dpl_totalTrackIDlist_' . $thisClient->id) || []), 'never');
+	$cache->set('dpl_totalTracksCompleteInfo_' . $targetClient->id, ($cache->get('dpl_totalTracksCompleteInfo_' . $thisClient->id) || []), 'never');
+
+	# dpl history table
+	my $dbh = Slim::Schema->dbh;
+	my $sql = "update dynamicplaylist_history set client = \"$targetPlayerID\" where dynamicplaylist_history.client = \"$thisPlayerID\"";
+	my $sth = $dbh->prepare($sql);
+	eval {
+		$sth->execute();
+		commit($dbh);
+	};
+	if ($@) {
+		$log->error("Database error: $DBI::errstr");
+		eval { rollback($dbh); };
+	}
+	$sth->finish();
+
+	## sync/transfer current client playlist tracks
+	$thisClient->execute(['sync', $targetClient->id]);
+	$thisClient->execute(['sync', '-']);
+	$targetClient->currentPlaylistUpdateTime(Time::HiRes::time());
+	Slim::Player::Playlist::refreshPlaylist($targetClient);
+
+	playRandom($thisClient, 'disable');
+	playRandom($targetClient, $mixInfo{$targetClient}->{'type'}, 1, 1, 0, 1);
+	main::DEBUGLOG && $log->is_debug && $log->debug('targetClient - number of cached tracks = '.Data::Dump::dump(scalar(@{$cache->get('dpl_totalTrackIDlist_' . $targetClient->id)})));
+	main::DEBUGLOG && $log->is_debug && $log->debug('targetClient - NoOfItemsInHistory '.Data::Dump::dump(getNoOfItemsInHistory($targetClient)));
+
+	Slim::Utils::Timers::setTimer($thisClient, Time::HiRes::time() + 1, sub {
+		unless ($thisClientPlaying) {
+			my $request = $targetClient->execute(['pause', '1']);
+			$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+		}
+		$thisClient->execute(['playlist', 'clear']);
+		$thisClient->currentPlaylistUpdateTime(Time::HiRes::time());
+		Slim::Player::Playlist::refreshPlaylist($thisClient);
+	});
+}
+
+sub _getTargetPlayerList {
+	my $client = shift;
+	my @targetPlayerList = ();
+	for my $targetPlayer (Slim::Player::Client::clients()) {
+		next if !$prefs->get('transferunsyncedtargetplayers') && $targetPlayer->isSynced(); # not dealing with synced players unless pref says so
+		if ($targetPlayer ne $client) {
+			push @targetPlayerList, {
+				name => $targetPlayer->name,
+				id => $targetPlayer->id
+			},
+		};
+	}
+	main::DEBUGLOG && $log->is_debug && $log->debug('targetPlayerList = '.Data::Dump::dump(\@targetPlayerList));
+	return \@targetPlayerList;
+}
 
 
 ### get local dynamic playlists
@@ -7262,6 +7494,7 @@ sub getFunctions {
 			my $playlistId = shift;
 
 			playRandom($client, $playlistId, 0, 1);
+			$client->bumpRight();
 		},
 		'continue' => sub {
 			my $client = shift;

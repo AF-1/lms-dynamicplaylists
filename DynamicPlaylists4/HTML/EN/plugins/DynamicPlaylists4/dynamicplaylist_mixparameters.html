@@ -182,7 +182,7 @@ href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html?
 	</table>
 [% END %]
 	<br>
-	<input id="formsubmitbtn" type="submit" class="dpl3btn" value="[% IF lastparameter %][% IF addOnly == 1 %][% "PLUGIN_DYNAMICPLAYLISTS4_ADD" | string %][% ELSIF addOnly == 99 %][% "PLUGIN_DYNAMICPLAYLISTS4_ADDTOLMSFAVORITES_BTN" | string %][% ELSIF addOnly == 88 %][% "PLUGIN_DYNAMICPLAYLISTS4_QUEUE_DPL" | string %][% ELSIF addOnly == 77 %][% "PLUGIN_DYNAMICPLAYLISTS4_SAVE_BTN" | string %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS4_PLAY" | string %][% END %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS4_NEXT" | string %][% END %]">
+	<input id="formsubmitbtn" type="submit" class="dplbtn" value="[% IF lastparameter %][% IF addOnly == 1 %][% "PLUGIN_DYNAMICPLAYLISTS4_ADD" | string %][% ELSIF addOnly == 99 %][% "PLUGIN_DYNAMICPLAYLISTS4_ADDTOLMSFAVORITES_BTN" | string %][% ELSIF addOnly == 88 %][% "PLUGIN_DYNAMICPLAYLISTS4_QUEUE_DPL" | string %][% ELSIF addOnly == 77 %][% "PLUGIN_DYNAMICPLAYLISTS4_SAVE_BTN" | string %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS4_PLAY" | string %][% END %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS4_NEXT" | string %][% END %]">
 
 <script type="text/javascript">
 	// prevent multiple submits
@@ -265,7 +265,7 @@ href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html?
 </script>
 [% IF param.parameter.type == "multiplegenres" || param.parameter.type == "multipledecades" || param.parameter.type == "multipleyears" || param.parameter.type == "multiplestaticplaylists" %]
 	<script type="text/javascript">
-		document.write('<span class="padleft"><input type="button" class="dpl3btn" value="' + (numSelected == numCheckBoxes ? selectNoneString : selectAllString) + '" id="selectAllButton" onclick="selectAll()"></span>');
+		document.write('<span class="padleft"><input type="button" class="dplbtn" value="' + (numSelected == numCheckBoxes ? selectNoneString : selectAllString) + '" id="selectAllButton" onclick="selectAll()"></span>');
 	</script>
 [% END %]
 <span class='status' id='staticplsavingstatus'>[% "PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPL_SAVESTATUS" | string %]</span>
