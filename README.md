@@ -150,6 +150,10 @@ The <i>Not classified</i> group is a <i>catch-all group</i> for all dynamic play
 In general, <i>dynamic playlists</i> in the <i>DPL menu</i> will <b>always</b> be listed in this order: 1. built-in, 2. custom/user-provided, 3. provided by other plugins. Dynamic playlists in the last two groups should be listed in <i>alphabetical</i> order.<br><b>Built-in</b> dynamic playlists are listed in a 'content-based' order created by me. For example, I try to group dynamic playlists together that are about ratings, play count or genre/decade selection. If you don't like how I ordered the built-in dynamic playlists, don't forget that you can clone these playlists and even put them in a custom playlist group just by adding the corresponding parameter (see <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters"><b>wiki</b></a>).<br>Static (saved) playlists will always be ordered alphabetically.
 </p></details><br>
 
+<details><summary>»<b>How do I transfer my active dynamic playlist to another player?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>The player to which I want to transfer my active dynamic playlist is not listed (as a target player).</b>«</summary><br><p>
+If you have an <i>active</i> dynamic playlist and <i>more than one</i> player, you can transfer the active dynamic playlist using the Dynamic Playlists (top level) menu.<br>By default, you can only transfer it to <b>un</b>synchronized players, which might be missing from the target player list. You can change that in the plugin settings.
+</p></details><br>
+
 <details><summary>»<b>Can I use CLI commands to control DPL?</b>«</summary><br><p>
 Explained in the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/CLI-commands">wiki</a>.
 </p></details><br>
