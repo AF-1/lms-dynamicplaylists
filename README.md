@@ -43,6 +43,8 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 
 * Queue dynamic playlists (see [FAQ](#faq)).
 
+* **Continue listening** to your *active* dynamic playlist **on another player** by transferring it with one click (incl. history, cache + all parameters).
+
 * Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
 
 * Supports LMS **virtual libraries**.
