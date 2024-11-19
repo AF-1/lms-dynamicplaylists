@@ -110,6 +110,13 @@
 	</select>
 [% END %]
 
+[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW_DESC" %]
+	<select class="stdedit" name="pref_jivenextwindow" id="jivenextwindow">
+		<option [% IF NOT prefs.jivenextwindow %]selected [% END %]value="0">[% 'SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW_NPSCREEN' | string %]</option>
+		<option [% IF prefs.jivenextwindow %]selected [% END %]value="1">[% 'SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW_HOME' | string %]</option>
+	</select>
+[% END %]
+
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPCUSTOMPLAYLISTS" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPCUSTOMPLAYLISTS_DESC" %]
 	<select class="stdedit" name="pref_groupunclassifiedcustomplaylists" id="groupunclassifiedcustomplaylists">
 		<option [% IF NOT prefs.groupunclassifiedcustomplaylists %]selected [% END %]value="0">[% 'NO' | getstring %]</option>

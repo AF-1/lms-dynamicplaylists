@@ -262,6 +262,18 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_REMEMBERACTIVEPLAYLIST_DESC
 	FR	Se souvenir de la liste de lecture dynamique active d'un client après le redémarrage de LMS
 	DE	Aktive Wiedergabeliste nach Neustart des Servers merken
 
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW
+	EN	Jivelite players: next window jump
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW_DESC
+	EN	Some dynamic playlists require you to traverse multiple menus to set various parameters.<br>When you select <i>play</i>, <i>add</i> or <i>create DSTM seed list and play</i> in the <i>final</i> menu, jivelite players will jump to the <i>Now Playing screen</i> by default.<br>Exiting the Now Playing screen will take you back to this final menu. To get back to the <i>Home</i> menu, you need to long press the top left button.<br><br>This setting allows you to change this: if you choose "Home menu", then selecting <i>play</i>, <i>add</i> and <i>create DSTM seed list and play</i> in the final menu will take you back to the <i>Home</i> menu. But you have to press the top right note icon to enter the Now Playing screen.<br><br><b>This is a <i>global</i> setting that only applies <i>jivelite</i> players/controllers like <i>SB Radio</i>, <i>SB Touch</i>, <i>SqueezePlay</i> or <i>piCorePlayer</i>.</b>
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW_NPSCREEN
+	EN	Now Playing screen
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW_HOME
+	EN	Home menu
+
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPCUSTOMPLAYLISTS
 	EN	Group custom dynamic playlists <wbr>without&nbsp;group&nbsp;classification
 	FR	Grouper les listes de lecture dynamiques personnalisées <wbr>sans&nbsp;classification

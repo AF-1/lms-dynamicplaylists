@@ -2527,8 +2527,9 @@ sub cliJivePlaylistParametersHandler {
 		my $offsetCount = 3;
 
 		# Material does not display checkboxes in MyMusic. Use unicode character name prefix instead.
-		my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->source) && $request->source eq 'JSONRPC');
-		my $iPengCaller = 1 if (defined($request->source) && $request->source =~ /iPeng/);
+		my ($materialCaller, $iPengCaller) = 0;
+		$materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->source) && $request->source eq 'JSONRPC');
+		$iPengCaller = 1 if (defined($request->source) && $request->source =~ /iPeng/);
 		my $checkboxSelected = $iPengCaller ? HTML::Entities::decode_entities('&#9632;&#xa0;&#xa0;') : HTML::Entities::decode_entities('&#9724;&#xa0;&#xa0;');
 		my $checkboxEmpty = $iPengCaller ? HTML::Entities::decode_entities('&#9633;&#xa0;&#xa0;') : HTML::Entities::decode_entities('&#9723;&#xa0;&#xa0;');
 
@@ -2774,6 +2775,8 @@ sub _cliJiveActionsMenuHandler {
 	});
 	my $cnt = 0;
 
+	my $nextWindow = $prefs->get('jivenextwindow') ? 'home' : 'nowPlaying';
+
 	## Play
 	my $actions_play = {
 		'do' => {
@@ -2790,7 +2793,7 @@ sub _cliJiveActionsMenuHandler {
 	$request->addResultLoop('item_loop', $cnt, 'actions', $actions_play);
 	$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
 	$request->addResultLoop('item_loop', $cnt, 'params', $params);
-	$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
+	$request->addResultLoop('item_loop', $cnt, 'nextWindow', $nextWindow);
 	$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_PLAY'));
 	$cnt++;
 
@@ -2811,7 +2814,7 @@ sub _cliJiveActionsMenuHandler {
 	$request->addResultLoop('item_loop', $cnt, 'actions', $actions_add);
 	$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
 	$request->addResultLoop('item_loop', $cnt, 'params', $params);
-	$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
+	$request->addResultLoop('item_loop', $cnt, 'nextWindow', $nextWindow);
 	$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_ADD'));
 	$cnt++;
 
@@ -2852,7 +2855,7 @@ sub _cliJiveActionsMenuHandler {
 		$request->addResultLoop('item_loop', $cnt, 'actions', $actions_dstm_add);
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
 		$request->addResultLoop('item_loop', $cnt, 'params', $params);
-		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'nowPlaying');
+		$request->addResultLoop('item_loop', $cnt, 'nextWindow', $nextWindow);
 		$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY'));
 		$cnt++;
 	}
@@ -2902,7 +2905,6 @@ sub _cliJiveActionsMenuHandler {
 	# if we have params, display if params = non-volatile or pref setting = enabled
 
 	if ($paramCount == 0 || ($paramCount > 0 && ($prefs->get('paramsdplsaveenabled') || $hasNoVolatileParams))) {
-
 		my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
 		my $input = {
 			initialText => $playLists->{$playlistID}->{'name'},
