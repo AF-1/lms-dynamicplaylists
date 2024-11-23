@@ -116,7 +116,7 @@ sub initPlugin {
 	Slim::Control::Request::subscribe(\&commandCallback, [['playlist'], ['newsong', 'delete', keys %stopcommands]]);
 	Slim::Control::Request::subscribe(\&powerCallback, [['power']]);
 	Slim::Control::Request::subscribe(\&clientNewCallback, [['client'], ['new']]);
-	Slim::Control::Request::subscribe(\&rescanDone, [['rescan'], ['done']]);
+	Slim::Control::Request::subscribe(\&_setPostScanCBTimer, [['rescan'], ['done']]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'isactive'], [1, 1, 0, \&cliIsActive]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlists', '_all', '_start', '_itemsPerResponse'], [1, 1, 0, \&cliGetPlaylists]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'play'], [1, 0, 1, \&cliPlayPlaylist]);
@@ -7255,9 +7255,6 @@ sub clientNewCallback {
 }
 
 sub rescanDone {
-	my $request = shift;
-	my $client = $request->client();
-
 	$rescan = 1;
 	if ($deleteAllQueues) {
 		main::DEBUGLOG && $log->is_debug && $log->debug('Clearing play history for all players');
@@ -7292,6 +7289,23 @@ sub rescanDone {
 	}
 
 	clearCache();
+}
+
+sub _setPostScanCBTimer {
+	main::DEBUGLOG && $log->is_debug && $log->debug('Killing existing timers for post-scan tasks to prevent multiple calls');
+	Slim::Utils::Timers::killOneTimer(undef, \&delayedPostScanTasks);
+	main::DEBUGLOG && $log->is_debug && $log->debug('Scheduling delayed post-scan tasks');
+	Slim::Utils::Timers::setTimer(undef, time() + 3, \&delayedPostScanTasks);
+}
+
+sub delayedPostScanTasks {
+	if (Slim::Music::Import->stillScanning) {
+		main::DEBUGLOG && $log->is_debug && $log->debug('Scan in progress. Waiting for current scan to finish.');
+		_setPostScanCBTimer();
+	} else {
+		main::DEBUGLOG && $log->is_debug && $log->debug('Starting post-scan tasks.');
+		rescanDone();
+	}
 }
 
 sub continuePreviousPlaylist {
