@@ -1504,6 +1504,10 @@ sub webPages {
 
 sub handleWebList {
 	my ($client, $params) = @_;
+	if (!$client) {
+		$log->warn('Client required. Can\'t proceed.');
+		return;
+	}
 	my $masterClient = masterOrSelf($client);
 
 	# Pass on the current pref values and now playing info
@@ -2194,7 +2198,7 @@ sub cliJiveHandler {
 	# display active dynamic playlist
 	if ($playlist && $nextGroup == 1) {
 		main::DEBUGLOG && $log->is_debug && $log->debug('active dynamic playlist for client "'.$client->name.'" = '.$playlist->{'name'});
-		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPL').' '.$playlist->{'name'});
+		$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPL').' '.$playlist->{'name'});
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
 		$request->addResultLoop('item_loop', $cnt, 'action', 'none');
 		$cnt++;
@@ -2215,7 +2219,7 @@ sub cliJiveHandler {
 		$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'refresh');
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay');
 		$request->addResultLoop('item_loop', $cnt, 'actions', $stopAddingAction);
-		$request->addResultLoop('item_loop', $cnt, 'text', '* '.$client->string('PLUGIN_DYNAMICPLAYLISTS4_DISABLE').' *');
+		$request->addResultLoop('item_loop', $cnt, 'text', '* '.string('PLUGIN_DYNAMICPLAYLISTS4_DISABLE').' *');
 		$cnt++;
 
 		# transfer playlist between (unsynced) clients
@@ -2235,7 +2239,7 @@ sub cliJiveHandler {
 			};
 			$request->addResultLoop('item_loop', $cnt, 'type', 'redirect');
 			$request->addResultLoop('item_loop', $cnt, 'actions', $showTargetPlayerListAction);
-			$request->addResultLoop('item_loop', $cnt, 'text', '* '.$client->string('PLUGIN_DYNAMICPLAYLISTS4_TRANSFERDPL_MAIN').' *');
+			$request->addResultLoop('item_loop', $cnt, 'text', '* '.string('PLUGIN_DYNAMICPLAYLISTS4_TRANSFERDPL_MAIN').' *');
 			$cnt++;
 		}
 	}
@@ -2258,7 +2262,7 @@ sub cliJiveHandler {
 				},
 			};
 			$request->addResultLoop('item_loop', $cnt, 'actions', $preselActions);
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ARTISTS_LIST'));
+			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ARTISTS_LIST'));
 			$cnt++;
 		}
 		if (keys %{$preselectionListAlbums} > 0) {
@@ -2272,7 +2276,7 @@ sub cliJiveHandler {
 				},
 			};
 			$request->addResultLoop('item_loop', $cnt, 'actions', $preselActions);
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ALBUMS_LIST'));
+			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ALBUMS_LIST'));
 			$cnt++;
 		}
 	}
@@ -2289,7 +2293,7 @@ sub cliJiveHandler {
 				},
 			};
 			$request->addResultLoop('item_loop', $cnt, 'actions', $queueActions);
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_CURRENTLYQUEUED'));
+			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_CURRENTLYQUEUED'));
 			$cnt++;
 		}
 	}
@@ -2909,7 +2913,7 @@ sub _cliJiveActionsMenuHandler {
 		my $input = {
 			initialText => $playLists->{$playlistID}->{'name'},
 			len => 1,
-			allowedChars => $client->string('JIVE_ALLOWEDCHARS_WITHCAPS'),
+			allowedChars => string('JIVE_ALLOWEDCHARS_WITHCAPS'),
 		};
 
 		my $playlistName = $playLists->{$playlistID}->{'name'};
@@ -2938,9 +2942,9 @@ sub _cliJiveActionsMenuHandler {
 			},
 		};
 		if ($materialCaller && $paramCount > 0) {
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_MATERIAL'));
+			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_MATERIAL'));
 		} else {
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV'));
+			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV'));
 		}
 		$request->addResultLoop('item_loop', $cnt, 'input', $input) if $paramCount > 0;
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay') unless $paramCount > 0;
@@ -2965,9 +2969,9 @@ sub _cliJiveActionsMenuHandler {
 			},
 		};
 		if ($materialCaller && $paramCount > 0) {
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY_MATERIAL'));
+			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY_MATERIAL'));
 		} else {
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY'));
+			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY'));
 		}
 		$request->addResultLoop('item_loop', $cnt, 'input', $input) if $paramCount > 0;
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemplay') unless $paramCount > 0;
@@ -3111,7 +3115,7 @@ sub objectInfoHandler {
 			$parameterId = $objectType;
 		}
 	} elsif ($objectType eq 'year') {
-		$objectName = ($obj?$obj:$client->string('UNK'));
+		$objectName = ($obj?$obj:string('UNK'));
 		$objectId = $obj;
 		$parameterId = $objectType;
 	} else {
@@ -3147,7 +3151,7 @@ sub objectInfoHandler {
 		return {
 			type => 'redirect',
 			jive => $jive,
-			name => $client->string('PLUGIN_DYNAMICPLAYLISTS4'),
+			name => string('PLUGIN_DYNAMICPLAYLISTS4'),
 			favorites => 0,
 
 			player => {
@@ -3918,7 +3922,7 @@ sub addFavorite {
 			# Display status message(s) if $showTimePerChar > 0
 			if ($showTimePerChar > 0) {
 				$client->showBriefly({
-					'line' => [$client->string('FAVORITES_ADDING'), $item->{'playlist'}->{'name'}]
+					'line' => [string('FAVORITES_ADDING'), $item->{'playlist'}->{'name'}]
 				}, getMsgDisplayTime(string('FAVORITES_ADDING').$item->{'playlist'}->{'name'}));
 			}
 		} elsif (defined($hotkey)) {
@@ -3928,7 +3932,7 @@ sub addFavorite {
 			# Display status message(s) if $showTimePerChar > 0
 			if ($showTimePerChar > 0) {
 				$client->showBriefly({
-					'line' => [$client->string('FAVORITES_ADDING'), $item->{'playlist'}->{'name'}]
+					'line' => [string('FAVORITES_ADDING'), $item->{'playlist'}->{'name'}]
 				}, getMsgDisplayTime(string('FAVORITES_ADDING').$item->{'playlist'}->{'name'}));
 			}
 		} else {
@@ -4009,13 +4013,13 @@ sub setModeChooseParameters {
 		# Continue or play
 		if (exists $playlist->{'parameters'}->{($parameterId + 1)}) {
 			@listRef = ({
-				name => $client->string('PLUGIN_DYNAMICPLAYLISTS4_NEXT'),
+				name => string('PLUGIN_DYNAMICPLAYLISTS4_NEXT'),
 				paramType => $parameter->{'type'},
 				value => 0,
 			});
 		} else {
 			@listRef = ({
-				name => $client->string('PLUGIN_DYNAMICPLAYLISTS4_PLAY'),
+				name => string('PLUGIN_DYNAMICPLAYLISTS4_PLAY'),
 				paramType => $parameter->{'type'},
 				value => 0,
 			});
@@ -4023,7 +4027,7 @@ sub setModeChooseParameters {
 
 		# Select all or none
 		push @listRef, ({
-			name => $client->string('PLUGIN_DYNAMICPLAYLISTS4_SELECT_ALLORNONE'),
+			name => string('PLUGIN_DYNAMICPLAYLISTS4_SELECT_ALLORNONE'),
 			paramType => $parameter->{'type'},
 			selectAll => 1,
 			value => 1,
@@ -4392,7 +4396,7 @@ sub getOverlay {
 sub getGenreOverlay {
 	my ($client, $item) = @_;
 
-	if ($item->{'name'} && ($item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS4_NEXT') || $item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS4_PLAY'))) {
+	if ($item->{'name'} && ($item->{'name'} eq string('PLUGIN_DYNAMICPLAYLISTS4_NEXT') || $item->{'name'} eq string('PLUGIN_DYNAMICPLAYLISTS4_PLAY'))) {
 		return [undef, $client->symbols('rightarrow')];
 	} else {
 		my $value = 0;
@@ -4733,9 +4737,9 @@ sub _saveStaticPlaylistJiveParams {
 		my @jiveTrackLimitChoices = (100,200,500,1000,1500,2000,3000,4000);
 		my $input = {
 			initialText => $playLists->{$playlistID}->{'name'},
-			title => $client->string('PLUGIN_DYNAMICPLAYLISTS4_ENTERNEWSTATICPLNAME'),
+			title => string('PLUGIN_DYNAMICPLAYLISTS4_ENTERNEWSTATICPLNAME'),
 			len => 1,
-			allowedChars => $client->string('JIVE_ALLOWEDCHARS_WITHCAPS'),
+			allowedChars => string('JIVE_ALLOWEDCHARS_WITHCAPS'),
 		};
 		while (my ($index, $limit) = each(@jiveTrackLimitChoices)) {
 			my %itemParams = (
@@ -4773,7 +4777,7 @@ sub _saveStaticPlaylistJiveParams {
 		my $input = {
 			initialText => $playLists->{$playlistID}->{'name'},
 			len => 1,
-			allowedChars => $client->string('JIVE_ALLOWEDCHARS_WITHCAPS'),
+			allowedChars => string('JIVE_ALLOWEDCHARS_WITHCAPS'),
 		};
 
 		$baseParams{'staticplaylistname'} = '__TAGGEDINPUT__';
@@ -4931,7 +4935,7 @@ sub _toggleMultipleSelectionState {
 sub _toggleMultipleSelectionStateIP3k {
 	my ($client, $item) = @_;
 
-	if ($item->{'name'} && ($item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS4_NEXT') || $item->{'name'} eq $client->string('PLUGIN_DYNAMICPLAYLISTS4_PLAY'))) {
+	if ($item->{'name'} && ($item->{'name'} eq string('PLUGIN_DYNAMICPLAYLISTS4_NEXT') || $item->{'name'} eq string('PLUGIN_DYNAMICPLAYLISTS4_PLAY'))) {
 		my $parameterId = $client->modeParam('dynamicplaylist_nextparameter');
 		my $playlist = $client->modeParam('dynamicplaylist_selectedplaylist');
 		my $multipleSelectionString;
@@ -5443,7 +5447,7 @@ sub registerPreselectionMenu {
 		objectname => $objectName,
 		artistname => $artistName,
 		action => 2,
-		name => $objectType eq 'artist' ? $client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTARTISTS') : $client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTALBUMS'),
+		name => $objectType eq 'artist' ? string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTARTISTS') : string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTALBUMS'),
 		favorites => 0,
 		web => {
 			'type' => 'htmltemplate',
@@ -5454,6 +5458,10 @@ sub registerPreselectionMenu {
 
 sub _preselectionMenuWeb {
 	my ($client, $params) = @_;
+	if (!$client) {
+		$log->warn('Client required. Can\'t proceed.');
+		return;
+	}
 	my $objectType = $params->{'objecttype'};
 	my $objectId = $params->{'objectid'};
 	my $objectName = $params->{'objectname'};
@@ -5535,7 +5543,7 @@ sub _preselectionMenuJive {
 	if (keys %{$preselectionList} > 0) {
 		$request->addResultLoop('item_loop', $cnt, 'type', 'text');
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-		$request->addResultLoop('item_loop', $cnt, 'text', $objectType eq 'artist' ? $client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_REMOVEINFO_ARTIST') : $client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_REMOVEINFO_ALBUM'));
+		$request->addResultLoop('item_loop', $cnt, 'text', $objectType eq 'artist' ? string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_REMOVEINFO_ARTIST') : string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_REMOVEINFO_ALBUM'));
 		$cnt++;
 
 		if (keys %{$preselectionList} > 1) {
@@ -5556,7 +5564,7 @@ sub _preselectionMenuJive {
 			$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
 			$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
 			$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'parent');
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CLEAR_LIST'));
+			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CLEAR_LIST'));
 			$cnt++;
 		}
 
@@ -5564,7 +5572,7 @@ sub _preselectionMenuJive {
 			my $selectedItem = $preselectionList->{$itemID};
 			my $itemName = $selectedItem->{'name'};
 			my $itemArtistName = $selectedItem->{'artistname'};
-			my $text = $objectType eq 'artist' ? $itemName : $itemName.' -- '.$client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_INFO_BY').' '.$itemArtistName;
+			my $text = $objectType eq 'artist' ? $itemName : $itemName.' -- '.string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_INFO_BY').' '.$itemArtistName;
 			my %itemParams = (
 				'objecttype' => $objectType,
 				'removeid' => $itemID,
@@ -5592,11 +5600,11 @@ sub _preselectionMenuJive {
 	} else {
 		$request->addResultLoop('item_loop', $cnt, 'type', 'text');
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_NONE'));
+		$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_NONE'));
 		$cnt++;
 	}
 	# Material always displays last selection as window title. Add correct window title as textarea
-	my $windowTitle = $objectType eq 'artist' ? $client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ARTISTS_LIST') : $client->string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ALBUMS_LIST');
+	my $windowTitle = $objectType eq 'artist' ? string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ARTISTS_LIST') : string('PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ALBUMS_LIST');
 	if ($materialCaller || $iPengCaller) {
 		$request->addResult('window', {textarea => $windowTitle});
 	} else {
@@ -5694,7 +5702,7 @@ sub _queueMenuJive {
 	if (scalar @{$dplQueue} > 0) {
 		$request->addResultLoop('item_loop', $cnt, 'type', 'text');
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_REMOVEINFO'));
+		$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_REMOVEINFO'));
 		$cnt++;
 
 		if (scalar @{$dplQueue} > 1) {
@@ -5714,7 +5722,7 @@ sub _queueMenuJive {
 			$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
 			$request->addResultLoop('item_loop', $cnt, 'actions', $actions);
 			$request->addResultLoop('item_loop', $cnt, 'nextWindow', 'parent');
-			$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_CLEAR_QUEUE'));
+			$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_CLEAR_QUEUE'));
 			$cnt++;
 		}
 
@@ -5746,7 +5754,7 @@ sub _queueMenuJive {
 	} else {
 		$request->addResultLoop('item_loop', $cnt, 'type', 'text');
 		$request->addResultLoop('item_loop', $cnt, 'style', 'itemNoAction');
-		$request->addResultLoop('item_loop', $cnt, 'text', $client->string('PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_NONE'));
+		$request->addResultLoop('item_loop', $cnt, 'text', string('PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_NONE'));
 		$cnt++;
 	}
 
