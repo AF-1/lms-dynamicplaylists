@@ -28,7 +28,7 @@ body:
 - type: textarea
   attributes:
     label: What happened?
-    description: A concise description of what you're experiencing
+    description: A concise description of what you're experiencing. When does it happen?
   validations:
     required: true
 - type: markdown
@@ -102,6 +102,12 @@ body:
     default: 0
   validations:
     required: true
+- type: checkboxes
+  attributes:
+    label: Please check whether the problem can be reproduced with other web skins / controllers.
+    options:
+    - label: I have checked this
+      required: true
 - type: markdown
   attributes:
     value: "<br>"
