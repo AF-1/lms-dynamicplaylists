@@ -69,10 +69,8 @@ sub initPlugin {
 	if (main::WEBUI) {
 		require Plugins::DynamicPlaylists4::Settings::Basic;
 		require Plugins::DynamicPlaylists4::Settings::PlaylistSettings;
-		require Plugins::DynamicPlaylists4::Settings::FavouriteSettings;
 		Plugins::DynamicPlaylists4::Settings::Basic->new();
 		Plugins::DynamicPlaylists4::Settings::PlaylistSettings->new();
-		Plugins::DynamicPlaylists4::Settings::FavouriteSettings->new();
 	}
 
 	# playlist commands that will stop random play
@@ -5975,8 +5973,10 @@ sub getDynamicPlaylists {
 				'menulisttype' => $current->{'menulisttype'},
 				'playlistcategory' => $current->{'playlistcategory'},
 				'minlmsversion' => $current->{'minlmsversion'},
-				'apcplaylist' => $current->{'apcplaylist'},
+				'defaultplaylist' => $current->{'defaultplaylist'},
+				'customplaylist' => $current->{'customplaylist'},
 				'dplcplaylist' => $current->{'dplcplaylist'},
+				'apcplaylist' => $current->{'apcplaylist'},
 				'playlistapcdupe' => $current->{'playlistapcdupe'},
 				'playlisttrackorder' => $current->{'playlisttrackorder'},
 				'playlistlimitoption' => $current->{'playlistlimitoption'},

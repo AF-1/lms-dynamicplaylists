@@ -98,14 +98,20 @@ sub handler {
 	$paramRef->{'playlistcategories'} = \@playlistCategories;
 
 	if ($paramRef->{'saveSettings'}) {
-		my $first = 1;
-		my $sql = '';
 		foreach my $playlist (keys %{$playLists}) {
-			my $playlistid = "playlist_".$playLists->{$playlist}{'dynamicplaylistid'};
+			my $playlistid = "playlist_".$playLists->{$playlist}{'dynamicplaylistid'}."_enabled";
 			if ($paramRef->{$playlistid}) {
 				$prefs->set('playlist_'.$playlist.'_enabled', 1);
 			} else {
 				$prefs->set('playlist_'.$playlist.'_enabled', 0);
+			}
+
+			# favs
+			my $playlistfavouriteid = "playlist_".$playLists->{$playlist}{'dynamicplaylistid'}."_isfav";
+			if ($paramRef->{$playlistfavouriteid}) {
+				$prefs->set('playlist_'.$playlist.'_favourite', 1);
+			} else {
+				$prefs->remove('playlist_'.$playlist.'_favourite');
 			}
 		}
 
@@ -174,7 +180,7 @@ sub savePlayListGroups {
 		my $item = $items->{$itemKey};
 		if(!defined($item->{'playlist'}) && defined($item->{'name'})) {
 			my $groupid = escape($path)."_".escape($item->{'name'});
-			my $playlistid = "playlist_".$groupid;
+			my $playlistid = "playlist_".$groupid."_enabled";
 			if($paramRef->{$playlistid}) {
 				$prefs->set('playlist_group_'.$groupid.'_enabled', 1);
 			} else {

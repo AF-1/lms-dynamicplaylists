@@ -24,10 +24,8 @@ PLUGIN_DYNAMICPLAYLISTS4_PLAYLISTSETTINGS
 	FR	Listes de lecture dynamiques activées
 	DE	Aktivierte Wiedergabelisten
 
-PLUGIN_DYNAMICPLAYLISTS4_FAVIOURITESETTINGS
-	EN	Favourite dynamic playlists
-	FR	Listes de lecture dynamiques favorites
-	DE	Favorisierte Wiedergabelisten
+PLUGIN_DYNAMICPLAYLISTS4_PLAYLISTDETAILS
+	EN	Dynamic playlist details
 
 PLUGIN_DYNAMICPLAYLISTS4_DISABLED
 	EN	Dynamic playlist stopped
@@ -361,44 +359,34 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MILLISECS
 
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS
-	EN	Enabled dynamic playlists
-	FR	Listes de lecture dynamiques activées
-	DE	Aktive dynamische Wiedergabelisten
+	EN	Dynamic playlists
+	FR	Listes de lecture dynamiques
+	DE	Dynamische Wiedergabelisten
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_GROUPS
-	EN	Enabled playlist groups
-	FR	Groupes de listes de lecture activées
-	DE	Aktive Gruppen für Wiedergabelisten
+	EN	Playlist groups
+	FR	Groupes de listes de lecture
+	DE	Gruppen für Wiedergabelisten
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_GROUPS_DESC
-	EN	Select enabled playlist groups
-	FR	Sélectionne les groupes de listes de lecture activés
-	DE	Aktive Gruppen für Wiedergabelisten auswählen
+	EN	Check the box to enable playlist groups.
+	FR	Cochez la case pour activer un groupe de listes de lecture.
+	DE	Haken Sie das Kästchen an, um eine Gruppe für dynamische Wiedergabelisten zu aktivieren.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_DESC
-	EN	Select enabled dynamic playlists
-	FR	Sélectionne les listes de lecture dynamiques activées
-	DE	Aktive dynamische Wiedergabelisten auswählen
+	EN	Check the box to enable dynamic playlists.<br><br>Click on the heart to add a dynamic playlist to the <i>Favourites</i> group in the DPL home menu.<br><br>Save your changes by clicking the <i>Apply</i> or <i>Save Settings</i> button.
+	FR	Cochez la case pour activer une liste de lecture dynamique.<br><br>Cliquez sur le cœur pour ajouter une liste de lecture dynamique au groupe <i>Favoris</i dans le menu d'accueil DPL.
+	DE	Haken Sie das Kästchen an, um dynamische Wiedergabelisten zu aktivieren.<br><br>Klicken Sie auf das Herz, um eine dynamische Wiedergabeliste zur Gruppe <i>Favoriten</i> im DPL-Startmenü hinzuzufügen.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_CONTEXTMENU
-	EN	Enabled dynamic playlists <wbr>for&nbsp;<u>context&nbsp;menus</u>
-	FR	Listes de lecture dynamiques activées <wbr>dans&nbsp;le&nbsp;<u>menu&nbsp;contextuel</u>
-	DE	Aktive dynamische Wiedergabelisten für Kontextmenüs
+	EN	Dynamic playlists <wbr>for&nbsp;<u>context&nbsp;menus</u>
+	FR	Listes de lecture dynamiques<wbr>dans&nbsp;le&nbsp;<u>menu&nbsp;contextuel</u>
+	DE	Dynamische Wiedergabelisten für <u>Kontextmenüs</u>
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_CONTEXTMENU_DESC
-	EN	Select enabled dynamic playlists for <b>context menus</b>
+	EN	Check the box to enable dynamic playlists for <b>context menus</b>
 	FR	Sélectionne les listes de lecture dynamiques pour le <b>menu contextuel</b>
 	DE	Aktive dynamische Wiedergabelisten für Kontextmenüs auswählen
-
-SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_FAVOURITES
-	EN	Favorites
-	FR	Favoris
-	DE	Favoriten
-
-SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_FAVOURITES_DESC
-	EN	Select favorites
-	FR	Sélectionne les favoris
-	DE	Favoriten auswählen
 
 PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_NONE
 	EN	Select NO Playlists
@@ -409,6 +397,21 @@ PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_ALL
 	EN	Select ALL Playlists
 	FR	Sélectionner TOUTES les listes de lecture
 	DE	ALLE Wiedergabelisten auswählen
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_DPLID
+	EN	Dynamic playlist ID
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_APCDATA
+	EN	Uses APC data
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_HASVOLATILEPARAMS
+	EN	Has volatile parameters
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_REPEAT
+	EN	Set to repeat (never stops)
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_USESCACHE
+	EN	Uses DPL cache
 
 
 PLUGIN_DYNAMICPLAYLISTS4_SELECT_ALL
@@ -531,11 +534,6 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DSTM_STARTINDEX_LAST
 	FR	dernier morceau
 	DE	letzter Titel
 
-
-SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_FAVOURITESNAME_INFO
-	EN	Dynamic playlists selected below will be put in a group called <i>Favourites</i>.
-	FR	Les listes de lecture dynamiques sélectionnées ci-dessous seront placées dans le groupe <i>Favoris</i>.
-	DE	Unten ausgewählte dynamische Wiedergabelisten werden in die Gruppe <i>Favoriten</i> einsortiert.
 
 PLUGIN_DYNAMICPLAYLISTS4_FAVOURITES
 	EN	Favourites
