@@ -2205,6 +2205,13 @@ PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPERCENTAGEPLAYLIST
 	FR	Sélectionner le pourcentage de morceaux des listes de lecture
 	DE	Prozentualer Anteil der Wiedergabeliste auswählen
 
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_TITLECONTAINS_ALBUM
+	EN	Album title contains
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_TITLECONTAINS_TRACK
+	EN	Track title contains
+
+
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL
 	EN	all songs
@@ -2335,36 +2342,6 @@ PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_ALBUMS_NOCOMPIS
 	EN	no compilations
 	FR	pas de compilations
 	DE	keine Kompilationen
-
-PLUGIN_DYNAMICPLAYLISTS4_CUSTOMSKIP_RECENTLYADDEDALBUM_NAME
-	EN	Recently added albums
-	FR	Albums ajoutés récemment
-	DE	Neulich hinzugefügte Alben
-
-PLUGIN_DYNAMICPLAYLISTS4_CUSTOMSKIP_RECENTLYADDEDALBUM_DESC
-	EN	Skip songs from albums that have been<br>recently added to the active dynamic playlist
-	FR	Eviter les morceaux d'albums qui ont été<br>récemment ajoutés à la liste de lecture dynamique
-	DE	Überspringe Titel aus Alben, die neulich zur aktiven dynamischen Wiedergabeliste hinzugefügt wurden
-
-PLUGIN_DYNAMICPLAYLISTS4_CUSTOMSKIP_RECENTLYADDEDALBUM_PARAM_NAME
-	EN	Don’t add more songs from recently added albums for
-	FR	Ne pas ajouter plus de morceaux d'albums récemment ajoutés pour
-	DE	Keine weiteren Titel von neulich hinzugefügten Alben für
-
-PLUGIN_DYNAMICPLAYLISTS4_CUSTOMSKIP_RECENTLYADDEDARTIST_NAME
-	EN	Recently added artists
-	FR	Artistes ajoutés récemment
-	DE	Neulich hinzugefügte Interpreten
-
-PLUGIN_DYNAMICPLAYLISTS4_CUSTOMSKIP_RECENTLYADDEDARTIST_DESC
-	EN	Skip songs by artists that have been<br>recently added to the active dynamic playlist
-	FR	Eviter les morceaux d'artistes qui ont été<br>récemment ajoutés à la liste de lecture dynamique
-	DE	Überspringe Titel von Interpreten, die neulich zur aktiven dynamischen Wiedergabeliste hinzugefügt wurden
-
-PLUGIN_DYNAMICPLAYLISTS4_CUSTOMSKIP_RECENTLYADDEDARTIST_PARAM_NAME
-	EN	Don’t add more songs from recently added artists for
-	FR	Ne pas ajouter plus de morceaux d'artistes ajoutés récemment pour
-	DE	keine weiteren Titel von neulich hinzugefügten Interpreten für
 
 
 

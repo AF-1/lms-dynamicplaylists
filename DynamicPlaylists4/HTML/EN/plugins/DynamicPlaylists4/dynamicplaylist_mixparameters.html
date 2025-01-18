@@ -104,6 +104,10 @@ href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html?
 		[% END %]
 	<br>
 
+	[% ELSIF param.parameter.type == "albumtitlecontains" || param.parameter.type == "tracktitlecontains" %]
+	<span class="boldtitle">[% param.parameter.name %]:</span>&nbsp;&nbsp;<input type="text" name="dynamicplaylist_parameter_[% param.parameter.id %]" value="[% param.value %]">
+	<br><br>
+
 	[% ELSE %]
 	<table border="0">
 		<tr>
