@@ -165,7 +165,7 @@ body:
     value: "<br><br>"
 - type: textarea
   attributes:
-    label: Anything else?
+    label: Anything else? 📎 Attachments etc.
     description: |
       Screenshots? Log files? Links? References? Anything that will give us more context about the issue you are encountering!
 

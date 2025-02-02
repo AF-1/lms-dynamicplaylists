@@ -1,11 +1,31 @@
 name: 💡 Feature request
 description: Suggest an idea for this project
 title: "[FEATURE REQUEST] your title here"
-labels: ["bug: bug suspected"]
+labels: ["feature request / enhancement"]
 assignees:
   - AF-1
 
 body:
+- type: checkboxes
+  attributes:
+    label: Is there an existing issue for this?
+    description: Please search to see if an issue (open or closed) already exists for your feature request.
+    options:
+    - label: I have searched the existing issues
+      required: true
+- type: markdown
+  attributes:
+    value: "<br><br>"
+- type: checkboxes
+  attributes:
+    label: Is your request mentioned in the FAQ?
+    description: If the repository has a FAQ section, please see if your feature request is mentioned there.
+    options:
+    - label: I have searched the FAQ
+      required: true
+- type: markdown
+  attributes:
+    value: "<br><br>"
 - type: textarea
   attributes:
     label: Is your feature request related to a problem?
