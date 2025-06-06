@@ -112,6 +112,10 @@ DPL is compatible with <a href="https://github.com/AF-1/#-dynamic-playlist-creat
 If you're familiar with SQLite and know how to create <i>custom</i> dynamic playlists, you can use data from any LMS database table.
 </p></details><br>
 
+<details><summary>»<b>Do I need the <i>Dynamic Mix</i> plugin?</b>«</summary><br><p>
+No. <i>Dynamic Mix</i> version 1.3 is <u><i>not</i></u> compatible with <i>Dynamic Playlists</i> version <b>4</b>. Dynamic Mix used MusicIP to create dynamic playlist mixes for DPL version <b>2</b>. I don't use MusicIP. So I don't know if Dynamic Mix interferes with DPL version <b>4</b>. But since it's not compatible, it's probably better to uninstall it.
+</p></details><br>
+
 <details><summary>»<b>How do I queue dynamic playlists?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>I've queued dynamic playlists and they disappeared.</b>«</summary><br><p>
 You can queue up to 5 dynamic playlists. When all tracks matching the search criteria for the <i>active</i> dynamic playlist have been added to your client playlist and you have queued dynamic playlists, DPL will add a short silent track and (a placeholder for) the next queued dynamic playlist to your client playlist. The silent track should help with a smooth transition so the last track before the new dynamic playlist isn't cut short.<br><br><b>Please note:</b> The list with queued dynamic playlists is <b>cleared</b> when you <b>restart the server</b>.
 </p></details><br>
