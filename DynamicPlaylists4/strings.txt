@@ -2143,7 +2143,7 @@ PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SONGS_LASTPLAYED
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SONGS_IGNORERECENTLYPLAYED
 	EN	Ignore recently played songs?
 	FR	Ignorer des morceaux joués récemment ?
-	DE	Neulich gespielte Titel ignorieren?
+	DE	Kürzlich gespielte Titel ignorieren?
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_ALBUMS_RECENTLYPLAYED
 	EN	Limit to albums that contain recently PLAYED songs?
@@ -2257,6 +2257,16 @@ PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_2WEEKS_NOT
 	EN	NOT played in the last 2 weeks
 	FR	NON joués dans les 2 dernières semaines
 	DE	NICHT in den letzten 2 Wochen gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_3WEEKS
+	EN	Played in the last 3 weeks
+	FR	Joués dans les 3 dernières semaines
+	DE	In den letzten 3 Wochen gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_3WEEKS_NOT
+	EN	NOT played in the last 3 weeks
+	FR	NON joués dans les 3 dernières semaines
+	DE	NICHT in den letzten 3 Wochen gespielt
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_4WEEKS
 	EN	Played in the last 4 weeks
