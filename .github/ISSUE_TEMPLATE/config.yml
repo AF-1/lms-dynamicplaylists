@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Lyrion Community Forum Support
-    url: https://forums.slimdevices.com/forum/user-forums/3rd-party-software/113984-announce-dynamic-playlists-4
-    about: Please ask questions that are not related to bug reports or feature requests here.
+    url: https://forums.lyrion.org/forum/user-forums/3rd-party-software/113984-announce-dynamic-playlists-4
+    about: Please ask questions that are not related to bug reports or feature requests in the Lyrion Community Forum.
+  - name: ⭐ Show your support!
+    url: https://github.com/AF-1/lms-dynamicplaylists/
+    about: Show your support by starring the repository so that other users can discover it (in their News Feed).
