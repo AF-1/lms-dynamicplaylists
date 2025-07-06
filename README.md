@@ -81,9 +81,9 @@ To report a new issue please file a GitHub [**issue report**](https://github.com
 <br><br><br>
 
 
-## ⭐ Contributing
+## ⭐ Help others discover this project
 
-If you find this plugin useful, please consider giving it a <img src="screenshots/githubstar.png" width="20" height="20" alt="star" /> on GitHub (top right of this page) so that other users can discover it (in their News Feed).
+If you find this project useful, giving it a <img src="screenshots/githubstar.png" width="20" height="20" alt="star" /> (top right of this page) is a great way to show your support and help others discover it. Thank you.
 <br><br><br><br>
 
 
