@@ -1,7 +1,7 @@
 Dynamic Playlists
 ====
 
-This plugin[^1] lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i> (smart playlists).<br>
+This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i> (smart playlists).<br>
 *Dynamic Playlists* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started. Since the <i>built-in</i> dynamic playlists cannot cover all possible use cases, you'll probably want to create a dynamic playlist that's tailored to your very specific needs at some point using [**Dynamic Playlist Creator**](https://github.com/AF-1/#-dynamic-playlist-creator) or a file with SQLite statements (see [FAQ](#faq)).<br>
 Some features are not enabled by default.
 <br><br>
@@ -12,7 +12,7 @@ Some features are not enabled by default.
 <br><br>
 
 
-## Screenshots - Context Menus[^2]
+## Screenshots - Context Menus[^1]
 While the Dynamic Playlists menu in the LMS home menu is easy to find, its **context menus** can easily be overlooked. You'll find the **Dynamic Playlists menus** in the *context menus* for **artists**, **albums**, **genres**, **years** (for years and decades) and **static playlists**. Some of them are presented below.
 <br><br>
 
@@ -178,7 +178,8 @@ Use <a href="https://github.com/AF-1/#-dynamic-playlist-creator"><b>Dynamic Play
 If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create a Custom Skip filter set that will <i>only</i> be active if DPL plays a dynamic playlist. See Custom Skip <a href="https://github.com/AF-1/lms-customskip/wiki#i-want-customskip-to-filter-only-dynamic-playlist-tracks">Wiki</a>.
 </p></details><br>
 
-<br><br>
+<details><summary>»<b>Can this plugin be <i>displayed in my language</i>?</b>«</summary><br><p>If you want localized strings in your language, please read <a href="https://github.com/AF-1/sobras/wiki/Adding-localization-to-LMS-plugins"><b>this</b></a>.</p></details>
 
-[^1]:If you want localized strings in your language, please read <a href="https://github.com/AF-1/sobras/wiki/Adding-localization-to-LMS-plugins"><b>this</b></a>. Based on Erland's <i>DynamicPlayList</i> plugin.
-[^2]: The screenshots might not correspond to the UI of the latest release in every detail.
+<br><br><br>
+
+[^1]: The screenshots might not correspond to the UI of the latest release in every detail.
