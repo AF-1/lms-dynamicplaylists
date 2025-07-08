@@ -63,7 +63,7 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 
 ## Installation
 
-**Dynamic Playlists** is available from the LMS plugin library: **LMS > Settings > Manage Plugins**.<br>
+**Dynamic Playlists** is available from the LMS plugin library: `LMS > Settings > Manage Plugins`.<br>
 
 If you want to test a new patch that hasn't made it into a release version yet, you'll have to [install the plugin manually](https://github.com/AF-1/sobras/wiki/Manual-installation-of-LMS-plugins).
 <br><br><br><br>
