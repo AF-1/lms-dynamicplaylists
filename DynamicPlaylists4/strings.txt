@@ -43,9 +43,9 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_FAQ_LINK_TEXT
 	DE	Hier klicken für die FAQ.
 
 PLUGIN_DYNAMICPLAYLISTS4_FAQ_LINK
-	EN	https://github.com/AF-1/#-dynamic-playlists
-	FR	https://github.com/AF-1/#-dynamic-playlists
-	DE	https://github.com/AF-1/#-dynamic-playlists
+	EN	https://github.com/AF-1
+	FR	https://github.com/AF-1
+	DE	https://github.com/AF-1
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SECTION
 	EN	Settings Section
