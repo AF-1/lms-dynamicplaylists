@@ -10,24 +10,7 @@ Some features are not enabled by default.
 <br><br>
 **Use the** &nbsp; <img src="screenshots/menuicon.png" width="30"> &nbsp;**icon** (top right) to **jump directly to a specific section.**
 
-<br><br>
-
-
-## Screenshots - Context Menus[^1]
-While the Dynamic Playlists menu in the LMS home menu is easy to find, its **context menus** can easily be overlooked. You'll find the **Dynamic Playlists menus** in the *context menus* for **artists**, **albums**, **genres**, **years** (for years and decades) and **static playlists**. Some of them are presented below.
-<br><br>
-
-### Players with Jivlite UI (Touch, piCorePlayer, SqueezePlay, Radio)
-![Players with Jivlite UI (Touch, piCorePlayer, SqueezePlay, Radio)](screenshots/jivelite.gif)
-<hr><br>
-
-### LMS Web UI - Default Skin
-![LMS Web UI - Default Skin](screenshots/defaultskin.gif)
-<hr><br>
-
-### Material Web UI
-![Material Web UI](screenshots/material.gif)
-<br><br><br><br>
+<br><br><br>
 
 
 ## Features
@@ -57,6 +40,23 @@ While the Dynamic Playlists menu in the LMS home menu is easy to find, its **con
 * Compatible with [**Dynamic Playlist Creator**](https://github.com/AF-1/#-dynamic-playlist-creator), [**Alternative Play Count**](https://github.com/AF-1/#-alternative-play-count) and [**Custom Skip**](https://github.com/AF-1/#-custom-skip).
 
 * If you have installed the [**Alternative Play Count**](https://github.com/AF-1/#-alternative-play-count) plugin, you will see some additional dynamic playlists that use the data from this plugin.
+<br><br><br><br>
+
+
+## Screenshots - Context Menus[^1]
+While the Dynamic Playlists menu in the LMS home menu is easy to find, its **context menus** can easily be overlooked. You'll find the **Dynamic Playlists menus** in the *context menus* for **artists**, **albums**, **genres**, **years** (for years and decades) and **static playlists**. Some of them are presented below.
+<br><br>
+
+### Players with Jivlite UI (Touch, piCorePlayer, SqueezePlay, Radio)
+![Players with Jivlite UI (Touch, piCorePlayer, SqueezePlay, Radio)](screenshots/jivelite.gif)
+<hr><br>
+
+### LMS Web UI - Default Skin
+![LMS Web UI - Default Skin](screenshots/defaultskin.gif)
+<hr><br>
+
+### Material Web UI
+![Material Web UI](screenshots/material.gif)
 
 <br><br><br>
 
