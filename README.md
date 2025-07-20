@@ -3,7 +3,8 @@ Dynamic Playlists
 ![Min. LMS Version](https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fraw.githubusercontent.com%2FAF-1%2Fsobras%2Fmain%2Frepos%2Flms%2Fpublic.xml&query=%2F%2F*%5Blocal-name()%3D'plugin'%20and%20%40name%3D'DynamicPlaylists4'%5D%2F%40minTarget&prefix=v&label=Min.%20LMS%20Version%20Required&color=darkgreen)<br>
 
 This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i> (smart playlists).<br>
-*Dynamic Playlists* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started. Since the <i>built-in</i> dynamic playlists cannot cover all possible use cases, you'll probably want to create a dynamic playlist that's tailored to your very specific needs at some point using [**Dynamic Playlist Creator**](https://github.com/AF-1/#-dynamic-playlist-creator) or a file with SQLite statements (see [FAQ](#faq)).<br>
+*Dynamic Playlists* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started.<br>
+Since the <i>built-in</i> dynamic playlists cannot cover all possible use cases, you'll probably want to create a dynamic playlist that's tailored to your very specific needs at some point using [**Dynamic Playlist Creator**](https://github.com/AF-1/#-dynamic-playlist-creator) or a file with SQLite statements (see [FAQ](#faq)).<br>
 Some features are not enabled by default.
 <br><br>
 [⬅️ **Back to the list of all plugins**](https://github.com/AF-1/)
@@ -11,7 +12,6 @@ Some features are not enabled by default.
 **Use the** &nbsp; <img src="screenshots/menuicon.png" width="30"> &nbsp;**icon** (top right) to **jump directly to a specific section.**
 
 <br><br><br>
-
 
 ## Features
 
