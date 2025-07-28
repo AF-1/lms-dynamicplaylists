@@ -7,6 +7,7 @@ Dynamic Playlists
 
 > [!TIP]
 > The <i>pre-installed</i> dynamic playlists cannot cover all possible use cases. But you can create dynamic playlists that are tailored to your very specific needs using the [**Dynamic Playlist Creator**](https://github.com/AF-1/#-dynamic-playlist-creator) plugin or a file with SQLite statements (see [FAQ](#faq)).<br>
+
 Some features are not enabled by default.
 <br><br>
 [⬅️ **Back to the list of all plugins**](https://github.com/AF-1/)
