@@ -5,7 +5,8 @@ Dynamic Playlists
 <img src="screenshots/dpl_icon.png" align="right" width="90px">This plugin lets you play continuous music mixes based on selection criteria defined in so-called <i>dynamic playlists</i> (smart playlists).<br>
 *Dynamic Playlists* will keep adding small batches of tracks in random order to your current playlist (complete albums can be added in album order). It comes with a collection of built-in, ready-to-use dynamic playlists to get you started.<br clear="right">
 
-Since the <i>built-in</i> dynamic playlists cannot cover all possible use cases, you'll probably want to create a dynamic playlist that's tailored to your very specific needs at some point using [**Dynamic Playlist Creator**](https://github.com/AF-1/#-dynamic-playlist-creator) or a file with SQLite statements (see [FAQ](#faq)).<br>
+> [!TIP]
+> The <i>pre-installed</i> dynamic playlists cannot cover all possible use cases. But you can create dynamic playlists that are tailored to your very specific needs using the [**Dynamic Playlist Creator**](https://github.com/AF-1/#-dynamic-playlist-creator) plugin or a file with SQLite statements (see [FAQ](#faq)).<br>
 Some features are not enabled by default.
 <br><br>
 [⬅️ **Back to the list of all plugins**](https://github.com/AF-1/)
