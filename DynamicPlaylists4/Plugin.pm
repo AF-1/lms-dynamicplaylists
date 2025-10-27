@@ -53,7 +53,7 @@ my $log = Slim::Utils::Log->addLogCategory({
 	'description' => 'PLUGIN_DYNAMICPLAYLISTS4',
 });
 
-my ($playLists, $localDynamicPlaylists, $localBuiltinDynamicPlaylists, $playListTypes, $playListItems, $jiveMenu, $dplc_enabled, $dstm_enabled, $apc_enabled, $material_enabled);
+my ($playLists, $localDynamicPlaylists, $localBuiltinDynamicPlaylists, $playListTypes, $playListItems, $jiveMenu, $dplc_enabled, $dstm_enabled, $apc_enabled, $material_enabled, $debugVerbose);
 my $rescan = 0;
 
 my ($historyQueue, $deleteQueue) = {};
@@ -73,7 +73,7 @@ sub initPlugin {
 		Plugins::DynamicPlaylists4::Settings::PlaylistSettings->new();
 	}
 
-	# playlist commands that will stop random play
+	# playlist commands that will stop dynamic playlists (dynamic playlist = no longer active)
 	%stopcommands = (
 		'clear' => 1,
 		'loadtracks' => 1, # multiple play
@@ -241,6 +241,10 @@ sub initPrefs {
 		'name' => ''
 	});
 
+	$debugVerbose = $prefs->get('debugverbose');
+	$prefs->setChange(sub {
+			$debugVerbose = $prefs->get('debugverbose');
+		}, 'debugverbose');
 	%customsortnames = (string('PLUGIN_DYNAMICPLAYLISTS4_FAVOURITES') => '00001_Favourites', 'Songs' => '00002_Songs', 'Artists' => '00003_Artists', 'Albums' => '00004_Albums', 'Works' => '00005_Works', 'Genres' => '00006_Genres', 'Years' => '00007_Years', 'Playlists' => '00008_PLaylists', 'Static Playlists' => '00009_static_LMS_playlists', 'Not classified' => '00010_not_classified', 'Context menu lists' => '00011_contextmenulists');
 }
 
@@ -253,7 +257,8 @@ sub initPlayLists {
 	main::DEBUGLOG && $log->is_debug && $log->debug('mix status = '.Data::Dump::dump(active($client))) if $client;
 
 	readParseLocalDynamicPlaylists();
-	#main::DEBUGLOG && $log->is_debug && $log->debug('localDynamicPlaylists = '.Data::Dump::dump($localDynamicPlaylists));
+
+	main::DEBUGLOG && $log->is_debug && $log->debug('localDynamicPlaylists = '.Data::Dump::dump($localDynamicPlaylists)) if $debugVerbose;
 
 	my %localPlayLists = ();
 	my %localPlayListItems = ();
@@ -274,7 +279,7 @@ sub initPlayLists {
 			for my $item (keys %{$items}) {
 				$plugins{$item} = "${plugin}";
 				my $playlist = $items->{$item};
-				main::DEBUGLOG && $log->is_debug && $log->debug('Got dynamic playlist: '.$playlist->{'name'});
+				main::DEBUGLOG && $log->is_debug && $log->debug('Got dynamic playlist: '.$playlist->{'name'}) if $debugVerbose;
 
 				# skip playlists if current LMS version < required LMS version
 				if ($playlist->{'minlmsversion'} && Slim::Utils::Versions->compareVersions($::VERSION, $playlist->{'minlmsversion'}) == -1) {
@@ -317,7 +322,7 @@ sub initPlayLists {
 						my %volatileParams = map { $_ => 1 } ('artist', 'album', 'genre', 'multiplegenres', 'playlist', 'multiplestaticplaylists');
 						my $paramType = $playlist->{'parameters'}->{$p}->{'type'};
 						if ($volatileParams{$paramType}) {
-								main::DEBUGLOG && $log->is_debug && $log->debug("Playlist '".$playlist->{'name'}."' contains volatile param type '".$paramType."'");
+								main::DEBUGLOG && $log->is_debug && $log->debug("Playlist '".$playlist->{'name'}."' contains volatile param type '".$paramType."'") if $debugVerbose;
 								$hasNoVolatileParam = 0;
 						}
 
@@ -435,8 +440,8 @@ sub initPlayLists {
 
 	$playLists = \%localPlayLists;
 	$playListItems = \%localPlayListItems;
-	#main::INFOLOG && $log->is_info && $log->info('localPlayListItems = '.Data::Dump::dump(\%localPlayListItems));
-	#main::DEBUGLOG && $log->is_debug && $log->debug('playLists = '.Data::Dump::dump($playLists));
+	main::INFOLOG && $log->is_info && $log->info('localPlayListItems = '.Data::Dump::dump(\%localPlayListItems)) if $debugVerbose;
+	main::DEBUGLOG && $log->is_debug && $log->debug('playLists = '.Data::Dump::dump($playLists)) if $debugVerbose;
 
 	return ($playLists, $playListItems, \%unclassifiedPlaylists, $savedstaticPlaylists);
 }
@@ -580,11 +585,11 @@ sub findAndAdd {
 
 			# Filter track IDs
 			unless ($dplUseCache) {
-				#main::DEBUGLOG && $log->is_debug && $log->debug('newTrackIDs = '.Data::Dump::dump($newTrackIDs));
+				main::DEBUGLOG && $log->is_debug && $log->debug('newTrackIDs = '.Data::Dump::dump($newTrackIDs)) if $debugVerbose;
 				my $filterTrackIDsStartTime = time();
 				$newTrackIDs = filterTrackIDs($masterClient, $newTrackIDs, $totalTrackIDList, $forcedAddDifferentPlaylist ? 1 : 0);
 				main::DEBUGLOG && $log->is_debug && $log->debug("Iteration $i: returned ".(scalar @{$newTrackIDs}).((scalar @{$newTrackIDs}) == 1 ? ' item' : ' items').' after filtering. Filtering took '.(time()-$filterTrackIDsStartTime).' seconds');
-				#main::DEBUGLOG && $log->is_debug && $log->debug('newTrackIDs after filtering = '.Data::Dump::dump($newTrackIDs));
+				main::DEBUGLOG && $log->is_debug && $log->debug('newTrackIDs after filtering = '.Data::Dump::dump($newTrackIDs)) if $debugVerbose;
 			}
 
 			# Add new tracks to total track vars
@@ -1008,7 +1013,7 @@ sub playRandom {
 	}
 
 	if ($type && $type eq 'disable') {
-		main::DEBUGLOG && $log->is_debug && $log->debug('cyclic mode ended');
+		main::DEBUGLOG && $log->is_debug && $log->debug('cyclic mode ended. Dynamic playlist is no longer active.');
 		# Display status message(s) if $showTimePerChar > 0
 		if ($showTimePerChar > 0) {
 			# Don't do showBrieflys if visualiser screensavers are running as the display messes up
@@ -1411,7 +1416,7 @@ sub getTrackIDsForPlaylist {
 	}
 
 	use strict 'refs';
-	#main::DEBUGLOG && $log->is_debug && $log->debug('result = '.Data::Dump::dump($result));
+	main::DEBUGLOG && $log->is_debug && $log->debug('result = '.Data::Dump::dump($result)) if $debugVerbose;
 	return $result, $tracksCompleteInfo;
 }
 
@@ -1612,7 +1617,7 @@ sub handleWebMixParameters {
 	my @groupPath = ();
 	my @groupResult = ();
 	$params->{'pluginDynamicPlaylists4Groups'} = getPlayListGroups(\@groupPath, $playListItems, \@groupResult);
-	main::DEBUGLOG && $log->is_debug && $log->debug('pluginDynamicPlaylists4Groups = '.Data::Dump::dump($params->{'pluginDynamicPlaylists4Groups'}));
+	main::DEBUGLOG && $log->is_debug && $log->debug('pluginDynamicPlaylists4Groups = '.Data::Dump::dump($params->{'pluginDynamicPlaylists4Groups'})) if $debugVerbose;
 
 	my $i = 1;
 	while (defined($params->{'dynamicplaylist_parameter_'.$i})) {
@@ -1964,7 +1969,7 @@ sub getPlayListGroupsForContext {
 					'groupsortname' => $sortname,
 					'dynamicplaylistenabled' => $item->{'dynamicplaylistenabled'}
 				);
-				main::DEBUGLOG && $log->is_debug && $log->debug('Adding group: '.$itemKey);
+				main::DEBUGLOG && $log->is_debug && $log->debug('Adding group: '.$itemKey) if $debugVerbose;
 				push @result, \%resultItem;
 			}
 		}
@@ -2013,7 +2018,7 @@ sub getPlayListsForContext {
 					if (!defined($playlisttype) || (defined($playlist->{'parameters'}) && defined($playlist->{'parameters'}->{'1'}) && ($playlist->{'parameters'}->{'1'}->{'type'} eq $playlisttype || ($playlist->{'parameters'}->{'1'}->{'type'} =~ /^custom(.+)$/ && $1 eq $playlisttype)))) {
 						my $dplMenuListType = $playlist->{'menulisttype'} || '';
 						unless ($isContextMenu == 1 && $dplMenuListType ne 'contextmenu') {
-							main::DEBUGLOG && $log->is_debug && $log->debug('Adding playlist: '.$itemKey);
+							main::DEBUGLOG && $log->is_debug && $log->debug('Adding playlist: '.$itemKey) if $debugVerbose;
 							push @result, $playlist;
 						}
 					}
@@ -2022,7 +2027,7 @@ sub getPlayListsForContext {
 		}
 	}
 	@result = sort {lc($a->{'playlistsortname'}) cmp lc($b->{'playlistsortname'})} @result;
-	#main::INFOLOG && $log->is_info && $log->info('result = '.Data::Dump::dump(\@result));
+	main::INFOLOG && $log->is_info && $log->info('result = '.Data::Dump::dump(\@result)) if $debugVerbose;
 	return \@result;
 }
 
@@ -2094,7 +2099,7 @@ sub getPlayListGroups {
 	if ($result) {
 		my @temp = sort {lc($a->{'groupsortname'}) cmp lc($b->{'groupsortname'})} @{$result};
 		$result = \@temp;
-		#main::DEBUGLOG && $log->is_debug && $log->debug('Got sorted array: '.Data::Dump::dump($result));
+		main::DEBUGLOG && $log->is_debug && $log->debug('Got sorted array: '.Data::Dump::dump($result)) if $debugVerbose;
 	}
 	return $result;
 }
@@ -3388,7 +3393,7 @@ sub cliPlayPlaylist {
 		playRandom($client, $playlistId, 0, 1);
 
 		$request->setStatusDone();
-		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliPlayPlaylist');
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliPlayPlaylist function');
 	}
 }
 
@@ -5993,7 +5998,7 @@ sub getDynamicPlaylists {
 		}
 		$playLists = \@result;
 
-		main::DEBUGLOG && $log->is_debug && $log->debug('Got: '.scalar(@{$playLists}).' number of saved static playlists');
+		main::DEBUGLOG && $log->is_debug && $log->debug('Number of saved static playlists: '.scalar(@{$playLists}));
 		my $playlistDir = $serverPrefs->get('playlistdir');
 		if ($playlistDir) {
 			$playlistDir = Slim::Utils::Misc::fileURLFromPath($playlistDir);
@@ -6134,7 +6139,7 @@ sub getNextDynamicPlaylistTracks {
 		for my $sql (split(/[\n\r]/, $sqlstatement)) {
 			my $sqlExecTime = time();
 
-			#main::DEBUGLOG && $log->is_debug && $log->debug('sql = '.Data::Dump::dump($sql));
+			main::DEBUGLOG && $log->is_debug && $log->debug('sql = '.Data::Dump::dump($sql)) if $debugVerbose;
 			eval {
 				my $sth = $dbh->prepare($sql);
 				$sth->execute() or do {
@@ -6172,7 +6177,7 @@ sub getNextDynamicPlaylistTracks {
 				$sth->finish();
 			};
 
-			#main::DEBUGLOG && $log->is_debug && $log->debug('idListCompleteInfo = '.Data::Dump::dump(\%idListCompleteInfo));
+			main::DEBUGLOG && $log->is_debug && $log->debug('idListCompleteInfo = '.Data::Dump::dump(\%idListCompleteInfo)) if $debugVerbose;
 			if ($@) {
 				$log->error("Database error: $DBI::errstr\n$@");
 				return 'error';
@@ -6180,7 +6185,7 @@ sub getNextDynamicPlaylistTracks {
 			main::DEBUGLOG && $log->is_debug && $log->debug("sql statement $i: exec time = ".(time() - $sqlExecTime).' secs');
 		}
 		main::DEBUGLOG && $log->is_debug && $log->debug('Got '.scalar(@idList).' track IDs');
-		#main::DEBUGLOG && $log->is_debug && $log->debug('idList = '.Data::Dump::dump(\@idList));
+		main::DEBUGLOG && $log->is_debug && $log->debug('idList = '.Data::Dump::dump(\@idList)) if $debugVerbose;
 
 		return \@idList, \%idListCompleteInfo;
 
@@ -6395,12 +6400,12 @@ sub readParseLocalDynamicPlaylists {
 
 	for my $localDefDir (@localDefDirs) {
 		if (!defined $localDefDir || !-d $localDefDir) {
-			main::DEBUGLOG && $log->is_debug && $log->debug('Directory is undefined or does not exist - skipping scan for dpl definitions in: '.Data::Dump::dump($localDefDir));
+			main::DEBUGLOG && $log->is_debug && $log->debug('Directory is undefined or does not exist - skipping scan for dpl definitions in: '.Data::Dump::dump($localDefDir)) if $debugVerbose;
 		} else {
 			main::DEBUGLOG && $log->is_debug && $log->debug('Checking dir: '.$localDefDir);
 			my $fileExtension = "\\.sql\$";
 			my @dircontents = Slim::Utils::Misc::readDirectory($localDefDir, "sql", 'dorecursive');
-			main::DEBUGLOG && $log->is_debug && $log->debug("directory contents for dir '$localDefDir': ".Data::Dump::dump(\@dircontents));
+			main::DEBUGLOG && $log->is_debug && $log->debug("directory contents for dir '$localDefDir': ".Data::Dump::dump(\@dircontents)) if $debugVerbose;
 
 			for my $item (@dircontents) {
 				next unless $item =~ /$fileExtension$/;
@@ -6414,10 +6419,10 @@ sub readParseLocalDynamicPlaylists {
 					if ($encoding ne 'utf8') {
 						$content = Slim::Utils::Unicode::latin1toUTF8($content);
 						$content = Slim::Utils::Unicode::utf8on($content);
-						main::DEBUGLOG && $log->is_debug && $log->debug("Loading $item and converting from latin1");
+						main::DEBUGLOG && $log->is_debug && $log->debug("Loading $item and converting from latin1") if $debugVerbose;
 					} else {
 						$content = Slim::Utils::Unicode::utf8decode($content,'utf8');
-						main::DEBUGLOG && $log->is_debug && $log->debug("Loading $item without conversion with encoding ".$encoding);
+						main::DEBUGLOG && $log->is_debug && $log->debug("Loading $item without conversion with encoding ".$encoding) if $debugVerbose;
 					}
 
 					my $parsedContent;
@@ -6452,7 +6457,7 @@ sub readParseLocalDynamicPlaylists {
 	} else {
 		$localDynamicPlaylists = $localBuiltinDynamicPlaylists;
 	}
-	#main::DEBUGLOG && $log->is_debug && $log->debug('localDynamicPlaylists = '.Data::Dump::dump($localDynamicPlaylists));
+	main::DEBUGLOG && $log->is_debug && $log->debug('localDynamicPlaylists = '.Data::Dump::dump($localDynamicPlaylists)) if $debugVerbose;
 }
 
 sub parseContent {
@@ -7358,6 +7363,7 @@ sub commandCallback {
 	my $masterClient = masterOrSelf($client);
 
 	if (defined($request->source()) && $request->source() eq 'PLUGIN_DYNAMICPLAYLISTS4') {
+		main::DEBUGLOG && $log->is_debug && $log->debug('received command initiated by PLUGIN_DYNAMICPLAYLISTS4');
 		return;
 	} elsif (defined($request->source())) {
 		main::DEBUGLOG && $log->is_debug && $log->debug('received command initiated by '.$request->source());
@@ -7370,7 +7376,7 @@ sub commandCallback {
 		}
 	}
 
-	main::DEBUGLOG && $log->is_debug && $log->debug('received command '.($request->getRequestString()));
+	main::DEBUGLOG && $log->is_debug && $log->debug('received command: '.($request->getRequestString()));
 
 	# because of the filter this should never happen
 	# in addition there are valid commands (e.g. rescan) that have no client
@@ -7378,7 +7384,10 @@ sub commandCallback {
 	if (!defined $masterClient || !defined $mixInfo{$masterClient}->{'type'}) {
 		return;
 	}
-	main::DEBUGLOG && $log->is_debug && $log->debug('while in mode: '.($mixInfo{$masterClient}->{'type'}).', from '.($client->name));
+
+	main::DEBUGLOG && $log->is_debug && $log->debug('client: '.Data::Dump::dump($client->name).' - '.Data::Dump::dump($client->id));
+	main::DEBUGLOG && $log->is_debug && $log->debug('masterClient: '.Data::Dump::dump($masterClient->name).' - '.Data::Dump::dump($masterClient->id));
+	main::DEBUGLOG && $log->is_debug && $log->debug('masterClient mixinfo type: '.($mixInfo{$masterClient}->{'type'}));
 
 	my $songIndex = Slim::Player::Source::streamingSongIndex($client);
 
@@ -7416,8 +7425,7 @@ sub commandCallback {
 			playRandom($client, $mixInfo{$masterClient}->{'type'}, 1, 0);
 		}
 	} elsif ($request->isCommand([['playlist'], [keys %stopcommands]])) {
-
-		main::DEBUGLOG && $log->is_debug && $log->debug('cyclic mode ending due to playlist: '.($request->getRequestString()).' command');
+		main::DEBUGLOG && $log->is_debug && $log->debug('stop command detected: "'.($request->getRequestString()).'". Let\'s stop adding tracks. Dynamic playlist is no longer active.');
 		playRandom($client, 'disable');
 	}
 }

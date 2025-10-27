@@ -68,7 +68,7 @@ sub pages {
 }
 
 sub prefs {
-	return ($prefs, qw(max_number_of_unplayed_tracks min_number_of_unplayed_tracks number_of_played_tracks_to_keep pluginshufflemode includesavedplaylists randomsavedplaylists groupunclassifiedcustomplaylists structured_savedplaylists rememberactiveplaylist song_adding_check_delay song_min_duration toprated_min_rating customdirparentfolderpath period_playedlongago minartisttracks minalbumtracks dstmstartindex paramsdplsaveenabled showtimeperchar enablestaticplsaving enabledplqueueing transferunsyncedtargetplayers jivenextwindow));
+	return ($prefs, qw(max_number_of_unplayed_tracks min_number_of_unplayed_tracks number_of_played_tracks_to_keep pluginshufflemode includesavedplaylists randomsavedplaylists groupunclassifiedcustomplaylists structured_savedplaylists rememberactiveplaylist song_adding_check_delay song_min_duration toprated_min_rating customdirparentfolderpath period_playedlongago minartisttracks minalbumtracks dstmstartindex paramsdplsaveenabled showtimeperchar enablestaticplsaving enabledplqueueing transferunsyncedtargetplayers jivenextwindow debugverbose));
 }
 
 sub handler {
@@ -108,11 +108,11 @@ sub beforeRender {
 	my ($class, $paramRef) = @_;
 
 	my $genrelist = getGenres();
-	main::DEBUGLOG && $log->is_debug && $log->debug("genrelist (all genres) = ".Data::Dump::dump($genrelist));
+	main::DEBUGLOG && $log->is_debug && $log->debug("genrelist (all genres) = ".Data::Dump::dump($genrelist)) if $prefs->get('debugverbose');
 	$paramRef->{'genrelist'} = $genrelist;
 
 	my $genrelistsorted = [getSortedGenres()];
-	main::DEBUGLOG && $log->is_debug && $log->debug("genrelistsorted (just names) = ".Data::Dump::dump($genrelistsorted));
+	main::DEBUGLOG && $log->is_debug && $log->debug("genrelistsorted (just names) = ".Data::Dump::dump($genrelistsorted)) if $prefs->get('debugverbose');
 	$paramRef->{'genrelistsorted'} = $genrelistsorted;
 }
 
@@ -128,7 +128,7 @@ sub getGenres {
 
 	my $i = 0;
 	my $sth = Slim::Schema->dbh->prepare($genreSQL);
-	main::DEBUGLOG && $log->is_debug && $log->debug("Executing: $genreSQL");
+	main::DEBUGLOG && $log->is_debug && $log->debug("Executing: $genreSQL") if $prefs->get('debugverbose');
 	eval {
 		$sth->execute() or do {
 			$log->error("Error executing: $genreSQL");
@@ -155,7 +155,7 @@ sub getGenres {
 		$log->error("Database error: $DBI::errstr");
 	}
 
-	main::DEBUGLOG && $log->is_debug && $log->debug('genre list before render = '.Data::Dump::dump($genres));
+	main::DEBUGLOG && $log->is_debug && $log->debug('genre list before render = '.Data::Dump::dump($genres)) if $prefs->get('debugverbose');
 	return $genres;
 }
 

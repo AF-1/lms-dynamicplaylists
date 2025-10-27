@@ -332,6 +332,12 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_STRUCTURED_SAVEDPLAYLISTS_DESC
 	FR	Groupe les listes de lecture statiques de différents sous répertoires dans différents groupes. Cela peut aider si vous utilisez beaucoup de listes de lecture statiques.
 	DE	Gruppiert statische Wiedergabelisten anhand der Unterverzeichnisse.
 
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DEBUGVERBOSE
+	EN	Verbose debug log
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DEBUGVERBOSE_DESC
+	EN	If enabled, the <b>debug</b> log level also includes messages that are not necessary to debug issues in most cases. Disabled by default.
+
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_EXCLUDEDGENRES
 	EN	Exclude genres
 	FR	Genres exclus

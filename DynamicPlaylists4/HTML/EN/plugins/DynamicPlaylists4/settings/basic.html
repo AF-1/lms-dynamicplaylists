@@ -156,6 +156,14 @@
 [% END %]
 <div class="filler"></div>
 
+[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DEBUGVERBOSE" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DEBUGVERBOSE_DESC" %]
+	<select class="stdedit" name="pref_debugverbose" id="debugverbose">
+		<option [% IF NOT prefs.debugverbose %]selected [% END %]value="0">[% 'NO' | getstring %]</option>
+		<option [% IF prefs.debugverbose %]selected [% END %]value="1">[% 'YES' | getstring %]</option>
+	</select>
+[% END %]
+<div class="filler"></div>
+
 [% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_EXCLUDEDGENRES" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_EXCLUDEDGENRES_DESC" %]
 <details><summary><span class="categoryheader">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CHOOSEEXLUDEGENRES" | string %]</span>:</summary>
 	<table border="0" width="100%">[% USE table genrelistsorted, cols=3, pad=0 %]
