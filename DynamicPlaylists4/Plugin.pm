@@ -787,7 +787,7 @@ sub filterTrackIDs {
 		main::DEBUGLOG && $log->is_debug && $log->debug('Deduping new against all track IDs exec time: '.(time() - $dedupeAgainstAllTrackIDsStartTime).' secs');
 	}
 
-	main::DEBUGLOG && $log->is_debug && $log->debug('Found these new non-dupe tracks: '.Data::Dump::dump(\@{$newTrackIDs}));
+	main::DEBUGLOG && $log->is_debug && $log->debug('Found these new non-dupe tracks: '.Data::Dump::dump(\@{$newTrackIDs})) if $debugVerbose;
 
 	# add new non-dupe tracks to DPL client history
 	# unless it's a saved static PL or a forced add for a different dpl than the currently active one
@@ -1264,35 +1264,35 @@ sub addParameterValues {
 			foreach my $thisVL (@{$VLs}) {
 				push @{$listRef}, $thisVL;
 			}
-			main::DEBUGLOG && $log->is_debug && $log->debug('virtual library listRef array = '.Data::Dump::dump($listRef));
+			main::DEBUGLOG && $log->is_debug && $log->debug('virtual library listRef array = '.Data::Dump::dump($listRef)) if $debugVerbose;
 
 	} elsif (lc($parameter->{'type'}) eq 'multiplegenres') {
 		my $genres = getGenres($client, $limitingParamSelVLID);
 		foreach my $genre (getSortedGenres($client, $limitingParamSelVLID)) {
 			push @{$listRef}, $genres->{$genre};
 		}
-		main::DEBUGLOG && $log->is_debug && $log->debug('multiplegenres listRef array = '.Data::Dump::dump($listRef));
+		main::DEBUGLOG && $log->is_debug && $log->debug('multiplegenres listRef array = '.Data::Dump::dump($listRef)) if $debugVerbose;
 
 	} elsif (lc($parameter->{'type'}) eq 'multipledecades') {
 		my $decades = getDecades($client, $limitingParamSelVLID);
 		foreach my $decade (getSortedDecades($client, $limitingParamSelVLID)) {
 			push @{$listRef}, $decades->{$decade};
 		}
-		main::DEBUGLOG && $log->is_debug && $log->debug('multipledecades listRef array = '.Data::Dump::dump($listRef));
+		main::DEBUGLOG && $log->is_debug && $log->debug('multipledecades listRef array = '.Data::Dump::dump($listRef)) if $debugVerbose;
 
 	} elsif (lc($parameter->{'type'}) eq 'multipleyears') {
 		my $years = getYears($client, $limitingParamSelVLID);
 		foreach my $year (getSortedYears($client, $limitingParamSelVLID)) {
 			push @{$listRef}, $years->{$year};
 		}
-		main::DEBUGLOG && $log->is_debug && $log->debug('multipleyears listRef array = '.Data::Dump::dump($listRef));
+		main::DEBUGLOG && $log->is_debug && $log->debug('multipleyears listRef array = '.Data::Dump::dump($listRef)) if $debugVerbose;
 
 	} elsif (lc($parameter->{'type'}) eq 'multiplestaticplaylists') {
 		my $staticPlaylists = getStaticPlaylists($client, $limitingParamSelVLID);
 		foreach my $staticPlaylist (getSortedStaticPlaylists($client, $limitingParamSelVLID)) {
 			push @{$listRef}, $staticPlaylists->{$staticPlaylist};
 		}
-		main::DEBUGLOG && $log->is_debug && $log->debug('multiplestaticplaylists listRef array = '.Data::Dump::dump($listRef));
+		main::DEBUGLOG && $log->is_debug && $log->debug('multiplestaticplaylists listRef array = '.Data::Dump::dump($listRef)) if $debugVerbose;
 
 	} elsif (lc($parameter->{'type'}) eq 'albumtitlecontains' || lc($parameter->{'type'}) eq 'tracktitlecontains') {
 		my $parameterValue = $client->modeParam('dynamicplaylist_parameter_'.$parameter->{'id'});
@@ -1303,7 +1303,7 @@ sub addParameterValues {
 			'name' => Slim::Utils::Unicode::utf8decode($parameter->{'name'}, 'utf8')
 		);
 		push @{$listRef}, \%listitem;
-		main::DEBUGLOG && $log->is_debug && $log->debug(lc($parameter->{'type'}).' listRef array = '.Data::Dump::dump($listRef));
+		main::DEBUGLOG && $log->is_debug && $log->debug(lc($parameter->{'type'}).' listRef array = '.Data::Dump::dump($listRef)) if $debugVerbose;
 
 	} elsif (lc($parameter->{'type'}) eq 'custom' || lc($parameter->{'type'}) =~ /^custom(.+)$/) {
 		if (defined($parameter->{'definition'}) && lc($parameter->{'definition'}) =~ /^select/) {
@@ -1404,7 +1404,7 @@ sub getTrackIDsForPlaylist {
 				}
 			}
 		}
-		main::DEBUGLOG && $log->is_debug && $log->debug('parameterHash = '.Data::Dump::dump(\%parameterHash));
+		main::DEBUGLOG && $log->is_debug && $log->debug('parameterHash = '.Data::Dump::dump(\%parameterHash)) if $debugVerbose;
 		main::DEBUGLOG && $log->is_debug && $log->debug("Calling: $plugin :: getNextDynamicPlaylistTracks");
 		($result, $tracksCompleteInfo) = eval {&{"${plugin}::getNextDynamicPlaylistTracks"}($client, $playlist, $limit, $offset, \%parameterHash)};
 		if ($@) {
@@ -1730,11 +1730,11 @@ sub handleWebMixParameters {
 					}
 				}
 			}
-			main::DEBUGLOG && $log->is_debug && $log->debug('genre list = '.Data::Dump::dump($genrelist));
+			main::DEBUGLOG && $log->is_debug && $log->debug('genre list = '.Data::Dump::dump($genrelist)) if $debugVerbose;
 			$params->{'genrelist'} = $genrelist;
 
 			my $genrelistsorted = [getSortedGenres($client, $limitingParamSelVLID)];
-			main::DEBUGLOG && $log->is_debug && $log->debug('genrelistsorted (just names) = '.Data::Dump::dump($genrelistsorted));
+			main::DEBUGLOG && $log->is_debug && $log->debug('genrelistsorted (just names) = '.Data::Dump::dump($genrelistsorted)) if $debugVerbose;
 			$params->{'genrelistsorted'} = $genrelistsorted;
 		}
 
@@ -1749,11 +1749,11 @@ sub handleWebMixParameters {
 					}
 				}
 			}
-			main::DEBUGLOG && $log->is_debug && $log->debug('decade list = '.Data::Dump::dump($decadelist));
+			main::DEBUGLOG && $log->is_debug && $log->debug('decade list = '.Data::Dump::dump($decadelist)) if $debugVerbose;
 			$params->{'decadelist'} = $decadelist;
 
 			my $decadelistsorted = [getSortedDecades($client, $limitingParamSelVLID)];
-			main::DEBUGLOG && $log->is_debug && $log->debug('decadelistsorted = '.Data::Dump::dump($decadelistsorted));
+			main::DEBUGLOG && $log->is_debug && $log->debug('decadelistsorted = '.Data::Dump::dump($decadelistsorted)) if $debugVerbose;
 			$params->{'decadelistsorted'} = $decadelistsorted;
 		}
 
@@ -1768,11 +1768,11 @@ sub handleWebMixParameters {
 					}
 				}
 			}
-			main::DEBUGLOG && $log->is_debug && $log->debug('year list = '.Data::Dump::dump($yearlist));
+			main::DEBUGLOG && $log->is_debug && $log->debug('year list = '.Data::Dump::dump($yearlist)) if $debugVerbose;
 			$params->{'yearlist'} = $yearlist;
 
 			my $yearlistsorted = [getSortedYears($client, $limitingParamSelVLID)];
-			main::DEBUGLOG && $log->is_debug && $log->debug('yearlistsorted = '.Data::Dump::dump($yearlistsorted));
+			main::DEBUGLOG && $log->is_debug && $log->debug('yearlistsorted = '.Data::Dump::dump($yearlistsorted)) if $debugVerbose;
 			$params->{'yearlistsorted'} = $yearlistsorted;
 		}
 
@@ -1787,11 +1787,11 @@ sub handleWebMixParameters {
 					}
 				}
 			}
-			main::DEBUGLOG && $log->is_debug && $log->debug('static playlist list = '.Data::Dump::dump($staticplaylistlist));
+			main::DEBUGLOG && $log->is_debug && $log->debug('static playlist list = '.Data::Dump::dump($staticplaylistlist)) if $debugVerbose;
 			$params->{'staticplaylistlist'} = $staticplaylistlist;
 
 			my $staticplaylistlistsorted = [getSortedStaticPlaylists($client, $limitingParamSelVLID)];
-			main::DEBUGLOG && $log->is_debug && $log->debug('staticplaylistlistsorted (just names) = '.Data::Dump::dump($staticplaylistlistsorted));
+			main::DEBUGLOG && $log->is_debug && $log->debug('staticplaylistlistsorted (just names) = '.Data::Dump::dump($staticplaylistlistsorted)) if $debugVerbose;
 			$params->{'staticplaylistlistsorted'} = $staticplaylistlistsorted;
 		}
 
@@ -4994,7 +4994,7 @@ sub _toggleMultipleSelectionState {
 			push @selected, $genre if $genres->{$genre}->{'selected'} == 1;
 		}
 		$client->pluginData('selected_genres' => [@selected]);
-		main::DEBUGLOG && $log->is_debug && $log->debug('pluginData cached for selected genres = '.Data::Dump::dump($client->pluginData('selected_genres')));
+		main::DEBUGLOG && $log->is_debug && $log->debug('pluginData cached for selected genres = '.Data::Dump::dump($client->pluginData('selected_genres'))) if $debugVerbose;
 	}
 	if ($paramType eq 'multipledecades') {
 		my $decades = getDecades($client);
@@ -5003,7 +5003,7 @@ sub _toggleMultipleSelectionState {
 			push @selected, $decade if $decades->{$decade}->{'selected'} == 1;
 		}
 		$client->pluginData('selected_decades' => [@selected]);
-		main::DEBUGLOG && $log->is_debug && $log->debug('pluginData cached for selected decades = '.Data::Dump::dump($client->pluginData('selected_decades')));
+		main::DEBUGLOG && $log->is_debug && $log->debug('pluginData cached for selected decades = '.Data::Dump::dump($client->pluginData('selected_decades'))) if $debugVerbose;
 	}
 	if ($paramType eq 'multipleyears') {
 		my $years = getYears($client);
@@ -5012,7 +5012,7 @@ sub _toggleMultipleSelectionState {
 			push @selected, $year if $years->{$year}->{'selected'} == 1;
 		}
 		$client->pluginData('selected_years' => [@selected]);
-		main::DEBUGLOG && $log->is_debug && $log->debug('pluginData cached for selected years = '.Data::Dump::dump($client->pluginData('selected_years')));
+		main::DEBUGLOG && $log->is_debug && $log->debug('pluginData cached for selected years = '.Data::Dump::dump($client->pluginData('selected_years'))) if $debugVerbose;
 	}
 	if ($paramType eq 'multiplestaticplaylists') {
 		my $staticPlaylists = getStaticPlaylists($client);
@@ -5021,7 +5021,7 @@ sub _toggleMultipleSelectionState {
 			push @selected, $staticPlaylist if $staticPlaylists->{$staticPlaylist}->{'selected'} == 1;
 		}
 		$client->pluginData('selected_staticplaylists' => [@selected]);
-		main::DEBUGLOG && $log->is_debug && $log->debug('pluginData cached for selected static playlists = '.Data::Dump::dump($client->pluginData('selected_staticplaylists')));
+		main::DEBUGLOG && $log->is_debug && $log->debug('pluginData cached for selected static playlists = '.Data::Dump::dump($client->pluginData('selected_staticplaylists'))) if $debugVerbose;
 	}
 	$request->setStatusDone();
 }
@@ -5065,7 +5065,7 @@ sub _toggleMultipleSelectionStateIP3k {
 				push @selected, $genre if $genres->{$genre}->{'selected'} == 1;
 			}
 			$client->pluginData('selected_genres' => [@selected]);
-			main::DEBUGLOG && $log->is_debug && $log->debug('cached client data for multiple selected genres = '.Data::Dump::dump($client->pluginData('selected_genres')));
+			main::DEBUGLOG && $log->is_debug && $log->debug('cached client data for multiple selected genres = '.Data::Dump::dump($client->pluginData('selected_genres'))) if $debugVerbose;
 		}
 		if ($item->{'paramType'} eq 'multipledecades') {
 			my $decades = getDecades($client);
@@ -5084,7 +5084,7 @@ sub _toggleMultipleSelectionStateIP3k {
 				push @selected, $decade if $decades->{$decade}->{'selected'} == 1;
 			}
 			$client->pluginData('selected_decades' => [@selected]);
-			main::DEBUGLOG && $log->is_debug && $log->debug('cached client data for multiple selected decades = '.Data::Dump::dump($client->pluginData('selected_decades')));
+			main::DEBUGLOG && $log->is_debug && $log->debug('cached client data for multiple selected decades = '.Data::Dump::dump($client->pluginData('selected_decades'))) if $debugVerbose;
 		}
 		if ($item->{'paramType'} eq 'multipleyears') {
 			my $years = getYears($client);
@@ -5103,7 +5103,7 @@ sub _toggleMultipleSelectionStateIP3k {
 				push @selected, $year if $years->{$year}->{'selected'} == 1;
 			}
 			$client->pluginData('selected_years' => [@selected]);
-			main::DEBUGLOG && $log->is_debug && $log->debug('cached client data for multiple selected years = '.Data::Dump::dump($client->pluginData('selected_years')));
+			main::DEBUGLOG && $log->is_debug && $log->debug('cached client data for multiple selected years = '.Data::Dump::dump($client->pluginData('selected_years'))) if $debugVerbose;
 		}
 		if ($item->{'paramType'} eq 'multiplestaticplaylists') {
 			my $staticPlaylists = getStaticPlaylists($client);
@@ -5122,7 +5122,7 @@ sub _toggleMultipleSelectionStateIP3k {
 				push @selected, $staticPlaylist if $staticPlaylists->{$staticPlaylist}->{'selected'} == 1;
 			}
 			$client->pluginData('selected_staticplaylists' => [@selected]);
-			main::DEBUGLOG && $log->is_debug && $log->debug('cached client data for multiple static playlists = '.Data::Dump::dump($client->pluginData('selected_staticplaylists')));
+			main::DEBUGLOG && $log->is_debug && $log->debug('cached client data for multiple static playlists = '.Data::Dump::dump($client->pluginData('selected_staticplaylists'))) if $debugVerbose;
 		}
 		$client->update;
 	}
@@ -5209,7 +5209,7 @@ sub getGenres {
 			'sort' => $i++,
 		};
 	}
-	main::DEBUGLOG && $log->is_debug && $log->debug('genres for multiple genre selection = '.Data::Dump::dump($genres));
+	main::DEBUGLOG && $log->is_debug && $log->debug('genres for multiple genre selection = '.Data::Dump::dump($genres)) if $debugVerbose;
 	return $genres;
 }
 
@@ -5250,9 +5250,9 @@ sub getDecades {
 				$decadesQueryResult->{$decade} = $decadeDisplayName;
 			}
 			$sth->finish();
-			main::DEBUGLOG && $log->is_debug && $log->debug('decadesQueryResult = '.Data::Dump::dump($decadesQueryResult));
+			main::DEBUGLOG && $log->is_debug && $log->debug('decadesQueryResult = '.Data::Dump::dump($decadesQueryResult)) if $debugVerbose;
 			$client->pluginData('temp_decadelist' => $decadesQueryResult);
-			main::DEBUGLOG && $log->is_debug && $log->debug('caching new temp_decadelist = '.Data::Dump::dump($client->pluginData('temp_decadelist')));
+			main::DEBUGLOG && $log->is_debug && $log->debug('caching new temp_decadelist = '.Data::Dump::dump($client->pluginData('temp_decadelist'))) if $debugVerbose;
 		};
 		if ($@) {
 			$log->error("Database error: $DBI::errstr\n$@");
@@ -5270,7 +5270,7 @@ sub getDecades {
 			'selected' => $selected{$decade} ? 1 : 0,
 		};
 	}
-	main::DEBUGLOG && $log->is_debug && $log->debug('decades for multiple decades selection = '.Data::Dump::dump($decades));
+	main::DEBUGLOG && $log->is_debug && $log->debug('decades for multiple decades selection = '.Data::Dump::dump($decades)) if $debugVerbose;
 	return $decades;
 }
 
@@ -5301,7 +5301,7 @@ sub getYears {
 			'selected' => $selected{$thisYear} ? 1 : 0,
 		};
 	}
-	main::DEBUGLOG && $log->is_debug && $log->debug('years for multiple decades selection = '.Data::Dump::dump($years));
+	main::DEBUGLOG && $log->is_debug && $log->debug('years for multiple decades selection = '.Data::Dump::dump($years)) if $debugVerbose;
 	return $years;
 }
 
@@ -5331,7 +5331,7 @@ sub getStaticPlaylists {
 			'selected' => $selected{$staticPlaylistID} ? 1 : 0,
 		};
 	}
-	main::DEBUGLOG && $log->is_debug && $log->debug('playlists for multiple static playlist selection = '.Data::Dump::dump($staticPlaylists));
+	main::DEBUGLOG && $log->is_debug && $log->debug('playlists for multiple static playlist selection = '.Data::Dump::dump($staticPlaylists)) if $debugVerbose;
 	return $staticPlaylists;
 }
 
@@ -5352,7 +5352,7 @@ sub getMultipleSelectionString {
 	}
 	if ($paramType eq 'multiplegenres') {
 		my $selectedGenres = $client->pluginData('selected_genres') || [];
-		main::DEBUGLOG && $log->is_debug && $log->debug('selectedGenres = '.Data::Dump::dump($selectedGenres));
+		main::DEBUGLOG && $log->is_debug && $log->debug('selectedGenres = '.Data::Dump::dump($selectedGenres)) if $debugVerbose;
 		my @IDsSelectedGenres = ();
 		if (scalar (@{$selectedGenres}) > 0) {
 			foreach my $genreID (@{$selectedGenres}) {
@@ -5364,7 +5364,7 @@ sub getMultipleSelectionString {
 	}
 	if ($paramType eq 'multipledecades') {
 		my $selectedDecades = $client->pluginData('selected_decades') || [];
-		main::DEBUGLOG && $log->is_debug && $log->debug('selectedDecades = '.Data::Dump::dump($selectedDecades));
+		main::DEBUGLOG && $log->is_debug && $log->debug('selectedDecades = '.Data::Dump::dump($selectedDecades)) if $debugVerbose;
 		my @selectedDecadesArray = ();
 		if (scalar (@{$selectedDecades}) > 0) {
 			foreach my $decade (@{$selectedDecades}) {
@@ -5389,7 +5389,7 @@ sub getMultipleSelectionString {
 	}
 	if ($paramType eq 'multipleyears') {
 		my $selectedYears = $client->pluginData('selected_years') || [];
-		main::DEBUGLOG && $log->is_debug && $log->debug('selectedYears = '.Data::Dump::dump($selectedYears));
+		main::DEBUGLOG && $log->is_debug && $log->debug('selectedYears = '.Data::Dump::dump($selectedYears)) if $debugVerbose;
 		my @selectedYearsArray = ();
 		if (scalar (@{$selectedYears}) > 0) {
 			foreach my $year (@{$selectedYears}) {
@@ -5401,7 +5401,7 @@ sub getMultipleSelectionString {
 	}
 	if ($paramType eq 'multiplestaticplaylists') {
 		my $selectedStaticPlaylists = $client->pluginData('selected_staticplaylists') || [];
-		main::DEBUGLOG && $log->is_debug && $log->debug('selectedStaticPlaylists = '.Data::Dump::dump($selectedStaticPlaylists));
+		main::DEBUGLOG && $log->is_debug && $log->debug('selectedStaticPlaylists = '.Data::Dump::dump($selectedStaticPlaylists)) if $debugVerbose;
 		my @IDsSelectedStaticPlaylists = ();
 		if (scalar (@{$selectedStaticPlaylists}) > 0) {
 			foreach my $staticPlaylistID (@{$selectedStaticPlaylists}) {
@@ -5411,7 +5411,7 @@ sub getMultipleSelectionString {
 		}
 		$multipleSelectionString = join (',', @IDsSelectedStaticPlaylists);
 	}
-	main::DEBUGLOG && $log->is_debug && $log->debug('multipleSelectionString = '.Data::Dump::dump($multipleSelectionString));
+	main::DEBUGLOG && $log->is_debug && $log->debug('multipleSelectionString = '.Data::Dump::dump($multipleSelectionString)) if $debugVerbose;
 	return $multipleSelectionString;
 }
 
@@ -5421,7 +5421,7 @@ sub getMultipleSelectionString {
 sub getVirtualLibraries {
 	my @items;
 	my $libraries = Slim::Music::VirtualLibraries->getLibraries();
-	main::DEBUGLOG && $log->is_debug && $log->debug('ALL virtual libraries: '.Data::Dump::dump($libraries));
+	main::DEBUGLOG && $log->is_debug && $log->debug('ALL virtual libraries: '.Data::Dump::dump($libraries)) if $debugVerbose;
 
 	while (my ($k, $v) = each %{$libraries}) {
 		my $count = Slim::Music::VirtualLibraries->getTrackCount($k);
@@ -5459,9 +5459,9 @@ sub checkForLimitingVL {
 
 	# check fixed playlist parameters first
 	my $playlistVLnames = $playlist->{'playlistvirtuallibrarynames'};
-	main::DEBUGLOG && $log->is_debug && $log->debug('playlistVLnames = '.Data::Dump::dump($playlistVLnames));
+	main::DEBUGLOG && $log->is_debug && $log->debug('playlistVLnames = '.Data::Dump::dump($playlistVLnames)) if $debugVerbose;
 	my $playlistVLids = $playlist->{'playlistvirtuallibraryids'};
-	main::DEBUGLOG && $log->is_debug && $log->debug('playlistVLids = '.Data::Dump::dump($playlistVLnames));
+	main::DEBUGLOG && $log->is_debug && $log->debug('playlistVLids = '.Data::Dump::dump($playlistVLnames)) if $debugVerbose;
 	if (keys %{$playlistVLnames}) {
 		$limitingParamSelVLID = Slim::Music::VirtualLibraries->getIdForName($playlistVLnames->{'1'});
 	}
@@ -5586,7 +5586,7 @@ sub _preselectionMenuWeb {
 
 sub _preselectionMenuJive {
 	my $request = shift;
-	main::DEBUGLOG && $log->is_debug && $log->debug('request = '.Data::Dump::dump($request));
+	main::DEBUGLOG && $log->is_debug && $log->debug('request = '.Data::Dump::dump($request)) if $debugVerbose;
 	my $client = $request->client();
 	my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
 
@@ -5756,7 +5756,7 @@ sub _dplQueueMenuWeb {
 
 sub _queueMenuJive {
 	my $request = shift;
-	main::DEBUGLOG && $log->is_debug && $log->debug('request = '.Data::Dump::dump($request));
+	main::DEBUGLOG && $log->is_debug && $log->debug('request = '.Data::Dump::dump($request)) if $debugVerbose;
 	my $client = $request->client();
 	my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
 
