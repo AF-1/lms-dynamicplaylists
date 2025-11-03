@@ -823,8 +823,8 @@ sub playRandom {
 	main::DEBUGLOG && $log->is_debug && $log->debug('playRandom called with type '.$type);
 
 	$masterClient->pluginData('type' => $type);
-	main::DEBUGLOG && $log->is_debug && $log->debug('pluginData type for '.$masterClient->name.' = '.$masterClient->pluginData('type'));
-	main::DEBUGLOG && $log->is_debug && $log->debug('client pref type = '.$mixInfo{$masterClient}->{'type'}) if $mixInfo{$masterClient}->{'type'};
+	main::DEBUGLOG && $log->is_debug && $log->debug('pluginData type for '.Data::Dump::dump($masterClient->name).' = '.Data::Dump::dump($masterClient->pluginData('type')));
+	main::DEBUGLOG && $log->is_debug && $log->debug('client pref type = '.Data::Dump::dump($mixInfo{$masterClient}->{'type'}));
 
 	my $stopactions = undef;
 	if (defined($mixInfo{$masterClient}->{'type'})) {
@@ -1013,7 +1013,7 @@ sub playRandom {
 	}
 
 	if ($type && $type eq 'disable') {
-		main::DEBUGLOG && $log->is_debug && $log->debug('cyclic mode ended. Dynamic playlist is no longer active.');
+		main::DEBUGLOG && $log->is_debug && $log->debug('Master client '.Data::Dump::dump($masterClient->name).': cyclic mode ended. Dynamic playlist is no longer active.');
 		# Display status message(s) if $showTimePerChar > 0
 		if ($showTimePerChar > 0) {
 			# Don't do showBrieflys if visualiser screensavers are running as the display messes up
@@ -1025,8 +1025,10 @@ sub playRandom {
 				Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$materialMsg, 'client:'.$client->id, 'timeout:'.getMsgDisplayTime($materialMsg)]);
 			}
 		}
+		main::DEBUGLOG && $log->is_debug && $log->debug('Master client '.Data::Dump::dump($masterClient->name).': clearing current dpl type. Stopping dpl.');
 		stateStop($masterClient);
 		my @players = Slim::Player::Sync::slaves($masterClient);
+		main::DEBUGLOG && $log->is_debug && $log->debug('Repeat with all slave players: '.Data::Dump::dump(@players));
 		push @players, $masterClient;
 		foreach my $player (@players) {
 			stateStop($player);
@@ -1040,7 +1042,9 @@ sub playRandom {
 				# Record current mix type and the time it was started.
 				# Do this last to prevent menu items changing too soon
 				stateNew($masterClient, $type, $playlist);
+				main::DEBUGLOG && $log->is_debug && $log->debug('Client '.Data::Dump::dump($masterClient->name).': stateNew.');
 				my @players = Slim::Player::Sync::slaves($client);
+				main::DEBUGLOG && $log->is_debug && $log->debug('Repeat with all slave players: '.Data::Dump::dump(@players));
 				foreach my $player (@players) {
 					stateNew($player, $type, $playlist);
 				}
@@ -1133,8 +1137,10 @@ sub playRandom {
 		if ($dstmProvider) {
 			my $clientPlaylistLength = Slim::Player::Playlist::count($client);
 			if ($clientPlaylistLength > 0) {
+				main::DEBUGLOG && $log->is_debug && $log->debug('Master client '.Data::Dump::dump($masterClient->name).': clearing current dpl type');
 				stateStop($masterClient);
 				my @players = Slim::Player::Sync::slaves($client);
+				main::DEBUGLOG && $log->is_debug && $log->debug('Repeat with all slave players: '.Data::Dump::dump(@players));
 				foreach my $player (@players) {
 					stateStop($player);
 				}
@@ -1171,9 +1177,11 @@ sub handlePlayOrAdd {
 
 	my $masterClient = masterOrSelf($client);
 
-	# Clear any current mix type in case user is restarting an already playing mix
+	main::DEBUGLOG && $log->is_debug && $log->debug('Master client '.Data::Dump::dump($masterClient->name).': clearing current dpl type in case user is restarting an already playing dpl');
 	stateStop($masterClient);
+
 	my @players = Slim::Player::Sync::slaves($client);
+	main::DEBUGLOG && $log->is_debug && $log->debug('Repeat with all slave players: '.Data::Dump::dump(@players));
 	foreach my $player (@players) {
 		stateStop($player);
 	}
@@ -1477,7 +1485,7 @@ sub stateStop {
 
 	Slim::Utils::Timers::killTimers($client, \&findAndAdd);
 	Slim::Utils::Timers::killTimers($client, \&playRandom);
-	main::DEBUGLOG && $log->is_debug && $log->debug('stateStop');
+	main::DEBUGLOG && $log->is_debug && $log->debug(Data::Dump::dump($client->name).': stateStop');
 	$mixInfo{$client} = undef;
 	$prefs->client($client)->remove('playlist');
 	$prefs->client($client)->remove('playlist_parameters');
@@ -1867,9 +1875,10 @@ sub handleWebMixParameters {
 			unless ($params->{'addOnly'} == 1) {
 				my $masterClient = masterOrSelf($client);
 
-				# Clear any current mix type in case user is restarting an already playing mix
+				main::DEBUGLOG && $log->is_debug && $log->debug('Master client '.Data::Dump::dump($masterClient->name).': clearing current dpl type in case user is restarting an already playing dpl');
 				stateStop($masterClient);
 				my @players = Slim::Player::Sync::slaves($client);
+				main::DEBUGLOG && $log->is_debug && $log->debug('Repeat with all slave players: '.Data::Dump::dump(@players));
 				foreach my $player (@players) {
 					stateStop($player);
 				}
@@ -1886,7 +1895,7 @@ sub getPlayListContext {
 	my ($client, $params, $currentItems, $level) = @_;
 	my @result = ();
 	my $displayname;
-	main::DEBUGLOG && $log->is_debug && $log->debug("Get playlist context for level: $level");
+	main::DEBUGLOG && $log->is_debug && $log->debug("Get playlist context for level: $level") if $debugVerbose;
 
 	if (defined($params->{'group'.$level})) {
 		my $group = unescape($params->{'group'.$level});
@@ -1906,7 +1915,7 @@ sub getPlayListContext {
 				'dynamicplaylistenabled' => $item->{'dynamicplaylistenabled'},
 				'contextname' => escape($group),
 			);
-			main::DEBUGLOG && $log->is_debug && $log->debug('Adding context: '.$group);
+			main::DEBUGLOG && $log->is_debug && $log->debug('Adding context: '.$group) if $debugVerbose;
 			push @result, \%resultItem;
 
 			if (defined($item->{'childs'})) {
@@ -1932,7 +1941,7 @@ sub getPlayListGroupsForContext {
 
 	if (defined($params->{'group'.$level})) {
 		my $group = unescape($params->{'group'.$level});
-		main::DEBUGLOG && $log->is_debug && $log->debug('Getting group: '.$group);
+		main::DEBUGLOG && $log->is_debug && $log->debug('Getting group: '.$group) if $debugVerbose;
 		my $item = $currentItems->{'dynamicplaylistgroup_'.$group};
 		if (defined($item) && !defined($item->{'playlist'})) {
 			if (defined($item->{'childs'})) {
@@ -1983,9 +1992,9 @@ sub getPlayListsForContext {
 	my @result = ();
 
 	my $isContextMenu = $params->{'iscontextmenu'} || 0;
-	main::DEBUGLOG && $log->is_debug && $log->debug('params iscontextmenu = '.$isContextMenu.' -- level = '.Data::Dump::dump($level));
-	main::DEBUGLOG && $log->is_debug && $log->debug('playlisttype = '.Data::Dump::dump($playlisttype));
-	main::DEBUGLOG && $log->is_debug && $log->debug('params flatlist = '.Data::Dump::dump($params->{'flatlist'}));
+	main::DEBUGLOG && $log->is_debug && $log->debug('params iscontextmenu = '.$isContextMenu.' -- level = '.Data::Dump::dump($level)) if $debugVerbose;
+	main::DEBUGLOG && $log->is_debug && $log->debug('playlisttype = '.Data::Dump::dump($playlisttype)) if $debugVerbose;
+	main::DEBUGLOG && $log->is_debug && $log->debug('params flatlist = '.Data::Dump::dump($params->{'flatlist'})) if $debugVerbose;
 
 	if ($params->{'flatlist'}) {
 		foreach my $itemKey (keys %{$playLists}) {
@@ -2186,7 +2195,7 @@ sub cliJiveHandler {
 		main::DEBUGLOG && $log->is_debug && $log->debug("Got: $k = ".$params->{$k});
 	}
 
-	main::DEBUGLOG && $log->is_debug && $log->debug('Executing CLI browsejive command');
+	main::DEBUGLOG && $log->is_debug && $log->debug('Executing CLI browsejive command') if $debugVerbose;
 
 	# delete previous multiple selection
 	$client->pluginData('selected_genres' => []);
@@ -2465,7 +2474,6 @@ sub cliJivePlaylistParametersHandler {
 		main::DEBUGLOG && $log->is_debug && $log->debug("Got: $k = ".$params->{$k});
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			$baseParams{$k} = $params->{$k};
-			main::DEBUGLOG && $log->is_debug && $log->debug("Got: $k = ".$params->{$k});
 		}
 	}
 
@@ -3383,9 +3391,10 @@ sub cliPlayPlaylist {
 	} else {
 		my $masterClient = masterOrSelf($client);
 
-		# Clear any current mix type in case user is restarting an already playing mix
+		main::DEBUGLOG && $log->is_debug && $log->debug('Master client '.Data::Dump::dump($masterClient->name).': clearing current dpl type in case user is restarting an already playing dpl');
 		stateStop($masterClient);
 		my @players = Slim::Player::Sync::slaves($client);
+		main::DEBUGLOG && $log->is_debug && $log->debug('Repeat with all slave players: '.Data::Dump::dump(@players));
 		foreach my $player (@players) {
 			stateStop($player);
 		}
@@ -6182,7 +6191,7 @@ sub getNextDynamicPlaylistTracks {
 				$log->error("Database error: $DBI::errstr\n$@");
 				return 'error';
 			}
-			main::DEBUGLOG && $log->is_debug && $log->debug("sql statement $i: exec time = ".(time() - $sqlExecTime).' secs');
+			main::DEBUGLOG && $log->is_debug && $log->debug("sql statement $i: exec time = ".(time() - $sqlExecTime).' secs') if $debugVerbose;
 		}
 		main::DEBUGLOG && $log->is_debug && $log->debug('Got '.scalar(@idList).' track IDs');
 		main::DEBUGLOG && $log->is_debug && $log->debug('idList = '.Data::Dump::dump(\@idList)) if $debugVerbose;
@@ -6369,7 +6378,7 @@ sub replaceParametersInSQL {
 				$value = '';
 			}
 			my $parameterid = "\'$parameterType".$parameter->{'id'}."\'";
-			main::DEBUGLOG && $log->is_debug && $log->debug('Replacing '.$parameterid.' with '.$value);
+			main::DEBUGLOG && $log->is_debug && $log->debug('Replacing '.$parameterid.' with '.$value) if $debugVerbose;
 			$sql =~ s/$parameterid/$value/g;
 		}
 	}
@@ -6394,7 +6403,7 @@ sub readParseLocalDynamicPlaylists {
 
 	if ($dplc_enabled && $dplc_customPLfolder) {
 		push @localDefDirs, $dplc_customPLfolder;
-		main::DEBUGLOG && $log->is_debug && $log->debug("Including DynamicPlaylistCreator folder '$dplc_customPLfolder' in search.");
+		main::DEBUGLOG && $log->is_debug && $log->debug("Including DynamicPlaylistCreator folder '$dplc_customPLfolder' in search.") if $debugVerbose;
 	}
 	main::DEBUGLOG && $log->is_debug && $log->debug('Searching for dynamic playlist definitions in local directories');
 
@@ -6402,7 +6411,7 @@ sub readParseLocalDynamicPlaylists {
 		if (!defined $localDefDir || !-d $localDefDir) {
 			main::DEBUGLOG && $log->is_debug && $log->debug('Directory is undefined or does not exist - skipping scan for dpl definitions in: '.Data::Dump::dump($localDefDir)) if $debugVerbose;
 		} else {
-			main::DEBUGLOG && $log->is_debug && $log->debug('Checking dir: '.$localDefDir);
+			main::DEBUGLOG && $log->is_debug && $log->debug('Checking dir: '.$localDefDir) if $debugVerbose;
 			my $fileExtension = "\\.sql\$";
 			my @dircontents = Slim::Utils::Misc::readDirectory($localDefDir, "sql", 'dorecursive');
 			main::DEBUGLOG && $log->is_debug && $log->debug("directory contents for dir '$localDefDir': ".Data::Dump::dump(\@dircontents)) if $debugVerbose;
@@ -6444,7 +6453,7 @@ sub readParseLocalDynamicPlaylists {
 						$localCustomDynamicPlaylists->{$parsedContent->{'id'}} = $parsedContent;
 					}
 					if ($dplc_customPLfolder && $localDefDir eq $dplc_customPLfolder) {
-						$parsedContent = parseContent($item, $content, undef, 'parseStrings');
+						$parsedContent = parseContent($item, $content);
 						$parsedContent->{'dplcplaylist'} = 1;
 						$localCustomDynamicPlaylists->{$parsedContent->{'id'}} = $parsedContent;
 					}
@@ -7062,7 +7071,7 @@ sub initDatabase {
 			msg("Couldn't create DPL history database table: [$@]");
 		}
 	}
-	main::DEBUGLOG && $log->is_debug && $log->debug('Creating DPL history database indexes');
+	main::DEBUGLOG && $log->is_debug && $log->debug('Creating DPL history database indexes') if $debugVerbose;
 	my $sqlIndex = "create unique index if not exists idClientIndex on dynamicplaylist_history (id,client);";
 	eval {$dbh->do($sqlIndex)};
 	if ($@) {
@@ -7363,7 +7372,7 @@ sub commandCallback {
 	my $masterClient = masterOrSelf($client);
 
 	if (defined($request->source()) && $request->source() eq 'PLUGIN_DYNAMICPLAYLISTS4') {
-		main::DEBUGLOG && $log->is_debug && $log->debug('received command initiated by PLUGIN_DYNAMICPLAYLISTS4');
+		main::DEBUGLOG && $log->is_debug && $log->debug('ignoring command initiated by PLUGIN_DYNAMICPLAYLISTS4') if $debugVerbose;
 		return;
 	} elsif (defined($request->source())) {
 		main::DEBUGLOG && $log->is_debug && $log->debug('received command initiated by '.$request->source());
@@ -7425,7 +7434,7 @@ sub commandCallback {
 			playRandom($client, $mixInfo{$masterClient}->{'type'}, 1, 0);
 		}
 	} elsif ($request->isCommand([['playlist'], [keys %stopcommands]])) {
-		main::DEBUGLOG && $log->is_debug && $log->debug('stop command detected: "'.($request->getRequestString()).'". Let\'s stop adding tracks. Dynamic playlist is no longer active.');
+		main::DEBUGLOG && $log->is_debug && $log->debug('stop command detected: "'.($request->getRequestString()).'". Dynamic playlist is no longer active.');
 		playRandom($client, 'disable');
 	}
 }
@@ -7448,12 +7457,12 @@ sub refreshPluginPlaylistFolder {
 	for my $plugindir (@pluginDirs) {
 		if (-d catdir($plugindir, 'DynamicPlaylists4', 'Playlists')) {
 			my $pluginPlaylistFolder = catdir($plugindir, 'DynamicPlaylists4', 'Playlists');
-			main::DEBUGLOG && $log->is_debug && $log->debug('pluginPlaylistFolder = '.Data::Dump::dump($pluginPlaylistFolder));
+			main::DEBUGLOG && $log->is_debug && $log->debug('pluginPlaylistFolder = '.Data::Dump::dump($pluginPlaylistFolder)) if $debugVerbose;
 			$prefs->set('pluginplaylistfolder', $pluginPlaylistFolder);
 		}
 		if (-d catdir($plugindir, 'DynamicPlaylists4', 'HTML', 'EN', 'plugins', 'DynamicPlaylists4', 'html', 'audio')) {
 			$prefs->set('silencetrackurl', catfile($plugindir, 'DynamicPlaylists4', 'HTML', 'EN', 'plugins', 'DynamicPlaylists4', 'html', 'audio','silence.mp3'));
-			main::DEBUGLOG && $log->is_debug && $log->debug('silence track url = '.catfile($plugindir, 'DynamicPlaylists4', 'HTML', 'EN', 'plugins', 'DynamicPlaylists4', 'html', 'audio','silence.mp3'));
+			main::DEBUGLOG && $log->is_debug && $log->debug('silence track url = '.catfile($plugindir, 'DynamicPlaylists4', 'HTML', 'EN', 'plugins', 'DynamicPlaylists4', 'html', 'audio','silence.mp3')) if $debugVerbose;
 		}
 	}
 }
@@ -7479,7 +7488,10 @@ sub cliIsActive {
 sub active {
 	my $client = shift;
 	my $mixStatus = $client->pluginData('type');
-	main::DEBUGLOG && $log->is_debug && $log->debug('mixStatus = '.Data::Dump::dump($mixStatus));
+	main::DEBUGLOG && $log->is_debug && $log->debug('Client: '.Data::Dump::dump($client->name));
+	main::DEBUGLOG && $log->is_debug && $log->debug('mixStatus (client->plugindata) = '.Data::Dump::dump($mixStatus));
+	main::DEBUGLOG && $log->is_debug && $log->debug('mixInfo (client->type) = '.Data::Dump::dump($mixInfo{$client}->{'type'}));
+	main::DEBUGLOG && $log->is_debug && $log->debug('type (prefs->client->playlist) = '.Data::Dump::dump($prefs->client($client)->get('playlist')));
 	return $mixStatus;
 }
 
@@ -7504,7 +7516,7 @@ sub getMsgDisplayTime {
 	my $msgDisplayTime = length($displayString) * $showTimePerChar;
 	$msgDisplayTime = 2 if $msgDisplayTime < 2;
 	$msgDisplayTime = 25 if $msgDisplayTime > 25;
-	main::DEBUGLOG && $log->is_debug && $log->debug("Display time: ".$msgDisplayTime."s for message '".$displayString."'");
+	main::DEBUGLOG && $log->is_debug && $log->debug("Display time: ".$msgDisplayTime."s for message '".$displayString."'") if $debugVerbose;
 	return $msgDisplayTime;
 }
 
