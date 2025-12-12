@@ -27,15 +27,15 @@ use warnings;
 use utf8;
 use base qw(FileHandle);
 use Slim::Utils::Log;
+use URI;
 
 my $log = logger('plugin.dynamicplaylists4');
 
 sub overridePlayback {
 	my ($class, $client, $url) = @_;
 
-	if ($url !~ m|^dynamicplaylistaddonly://(.*)$|) {
-		return undef;
-	}
+	my $uri = URI->new($url);
+	return undef unless $uri->scheme eq 'dynamicplaylistaddonly';
 
 	my ($hasParams) = $url =~ /p1=/;
 	my $playlistID = '';
@@ -62,7 +62,7 @@ sub overridePlayback {
 	}
 
 	main::DEBUGLOG && $log->is_debug && $log->debug('fav list client command = '.Data::Dump::dump($command));
-	$client->execute(['playlist', 'clear']);
+	#$client->execute(['playlist', 'clear']);
 	$client->execute($command);
 	return 1;
 }

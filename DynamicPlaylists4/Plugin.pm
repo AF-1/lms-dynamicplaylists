@@ -1065,7 +1065,6 @@ sub playRandom {
 				if (scalar @{$dplQueue} > 0) {
 					my $nextDPL = shift @{$dplQueue};
 					main::INFOLOG && $log->is_info && $log->info('Adding queued dynamic playlist: '.$nextDPL->{'title'});
-					$client->execute(['playlist', 'add', $prefs->get('silencetrackurl')]);
 					$client->execute(['playlist', 'add', $nextDPL->{'url'}, $nextDPL->{'title'}]);
 				}
 
@@ -7459,10 +7458,6 @@ sub refreshPluginPlaylistFolder {
 			my $pluginPlaylistFolder = catdir($plugindir, 'DynamicPlaylists4', 'Playlists');
 			main::DEBUGLOG && $log->is_debug && $log->debug('pluginPlaylistFolder = '.Data::Dump::dump($pluginPlaylistFolder)) if $debugVerbose;
 			$prefs->set('pluginplaylistfolder', $pluginPlaylistFolder);
-		}
-		if (-d catdir($plugindir, 'DynamicPlaylists4', 'HTML', 'EN', 'plugins', 'DynamicPlaylists4', 'html', 'audio')) {
-			$prefs->set('silencetrackurl', catfile($plugindir, 'DynamicPlaylists4', 'HTML', 'EN', 'plugins', 'DynamicPlaylists4', 'html', 'audio','silence.mp3'));
-			main::DEBUGLOG && $log->is_debug && $log->debug('silence track url = '.catfile($plugindir, 'DynamicPlaylists4', 'HTML', 'EN', 'plugins', 'DynamicPlaylists4', 'html', 'audio','silence.mp3')) if $debugVerbose;
 		}
 	}
 }

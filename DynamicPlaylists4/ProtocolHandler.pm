@@ -27,14 +27,19 @@ use warnings;
 use utf8;
 use base qw(FileHandle);
 use Slim::Utils::Log;
+use URI;
 
 my $log = logger('plugin.dynamicplaylists4');
 
 sub overridePlayback {
 	my ($class, $client, $url) = @_;
 
-	if ($url !~ m|^dynamicplaylist://(.*)$|) {
-		return undef;
+	my $uri = URI->new($url);
+	return undef unless $uri->scheme eq 'dynamicplaylist';
+
+	if ( Slim::Player::Source::streamingSongIndex($client) ) {
+		# don't start immediately if we're part of a playlist and previous track isn't done playing
+		return undef if $client->controller()->playingSongDuration()
 	}
 
 	my ($hasParams) = $url =~ /p1=/;
