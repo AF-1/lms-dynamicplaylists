@@ -263,6 +263,7 @@ sub initPlayLists {
 	my %localPlayLists = ();
 	my %localPlayListItems = ();
 	my %unclassifiedPlaylists = ();
+	my %localDstmPlaylists = ();
 	my $savedstaticPlaylists = undef;
 
 	my @enabledplugins = Slim::Utils::PluginManager->enabledPlugins();
@@ -312,6 +313,8 @@ sub initPlayLists {
 				$playlist->{'dynamicplaylistenabled'} = (!defined $enabled || $enabled) ? 1 : 0;
 				my $favourite = $prefs->get('playlist_'.$item.'_favourite');
 				$playlist->{'dynamicplaylistfavourite'} = (defined($favourite) && $favourite) ? 1 : 0;
+				my $dstm = $prefs->get('playlist_'.$item.'_dstmenabled');
+				$playlist->{'dynamicplaylistdstmenabled'} = (defined($dstm) && $dstm) ? 1 : 0;
 
 				$playlist->{'isFavorite'} = defined(Slim::Utils::Favorites->new($client)->findUrl('dynamicplaylist://'.$playlist->{'dynamicplaylistid'}))?1:0;
 
@@ -342,6 +345,10 @@ sub initPlayLists {
 					$playlist->{'hasnovolatileparams'} = $hasNoVolatileParam;
 				}
 				$localPlayLists{$item} = $playlist;
+
+				if ($dstm_enabled && !$playlist->{'parameters'} && $playlist->{'dynamicplaylistdstmenabled'}) {
+					$localDstmPlaylists{$item} = 1;
+				}
 
 				if (!$playlist->{'playlistcategory'}) {
 					if ($playlist->{'menulisttype'} && ($playlist->{'menulisttype'} eq 'contextmenu')) {
@@ -440,7 +447,15 @@ sub initPlayLists {
 
 	$playLists = \%localPlayLists;
 	$playListItems = \%localPlayListItems;
-	main::INFOLOG && $log->is_info && $log->info('localPlayListItems = '.Data::Dump::dump(\%localPlayListItems)) if $debugVerbose;
+
+	if ($dstm_enabled) {
+		main::DEBUGLOG && $log->is_debug && $log->debug('localDstmPlaylists = '.Data::Dump::dump(\%localDstmPlaylists)) if $debugVerbose;
+		my $dstmPlaylists = \%localDstmPlaylists;
+		require Plugins::DynamicPlaylists4::DontStopTheMusic;
+		Plugins::DynamicPlaylists4::DontStopTheMusic->init($dstmPlaylists, $playLists);
+	}
+
+	main::DEBUGLOG && $log->is_debug && $log->debug('localPlayListItems = '.Data::Dump::dump(\%localPlayListItems)) if $debugVerbose;
 	main::DEBUGLOG && $log->is_debug && $log->debug('playLists = '.Data::Dump::dump($playLists)) if $debugVerbose;
 
 	return ($playLists, $playListItems, \%unclassifiedPlaylists, $savedstaticPlaylists);

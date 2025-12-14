@@ -41,9 +41,8 @@ details summary > *{display: inline;}
 }
 .heart {
 	position: relative;
-	--size: 8px;
-	width: var(--size);
-	height: var(--size);
+	width: 8px;
+	height: 8px;
 }
 .heart_checkbox {
 	-webkit-appearance: none !important;
@@ -53,8 +52,8 @@ details summary > *{display: inline;}
 	position: absolute;
 	top: 0px;
 	left: 4px;
-	width: calc(var(--size) * 1.5);
-	height: calc(var(--size) * 1.5);
+	width: 14px !important;
+	height: 14px !important;
 	z-index: 2;
 	cursor: pointer;
 	transform: scale(1) rotate(45deg);
@@ -70,8 +69,8 @@ details summary > *{display: inline;}
 	animation: heartAnimation forwards 1s;
 }
 .heart_icon {
-	width: var(--size);
-	height: var(--size);
+	width: 8px;
+	height: 8px;
 	background: #8b8b8b;
 	transform: scale(1) rotate(45deg);
 	position: absolute;
@@ -82,8 +81,8 @@ details summary > *{display: inline;}
 	content: "";
 	display: block;
 	background: inherit;
-	width: var(--size);
-	height: var(--size);
+	width: 8px;
+	height: 8px;
 	border-radius: 50%;
 	position: absolute;
 }
@@ -135,8 +134,89 @@ details summary > *{display: inline;}
 		background: lightpink;
 	}
 }
-
-
+.infinity {
+	position: relative;
+	width: 18px;
+	height: 18px;
+}
+.infinity_checkbox {
+	-webkit-appearance: none !important;
+	-moz-appearance: none !important;
+	appearance: none !important;
+	opacity: 0;
+	position: absolute;
+	top: -1px;
+	width: 24px;
+	height: 16px;
+	z-index: 2;
+	cursor: pointer;
+	transform: scale(1);
+}
+.infinity_checkbox:focus {
+	outline: none;
+}
+.infinity_checkbox:hover ~ .infinity_icon {
+	transform: scale(1.1);
+}
+.infinity_checkbox:checked ~ .infinity_icon {
+	content: ' \221e';
+	-webkit-animation: infinityAnimation forwards 1s;
+	animation: infinityAnimation forwards 1s;
+}
+.infinity_icon {
+	transform: scale(1);
+	position: absolute;
+	transition: transform 200ms ease-out;
+}
+.hide{
+	visibility:hidden;
+	cursor:default;
+}
+.infinity_icon::after {
+	content: "\221e";
+	display: inline-block;
+	font-size: 30px;
+}
+@-webkit-keyframes infinityAnimation {
+	0% {
+		transform: scale(1.1);
+	}
+	25% {
+		transform: scale(0.7);
+	}
+	45% {
+		transform: scale(1.4);
+		color: green;
+	}
+	70% {
+		transform: scale(1);
+		color: green;
+	}
+	100% {
+		transform: scale(1.1);
+		color: green;
+	}
+}
+@keyframes infinityAnimation {
+	0% {
+		transform: scale(1.1);
+	}
+	25% {
+		transform: scale(0.7);
+	}
+	45% {
+		transform: scale(1.4);
+		color: green;
+	}
+	70% {
+		transform: scale(1);
+		color: green;
+	}
+	100% {
+		transform: scale(1.1);
+		color: green;
+	}
+}
 .avatar{overflow: hidden;}
 .user-icon{
 	--size: 2px;

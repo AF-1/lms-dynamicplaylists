@@ -37,31 +37,21 @@ sub overridePlayback {
 	my $uri = URI->new($url);
 	return undef unless $uri->scheme eq 'dynamicplaylistaddonly';
 
-	my ($hasParams) = $url =~ /p1=/;
-	my $playlistID = '';
-
-	if ($hasParams) {
-		($playlistID) = $url =~ /^dynamicplaylistaddonly:\/\/(.*?)\?/;
-	} else {
-		$playlistID= $1;
-	}
+	my ($playlistID, $query) = $url =~ m{^dynamicplaylistaddonly://([^?]+)(?:\?(.*))?$};
+	main::DEBUGLOG && $log->is_debug && $log->debug('playlistID = '.Data::Dump::dump($playlistID));
+	return undef unless defined $playlistID;
 
 	my $command = ["dynamicplaylist", "playlist", "add", "playlistid:".$playlistID];
 
-	my $cnt = 1;
-	while ($hasParams) {
-		my ($thisParam) = $url =~ /p${cnt}=(.*?)(&|$)/;
-		($hasParams) = $url =~ /p${cnt}=/;
-
-		if ($hasParams) {
-			push @{$command}, "dynamicplaylist_parameter_".$cnt.":".$thisParam;
+	if ($query) {
+		my $cnt = 1;
+		while (my ($value) = $query =~ /p${cnt}=([^&]*)/) {
+			push @{$command}, "dynamicplaylist_parameter_${cnt}:$value";
+			$cnt++;
 		}
-
-		if (!$hasParams) {last;}
-		$cnt++;
 	}
 
-	main::DEBUGLOG && $log->is_debug && $log->debug('fav list client command = '.Data::Dump::dump($command));
+	main::DEBUGLOG && $log->is_debug && $log->debug('client command = '.Data::Dump::dump($command));
 	#$client->execute(['playlist', 'clear']);
 	$client->execute($command);
 	return 1;

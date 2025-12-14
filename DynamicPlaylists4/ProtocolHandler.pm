@@ -42,31 +42,21 @@ sub overridePlayback {
 		return undef if $client->controller()->playingSongDuration()
 	}
 
-	my ($hasParams) = $url =~ /p1=/;
-	my $playlistID = '';
-
-	if ($hasParams) {
-		($playlistID) = $url =~ /^dynamicplaylist:\/\/(.*?)\?/;
-	} else {
-		$playlistID= $1;
-	}
+	my ($playlistID, $query) = $url =~ m{^dynamicplaylist://([^?]+)(?:\?(.*))?$};
+	main::DEBUGLOG && $log->is_debug && $log->debug('playlistID = '.Data::Dump::dump($playlistID));
+	return undef unless defined $playlistID;
 
 	my $command = ["dynamicplaylist", "playlist", "play", "playlistid:".$playlistID];
 
-	my $cnt = 1;
-	while ($hasParams) {
-		my ($thisParam) = $url =~ /p${cnt}=(.*?)(&|$)/;
-		($hasParams) = $url =~ /p${cnt}=/;
-
-		if ($hasParams) {
-			push @{$command}, "dynamicplaylist_parameter_".$cnt.":".$thisParam;
+	if ($query) {
+		my $cnt = 1;
+		while (my ($value) = $query =~ /p${cnt}=([^&]*)/) {
+			push @{$command}, "dynamicplaylist_parameter_${cnt}:$value";
+			$cnt++;
 		}
-
-		if (!$hasParams) {last;}
-		$cnt++;
 	}
 
-	main::DEBUGLOG && $log->is_debug && $log->debug('fav list client command = '.Data::Dump::dump($command));
+	main::DEBUGLOG && $log->is_debug && $log->debug('client command = '.Data::Dump::dump($command));
 	$client->execute($command);
 	return 1;
 }
@@ -92,10 +82,8 @@ sub getIcon {
 }
 
 sub getMetadataFor {
-	my ( $class, $client, $url ) = @_;
-
+	my ($class, $client, $url) = @_;
 	return unless $client && $url;
-
 	return {
 		cover => $class->getIcon(),
 	};

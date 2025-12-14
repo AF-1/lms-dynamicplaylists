@@ -113,6 +113,14 @@ sub handler {
 			} else {
 				$prefs->remove('playlist_'.$playlist.'_favourite');
 			}
+
+			# dstm
+			my $playlistdstm = "playlist_".$playLists->{$playlist}{'dynamicplaylistid'}."_dstm";
+			if ($paramRef->{$playlistid} && $paramRef->{$playlistdstm}) {
+				$prefs->set('playlist_'.$playlist.'_dstmenabled', 1);
+			} else {
+				$prefs->remove('playlist_'.$playlist.'_dstmenabled');
+			}
 		}
 
 		savePlayListGroups($playListItems, $paramRef, '');

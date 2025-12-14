@@ -57,6 +57,11 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUP
 	FR	Listes de lecture dynamiques
 	DE	Dynamische Wiedergabelisten
 
+PLUGIN_DYNAMICPLAYLISTS4_DYNAMICPLAYLIST
+	EN	Dynamic Playlist
+	FR	Liste de lecture dynamique
+	DE	Dynamische Wiedergabeliste
+
 
 
 PLUGIN_DYNAMICPLAYLISTS4_PLAYING
