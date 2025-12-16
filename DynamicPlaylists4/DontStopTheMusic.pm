@@ -42,7 +42,13 @@ sub init {
 	for my $playlist (keys %{$playlists}) {
 		if ($dstmPlaylists->{$playlist}) {
 			Slim::Plugin::DontStopTheMusic::Plugin->registerHandler(string('PLUGIN_DYNAMICPLAYLISTS4_DYNAMICPLAYLIST').': '.$playlists->{$playlist}->{'name'}, sub {
-				dontStopTheMusic($playlist, $playlists->{$playlist}->{'name'}, @_);
+				my ($client, $cb) = @_;
+				my $track = Slim::Schema::RemoteTrack->new({
+					url => 'dynamicplaylist://'.$playlist,
+					title => $playlists->{$playlist}->{name},
+					type => 'dynamicplaylist',
+				});
+				$cb->($client, [$track]);
 			});
 			main::DEBUGLOG && $log->is_debug && $log->debug('Registered this dpl with DSTM: '.$playlists->{$playlist}->{'name'});
 		} else {
@@ -50,16 +56,6 @@ sub init {
 			main::DEBUGLOG && $log->is_debug && $log->debug('UNregistered this dpl with DSTM: '.$playlists->{$playlist}->{'name'});
 		}
 	}
-}
-
-sub dontStopTheMusic {
-	my ($mixtype, $dplName, $client, $cb) = @_;
-	return unless $client;
-	main::DEBUGLOG && $log->is_debug && $log->debug('DSTM mixtype = '.$mixtype);
-
-	my $request = $client->execute(['playlist', 'add', 'dynamicplaylist://'.$mixtype, $dplName]);
-	$request->source('PLUGIN_DYNAMICPLAYLISTS4');
-	$cb->($client, []);
 }
 
 1;

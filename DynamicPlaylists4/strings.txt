@@ -385,7 +385,7 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_GROUPS_DESC
 	DE	Haken Sie das Kästchen an, um eine Gruppe für dynamische Wiedergabelisten zu aktivieren.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_DESC
-	EN	Check the box to enable dynamic playlists.<br><br>Click on the heart to add a dynamic playlist to the <i>Favourites</i> group in the DPL home menu.<br><br>Save your changes by clicking the <i>Apply</i> or <i>Save Settings</i> button.
+	EN	Check the box to enable dynamic playlists.<br><br>Click on the heart to add a dynamic playlist to the <i>Favourites</i> group in the DPL home menu.<br><br>Click on the infinity icon to add dynamic playlists (that do not request parameters from users) as a <i>Don't Stop the Music</i> mixer option.<br><br>Save your changes by clicking the <i>Apply</i> or <i>Save Settings</i> button.
 	FR	Cochez la case pour activer une liste de lecture dynamique.<br><br>Cliquez sur le cœur pour ajouter une liste de lecture dynamique au groupe <i>Favoris</i dans le menu d'accueil DPL.
 	DE	Haken Sie das Kästchen an, um dynamische Wiedergabelisten zu aktivieren.<br><br>Klicken Sie auf das Herz, um eine dynamische Wiedergabeliste zur Gruppe <i>Favoriten</i> im DPL-Startmenü hinzuzufügen.
 
