@@ -24,7 +24,6 @@ jobs:
         with:
           days-before-issue-stale: 30
           days-before-issue-close: 14
-          exempt-issue-assignees: "AF-1"
           stale-issue-label: "stale - closing soon"
           stale-issue-message: "This issue is stale because it has been open for 30 days with no activity. It will be closed after another 14 days of inactivity."
           close-issue-message: "This issue was closed because it has been inactive for 14 days since being marked as stale."
