@@ -6467,7 +6467,7 @@ sub readParseLocalDynamicPlaylists {
 						$localCustomDynamicPlaylists->{$parsedContent->{'id'}} = $parsedContent;
 					}
 					if ($dplc_customPLfolder && $localDefDir eq $dplc_customPLfolder) {
-						$parsedContent = parseContent($item, $content);
+						$parsedContent = parseContent($item, $content, undef, 'parseStrings');
 						$parsedContent->{'dplcplaylist'} = 1;
 						$localCustomDynamicPlaylists->{$parsedContent->{'id'}} = $parsedContent;
 					}
