@@ -1,0 +1,47 @@
+<style>.selectorMarker,.mouseOver{cursor:default !important;}</style>
+[% PROCESS plugins/DynamicPlaylists4/dpcomponents.html %]
+[%- pagetitle = 'PLUGIN_DYNAMICPLAYLISTS4' | string; pageicon = 'PLUGIN_DYNAMICPLAYLISTS4' -%]
+
+[%- pwd_list = BLOCK -%]/
+	[% IF source %]
+		<a href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?player=[% player | uri %]">
+			[% "PLUGIN_DYNAMICPLAYLISTS4" | string %]
+		</a>
+	[% ELSE %]
+		<a href="[% webroot %]clixmlbrowser/clicmd=browselibrary+items&amp;linktitle=BROWSE_BY_[% IF objecttype == 'artist' %]ARTIST[% ELSE %]ALBUM[% END %]&amp;mode=[% IF objecttype == 'artist' %]artists[% ELSE %]albums[% END %]/?player=[% player | uri %]">
+			[% IF objecttype == 'artist' %][% "ARTISTS" | string %][% ELSE %][% "ALBUMS" | string %][% END %]
+		</a>
+	[% END %]
+[% END -%]
+
+[% PROCESS pageheader.html %]
+[% PROCESS plugins/DynamicPlaylists4/dynamicplaylistlink.html %]
+
+[% WRAPPER dpcontentcontainer %]
+	[% IF player == '' %]
+		[% "NO_PLAYER_FOUND" | string %]
+	[% ELSE %]
+		<br>
+		<p>[% IF objecttype == 'artist' %][% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ARTISTS_LIST" | string %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ALBUMS_LIST" | string %][% END %]</p>
+		<br>
+		[% odd = 1 %]
+		[% IF pluginDynamicPlaylists4preselectionList %]
+			[% IF preselitemcount > 1 %]
+				[%- WRAPPER contentitem controls='controlspreselection' %]
+					[% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CLEAR_LIST" | string %]
+					[% odd = (not odd) %]
+				[% END %]
+			<br>
+			[% END %]
+			[% FOREACH item IN pluginDynamicPlaylists4preselectionList.values.sort('name') %]
+				[%- WRAPPER contentitem controls='controlspreselection' %]
+					[% item.name %][% IF objecttype == 'album' && item.artistname %]&nbsp;&nbsp;- by -&nbsp;&nbsp;[% item.artistname %][% END %]
+					[% odd = (not odd) %]
+				[% END %]
+			[% END %]
+		[% ELSE %]
+			[% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_NONE" | string %]
+		[% END %]
+	[% END %]
+[% END %]
+[% PROCESS pagefooter.html %]

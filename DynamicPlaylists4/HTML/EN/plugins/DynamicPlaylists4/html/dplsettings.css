@@ -1,0 +1,254 @@
+.tablepad {padding-left:10px;}
+.detailswrapper {
+	margin-bottom: 10px;
+	padding-left: 10px;
+}
+details summary {
+	cursor: pointer;
+	outline: none;
+	margin-bottom: 5px;
+}
+details summary > *{display: inline;}
+.detailstab {
+	padding-left: 10px;
+	min-width: 150px;
+}
+.emph {
+	font-weight: 600;
+	text-transform: capitalize;
+}
+.notdefaultdpl {
+	color: skyblue;
+}
+.categoryheader {
+	font-weight: 600;
+	text-transform: capitalize;
+}
+.playlistname {
+	padding-left: 5px;
+	min-width: 360px;
+}
+.enabledstatus{padding-left: 10px;}
+.playlists td:first-child {
+	padding-left: 10px;
+	min-width: 360px;
+	margin-bottom: 5px;
+}
+.dpllist_source {padding-left: 15px;}
+.apcbutton {
+	padding-left: 2px;
+	padding-right: 10px;
+}
+.heart {
+	position: relative;
+	width: 8px;
+	height: 8px;
+}
+.heart_checkbox {
+	-webkit-appearance: none !important;
+	-moz-appearance: none !important;
+	appearance: none !important;
+	opacity: 0;
+	position: absolute;
+	top: 0px;
+	left: 4px;
+	width: 14px !important;
+	height: 14px !important;
+	z-index: 2;
+	cursor: pointer;
+	transform: scale(1) rotate(45deg);
+}
+.heart_checkbox:focus {
+	outline: none;
+}
+.heart_checkbox:hover ~ .heart_icon {
+	transform: scale(1.1) rotate(45deg);
+}
+.heart_checkbox:checked ~ .heart_icon {
+	-webkit-animation: heartAnimation forwards 1s;
+	animation: heartAnimation forwards 1s;
+}
+.heart_icon {
+	width: 8px;
+	height: 8px;
+	background: #8b8b8b;
+	transform: scale(1) rotate(45deg);
+	position: absolute;
+	top: 6px;
+	transition: transform 200ms ease-out;
+}
+.heart_icon::before, .heart_icon::after {
+	content: "";
+	display: block;
+	background: inherit;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	position: absolute;
+}
+.heart_icon::before {
+	top: 0;
+	left: -50%;
+}
+.heart_icon::after {
+	left: 0;
+	top: -50%;
+}
+@-webkit-keyframes heartAnimation {
+	0% {
+		transform: scale(1.1) rotate(45deg);
+	}
+	25% {
+		transform: scale(0.7) rotate(45deg);
+	}
+	45% {
+		transform: scale(1.4) rotate(45deg);
+		background: lightpink;
+	}
+	70% {
+		transform: scale(1) rotate(45deg);
+		background: lightpink;
+	}
+	100% {
+		transform: scale(1.1) rotate(45deg);
+		background: lightpink;
+	}
+}
+@keyframes heartAnimation {
+	0% {
+		transform: scale(1.1) rotate(45deg);
+	}
+	25% {
+		transform: scale(0.7) rotate(45deg);
+	}
+	45% {
+		transform: scale(1.4) rotate(45deg);
+		background: lightpink;
+	}
+	70% {
+		transform: scale(1) rotate(45deg);
+		background: lightpink;
+	}
+	100% {
+		transform: scale(1.1) rotate(45deg);
+		background: lightpink;
+	}
+}
+.infinity {
+	position: relative;
+	width: 18px;
+	height: 18px;
+}
+.infinity_checkbox {
+	-webkit-appearance: none !important;
+	-moz-appearance: none !important;
+	appearance: none !important;
+	opacity: 0;
+	position: absolute;
+	top: -1px;
+	width: 24px;
+	height: 16px;
+	z-index: 2;
+	cursor: pointer;
+	transform: scale(1);
+}
+.infinity_checkbox:focus {
+	outline: none;
+}
+.infinity_checkbox:hover ~ .infinity_icon {
+	transform: scale(1.1);
+}
+.infinity_checkbox:checked ~ .infinity_icon {
+	content: ' \221e';
+	-webkit-animation: infinityAnimation forwards 1s;
+	animation: infinityAnimation forwards 1s;
+}
+.infinity_icon {
+	transform: scale(1);
+	position: absolute;
+	transition: transform 200ms ease-out;
+}
+.hide{
+	visibility:hidden;
+	cursor:default;
+}
+.infinity_icon::after {
+	content: "\221e";
+	display: inline-block;
+	font-size: 30px;
+}
+@-webkit-keyframes infinityAnimation {
+	0% {
+		transform: scale(1.1);
+	}
+	25% {
+		transform: scale(0.7);
+	}
+	45% {
+		transform: scale(1.4);
+		color: green;
+	}
+	70% {
+		transform: scale(1);
+		color: green;
+	}
+	100% {
+		transform: scale(1.1);
+		color: green;
+	}
+}
+@keyframes infinityAnimation {
+	0% {
+		transform: scale(1.1);
+	}
+	25% {
+		transform: scale(0.7);
+	}
+	45% {
+		transform: scale(1.4);
+		color: green;
+	}
+	70% {
+		transform: scale(1);
+		color: green;
+	}
+	100% {
+		transform: scale(1.1);
+		color: green;
+	}
+}
+.avatar{overflow: hidden;}
+.user-icon{
+	--size: 2px;
+	font-size: var(--size);
+	float:left; margin:var(--size); /* remove to avoid float/margin */
+	border-radius: calc(var(--size) * 4);
+	border: 1px solid skyblue;
+	height: calc(var(--size) * 6);
+	width: calc(var(--size) * 6);
+	background: none;
+	padding: calc(var(--size) * 0.1);
+}
+
+.user-icon::before{
+	content:" ";
+	display: block;
+	height: calc(var(--size) * 2);
+	width:calc(var(--size) * 2);
+	background: skyblue;
+	position: relative;
+	left: calc(var(--size) * 2);
+	top: calc(var(--size) * 0.8);
+	border-radius: calc(var(--size) * 2);
+}
+.user-icon::after{
+	content:" ";
+	display: block;
+	height: calc(var(--size) * 2);
+	width: calc(var(--size) * 4);
+	background: skyblue;
+	position: relative;
+	left: var(--size);
+	top: var(--size);
+	border-radius: calc(var(--size) * 2) calc(var(--size) * 2) 0 0;
+}

@@ -1,0 +1,44 @@
+[% page = "PLUGIN_DYNAMICPLAYLISTS4" %]
+[% PROCESS settings/header.html %]
+
+[% PROCESS plugins/DynamicPlaylists4/settings/subpage_chooser.html %]
+
+[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_HOMEEXTRASMENU_DESC" | string %]<br><br>
+
+[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_HOMEEXTRASMENUS_ALBUMS01" desc="" %]
+	<select name="pref_homeextras_dynamicalbumdiscovery01" id="homeextras_dynamicalbumdiscovery01">
+		<option [% IF !prefs.homeextras_dynamicalbumdiscovery01 %]selected='selected' [% END %] value="0">[% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_NONE" | string %]</option>
+		[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
+			[% IF item.menulisttype == "homeextrasmenu" && item.playlistcategory == "albums" %]
+			<option [% IF prefs.homeextras_dynamicalbumdiscovery01 == item.dynamicplaylistid %]selected='selected' [% END %]value="[% item.dynamicplaylistid %]">[% IF item.name == 'none' %][% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_NONE" | string %][% ELSE %][% item.name %][% END %]</option>
+			[% END %]
+		[% END %]
+	</select>
+[% END %]
+<br>
+
+[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_HOMEEXTRASMENUS_ALBUMS02" desc="" %]
+	<select name="pref_homeextras_dynamicalbumdiscovery02" id="homeextras_dynamicalbumdiscovery02">
+		<option [% IF !prefs.homeextras_dynamicalbumdiscovery01 %]selected='selected' [% END %] value="0">[% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_NONE" | string %]</option>
+		[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
+			[% IF item.menulisttype == "homeextrasmenu" && item.playlistcategory == "albums" %]
+			<option [% IF prefs.homeextras_dynamicalbumdiscovery02 == item.dynamicplaylistid %]selected='selected' [% END %]value="[% item.dynamicplaylistid %]">[% IF item.name == 'none' %][% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_NONE" | string %][% ELSE %][% item.name %][% END %]</option>
+			[% END %]
+		[% END %]
+	</select>
+[% END %]
+<br>
+
+[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_HOMEEXTRASMENUS_ARTISTS01" desc="" %]
+	<select name="pref_homeextras_dynamicartistdiscovery01" id="homeextras_dynamicartistdiscovery01">
+		<option [% IF !prefs.homeextras_dynamicalbumdiscovery01 %]selected='selected' [% END %] value="0">[% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_NONE" | string %]</option>
+		[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
+			[% IF item.menulisttype == "homeextrasmenu" && item.playlistcategory == "artists" %]
+			<option [% IF prefs.homeextras_dynamicartistdiscovery01 == item.dynamicplaylistid %]selected='selected' [% END %]value="[% item.dynamicplaylistid %]">[% IF item.name == 'none' %][% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_NONE" | string %][% ELSE %][% item.name %][% END %]</option>
+			[% END %]
+		[% END %]
+	</select>
+[% END %]
+<br>
+
+[% PROCESS settings/footer.html %]

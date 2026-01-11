@@ -1,0 +1,270 @@
+<link href="[% webroot %]plugins/DynamicPlaylists4/html/dplsettings.css" rel="stylesheet" />
+<style>.apcsection{[% IF !apcenabled %]display:none;[% END %]}
+[% IF systemSkin == "Default" || systemSkin == "Logic" || systemSkin == "DarkDefault" || systemSkin == "DarkLogic" %]
+.heart_icon {top: 3px;}
+.heart_checkbox {top: -1px;left: 8px;}
+.infinity_icon {top: -6px;}
+.infinity_checkbox {left: 9px;}
+[% END %]
+[% IF systemSkin == "material" %]
+.heart{width:14px;height:10px;}
+.heart_checkbox{
+	top: 1 !important;
+	left: 2px;
+	width: 19px !important;
+	height: 19px !important;
+	min-width: 0px !important;
+	min-height: 0px !important;
+}
+
+.heart_icon,.heart_icon::before,.heart_icon::after{width:10px;height:10px;}
+.infinity{padding-right:4;width:30px;}
+.infinity_checkbox{left:9px;}
+.infinity_icon{top:-9px;}
+[% END %]
+</style>
+[% page = "PLUGIN_DYNAMICPLAYLISTS4" %]
+[% PROCESS settings/header.html %]
+
+[% PROCESS plugins/DynamicPlaylists4/settings/subpage_chooser.html %]
+	[% IF pluginDynamicPlaylists4Groups.size>0 %]
+		[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_GROUPS" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_GROUPS_DESC" %]
+			<table class="tablepad" border="0">
+				[%- FOREACH group IN pluginDynamicPlaylists4Groups %]
+				[% IF group.name.search('Context menu lists') == false %]
+				<tr>
+					[%- groupid = "playlist_" _ group.id %]
+					<td colspan="3"><input type="checkbox" name="[% groupid _ '_enabled' %]" id="[% groupid _ '_enabled' %]" value="1" [% group.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)">
+					<label for="[% groupid %]">[% group.displayname | html %]</label></td>
+				</tr>
+				[%- END %]
+				[% END %]
+			</table>
+		[% END %]
+	[% END %]
+<div class="apcsection">
+<br>
+	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_APC_PLAYLISTS_BATCH" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_APC_PLAYLISTS_BATCH_DESC" %]
+	<span class="tablepad">
+	<span class="apcbutton"><input style="margin-top:-1px;" name="apc_dplonly" type="submit" class="stdclick" value="[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_APCDUPES_ENABLE_BUTTON_DPLONLY" | string %]"></span>
+	<span class="apcbutton"><input style="margin-top:-1px;" name="apc_apconly" type="submit" class="stdclick" value="[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_APCDUPES_ENABLE_BUTTON_APCONLY" | string %]"></span>
+	<span class="apcbutton"><input style="margin-top:-1px;" name="apc_both" type="submit" class="stdclick" value="[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_APCDUPES_ENABLE_BUTTON_BOTH" | string %]"></span>
+	</span>
+	[% END %]
+</div>
+<br>
+	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_DESC" %]
+		[% FOREACH category = playlistcategories %]
+			<div class="detailswrapper">
+				<details><summary><span class="categoryheader">[% categorylangstrings.$category %]</span></summary>
+					<table border="0">
+						[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
+							[% IF item.menulisttype != "contextmenu" && item.menulisttype != "homeextrasmenu" && item.playlistcategory == category %]
+							<tr>
+								[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
+								<td class="enabledstatus infinity"><input type="checkbox" class="infinity_checkbox[% IF item.parameters %] hide[% END %]" name="[% playlistid _ '_dstm' %]" id="[% playlistid _ '_dstm' %]" value="1" [% item.dynamicplaylistdstmenabled ? "checked" : "" %][% IF item.parameters %] disabled[% END %]><span class="infinity_icon[% IF item.parameters %] hide[% END %]"></span></td>
+								<td class="enabledstatus heart"><input type="checkbox" class="heart_checkbox" name="[% playlistid _ '_isfav' %]" id="[% playlistid _ '_isfav' %]" value="1" [% item.dynamicplaylistfavourite ? "checked" : "" %]><span class="heart_icon"></span></td>
+								<td class="enabledstatus"><input type="checkbox" name="[% playlistid _ '_enabled' %]" id="[% playlistid _ '_enabled' %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)"></td>
+								<td class="playlistname">
+									<details><summary>[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<span class="notdefaultdpl">[% END %][% item.name | html %][% UNLESS item.dynamicplaylistid.match('dpldefault_') %]</span>[% END %]</summary>
+										<table border="0">
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SOURCE" | string %]:</span></td><td>&nbsp;[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<span class="notdefaultdpl">[% END %][% item.dynamicplaylistpluginshortname | html %][% UNLESS item.dynamicplaylistid.match('dpldefault_') %]</span>[% END %]</td></tr>
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_DPLID" | string %]:</span></td><td>&nbsp;[% item.dynamicplaylistid | html %]</td></tr>
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_USESCACHE" | string %]:</span></td><td>&nbsp;[% IF item.usecache %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>
+											[% IF item.repeat %]<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_REPEAT" | string %]:</span></td><td>&nbsp;[% IF item.repeat %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>[% END %]
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_APCDATA" | string %]:</span></td><td>&nbsp;[% IF item.apcplaylist %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>
+											[% IF item.defaultplaylist %]<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_HASVOLATILEPARAMS" | string %]:</span></td><td>&nbsp;[% IF item.hasnovolatileparams %][% 'NO' | getstring %][% ELSE %][% 'YES' | getstring %][% END %]</td></tr>[% END %]
+											<tr><td>&nbsp;</td></tr>
+										</table>
+									</details>
+								</td>
+								[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<td class="dpllist_source avatar"><span class="user-icon"><span></span></span></td>[% END %]
+							</tr>
+							[% END %]
+						[%- END %]
+					</table>
+					<br>
+				</details>
+			</div>
+		[% END %]
+		[% IF savedstaticPlaylists %]
+			<div class="detailswrapper">
+				<details><summary><span class="categoryheader">[% "PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_STATICPLAYLISTS" | string %]</span></summary>
+					<table border="0">
+						[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
+							[% IF item.menulisttype != "contextmenu" && item.menulisttype != "homeextrasmenu" && item.playlistcategory == 'static LMS playlists' %]
+							<tr>
+								[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
+								<td class="enabledstatus heart"><input type="checkbox" class="heart_checkbox" name="[% playlistid _ '_isfav' %]" id="[% playlistid _ '_isfav' %]" value="1" [% item.dynamicplaylistfavourite ? "checked" : "" %]><span class="heart_icon"></span></td>
+								<td class="enabledstatus"><input type="checkbox" name="[% playlistid _ '_enabled' %]" id="[% playlistid _ '_enabled' %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)"></td>
+								<td class="playlistname">
+									<details><summary><span class="notdefaultdpl">[% item.name | html %]</span></summary>
+										<table border="0">
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SOURCE" | string %]:</span></td><td>&nbsp;<span class="notdefaultdpl">[% item.dynamicplaylistpluginshortname | html %]</span></td></tr>
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_DPLID" | string %]:</span></td><td>&nbsp;[% item.dynamicplaylistid | html %]</td></tr>
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_USESCACHE" | string %]:</span></td><td>&nbsp;[% IF item.usecache %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>
+											<tr><td>&nbsp;</td></tr>
+										</table>
+									</details>
+								</td>
+								[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<td class="dpllist_source avatar"><span class="user-icon"><span></span></span></td>[% END %]
+							</tr>
+							[% END %]
+						[%- END %]
+					</table>
+					<br>
+				</details>
+			</div>
+		[% END %]
+		[% IF unclassifiedPlaylists %]
+			<div class="detailswrapper">
+				<details><summary>[% "PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_NOTCLASSIFIED" | string %]</summary>
+					<table border="0">
+						[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
+							[% IF item.menulisttype != "contextmenu" && item.menulisttype != "homeextrasmenu" && NOT item.playlistcategory %]
+							<tr>
+								[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
+								<td class="enabledstatus infinity"><input type="checkbox" class="infinity_checkbox[% IF item.parameters %] hide[% END %]" name="[% playlistid _ '_dstm' %]" id="[% playlistid _ '_dstm' %]" value="1" [% item.dynamicplaylistdstmenabled ? "checked" : "" %][% IF item.parameters %] disabled[% END %]><span class="infinity_icon[% IF item.parameters %] hide[% END %]"></span></td>
+								<td class="enabledstatus heart"><input type="checkbox" class="heart_checkbox" name="[% playlistid _ '_isfav' %]" id="[% playlistid _ '_isfav' %]" value="1" [% item.dynamicplaylistfavourite ? "checked" : "" %]><span class="heart_icon"></span></td>
+								<td class="enabledstatus"><input type="checkbox" name="[% playlistid _ '_enabled' %]" id="[% playlistid _ '_enabled' %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)"></td>
+								<td class="playlistname">
+									<details><summary>[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<span class="notdefaultdpl">[% END %][% item.name | html %][% UNLESS item.dynamicplaylistid.match('dpldefault_') %]</span>[% END %]</summary>
+										<table border="0">
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SOURCE" | string %]:</span></td><td>&nbsp;[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<span class="notdefaultdpl">[% END %][% item.dynamicplaylistpluginshortname | html %][% UNLESS item.dynamicplaylistid.match('dpldefault_') %]</span>[% END %]</td></tr>
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_DPLID" | string %]:</span></td><td>&nbsp;[% item.dynamicplaylistid | html %]</td></tr>
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_USESCACHE" | string %]:</span></td><td>&nbsp;[% IF item.usecache %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>
+											[% IF item.repeat %]<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_REPEAT" | string %]:</span></td><td>&nbsp;[% IF item.repeat %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>[% END %]
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_APCDATA" | string %]:</span></td><td>&nbsp;[% IF item.apcplaylist %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>
+											<tr><td>&nbsp;</td></tr>
+										</table>
+									</details>
+								</td>
+								[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<td class="dpllist_source avatar"><span class="user-icon"><span></span></span></td>[% END %]
+							</tr>
+							[% END %]
+						[%- END %]
+					</table>
+				</details>
+			</div>
+		[% END %]
+	[% END %]
+
+	[% WRAPPER setting title="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_CONTEXTMENU" desc="SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_CONTEXTMENU_DESC" %]
+		[% FOREACH category = ['artists', 'albums', 'genres', 'years', 'playlists'] %]
+			<div class="detailswrapper">
+				<details><summary><span class="categoryheader">[% categorylangstrings.$category %]</span></summary>
+					<table border="0">
+						[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
+							[% IF item.menulisttype == "contextmenu" && item.playlistcategory == category %]
+							<tr>
+								[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
+								<td class="enabledstatus"><input type="checkbox" name="[% playlistid _ '_enabled' %]" id="[% playlistid _ '_enabled' %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)"></td>
+								<td class="playlistname">
+									<details><summary>[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<span class="notdefaultdpl">[% END %][% item.name | html %][% UNLESS item.dynamicplaylistid.match('dpldefault_') %]</span>[% END %]</summary>
+										<table border="0">
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SOURCE" | string %]:</span></td><td>&nbsp;[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<span class="notdefaultdpl">[% END %][% item.dynamicplaylistpluginshortname | html %][% UNLESS item.dynamicplaylistid.match('dpldefault_') %]</span>[% END %]</td></tr>
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_USESCACHE" | string %]:</span></td><td>&nbsp;[% IF item.usecache %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>
+											[% IF item.repeat %]<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_REPEAT" | string %]:</span></td><td>&nbsp;[% IF item.repeat %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>[% END %]
+											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_APCDATA" | string %]:</span></td><td>&nbsp;[% IF item.apcplaylist %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>
+											<tr><td>&nbsp;</td></tr>
+										</table>
+									</details>
+								</td>
+								[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<td class="dpllist_source avatar"><span class="user-icon"><span></span></span></td>[% END %]
+							</tr>
+							[% END %]
+						[%- END %]
+					</table>
+					<br>
+				</details>
+			</div>
+		[% END %]
+		[% IF unclassifiedContextMenuPlaylists %]
+			<div class="detailswrapper">
+				<details><summary>[% "PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_NOTCLASSIFIED" | string %]</summary>
+					<table border="0">
+					[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
+						[% IF item.menulisttype == "contextmenu" && NOT item.playlistcategory %]
+						<tr>
+							[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
+							<td class="enabledstatus"><input type="checkbox" name="[% playlistid _ '_enabled' %]" id="[% playlistid _ '_enabled' %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)"></td>
+							<td class="playlistname">
+								<details><summary>[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<span class="notdefaultdpl">[% END %][% item.name | html %][% UNLESS item.dynamicplaylistid.match('dpldefault_') %]</span>[% END %]</summary>
+									<table border="0">
+										<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SOURCE" | string %]:</span></td><td>&nbsp;[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<span class="notdefaultdpl">[% END %][% item.dynamicplaylistpluginshortname | html %][% UNLESS item.dynamicplaylistid.match('dpldefault_') %]</span>[% END %]</td></tr>
+										<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_USESCACHE" | string %]:</span></td><td>&nbsp;[% IF item.usecache %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>
+										[% IF item.repeat %]<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_REPEAT" | string %]:</span></td><td>&nbsp;[% IF item.repeat %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>[% END %]
+										<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_APCDATA" | string %]:</span></td><td>&nbsp;[% IF item.apcplaylist %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>
+										<tr><td>&nbsp;</td></tr>
+									</table>
+								</details>
+							</td>
+							[% UNLESS item.dynamicplaylistid.match('dpldefault_') %]<td class="dpllist_source avatar"><span class="user-icon"><span></span></span></td>[% END %]
+						</tr>
+						[% END %]
+					[%- END %]
+					</table>
+				</details>
+			</div>
+		[%- END %]
+	[% END %]
+
+	[% WRAPPER setting title="" %]
+		<span id="plselectbutton"></span>
+	[% END %]
+	<script type="text/javascript">
+		var f = document.settingsForm;
+		var numSelected = 0;
+		var numCheckBoxes = 0;
+		var selectAllPlaylistsString = '[% "PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_ALL" | string %]';
+		var selectNonePlaylistsString = '[% "PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_NONE" | string %]';
+
+		// Work out how many checkboxes are initially selected
+		for (var i=0; i < f.elements.length; i++) {
+			if (f.elements[i].type == 'checkbox' && String(f.elements[i].name).substring(0,9) == 'playlist_' && String(f.elements[i].name).substring(f.elements[i].name.length,f.elements[i].name.length - 8) == '_enabled') {
+				numCheckBoxes++;
+				if (f.elements[i].checked) {
+					numSelected++;
+				}
+			}
+		}
+
+		// Select none if all are selected, else select all
+		function selectAllPlaylists() {
+			var newState = numSelected != numCheckBoxes;
+
+			for (var i=0; i < f.elements.length; i++) {
+				if (f.elements[i].type == 'checkbox' && ((String(f.elements[i].name).substring(0,9) == 'playlist_' && String(f.elements[i].name).substring(f.elements[i].name.length,f.elements[i].name.length - 8) == '_enabled') || newState==0)) {
+					f.elements[i].checked = newState;
+				}
+			}
+			if (newState) {
+				numSelected = numCheckBoxes;
+				f.selectAllPlaylistsButton.value = selectNonePlaylistsString;
+			} else {
+				numSelected = 0;
+				f.selectAllPlaylistsButton.value = selectAllPlaylistsString;
+			}
+		}
+
+		// Increase/decrease num selected every time a checkbox changes
+		function changeNumSelected(checkBox) {
+			if (checkBox.checked && String(checkBox.name).substring(0,9) == 'playlist_' && String(checkBox.name).substring(checkBox.name.length,checkBox.name.length - 8) == '_enabled') {
+				numSelected++;
+			} else if(String(checkBox.name).substring(0,9) == 'playlist_' && String(checkBox.name).substring(checkBox.name.length,checkBox.name.length - 8) == '_enabled') {
+				numSelected--;
+			}
+
+			if (numSelected == numCheckBoxes) {
+				f.selectAllPlaylistsButton.value = selectNonePlaylistsString;
+			} else {
+				f.selectAllPlaylistsButton.value = selectAllPlaylistsString;
+			}
+		}
+
+		// Write the button using js, so it won't appear if js isn't enabled/available
+		var buttonhtml = '<input type="button" value="' + (numSelected == numCheckBoxes ? selectNonePlaylistsString : selectAllPlaylistsString)
+					 + '" id="selectAllPlaylistsButton" onclick="selectAllPlaylists()">';
+		document.getElementById("plselectbutton").innerHTML = buttonhtml;
+	</script>
+[% PROCESS settings/footer.html %]

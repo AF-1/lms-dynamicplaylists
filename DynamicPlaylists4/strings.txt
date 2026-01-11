@@ -1,0 +1,2963 @@
+DYNAMICPLAYLISTS4
+	EN	Dynamic Playlists
+	FR	Listes de lecture dynamiques (DPL)
+	DE	Dynamische Wiedergabelisten
+
+PLUGIN_DYNAMICPLAYLISTS4
+	EN	Dynamic Playlists
+	FR	Listes de lecture dynamiques (DPL)
+	DE	Dynamische Wiedergabelisten
+
+PLUGIN_DYNAMICPLAYLISTS4_DESC
+	EN	Use smart playlists (dynamic playlists) to play continuous music mixes based on your selection criteria.
+	FR	Jouez des mix continus de musique basés sur des critères de sélection définis dans les <i>listes de lecture dynamiques</i>.
+	DE	Nutze intelligente/dynamische Wiedergabelisten, um kontinuierliche Wiedergabelisten basierend auf deinen Selektionskriterien zu erstellen.
+
+
+PLUGIN_DYNAMICPLAYLISTS4_SETTINGS
+	EN	Various Settings
+	FR	Réglages multiples
+	DE	Verschiedene Einstellungen
+
+PLUGIN_DYNAMICPLAYLISTS4_PLAYLISTSETTINGS
+	EN	Enabled dynamic playlists
+	FR	Listes de lecture dynamiques activées
+	DE	Aktivierte Wiedergabelisten
+
+PLUGIN_DYNAMICPLAYLISTS4_PLAYLISTDETAILS
+	EN	Dynamic playlist details
+
+PLUGIN_DYNAMICPLAYLISTS4_DISABLED
+	EN	Dynamic playlist stopped
+	FR	Liste de lecture dynamique arretée
+	DE	Dynamische Wiedergabeliste deaktiviert
+
+PLUGIN_DYNAMICPLAYLISTS4_CHOOSE_BELOW
+	EN	Choose a dynamic playlist:
+	FR	Choisir une liste de lecture dynamique :
+	DE	Dynamische Wiedergabeliste auswählen:
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_FAQ_LINK_TEXT
+	EN	Click here for more information (incl. FAQ).
+	FR	Cliquez ici pour lire la FAQ.
+	DE	Hier klicken für die FAQ.
+
+PLUGIN_DYNAMICPLAYLISTS4_FAQ_LINK
+	EN	https://github.com/AF-1
+	FR	https://github.com/AF-1
+	DE	https://github.com/AF-1
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SECTION
+	EN	Settings Section
+	FR	Section de réglages
+	DE	Einstellungen
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUP
+	EN	Dynamic Playlists
+	FR	Listes de lecture dynamiques
+	DE	Dynamische Wiedergabelisten
+
+PLUGIN_DYNAMICPLAYLISTS4_DYNAMICPLAYLIST
+	EN	Dynamic Playlist
+	FR	Liste de lecture dynamique
+	DE	Dynamische Wiedergabeliste
+
+
+
+PLUGIN_DYNAMICPLAYLISTS4_PLAYING
+	EN	Playing
+	FR	En lecture
+	DE	Spielt gerade
+
+PLUGIN_DYNAMICPLAYLISTS4_PRESS_RIGHT
+	EN	Press RIGHT to stop adding songs
+	FR	Appuyez sur DROITE pour arrêter l'ajout de morceaux
+	DE	Auf RECHTS drücken, um das Hinzufügen von Titeln abzubrechen
+
+PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPL
+	EN	** Active ** playlist:
+	FR	Liste de lecture dynamique ** active **:
+	DE	Aktive dynamische Wiedergabeliste:
+
+PLUGIN_DYNAMICPLAYLISTS4_DISABLE
+	EN	Stop adding songs
+	FR	Arrêter d'ajouter des morceaux
+	DE	Hinzufügen von Titeln beenden
+
+PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING
+	EN	Starting dynamic playlist:
+	FR	Démarrage de la liste de lecture dynamique :
+	DE	Starte dynamische Wiedergabeliste:
+
+PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED
+	EN	** No songs **
+	FR	** Pas de morceaux **
+	DE	** Keine Titel **
+
+PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED_LONG
+	EN	Found no songs matching your criteria for dynamic playlist:
+	FR	Aucun morceau trouvé qui correspond à vos critères de liste de lecture dynamique :
+	DE	Keine Titel entsprechen den Selektionskriterien für die dynamische Wiedergabeliste
+
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MAX_NUMBER_OF_UNPLAYED_TRACKS
+	EN	<i>Max.</i> number of <u>un</u>played songs
+	FR	Nombre <i>max.</i> de morceaux <u>non</u> joués
+	DE	<i>Maximale</i> Anzahl <u>un</u>gespielter Titel
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MAX_NUMBER_OF_UNPLAYED_TRACKS_DESC
+	EN	DPL will add new tracks to the end of your dynamic playlist up to <b>this</b> number of <b>total unplayed tracks</b> in your dynamic playlist (provided it finds enough tracks matching your search criteria).<br><br>To add an <b>unlimited</b> number of tracks (only recommended for playlists that add complete albums) add this playlist parameter to the beginning of your playlist definition:<br><i>-- PlaylistLimitOption:unlimited</i>
+	FR	DPL ajoutera des nouveaux morceaux à la fin de la liste de lecture dynamique jusqu'à <b>ce</b> nombre de <b>morceaux non joués</b> dans votre liste de lecture (si il parvient à trouver assez de morceaux avec votre critère de recherche).<br><br>Pour ajouter un nombre <b>illimité</b> de morceaux (recommandé seulement pour les listes de lecture qui ajoutent des albums complets) ajoutez ce paramètre au début de la définition de la liste de lecture :<br><i>-- PlaylistLimitOption:unlimited</i>
+	DE	DPL fügt neue Titel ans Ende der Wiedergabeliste bis zu dieser Anzahl hinzu (sofern passende Titel gefunden werden). Um eine unbegrenzte Anzahl hinzuzufügen (nur ratsam bei Wiedergabelisten, die ganze Alben hinzufügen), diesen Parameter am Beginn der Wiedergabeliste hinzufügen:<br><i>-- PlaylistLimitOption:unlimited</i>
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MIN_NUMBER_OF_UNPLAYED_TRACKS
+	EN	<i>Min.</i> number of <u>un</u>played songs
+	FR	Nombre <i>min.</i> de morceaux <u>non</u> joués
+	DE	<i>Mindest</i>anzahl <u>un</u>gespielter Titel
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MIN_NUMBER_OF_UNPLAYED_TRACKS_DESC
+	EN	If the number of unplayed songs in your dynamic playlist is smaller than the value you set here DPL will add new songs to the end of the playlist.
+	FR	Si le nombre de morceaux non joués dans votre liste de lecture dynamique est inférieur à la valeur définie ici, DPL ajoutera de nouveaux morceaux à la fin de la liste de lecture.
+	DE	Wenn die Anzahl ungespielter Titel in der Wiedergabeliste kleiner als dieser Wert ist, werden neue Titel am Ende der Wiedergabeliste hinzugefügt.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_NUMBER_OF_PLAYED_TRACKS_TO_KEEP
+	EN	Number of played tracks to keep
+	FR	Nombre de morceaux joués à conserver
+	DE	Anzahl der gespielten Titel, die behalten werden soll
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_NUMBER_OF_PLAYED_TRACKS_TO_KEEP_DESC
+	EN	Set the number of <b>played</b> tracks to keep in a dynamic playlist when <i>new</i> tracks are added.
+	FR	Définit le nombre de morceaux <b>joués</b> à garder dans une liste de lecture dynamique quand des <i>nouveaux</i> morceaux sont ajoutés.
+	DE	Anzahl der gespielten Titel, die behalten werden soll, wenn neue Titel zur Wiedergabeliste hinzugefügt werden.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SONG_ADDING_CHECK_DELAY
+	EN	New songs check delay
+	FR	Délai de recherche de nouveaux morceaux
+	DE	Verzögerung für Prüfung auf neue Titel
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SONG_ADDING_CHECK_DELAY_DESC
+	EN	Set the delay in <i>seconds</i> after a song change event before checking if new songs have to be added to the playlist.
+	FR	Définit le delai en <i>secondes</i> après un changement de morceaux avant de vérifier si de nouveaux morceaux doivent être ajoutées à la liste de lecture.
+	DE	Setzt die Verzögerung in Sekunden, die nach einem Titelwechsel gewartet wird, bevor nach neuen Titeln gesucht wird.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MIN_TRACK_DURATION
+	EN	Minimum track duration
+	FR	Durée minimum du morceau
+	DE	Minimale Titeldauer
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MIN_TRACK_DURATION_DESC
+	EN	Set the <b>minimum track duration</b> in seconds for tracks in dynamic playlists that use the <i>TrackMinDuration</i> parameter (some built-in playlists use this).
+	FR	Définit la <b>durée minimale du morceau</b> en secondes pour les morceaux dans les listes de lecture dynamiques qui utilisent le paramètre <i>TrackMinDuration</i> (certaines listes de lecture intégrées l'utilisent)
+	DE	Setzt die minimale Dauer eines Titels in dynamischen Wiedergabelisten, die den <i>TrackMinDuration</i> Parameter nutzen.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_TOPRATED_MINRATING
+	EN	Min. rating for <b>top</b> rated tracks
+	FR	Note min. pour les morceaux les <b>mieux</b> notés
+	DE	Mindestbewertung für TOP bewertete Titel
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_TOPRATED_MINRATING_DESC
+	EN	Minimum rating for tracks to be considered <b>top</b> rated in dynamic playlists that use the <i>TopRatedMinRating</i> parameter (some built-in playlists use this).
+	FR	Note minimum pour que les morceaux soient considérés les <b>mieux</b> notés dans les listes de lecture dynamiques qui utilisent le paramètre <i>TopRatedMinRating</i> (certaines listes de lecture intégrées l'utilisent)
+	DE	Mindestbewertung für Titel, die berücksichtigt werden sollen, wenn der <i>TopRatedMinRating</i> Parameter gesetzt ist (einige integrierte Wiedergabelisten nutzen dies).
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLUGINSHUFFLEMODE
+	EN	Plugin shuffle method
+	FR	Méthode de mélange aléatoire
+	DE	Methode für Zufallswiedergabe
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLUGINSHUFFLEMODE_DESC
+	EN	By default DPL shuffles tracks of built-in and custom dynamic playlists to <i>increase</i> randomness unless told otherwise. You can choose between different shuffle methods or disable <b>plugin</b> shuffle. This is a <b>global</b> settings for <b>all</b> dynamic playlists (built-in and custom).<br><br>To disable track shuffling only for <b>selected</b> custom dynamic playlists add this playlist parameter to your playlist definition:<br><i>-- PlaylistTrackOrder:ordered</i><br><br>Saved static playlists have a separate preference setting.<br><br>Randomization by functions/clauses in the SQLite code is not affected by any of this and can only be changed in the SQLite code.
+	FR	Par défaut, DPL mélange les pistes des listes de lecture dynamiques intégrées et personnalisées pour <i>augmenter</i> le caractère aléatoire sauf indication contraire. Vous pouvez choisir entre différentes méthodes de lecture aléatoire ou désactiver la lecture aléatoire du plugin. Il s'agit d'un paramètre <b>global</b> pour <b>toutes</b> les listes de lecture dynamiques (intégrées et personnalisées).<br><br>Pour désactiver le mélange des pistes uniquement pour les listes de lecture dynamiques personnalisées <b>sélectionnées</b>, ajoutez ce paramètre à la définition de votre liste de lecture:<br><i>-- PlaylistTrackOrder:ordered</i><br><br>Les listes de lecture statiques enregistrées ont un paramètre de préférence distinct.<br><br>Le mélange par les fonctions/clauses dans le code SQLite n'est pas affectée par tout cela et ne peut être modifiée que dans le code SQLite.
+	DE	Standardmäßig mischt DPL die Titel integrierter und benutzerdefinierter dynamischer Wiedergabelisten, um die Zufälligkeit zu <i>erhöhen</i>, sofern Sie nichts anderes angeben. Sie können zwischen verschiedenen Zufallsmethoden wählen oder die <b>Plugin</b>-Zufallswiedergabe deaktivieren. Dies ist eine <b>globale</b> Einstellung für <b>alle</b> dynamischen Wiedergabelisten (integrierte und benutzerdefinierte).<br><br>Wenn Sie die Track-Zufallswiedergabe nur für <b>bestimmte</b> benutzerdefinierte dynamische Wiedergabelisten deaktivieren möchten, fügen Sie diesen Wiedergabelistenparameter zu Ihrer Wiedergabelistendefinition hinzu:<br><i>-- PlaylistTrackOrder:ordered</i><br><br>Für gespeicherte statische Wiedergabelisten gibt es eine separate Einstellung.<br><br>Die Randomisierung durch Funktionen/Klauseln im SQLite-Code ist davon nicht betroffen und kann nur im SQLite-Code geändert werden.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLUGINSHUFFLEMODE_NORMAL
+	EN	Faster, but less balanced shuffle
+	FR	Mélange plus rapide mais moins équilibré
+	DE	Schneller, aber weniger ausgewogen
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLUGINSHUFFLEMODE_BALANCED
+	EN	More balanced, but slower shuffle
+	FR	Mélange plus équilibré, mais plus lent
+	DE	Ausgewogener, aber langsamer
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLUGINSHUFFLEMODE_DISABLED
+	EN	Disable shuffle
+	FR	Désactiver le mélange
+	DE	deaktiviert
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PERIOD_PLAYEDLONGAGO
+	EN	Played long ago period
+	FR	Période des morceaux joués il y a longtemps
+	DE	Zeitraum für 'vor langer Zeit' gespielt
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PERIOD_PLAYEDLONGAGO_DESC
+	EN	Set the time period for tracks to be considered <b>played long ago</b> in dynamic playlists that use the <i>PeriodPlayedLongAgo</i> parameter (some built-in playlists use this).
+	FR	Définit la période pour que les morceaux soient considérés comme <b>joués il y a longtemps</b> dans les listes de lecture qui utilisent le paramètre <i>PeriodPlayedLongAgo</i> (certaines listes de lecture intégrées l'utilisent)
+	DE	Setzt den Zeitraum für den <i>PeriodPlayedLongAgo</i> Parameter
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MINTRACKS_ARTIST
+	EN	Min. artist tracks
+	FR	Min. morceaux par artiste
+	DE	Min. Anzahl Titel je Interpret
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MINTRACKS_ARTIST_DESC
+	EN	<b>Artists</b> that have less than the minimum number of tracks you set here will be ignored in dynamic playlists that use the <i>PlaylistMinArtistTracks</i> parameter (some built-in playlists use this).
+	FR	Les <b>artistes</b> qui ont moins de morceaux que le nombre minimum défini ici seront ignorés dans les listes de lecture dynamiques qui utilisent le paramètre <i>PlaylistMinArtistTracks</i> (certaines listes de lecture intégrées l'utilisent)
+	DE	Interpreten mit weniger als dieser Anzahl werden bei Wiedergabelisten mit dem Parameter <i>PlaylistMinArtistTracks</i> ignoriert.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MINTRACKS_ALBUM
+	EN	Min. album tracks
+	FR	Min. morceaux par album
+	DE	Min. Anzahl Titel je Album
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MINTRACKS_ALBUM_DESC
+	EN	<b>Albums</b> that have less than the minimum number of tracks you set here will be ignored in dynamic playlists that use the <i>PlaylistMinAlbumTracks</i> parameter (some built-in playlists use this).
+	FR	Les <b>albums</b> qui ont moins de morceaux que le nombre minimum défini ici seront ignorés dans les listes de lecture dynamiques qui utilisent le paramètre <i>PlaylistMinAlbumTracks</i> (certaines listes de lecture intégrées l'utilisent)
+	DE	Alben mit weniger als dieser Anzahl an Titeln werden bei Wiedergabelisten mit dem Parameter <i>PlaylistMinAlbumTracks</i> ignoriert.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEVOLATILEPARAMDPLSAVE
+	EN	Allow dynamic playlists with <i>volatile</i> parameters as <b>favorites</b>
+	FR	Permettre l'ajout de listes de lecture dynamiques avec des paramètres <i>volatiles</i> aux favoris
+	DE	Listen mit Parametern als Favoriten erlauben
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEVOLATILEPARAMDPLSAVE_DESC
+	EN	<b>By default</b>, you <b>can't add</b> dynamic playlists to LMS favorites that will ask for <b>volatile</b> user-input parameters at run-time whose values <b>could change after a rescan</b> (artist, album, genre, multiplegenres, playlist or multiplestaticplaylists).<br><br>With this setting enabled, you can even add dynamic playlists with <b>volatile</b> parameters to LMS favorites. However, keep in mind that such favorites may no longer work after a rescan. More information in the FAQ.
+	FR	Par défaut, vous ne pouvez pas ajouter aux favoris LMS des listes de lecture dynamiques qui demanderont des paramètres <b>volatiles</b> au moment de l'exécution et dont les valeurs pourraient changer après une nouvelle analyse (artiste, album, genre, genres multiples, liste de lecture ou listes de lecture multiples statiques).<br><br>Avec ce paramètre activé, vous pouvez ajouter des listes de lecture dynamiques même avec des paramètres <b>volatiles</b> aux favoris LMS. Cependant, n'oubliez pas qu'il est possible que ces favoris ne fonctionnent plus après un rescan. Plus d'informations dans la FAQ.
+	DE	Standardmäßig können Sie keine dynamischen Wiedergabelisten zu den LMS-Favoriten hinzufügen, die beim Start Benutzereingabeparameter abfragen, deren Werte sich nach einem erneuten Scan ändern könnten (Künstler, Album, Genre, mehrere Genres, Wiedergabeliste oder mehrere statische Wiedergabelisten).<br><br>Wenn diese Einstellung aktiviert ist, können Sie sogar dynamische Wiedergabelisten mit solchen Parametern zu LMS-Favoriten hinzufügen. Beachten Sie jedoch, dass solche Favoriten nach einem erneuten Scan möglicherweise nicht mehr funktionieren. Weitere Informationen finden Sie in den FAQ.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPLTRANSFER_ALLOWSYNCEDTARGETPLAYERS
+	EN	Allow transfer of active dynamic playlist to <i>synced</i> players
+	FR	Permettre le transfert de la liste de lecture active vers les lecteurs <i>synchronisés</i>
+	DE	Übertragung der aktiven dynamischen Wiedergabeliste auf <i>synchronisierte</i> Player erlauben
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ACTIVEDPLTRANSFER_ALLOWSYNCEDTARGETPLAYERS_DESC
+	EN	By default, you can only transfer the active dynamic playlist to <b>un</b>synchronized players (recommended). You can change this here.
+	FR	Par défaut, vous ne pouvez transférer que la liste de lecture dynamique active vers des lecteurs <i>non</i> synchronisés (recommandé). Vous pouvez modifier cela ici.
+	DE	Standardmäßig können Sie die aktive dynamische Wiedergabeliste nur an <i>nicht</i> synchronisierte Player übertragen (empfohlen). Hier können Sie das ändern.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLESTATICPLSAVING
+	EN	Allow saving dynamic playlists as static playlists
+	FR	Permettre l'enregistrement des listes de lecture dynamiques comme listes de lecture statiques
+	DE	Speichern dynamischer Wiedergabelisten als statische Wiedergabelisten erlauben
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLESTATICPLSAVING_DESC
+	EN	Save the result of a dynamic playlist query as a static playlist (min. 100, max. 4000 tracks). If you have a very large result set of tracks, saving the playlist may take a while to complete. Please be patient.
+	FR	Enregistrez le résultat d'une requête de liste de lecture dynamique sous la forme d'une liste de lecture statique (min. 100, max. 4000 morceaux). Si vous avez un très grand nombre de morceaux, l'enregistrement de la liste de lecture peut prendre un certain temps. Veuillez être patient.
+	DE	Das Ergebis einer dynamischen Wiedergabeliste kann als statische Wiedergabeliste gespeichert werden (min. 100, max. 4000 Titel). Bei langen Listen kann das etwas dauern.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEDPLQUEUEING
+	EN	Allow dynamic playlists to be queued
+	FR	Permettre la mise en file d'attente des listes de lecture dynamiques
+	DE	Dynamische Listen zu Warteschlange hinzufügbar
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_ENABLEDPLQUEUEING_DESC
+	EN	You can queue up to 5 dynamic playlists that will be played after all tracks of the <i>currently active</i> dynamic playlist have been played.<br>If there are queued dynamic playlists, they're listed in the <i>Dynamic Playlists</i> <b>home</b> menu.<br><br>Please note: A <b>server restart clears the dynamic playlist queue</b>.
+	FR	Vous pouvez mettre en file d'attente jusqu'à 5 listes de lecture dynamiques qui seront jouées après la lecture de toutes les pistes de la liste de lecture dynamique active. Si des listes de lecture dynamiques sont en file d'attente, elles s'affichent dans le menu d'accueil des listes de lecture dynamiques. Remarque : un redémarrage du serveur efface la file d'attente des listes de lecture dynamiques.
+	DE	Bis zu 5 dynamische Wiedergabelisten dürfen zur Warteschlange hinzugefügt werden. Achtung: Beim Serverneustart wird diese Warteschlange gelöscht.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_REMEMBERACTIVEPLAYLIST
+	EN	Remember active dynamic playlist
+	FR	Se souvenir de la liste de lecture dynamique active
+	DE	Aktive dynamische Wiedergabeliste<br>merken
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_REMEMBERACTIVEPLAYLIST_DESC
+	EN	Remember a client's active dynamic playlist after an LMS restart
+	FR	Se souvenir de la liste de lecture dynamique active d'un client après le redémarrage de LMS
+	DE	Aktive Wiedergabeliste nach Neustart des Servers merken
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW
+	EN	Jivelite players: next window jump
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW_DESC
+	EN	Some dynamic playlists require you to traverse multiple menus to set various parameters.<br>When you select <i>play</i>, <i>add</i> or <i>create DSTM seed list and play</i> in the <i>final</i> menu, jivelite players will jump to the <i>Now Playing screen</i> by default.<br>Exiting the Now Playing screen will take you back to this final menu. To get back to the <i>Home</i> menu, you need to long press the top left button.<br><br>This setting allows you to change this: if you choose "Home menu", then selecting <i>play</i>, <i>add</i> and <i>create DSTM seed list and play</i> in the final menu will take you back to the <i>Home</i> menu. But you have to press the top right note icon to enter the Now Playing screen.<br><br><b>This is a <i>global</i> setting that only applies <i>jivelite</i> players/controllers like <i>SB Radio</i>, <i>SB Touch</i>, <i>SqueezePlay</i> or <i>piCorePlayer</i>.</b>
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW_NPSCREEN
+	EN	Now Playing screen
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW_HOME
+	EN	Home menu
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPCUSTOMPLAYLISTS
+	EN	Group custom dynamic playlists <wbr>without&nbsp;group&nbsp;classification
+	FR	Grouper les listes de lecture dynamiques personnalisées <wbr>sans&nbsp;classification
+	DE	Vom Benutzer erstellte dynamische Wiedergabelisten ohne Gruppierung gruppieren
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPCUSTOMPLAYLISTS_DESC
+	EN	Put <i>user-provided/custom</i> dynamic playlists that have no group classification into the 'Not classified' group. Otherwise DPL will list them at the top menu level. Built-in dynamic playlists are <i>always</i> grouped.
+	FR	Met les listes de lecture dynamiques <i>personnalisées</i> qui n'ont pas de classification dans le groupe 'Non classées'. Sinon DPL les listera au menu principal. Les listes de lecture intégrées sont <i>toujours</i> groupées.
+	DE	Vom Benutzer erstellte dynamische Wiedergabelisten ohne Gruppierung der Gruppe 'Nicht gruppiert' hinzufügen. Andernfalls werden diese auf der obersten Ebene aufgelistet.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CUSTOMDIRPARENTFOLDERPATH
+	EN	<u>Parent</u> folder path for folder <wbr>with&nbsp;custom&nbsp;dynamic&nbsp;playlist&nbsp;files
+	FR	Dossier <u>parent</u> pour le dossier <wbr>avec les fichiers des listes&nbsp;de&nbsp;lecture&nbsp;dynamiques
+	DE	Verzeichnis für den Ordner mit eigenen dynamischen Wiedergabelisten
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CUSTOMDIRPARENTFOLDERPATH_DESC
+	EN	Choose a location for the folder where you put your files with <b>custom</b> dynamic playlist definitions.
+	FR	Choisissez un emplacement pour le dossier où seront enregistrés les définitions des listes de lecture dynamiques personnalisées.
+	DE	Ort für den Ordner mit den eigenen dynamischen Wiedergabelisten.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_INCLUDESAVEDPLAYLISTS
+	EN	Include saved static playlists
+	FR	Inclut les listes de lecture statiques sauvegardées
+	DE	Gespeicherte statische Wiedergabelisten einbinden
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_INCLUDESAVEDPLAYLISTS_DESC
+	EN	Include static saved playlists in the Dynamic Playlists menu
+	FR	Inclut les listes de lecture statiques dans le menu de listes de lecture dynamiques
+	DE	Gespeicherte statische Wiedergabelisten werden in das Menu aufgenommen
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_RANDOMSAVEDPLAYLISTS
+	EN	Playback order for static playlists
+	FR	Ordre de lecture pour les listes de lecture statiques
+	DE	Reihenfolge der Wiedergabe für statische Wiedergabelisten
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_RANDOMSAVEDPLAYLISTS_DESC
+	EN	Play songs in static saved playlists in random order.<br><b>Random</b> order will use the <b>plugin shuffle method</b> you've selected in the settings above.
+	FR	Joue les morceaux des listes de lecture statiques dans un ordre aléatoire.<br><b>L'ordre aléatoire</b> utilisera la méthode de mélange que vous avez sélectionnée dans les paramètres ci-dessus.
+	DE	Spielt die Titel einer statischen Wiedergabeliste entweder sortiert oder zufällig gemischt ab.
+
+PLUGIN_DYNAMICPLAYLISTS4_SETTINGS_RANDOM
+	EN	Random
+	FR	Aléatoire
+	DE	Zufällig
+
+PLUGIN_DYNAMICPLAYLISTS4_SETTINGS_ORDERED
+	EN	Ordered
+	FR	Ordonné
+	DE	Sortiert
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_STRUCTURED_SAVEDPLAYLISTS
+	EN	Use sub directories of saved <wbr>static&nbsp;playlists&nbsp;as&nbsp;groups
+	FR	Utiliser les sous répertoires des <wbr>listes&nbsp;de&nbsp;lecture&nbsp;statiques en tant que groupes
+	DE	Verwende Unterverzeichnisse von gespeicherten statischen Wiedergabelisten als Gruppen
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_STRUCTURED_SAVEDPLAYLISTS_DESC
+	EN	Groups static saved playlists from different sub directories into different groups. May help if you use a lot of static saved playlists.
+	FR	Groupe les listes de lecture statiques de différents sous répertoires dans différents groupes. Cela peut aider si vous utilisez beaucoup de listes de lecture statiques.
+	DE	Gruppiert statische Wiedergabelisten anhand der Unterverzeichnisse.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DEBUGVERBOSE
+	EN	Verbose debug log
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DEBUGVERBOSE_DESC
+	EN	If enabled, the <b>debug</b> log level also includes messages that are not necessary to debug issues in most cases. Disabled by default.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_EXCLUDEDGENRES
+	EN	Exclude genres
+	FR	Genres exclus
+	DE	Stilrichtungen ausschließen
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_EXCLUDEDGENRES_DESC
+	EN	Choose genres to exclude from dynamic playlists that use the <i>ExcludedGenres</i> parameter (built-in playlists use this).
+	FR	Choisit les genres à exclure des listes de lecture dynamiques qui utilisent le paramètre <i>ExcludedGenres</i> (les listes de lecture intégrées l'utilisent)
+	DE	Wähle Stilrichtungen aus, die bei Wiedergabelisten mit dem Parameter <i>ExcludedGenres</i> nicht berücksichtigt werden.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SHOWTIMEPERCHAR
+	EN	Status message display time
+	FR	Durée d'affichage du message d'état
+	DE	Anzeigezeit für Statusmeldung
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SHOWTIMEPERCHAR_DESC
+	EN	Where possible, Dynamic Playlists adapts the <b>display duration</b> of messages to their <b>length</b>, so that more time is available for reading long messages.<br>This value here is the display time <b>per character</b>.<br>Set to zero to disable status messages.
+	FR	Lorsque cela est possible, DPL adapte la <b>durée d'affichage</b> des messages à leur <b>longueur</b>, afin de disposer de plus de temps pour lire les longs messages.<br>Cette valeur-ci correspond à la durée d'affichage <b>par lettre</b>.<br>Mettre à zéro pour désactiver les messages d'état.
+	DE	Dynamische Wiedergabelisten passen die <b>Anzeigedauer von Nachrichten</b> nach Möglichkeit an ihre <b>Länge</b> an, so dass mehr Zeit für das Lesen langer Nachrichten zur Verfügung steht.<br>Dieser Wert hier ist die Anzeigedauer <b>pro Zeichen</b>.<br>Setzen Sie ihn auf Null, um Statusmeldungen zu deaktivieren.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MILLISECS
+	EN	millisecond(s)
+	FR	milliseconde(s)
+	DE	Millisekunden
+
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS
+	EN	Dynamic playlists
+	FR	Listes de lecture dynamiques
+	DE	Dynamische Wiedergabelisten
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_GROUPS
+	EN	Playlist groups
+	FR	Groupes de listes de lecture
+	DE	Gruppen für Wiedergabelisten
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_GROUPS_DESC
+	EN	Check the box to enable playlist groups.
+	FR	Cochez la case pour activer un groupe de listes de lecture.
+	DE	Haken Sie das Kästchen an, um eine Gruppe für dynamische Wiedergabelisten zu aktivieren.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_DESC
+	EN	Check the box to enable dynamic playlists.<br><br>Click on the heart to add a dynamic playlist to the <i>Favourites</i> group in the DPL home menu.<br><br>Click on the infinity icon to add dynamic playlists (that do not request parameters from users) as a <i>Don't Stop the Music</i> mixer option.<br><br>Save your changes by clicking the <i>Apply</i> or <i>Save Settings</i> button.
+	FR	Cochez la case pour activer une liste de lecture dynamique.<br><br>Cliquez sur le cœur pour ajouter une liste de lecture dynamique au groupe <i>Favoris</i dans le menu d'accueil DPL.
+	DE	Haken Sie das Kästchen an, um dynamische Wiedergabelisten zu aktivieren.<br><br>Klicken Sie auf das Herz, um eine dynamische Wiedergabeliste zur Gruppe <i>Favoriten</i> im DPL-Startmenü hinzuzufügen.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_CONTEXTMENU
+	EN	Dynamic playlists <wbr>for&nbsp;<u>context&nbsp;menus</u>
+	FR	Listes de lecture dynamiques<wbr>dans&nbsp;le&nbsp;<u>menu&nbsp;contextuel</u>
+	DE	Dynamische Wiedergabelisten für <u>Kontextmenüs</u>
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_CONTEXTMENU_DESC
+	EN	Check the box to enable dynamic playlists for <b>context menus</b>
+	FR	Sélectionne les listes de lecture dynamiques pour le <b>menu contextuel</b>
+	DE	Aktive dynamische Wiedergabelisten für Kontextmenüs auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_NONE
+	EN	Select NO Playlists
+	FR	Sélectionner AUCUNE liste de lecture
+	DE	KEINE Wiedergabeliste auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_ALL
+	EN	Select ALL Playlists
+	FR	Sélectionner TOUTES les listes de lecture
+	DE	ALLE Wiedergabelisten auswählen
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_DPLID
+	EN	Dynamic playlist ID
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_APCDATA
+	EN	Uses APC data
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_HASVOLATILEPARAMS
+	EN	Has volatile parameters
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_REPEAT
+	EN	Set to repeat (never stops)
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_USESCACHE
+	EN	Uses DPL cache
+
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_HOMEEXTRASMENUS
+	EN	Material Home Extras Menus
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_HOMEEXTRASMENU_DESC
+	EN	Select which items you want to see displayed in the Material Home Extras slots. Use the <b>Dynamic Playlist Creator</b> plugin to create various dynamic item selections.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_HOMEEXTRASMENUS_ALBUMS01
+	EN	Dynamic Album Discovery
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_HOMEEXTRASMENUS_ALBUMS02
+	EN	Dynamic Album Discovery 2
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_HOMEEXTRASMENUS_ARTISTS01
+	EN	Dynamic Artist Discovery
+
+PLUGIN_DYNAMICPLAYLISTS4_NO_PLAYER
+	EN	No player connected
+
+
+PLUGIN_DYNAMICPLAYLISTS4_SELECT_ALL
+	EN	Select all
+	FR	Sélectionner tous
+	DE	Alles auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_SELECT_NONE
+	EN	Select none
+	FR	Sélectionner aucun
+	DE	keine auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_SELECT_ALLORNONE
+	EN	Select all or none
+	FR	Sélectionner tous ou aucun
+	DE	Alle oder keine auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_NEXT
+	EN	Next
+	FR	Suivant
+	DE	Weiter
+
+PLUGIN_DYNAMICPLAYLISTS4_PLAY
+	EN	Play
+	FR	Jouer
+	DE	Abspielen
+
+PLUGIN_DYNAMICPLAYLISTS4_ADD
+	EN	Add
+	FR	Ajouter
+	DE	Hinzufügen
+
+PLUGIN_DYNAMICPLAYLISTS4_PLAY_OR_ADD
+	EN	Play or add only
+	FR	Jouer ou ajouter seulement
+	DE	Abspielen oder nur hinzufügen
+
+PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY
+	EN	Create DSTM seed list and play
+	FR	Créer une liste DSTM et la jouer
+	DE	Erzeuge DSTM-Liste und spiele ab
+
+PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_STATUSMSG
+	EN	Starting DSTM mix with seed list created from
+	FR	Démarrage du mix DSTM avec une liste créée à partir de
+	DE	Starte DSTM Mix mit Saatliste generiert von
+
+PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_FAILED
+	EN	DSTM disabled
+	FR	DSTM désactivé
+	DE	DSTM deaktiviert
+
+PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_FAILED_LONG
+	EN	Can't start DSTM. No DSTM provider enabled.
+	FR	Impossible de démarrer DSTM. Aucun fournisseur DSTM activé
+	DE	Kann DSTM nicht starten. Kein DSTM Provider gewählt.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DSTM_STARTINDEX
+	EN	Start DSTM mix with
+	FR	Démarrer un mix DSTM avec
+	DE	Starte DSTM Mix mit
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DSTM_STARTINDEX_DESC
+	EN	After DPL has created a seed list for the <i>Don't Stop The Music</i> plugin, i.e. added tracks to the client's playlist choose if you want to start your DSTM mix with the <b>first</b> or the <b>last</b> song of that seed list.<br>Choosing the <i>last</i> song should trigger DSTM to add new tracks right away while skipping playback of all seed list tracks (but the last one).
+	FR	Après que DPL ait créé une liste pour le plugin <i>Don't Stop The Music</i>, i.e. ajouté des morceaux à la liste de lecture du client, choisissez si vous voulez commencer votre mix DSTM avec le <b>premier</b> ou le <b>dernier</b> morceau de cette liste.<br>Choisir le <i>dernier</i> morceaux déclenchera DSTM pour ajouter des nouveaux morceaux directement tout en sautant la lecture des morceaux de la liste (sauf le dernier).
+	DE	Nachdem DPL eine Saatliste für das Don't Stop The Music-Plugin erstellt hat, wähle, ob du deinen DSTM-Mix mit dem ersten oder dem letzten Titel dieser Saatliste starten möchtest. Die Auswahl 'letzter Titel' startet direkt das Hinzufügen neuer Titel, während die restlichen der Saatliste übersprungen werden.
+
+PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV
+	EN	Save as favorite
+	FR	Sauvegarder comme favori
+	DE	Als Favorit speichern
+
+PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_MATERIAL
+	EN	Save as favorite - enter a name for your favorite
+	FR	Sauvegarder comme favori - entrer un nom pour votre favori
+	DE	Als Favorit speichern - Name eingeben
+
+PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY
+	EN	Save as add-only favorite
+	FR	Sauvegarder comme favori 'ajouter seulement'
+	DE	Als 'nur hinzufügen'-Favorit speichern
+
+PLUGIN_DYNAMICPLAYLISTS4_SAVEASFAV_ADDONLY_MATERIAL
+	EN	Save as add-only favorite - enter a name for your favorite
+	FR	Sauvegarder comme favori 'ajouter seulement' - entrer un nom pour votre favori
+	DE	Als 'nur hinzufügen'-Favorit speichern und Name eingeben
+
+PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV
+	EN	Saved dynamic playlist with selected parameters as favorite
+	FR	La liste de lecture dynamique avec les paramètres sélectionnés a été sauvegardée comme favori.
+	DE	Dynamische Wiedergabeliste mit Seektionsparametern als Favorit gespeichert
+
+PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV_ADDONLY
+	EN	Saved dynamic playlist with selected parameters as add-only favorite
+	FR	La liste de lecture dynamique avec les paramètres sélectionnés a été sauvegardée comme favori 'ajouter seulement'.
+	DE	Dynamische Wiedergabeliste mit Selektionskriterien als 'nur hinzufügen'-Favorit gespeichert.
+
+PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV_ADDONLY_SUFFIX
+	EN	add-only
+	FR	ajouter seulement
+	DE	nur hinzufügen
+
+PLUGIN_DYNAMICPLAYLISTS4_FAVEXISTS
+	EN	A favorite for this dynamic playlist already exists.
+	FR	Il existe déjà un favori pour cette liste de lecture dynamique.
+	DE	Ein Favorit für diese dynamische Wiedergabeliste existiert schon.
+
+PLUGIN_DYNAMICPLAYLISTS4_FAVEXISTS_PARAMS
+	EN	A favorite for this dynamic playlist with these parameters already exists.
+	FR	Il existe déjà un favori pour cette liste de lecture dynamique avec ces paramètres.
+	DE	Ein Favorit für diese dynamische Wiedergabeliste mit Selektionskriterien exisitiert schon.
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DSTM_STARTINDEX_FIRST
+	EN	first song
+	FR	premier morceau
+	DE	erster Titel
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DSTM_STARTINDEX_LAST
+	EN	last song
+	FR	dernier morceau
+	DE	letzter Titel
+
+
+PLUGIN_DYNAMICPLAYLISTS4_FAVOURITES
+	EN	Favourites
+	FR	Favoris
+	DE	Favoriten
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMETERS_TITLE
+	EN	Enter additional parameters for dynamic playlist
+	FR	Entrer des paramètres additionels pour les listes de lecture dynamiques
+	DE	Eingabe zusätzlicher Parameter für dynamische Wiedergabelisten
+
+PLUGIN_DYNAMICPLAYLISTS4_ADDTOLMSFAVORITES_TITLE
+	EN	Add to LMS favorites
+	FR	Ajouter aux favoris de LMS
+	DE	Zu LMS Favoriten hinzufügen
+
+PLUGIN_DYNAMICPLAYLISTS4_ADDTOLMSFAVORITES_BTN
+	EN	Add to Favorites
+	FR	Ajouter aux favoris
+	DE	zu Favoriten hinzufügen
+
+PLUGIN_DYNAMICPLAYLISTS4_CUSTOMFAVTITLE
+	EN	Favorite name
+	FR	Nom favori
+	DE	Name des Favoriten
+
+PLUGIN_DYNAMICPLAYLISTS4_FAVADDONLY
+	EN	<u>Add</u> only, don't play
+	FR	<u>Ajouter</u> seulement, ne pas jouer
+	DE	Nur <u>hinzufügen</u>, nicht abspielen
+
+PLUGIN_DYNAMICPLAYLISTS4_FAVADDONLY_JIVE
+	EN	Add only, don't play
+	FR	Ajouter seulement, ne pas jouer
+	DE	Nur hinzufügen, nicht abspielen
+
+
+PLUGIN_DYNAMICPLAYLISTS4_SAVEASSTATICPL_TITLE
+	EN	Save as static playlist
+	FR	Sauvegarder comme liste de lecture statique
+	DE	als statische Wiedergabeliste speichern
+
+PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLNAME
+	EN	Static playlist name
+	FR	Nom de la liste de lecture statique
+	DE	Speichern der dynamischen Wiedergabeliste
+
+PLUGIN_DYNAMICPLAYLISTS4_SAVE_BTN
+	EN	Save
+	FR	Sauvegarder
+	DE	Speichern
+
+PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLMAXTRACKLIMIT
+	EN	Max. number of tracks
+	FR	Nombre max. de morceaux
+	DE	Maximale Anzahl der Titel
+
+PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLSORTORDER
+	EN	Track sort order
+	FR	Ordre de tri des morceaux
+	DE	Sortierreihenfolge der Titel
+
+PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLSORTORDER_SORT1
+	EN	No sorting
+	FR	Pas de tri
+	DE	Keine Sortierung
+
+PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLSORTORDER_SORT2
+	EN	Artist > album > disc no. > track no.
+	FR	Artiste > album > disque no. > morceau no.
+	DE	Interpret > Album > Disk > Titelnummer
+
+PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLSORTORDER_SORT3
+	EN	Album > artist > disc no. > track no.
+	FR	Album > artiste > disque no. > morceau no.
+	DE	Album > Künstler > Disk > Titelnummer
+
+PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLSORTORDER_SORT4
+	EN	Album > disc no. > track no.
+	FR	Album > disque no. > morceau no.
+	DE	Album > Disk > Titelnummer
+
+PLUGIN_DYNAMICPLAYLISTS4_ENTERNEWSTATICPLNAME
+	EN	Enter a name for your static playlist
+	FR	Entrer un nom pour votre liste de lecture statique
+	DE	Name der statischen Wiedergabeliste eingeben
+
+PLUGIN_DYNAMICPLAYLISTS4_SAVINGSTATICPL_INPROGRESS
+	EN	Saving the static playlist. This may take a while...
+	FR	Enregistrement de la liste de lecture statique. Cela peut prendre un certain temps...
+	DE	Speichern der statischen Wiedergabeliste. Das kann etwas dauern...
+
+PLUGIN_DYNAMICPLAYLISTS4_SAVINGSTATICPL_DONE
+	EN	Finished saving static playlist
+	FR	La liste de lecture statique a été sauvegardée.
+	DE	Speichern der statischen Wiedergabeliste abgeschlossen.
+
+PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPL_SAVESTATUS
+	EN	Saving static playlist...
+	FR	Sauvegarde de la liste de lecture statique en cours...
+	DE	Speichere die statische Wiedergabeliste...
+
+PLUGIN_DYNAMICPLAYLISTS4_PRESELECTARTISTS
+	EN	Dynamic Playlists - preselect artist
+	FR	Listes de lecture dynamiques - préselectionner l'artiste
+	DE	Dynamische Wiedergabeliste - Vorauswahl Interpret
+
+PLUGIN_DYNAMICPLAYLISTS4_PRESELECTALBUMS
+	EN	Dynamic Playlists - preselect album
+	FR	Listes de lecture dynamiques - présélectionner l'album
+	DE	Dynamische Wiedergabeliste - Vorauswahl Album
+
+PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ARTISTS_LIST
+	EN	Currently preselected <b>artists</b>
+	FR	<b>Artistes</b> présélectionnés
+	DE	Aktuell vorausgewählte <b>Interpreten</b>
+
+PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ALBUMS_LIST
+	EN	Currently preselected <b>albums</b>
+	FR	<b>Albums</b> présélectionnés
+	DE	Aktuell vorausgewählte <b>Alben</b>
+
+PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CLEAR_LIST
+	EN	** Clear list **
+	FR	** Vider la liste **
+	DE	**	Liste löschen **
+
+PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_REMOVE_TITLE
+	EN	Remove from preselection
+	FR	Supprimer de la sélection
+	DE	Aus Vorauswahl entfernen
+
+PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_REMOVEINFO_ARTIST
+	EN	** Click on name to remove artist **
+	FR	** Cliquer sur le nom pour supprimer l'artiste **
+	DE	** Auf Namen klicken, um Interpret zu entfernen **
+
+PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_REMOVEINFO_ALBUM
+	EN	** Click on title to remove album **
+	FR	** Cliquer sur le titre pour supprimer l'album **
+	DE	** Auf Titel klicken, um Album zu entfernen **
+
+PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_INFO_BY
+	EN	by
+	FR	par
+	DE	von
+
+PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_NONE
+	EN	None
+	FR	Aucun
+	DE	Nichts
+
+PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_CURRENTLYQUEUED
+	EN	Currently queued dynamic playlists
+	FR	Listes de lecture dynamiques actuellement en file d'attente
+	DE	Dynamische Wiedergabelisten in der Warteschlange
+
+PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_CLEAR_QUEUE
+	EN	** Clear queue **
+	FR	** Effacer la file d'attente **
+	DE	** Wiedergabeliste leeren **
+
+PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_REMOVE_DPL
+	EN	Remove from queue
+	FR	Supprimer de la file d'attente
+	DE	von Wiedergabeliste entfernen
+
+PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_REMOVEINFO
+	EN	** Click on name to remove from queue **
+	FR	** Cliquez sur le nom pour le supprimer de la file d'attente **
+	DE	** Zum Entfernen auf Namen klicken **
+
+PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_NONE
+	EN	None
+	FR	Aucun
+	DE	Nichts
+
+PLUGIN_DYNAMICPLAYLISTS4_QUEUE_DPL
+	EN	Queue dynamic playlist
+	FR	Ajouter liste de lecture dynamique à la file d'attente
+	DE	Dynamische Wiedergabeliste zur Warteschlange hinzufügen
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_SECS
+	EN	second(s)
+	FR	seconde(s)
+	DE	Sekunde(n)
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_YEARS
+	EN	year(s)
+	FR	année(s)
+	DE	Jahr(e)
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_UNKNOWN
+	EN	Unknown
+	FR	Inconnu
+	DE	Unbekannt
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_STARS
+	EN	stars
+	FR	étoiles
+	DE	Sterne
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_ACTIVEDPL
+	EN	<span class="boldtitle">Active</span> dynamic playlist for client
+	FR	Liste de lecture dynamique <span class="boldtitle">active</span> pour le client
+	DE	<span class="boldtitle">Aktive</span> dynamische Wiedergabeliste
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_JIVE_DPLACTIVE
+	EN	** Active ** playlist
+	FR	Liste de lecture ** active **
+	DE	** Aktive ** Wiedergabeliste
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_NOTCLASSIFIED
+	EN	<span class="categoryheader">not</span> classified
+	FR	<span class="categoryheader">non</span> classé
+	DE	<span class="categoryheader">nicht</span> gruppiert
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_TRANSFERDPL
+	EN	Transfer active dynamic playlist to this player
+	FR	Transférer liste de lecture dynamique active sur ce lecteur
+	DE	Aktive dynamische Wiedergabeliste an diesen Player übertragen
+
+PLUGIN_DYNAMICPLAYLISTS4_TRANSFERDPL_MAIN
+	EN	Transfer active dynamic playlist to another player
+	FR	Transférer liste de lecture dynamique active sur un autre lecteur
+	DE	Aktive dynamische Wiedergabeliste an anderen Player übertragen
+
+PLUGIN_DYNAMICPLAYLISTS4_TRANSFERDPL_SELECTPLAYER
+	EN	Select player
+	FR	Sélectionne lecteur
+	DE	Player auswählen
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_TRACKS
+	EN	Songs
+	FR	Morceaux
+	DE	Titel
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_ARTISTS
+	EN	Artists
+	FR	Artistes
+	DE	Interpreten
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_ALBUMS
+	EN	Albums
+	FR	Albums
+	DE	Alben
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_WORKS
+	EN	Works
+	FR	Œuvres
+	DE	Werke
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_GENRES
+	EN	Genres
+	FR	Genres
+	DE	Stilrichtungen
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_YEARS
+	EN	Years
+	FR	Années
+	DE	Jahre
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_PLAYLISTS
+	EN	Playlists
+	FR	Listes de lecture
+	DE	Wiedergabelisten
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_STATICPLAYLISTS
+	EN	Static Playlists
+	FR	Listes de lecture statiques
+	DE	Statische Wiedergabelisten
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CHOOSEEXLUDEGENRES
+	EN	Choose genres to exclude
+	FR	Choisir les genres à exclure
+	DE	Auswahl der auszuschließenden Stilrichtungen
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SOURCE
+	EN	source
+	FR	source
+	DE	Quelle
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DPLBUILTIN
+	EN	built-in
+	FR	intégré
+	DE	integriert
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DPLCUSTOM
+	EN	custom/user-provided
+	FR	personnalisé
+	DE	benutzerdefiniert
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_STATICPL
+	EN	Static LMS playlist
+	FR	Listes de lecture statiques LMS
+	DE	Statische LMS Wiedergabeliste
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_TRACK
+	EN	track
+	FR	morceau
+	DE	Titel
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_TRACKS
+	EN	tracks
+	FR	morceaux
+	DE	Titel
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_SONG
+	EN	song
+	FR	chanson
+	DE	Titel
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_SONGS
+	EN	songs
+	FR	chansons
+	DE	Titel
+
+PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_COMPLETELIB
+	EN	complete library
+	FR	biliothèque musicale complète
+	DE	komplette Sammlung
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPNAME_NOTCLASSIFIED
+	EN	Not classified
+	FR	Non classé
+	DE	Nicht gruppiert
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPNAME_CONTEXTMENULISTS
+	EN	Context menu lists
+	FR	Listes du menu contextuel
+	DE	Listen für Kontextmenüs
+
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_RANDOM
+	EN	Albums - random
+	FR	Albums - aléatoire
+	DE	Alben - zufällig
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_GENRE_DECADE
+	EN	Albums - random (by genre + decade)
+	FR	Albums - aléatoire (par genre + décennie)
+	DE	Alben - zufällig (Stilrichtung + Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_TOPRATEDAVG
+	EN	Albums - with top average rating
+	FR	Albums - avec les meilleures notes moyennes
+	DE	Alben - mit Top Durchschnittsbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_TOPRATEDTOTAL
+	EN	Albums - with top total rating
+	FR	Albums - avec les meilleures notes
+	DE	Alben - mit Top Gesamtbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_MOSTRATEDSONGS
+	EN	Albums - with most rated songs
+	FR	Albums - avec les morceaux les mieux notés
+	DE	Alben - mit den meisten bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_RATEDSONGS
+	EN	Albums - that contain rated songs
+	FR	Albums - contenant les morceaux notés
+	DE	Alben - mit bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_TOPRATEDSONGS
+	EN	Albums - that contain top rated songs
+	FR	Albums - contenant les morceaux les mieux notés
+	DE	Alben - mit TOP bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_UNRATED
+	EN	Albums - not rated
+	FR	Albums - non notés
+	DE	Alben - nicht bewertet
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_PARTLYPLAYED_GENRE_DECADE
+	EN	Albums - partly played (by genre + decade)
+	FR	Albums - partiellement joués (par genre + décennie)
+	DE	Alben - teilweise gespielt (nach Stilrichtung und Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_MOSTPLAYED
+	EN	Albums - most played (total count)
+	FR	Albums - les plus joués (compte absolu)
+	DE	Alben - meistgespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_MOSTPLAYEDAVG
+	EN	Albums - most played (average count)
+	FR	Albums - les plus joués (compte moyen)
+	DE	Alben - meistgespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_LEASTPLAYED
+	EN	Albums - least played (total count)
+	FR	Albums - les moins joués (compte absolu)
+	DE	Alben - am wenigsten gespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_LEASTPLAYEDAVG
+	EN	Albums - least played (average count)
+	FR	Albums - les moins joués (compte moyen)
+	DE	Alben - am wenigsten gespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_VLIB_RANDOM
+	EN	Albums - random from selected virtual library
+	FR	Albums - aléatoire sur la bibliothèque virtuelle sélectionnée
+	DE	Alben - zufällig aus ausgewählter virtueller Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_RECENTLYPLAYEDORLASTADDEDSONGS
+	EN	Albums - recently played or lasted added songs
+	FR	Albums - joués récemment ou derniers morceaux ajoutés
+	DE	Alben - neulich gespielt oder hinzugefügt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_NEVERPLAYED
+	EN	Albums - never played
+	FR	Albums - jamais joués
+	DE	Alben - nie gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_PLAYEDLONGAGO
+	EN	Albums - played long ago
+	FR	Albums - joués il y a longtemps
+	DE	Alben - vor langer Zeit gespielt
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_RANDOM
+	EN	Artists - random
+	FR	Artistes - aléatoire
+	DE	Interpreten - zufällig
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_GENRE_DECADE
+	EN	Artists - random (by genre + decade)
+	FR	Artistes - aléatoire (par genre + décennie)
+	DE	Interpreten - zufällig (nach Stilrichtung und Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_TOPRATEDAVG
+	EN	Artists - with top average rating
+	FR	Artistes - avec les meilleures notes moyennes
+	DE	Interpreten - mit Top Durchschnittsbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_TOPRATEDTOTAL
+	EN	Artists - with top total rating
+	FR	Artistes - avec les meilleures notes
+	DE	Interpreten - mit Top Gesamtbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_MOSTRATEDSONGS
+	EN	Artists - with most rated songs
+	FR	Artistes - avec les morceaux les mieux notés
+	DE	Interpreten - mit den meisten bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_RATED
+	EN	Artists - that have rated songs
+	FR	Artistes - avec des morceaux notés
+	DE	Interpreten - mit bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_TOPRATED
+	EN	Artists - that have top rated songs
+	FR	Artistes - avec les morceaux les mieux notés
+	DE	Interpreten - mit TOP bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_UNRATED
+	EN	Artists - not rated
+	FR	Artistes - non notés
+	DE	Interpreten - nicht bewertet
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_PARTLYPLAYED_GENRE_DECADE
+	EN	Artists - partly played (by genre + decade)
+	FR	Artistes - partiellement joués (par genre + décennie)
+	DE	Interpreten - teilweise gespielt (nach Stilrichtung und Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_MOSTPLAYED
+	EN	Artists - most played (total count)
+	FR	Artistes - les plus joués (compte absolu)
+	DE	Interpreten - meistgespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_MOSTPLAYEDAVG
+	EN	Artists - most played (average count)
+	FR	Artistes - les plus joués (compte moyen)
+	DE	Interpreten - meistgespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_LEASTPLAYED
+	EN	Artists - least played
+	FR	Artistes - les moins joués
+	DE	Interpreten - am wenigsten gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_LEASTPLAYEDAVG
+	EN	Artists - least played (average count)
+	FR	Artistes - les moins joués (compte moyen)
+	DE	Interpreten - am wenigsten gespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_VLIB_RANDOM
+	EN	Artists - random from selected virtual library
+	FR	Artistes - aléatoire sur la bibliothèque virtuelle sélectionnée
+	DE	Interpreten - zufällig aus selektierter virtueller Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_RECENTLYPLAYEDORLASTADDEDSONGS
+	EN	Artists - recently played or lasted added songs
+	FR	Artistes - joués récemment ou derniers morceaux ajoutés
+	DE	Interpreten - neulich gespielt oder hinzugefügt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_NEVERPLAYED
+	EN	Artists - never played
+	FR	Artistes - jamais joués
+	DE	Interpreten - nie gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_PLAYEDLONGAGO
+	EN	Artists - played long ago
+	FR	Artistes - joués il y a longtemps
+	DE	Interpreten - vor langer Zeit gespielt
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_RANDOM
+	EN	Genres - random
+	FR	Genres - aléatoire
+	DE	Stilrichtungen - zufällig
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_TOPRATEDAVG
+	EN	Genres - with top average rating
+	FR	Genres - avec les meilleures notes moyennes
+	DE	Stilrichtungen - mit TOP Durchschnittsbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_TOPRATEDTOTAL
+	EN	Genres - with top total rating
+	FR	Genres - avec les meilleures notes
+	DE	Stilrichtungen - mit Top Gesamtbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_MOSTRATEDSONGS
+	EN	Genres - with most rated songs
+	FR	Genres - avec les morceaux les mieux notés
+	DE	Stilrichtungen - mit den meisten bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_RATEDSONGS
+	EN	Genres - that contain rated songs
+	FR	Genres - contenant les morceaux notés
+	DE	Stilrichtungen - mit bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_TOPRATEDSONGS
+	EN	Genres - that contain top rated songs
+	FR	Genres - contenant les morceaux les mieux notés
+	DE	Stilrichtungen - mit TOP bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_UNRATED
+	EN	Genres - not rated
+	FR	Genres - non notés
+	DE	Stilrichtungen - nicht bewertet
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_MOSTPLAYED
+	EN	Genres - most played (total count)
+	FR	Genres - les plus joués (compte absolu)
+	DE	Stilrichtungen - meistgespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_MOSTPLAYEDAVG
+	EN	Genres - most played (average count)
+	FR	Genres - les plus joués (compte moyen)
+	DE	Stilrichtungen - meistgespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_LEASTPLAYED
+	EN	Genres - least played (total count)
+	FR	Genres - les moins joués (compte absolu)
+	DE	Stilrichtungen - am wenigsten gespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_LEASTPLAYEDAVG
+	EN	Genres - least played (average count)
+	FR	Genres - les moins joués (compte moyen)
+	DE	Stilrichtungen - am wenigsten gespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_VLIB_RANDOM
+	EN	Genres - random from selected virtual library
+	FR	Genres - aléatoire sur la bibliothèque virtuelle sélectionnée
+	DE	Stilrichtungen - zufällig von ausgewählter virtueller Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_RECENTLYPLAYEDORLASTADDEDSONGS
+	EN	Genres - recently played or lasted added songs
+	FR	Genres - joués récemment ou derniers morceaux ajoutés
+	DE	Stilrichtungen - neulich hinzugefügt oder zuletzt gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_NEVERPLAYED
+	EN	Genres - never played
+	FR	Genres - jamais joués
+	DE	Stilrichtungen - nie gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_PLAYEDLONGAGO
+	EN	Genres - played long ago
+	FR	Genres - joués il y a longtemps
+	DE	Stilrichtungen - vor langer Zeit gespielt
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_RANDOM
+	EN	Playlists - random
+	FR	Listes de lecture - aléatoire
+	DE	Wiedergabelisten - zufällig
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_TOPRATEDAVG
+	EN	Playlists - with top average rating
+	FR	Listes de lecture - avec les meilleures notes moyennes
+	DE	Wiedergabelisten - mit TOP Durchschnittsbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_TOPRATEDTOTAL
+	EN	Playlists - with top total rating
+	FR	Listes - avec les meilleures notes
+	DE	Wiedergabelisten - mit Top Gesamtbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_RATEDSONGS
+	EN	Playlists - that contain rated songs
+	FR	Listes de lecture - contenant les morceaux notés
+	DE	Wiedergabelisten - mit bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_TOPRATEDSONGS
+	EN	Playlists - that contain top rated songs
+	FR	Listes de lecture - contenant les morceaux les mieux notés
+	DE	Wiedergabelisten - mit TOP bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_UNRATED
+	EN	Playlists - not rated
+	FR	Listes de lecture - non notés
+	DE	Wiedergabelisten - nicht bewertet
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_MOSTPLAYED
+	EN	Playlists - most played (total count)
+	FR	Listes de lecture - les plus jouées (compte absolu)
+	DE	Wiedergabelisten - meistgespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_MOSTPLAYEDAVG
+	EN	Playlists - most played (average count)
+	FR	Listes de lecture - les plus jouées (compte moyen)
+	DE	Wiedergabelisten - meistgespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_LEASTPLAYED
+	EN	Playlists - least played (total count)
+	FR	Listes de lecture - les moins jouées (compte absolu)
+	DE	Wiedergabelisten - am wenigsten gespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_LEASTPLAYEDAVG
+	EN	Playlists - least played (average count)
+	FR	Listes de lecture - les moins jouées (compte moyen)
+	DE	Wiedergabelisten - am wenigsten gespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_NEVERPLAYED
+	EN	Playlists - never played
+	FR	Listes de lecture - jamais jouées
+	DE	Wiedergabelisten - nie gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_PLAYEDLONGAGO
+	EN	Playlists - played long ago
+	FR	Listes de lecture - jouées il y a longtemps
+	DE	Wiedergabelisten - vor langer Zeit gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_MULTIPLE_GENRE_DECADE_MINRATING
+	EN	Playlists - songs from multiple playlists (by genre, decade + min. rating)
+	FR	Listes de lecture - morceaux de plusieurs listes (par genre, décennie + note min.)
+	DE	Wiedergabelisten - Titel aus mehreren Wiedergabelisten (nach Stilrichtung, Jahrzehnt und min. Bewertung)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM
+	EN	Songs - random
+	FR	Morceaux - aléatoire
+	DE	Titel - zufällig
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE
+	EN	Songs - random (by genre)
+	FR	Morceaux - aléatoire (par genre)
+	DE	Titel - zufällig (nach Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE_DECADE
+	EN	Songs - random (by genre + decade)
+	FR	Morceaux - aléatoire (par genre + décennie)
+	DE	Titel - zufällig (nach Stilrichtung und Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE_YEARS
+	EN	Songs - random (by genre + year)
+	FR	Morceaux - aléatoire (par genre + année)
+	DE	Titel - zufällig (nach Stilrichtung und Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED
+	EN	Songs - RATED
+	FR	Morceaux - notés
+	DE	Titel - bewertet
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_PLAYCOUNT
+	EN	Songs - RATED (un-/played)
+	FR	Morceaux - notés (non-/joués)
+	DE	Titel - bewertet (un-/gespielt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_PERCENTAGETOPRATED
+	EN	Songs - RATED (with % of top rated songs)
+	FR	Morceaux - notés (avec un % de morceaux bien notés)
+	DE	Titel - bewertet (mit % TOP bewerteter Titel)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_MINRATING
+	EN	Songs - RATED (choose minimum rating)
+	FR	Morceaux - notés (choisir la note minimum)
+	DE	Titel - bewertet (min. Bewertung auswählen)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_EXACTRATING
+	EN	Songs - RATED (choose exact rating)
+	FR	Morceaux - notés (choisir la note exacte)
+	DE	Titel - bewertet (exakte Bewertung auswählen)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_TOPRATED
+	EN	Songs - top RATED
+	FR	Morceaux - mieux notés
+	DE	Titel - TOP bewertet
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_TOPRATED_PLAYCOUNT
+	EN	Songs - top RATED (un-/played)
+	FR	Morceaux - mieux notés (non-/joués)
+	DE	Titel - TOP bewertet (un-/gespielt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE
+	EN	Songs - RATED (by genre + decade)
+	FR	Morceaux - notés (par genre + décennie)
+	DE	Titel - bewertet (nach Stilrichtung und Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGETOPRATED
+	EN	Songs - RATED (by genre + decade with % of top rated songs)
+	FR	Morceaux - notés (par genre + décennie avec un % de morceaux bien notés)
+	DE	Titel - bewertet (nach Stilrichtung und Jahrzehnt mit % TOP Bewertung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_YEARS
+	EN	Songs - RATED (by genre + year)
+	FR	Morceaux - notés (par genre + année)
+	DE	Titel - bewertet (nach Stilrichtung und Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_PERCENTAGERATED
+	EN	Songs - not RATED (with % of rated songs)
+	FR	Morceaux - non notés (avec un % de morceaux notés)
+	DE	Titel - nicht bewertet (mit % Bewertung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGERATED
+	EN	Songs - not RATED (by genre + decade with % of rated songs)
+	FR	Morceaux - non notés (par genre + décennie avec un % de morceaux notés)
+	DE	Titel - nicht bewertet (nach Stilrichtung und Jahrzehnt mit % Bewertung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_YEAR_PERCENTAGERATED
+	EN	Songs - not RATED (by genre + year with % of rated songs)
+	FR	Morceaux - non notés (par genre + année avec un % de morceaux notés)
+	DE	Titel - nicht bewertet (nach Stilrichtung und Jahr mit % Bewertung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_LASTADDED_GENRE_MINRATING
+	EN	Songs - last added (by genre + min. rating)
+	FR	Morceaux - derniers ajouts (par genre + note min.)
+	DE	Titel - zuletzt hinzugefügt (nach Stilrichtung und Mindestbewertung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_IGNORE_SELECTEDPL
+	EN	Songs - random - ignore songs in selected playlist
+	FR	Morceaux - aléatoire - ignorer les morceaux dans la liste de lecture sélectionnée
+	DE	Titel - zufällig - ignoriere Titel aus ausgewählter Wiedergabeliste
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PERCENTAGEPLAYLIST_GENRE_DECADE_MINRATING_NOTRECENTLYPLAYED
+	EN	Songs - mix of songs from selected (online) playlists and from the local library (filters: genres, decades, min. rating, recently played)
+	FR	Morceaux - mélange de morceaux des listes de lecture sélectionnées et du reste de la bibliothèque (filtres: genres, décennies, note min., récemment écoutées)
+	DE	Titel - Mix von Titeln aus ausgewählten (Online-)Wiedergabelisten und aus der lokalen Sammlung (Filter: Stilrichtung, Jahrzehnt, Mindestbewertung, neulich gespielt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_VLIB_RANDOM
+	EN	Songs - random from selected virtual library
+	FR	Morceaux - aléatoire sur la bibliothèque virtuelle sélectionnée
+	DE	Titel - zufällig aus gewählter virtueller Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_VLIB_GENRE_DECADE_MINRATING
+	EN	Songs - random from selected virtual library (by genre, decade + min. rating)
+	FR	Morceaux - aléatoire sur la bibliothèque virtuelle sélectionnée (par genre, décennie + note min.)
+	DE	Titel - zufällig aus gewählter virtueller Sammlung (nach Stilrichtung, Jahrzehnt, Mindestbewertung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED_MINRATING
+	EN	Songs - most played (min. rating)
+	FR	Morceaux - les plus joués (note min.)
+	DE	Titel - meistgespielt (Mindestbewertung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_LEASTPLAYED
+	EN	Songs - least played
+	FR	Morceaux - les moins joués
+	DE	Titel - am wenigsten gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_NEVERPLAYED
+	EN	Songs - never played
+	FR	Morceaux - jamais joués
+	DE	Titel - nie gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PLAYEDLONGAGO
+	EN	Songs - played long ago
+	FR	Morceaux - joués il y a longtemps
+	DE	Titel - vor langer Zeit gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ARTISTS_SONGS_RANDOM
+	EN	Songs - from preselected artists - random
+	FR	Morceaux - des artistes présélectionnés - aléatoire
+	DE	Titel - zufällig von vorausgewählten Interpreten
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ARTISTS_SONGS_RATEDPERCENTAGE
+	EN	Songs - from preselected artists - with % of rated songs
+	FR	Morceaux - des artistes présélectionnés - avec un % de morceaux notés
+	DE	Titel - zufällig von vorausgewählten Interpreten mit % Bewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ARTISTS_SONGS_MINRATING_DECADE
+	EN	Songs - from preselected artists - choose minimum rating & decade
+	FR	Morceaux - des artistes présélectionnés - choisir la note minimum et la décennie
+	DE	Titel - von ausgewählten Interpreten - wähle Mindestbewertung und Jahrzehnt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ALBUMS_SONGS_RANDOM
+	EN	Songs - from preselected albums - random
+	FR	Morceaux - des albums présélectionnés - aléatoire
+	DE	Titel - zufällig von vorausgewählten Alben
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ALBUMS_SONGS_RATEDPERCENTAGE
+	EN	Songs - from preselected albums - with % of rated songs
+	FR	Morceaux - des albums présélectionnés - avec un % de morceaux notés
+	DE	Titel - zufällig von vorausgewählten Alben mit % Bewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ALBUMS_SONGS_MINRATING_DECADE
+	EN	Songs - from preselected albums - choose minimum rating & decade
+	FR	Morceaux - des albums présélectionnés - choisir la note minimum et la décennie
+	DE	Titel - von vorausgewählten Alben, wähle Mindestbewertung und Jahrzehnt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_SPOTIFY_RANDOM
+	EN	Songs - Spotify library tracks random
+	FR	Morceaux - Morceaux aléatoire de la biliothèque Spotify
+	DE	Titel - zufällig aus Spotify Sammlung
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_RANDOM
+	EN	Years - random
+	FR	Années - aléatoire
+	DE	Jahre - zufällig
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_TOPRATEDAVG
+	EN	Years - with top average rating
+	FR	Années - avec les meilleures notes moyennes
+	DE	Jahre - mit TOP Durchschnittsbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_TOPRATEDTOTAL
+	EN	Years - with top total rating
+	FR	Années - avec les meilleures notes
+	DE	Jahre - mit Top Gesamtbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_MOSTRATEDSONGS
+	EN	Years - with most rated songs
+	FR	Années - avec les morceaux les mieux notés
+	DE	Jahre - mit den meisten bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_RATEDSONGS
+	EN	Years - that contain rated songs
+	FR	Années - contenant les morceaux notés
+	DE	Jahre - die bewertete Titel enthalten
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_TOPRATEDSONGS
+	EN	Years - that contain top rated songs
+	FR	Années - contenant les morceaux les mieux notés
+	DE	Jahre - die TOP bewertete Titel beinhalten
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_UNRATED
+	EN	Years - not rated
+	FR	Années - non notés
+	DE	Jahre - unbewertet
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_MOSTPLAYED
+	EN	Years - most played (total count)
+	FR	Années - les plus jouées (compte absolu)
+	DE	Jahre - meistgespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_MOSTPLAYEDAVG
+	EN	Years - most played (average count)
+	FR	Années - les plus jouées (compte moyen)
+	DE	Jahre - meistgespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_LEASTPLAYED
+	EN	Years - least played (total count)
+	FR	Années - les moins jouées (compte absolu)
+	DE	Jahre - am wenigsten gespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_LEASTPLAYEDAVG
+	EN	Years - least played (average count)
+	FR	Années - les moins jouées (compte moyen)
+	DE	Jahre - am wenigsten gespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_VLIB_RANDOM
+	EN	Years - random from selected virtual library
+	FR	Années - aléatoire sur la bibliothèque virtuelle sélectionnée
+	DE	Jahre - zufällig aus sektierter virtueller Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_RECENTLYPLAYEDORLASTADDEDSONGS
+	EN	Years - recently played or lasted added songs
+	FR	Années - jouées récemment ou derniers morceaux ajoutés
+	DE	Jahre - neulich gespielt oder zuletzt hinzugefügte Titel
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_NEVERPLAYED
+	EN	Years - never played
+	FR	Années - jamais jouées
+	DE	Jahre - nie gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_PLAYEDLONGAGO
+	EN	Years - played long ago
+	FR	Années - jouées il y a longtemps
+	DE	Jahre - vor langer Zeit gespielt
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_RANDOM
+	EN	Works - random
+	FR	Œuvres - aléatoire
+	DE	Werke - zufällig
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_GENRE_DECADE
+	EN	Works - random (by genre + decade)
+	FR	Œuvres - aléatoire (par genre + décennie)
+	DE	Werke - zufällig (Stilrichtung + Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_TOPRATEDAVG
+	EN	Works - with top average rating
+	FR	Œuvres - avec les meilleures notes moyennes
+	DE	Werke - mit Top Durchschnittsbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_TOPRATEDTOTAL
+	EN	Works - with top total rating
+	FR	Œuvres - avec les meilleures notes
+	DE	Werke - mit Top Gesamtbewertung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTRATEDSONGS
+	EN	Works - with most rated songs
+	FR	Œuvres - avec les morceaux les mieux notés
+	DE	Werke - mit den meisten bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_RATEDSONGS
+	EN	Works - that contain rated songs
+	FR	Œuvres - contenant les morceaux notés
+	DE	Werke - mit bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_TOPRATEDSONGS
+	EN	Works - that contain top rated songs
+	FR	Œuvres - contenant les morceaux les mieux notés
+	DE	Werke - mit TOP bewerteten Titeln
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_UNRATED
+	EN	Works - not rated
+	FR	Œuvres - non notés
+	DE	Werke - nicht bewertet
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_PARTLYPLAYED_GENRE_DECADE
+	EN	Works - partly played (by genre + decade)
+	FR	Œuvres - partiellement joués (par genre + décennie)
+	DE	Werke - teilweise gespielt (nach Stilrichtung und Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTPLAYED
+	EN	Works - most played (total count)
+	FR	Œuvres - les plus joués (compte absolu)
+	DE	Werke - meistgespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTPLAYEDAVG
+	EN	Works - most played (average count)
+	FR	Œuvres - les plus joués (compte moyen)
+	DE	Werke - meistgespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_LEASTPLAYED
+	EN	Works - least played (total count)
+	FR	Œuvres - les moins joués (compte absolu)
+	DE	Werke - am wenigsten gespielt (absolut)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_LEASTPLAYEDAVG
+	EN	Works - least played (average count)
+	FR	Œuvres - les moins joués (compte moyen)
+	DE	Werke - am wenigsten gespielt (Durchschnitt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_VLIB_RANDOM
+	EN	Works - random from selected virtual library
+	FR	Œuvres - aléatoire sur la bibliothèque virtuelle sélectionnée
+	DE	Werke - zufällig aus ausgewählter virtueller Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_RECENTLYPLAYEDORLASTADDEDSONGS
+	EN	Works - recently played or lasted added songs
+	FR	Œuvres - joués récemment ou derniers morceaux ajoutés
+	DE	Werke - neulich gespielt oder hinzugefügt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_NEVERPLAYED
+	EN	Works - never played
+	FR	Œuvres - jamais joués
+	DE	Werke - nie gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_PLAYEDLONGAGO
+	EN	Works - played long ago
+	FR	Œuvres - joués il y a longtemps
+	DE	Werke - vor langer Zeit gespielt
+
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_RANDOM
+	EN	Songs - random (from selected album)
+	FR	Morceaux - aléatoire (de l'album sélectionné)
+	DE	Titel - zufällig (aus gewähltem Album)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_RATED
+	EN	Songs - rated (from selected album)
+	FR	Morceaux - notés (de l'album sélectionné)
+	DE	Titel - bewertet (aus gewähltem Album)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_TOPRATED
+	EN	Songs - top rated (from selected album)
+	FR	Morceaux - mieux notés (de l'album sélectionné)
+	DE	Titel - TOP bewertet (aus gewähltem Album)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_UNRATED
+	EN	Songs - not rated (from selected album)
+	FR	Morceaux - non notés (de l'album sélectionné)
+	DE	Titel - unbewertet (aus gewähltem Album)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_MOSTPLAYED
+	EN	Songs - most played (from selected album)
+	FR	Morceaux - les plus joués (de l'album sélectionné)
+	DE	Titel - meistgespielt (aus gewähltem Album)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_LEASTPLAYED
+	EN	Songs - least played (from selected album)
+	FR	Morceaux - les moins joués (de l'album sélectionné)
+	DE	Titel - am wenigsten gespielt (aus gewähltem Album)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_NEVERPLAYED
+	EN	Songs - never played (from selected album)
+	FR	Morceaux - jamais jouées (de l'album sélectionné)
+	DE	Titel - nie gespielt (aus gewähltem Album)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_PLAYEDLONGAGO
+	EN	Songs - played long ago (from selected album)
+	FR	Morceaux - joués il y a longtemps (de l'album sélectionné)
+	DE	Titel - vor langer Zeit gespielt (aus gewähltem Album)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_RANDOM
+	EN	Songs - random (by selected artist)
+	FR	Morceaux - aléatoire (de l'artiste sélectionné)
+	DE	Titel - zufällig (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_PERCENTAGERATED
+	EN	Songs - random with rated percentage (by selected artist)
+	FR	Morceaux - aléatoire avec un pourcentage de notés (de l'artiste sélectionné)
+	DE	Titel - zufällig mit Anteil an bewerteten Titeln (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_RATED
+	EN	Songs - rated (by selected artist)
+	FR	Morceaux - notés (de l'artiste sélectionné)
+	DE	Titel - bewertet (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_TOPRATED
+	EN	Songs - top rated (by selected artist)
+	FR	Morceaux - mieux notés (de l'artiste sélectionné)
+	DE	Titel - TOP bewertet (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_UNRATED
+	EN	Songs - not rated (by selected artist)
+	FR	Morceaux - non notés (de l'artiste sélectionné)
+	DE	Titel - unbewertet (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_MOSTPLAYED
+	EN	Songs - most played (by selected artist)
+	FR	Morceaux - les plus joués (de l'artiste sélectionné)
+	DE	Titel - meistgespielt (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_LEASTPLAYED
+	EN	Songs - least played (by selected artist)
+	FR	Morceaux - les moins joués (de l'artiste sélectionné)
+	DE	Titel - am wenigsten gespielt (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_NEVERPLAYED
+	EN	Songs - never played (by selected artist)
+	FR	Morceaux - jamais joués (de l'artiste sélectionné)
+	DE	Titel - nie gespielt (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_PLAYEDLONGAGO
+	EN	Songs - played long ago (by selected artist)
+	FR	Morceaux - joués il y a longtemps (de l'artiste sélectionné)
+	DE	Titel - vor langer Zeit gespielt (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_RANDOM
+	EN	Albums - random (by selected artist)
+	FR	Albums - aléatoire (de l'artiste sélectionné)
+	DE	Alben - zufällig (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_TOPRATEDAVG
+	EN	Albums - with top average rating (by selected artist)
+	FR	Albums - avec les meilleures notes moyennes (de l'artiste sélectionné)
+	DE	Alben - mit TOP Durchschnittsbewertung (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_TOPRATEDTOTAL
+	EN	Albums - with top total rating (by selected artist)
+	FR	Albums - mieux notés (de l'artiste sélectionné)
+	DE	Alben - mit TOP Gesamtbewertung (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYED
+	EN	Albums - most played (total count) (by selected artist)
+	FR	Albums - les plus joués (compte absolu) (de l'artiste sélectionné)
+	DE	Alben - zufällig (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYEDAVG
+	EN	Albums - most played (average count) (by selected artist)
+	FR	Albums - les plus joués (compte moyen) (de l'artiste sélectionné)
+	DE	Alben - meistgespielt (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYED
+	EN	Albums - least played (total count) (by selected artist)
+	FR	Albums - les moins joués (compte absolu) (de l'artiste sélectionné)
+	DE	Alben - am wenigsten gespielt (absolut) (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYEDAVG
+	EN	Albums - least played (average count) (by selected artist)
+	FR	Albums - les moins joués (compte moyen) (de l'artiste sélectionné)
+	DE	Alben - am wenigsten gespielt (Durchschnitt) zufällig (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_NEVERPLAYED
+	EN	Albums - never played (by selected artist)
+	FR	Albums - jamais joués (de l'artiste sélectionné)
+	DE	Alben - nie gespielt (von gewähltem Interpreten)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_PLAYEDLONGAGO
+	EN	Albums - played long ago (by selected artist)
+	FR	Albums - joués il y a longtemps (de l'artiste sélectionné)
+	DE	Alben - vor langer Zeit gespielt (von gewähltem Interpreten)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_RANDOM
+	EN	Songs - random (in selected genre)
+	FR	Morceaux - aléatoire (dans le genre sélectionné)
+	DE	Titel - zufällig (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_PERCENTAGERATED
+	EN	Songs - random with rated percentage (in selected genre)
+	FR	Morceaux - aléatoire avec un pourcentage de notés (dans le genre sélectionné)
+	DE	Titel - zufällig mit Anteil an bewerteten Titeln (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_RATED
+	EN	Songs - rated (in selected genre)
+	FR	Morceaux - notés (dans le genre sélectionné)
+	DE	Titel - bewertet (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_RATED_DECADE
+	EN	Songs - rated by decade (in selected genre)
+	FR	Morceaux - notés par décennie (dans le genre sélectionné)
+	DE	Titel - bewertet nach Jahrzehnt (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_TOPRATED
+	EN	Songs - top rated (in selected genre)
+	FR	Morceaux - mieux notés (dans le genre sélectionné)
+	DE	Titel - TOP bewertet (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_UNRATED
+	EN	Songs - not rated (in selected genre)
+	FR	Morceaux - non notés (dans le genre sélectionné)
+	DE	Titel - nicht bewertet (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_MOSTPLAYED
+	EN	Songs - most played (in selected genre)
+	FR	Morceaux - les plus joués (dans le genre sélectionné)
+	DE	Titel - meistgespielt (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_LEASTPLAYED
+	EN	Songs - least played (in selected genre)
+	FR	Morceaux - les moins joués (dans le genre sélectionné)
+	DE	Titel - am wenigsten gespielt (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_NEVERPLAYED
+	EN	Songs - never played (in selected genre)
+	FR	Morceaux - jamais joués (dans le genre sélectionné)
+	DE	Titel - nie gespielt (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_PLAYEDLONGAGO
+	EN	Songs - played long ago (in selected genre)
+	FR	Morceaux - joués il y a longtemps (dans le genre sélectionné)
+	DE	Titel - vor langer Zeit gespielt (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_RANDOM
+	EN	Albums - random (in selected genre)
+	FR	Albums - aléatoire (dans le genre sélectionné)
+	DE	Alben - zufällig (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_TOPRATEDAVG
+	EN	Albums - with top average rating (in selected genre)
+	FR	Albums - avec les meilleures notes moyennes (dans le genre sélectionné)
+	DE	Alben - mit TOP Durchschnittsbewertung (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_TOPRATEDTOTAL
+	EN	Albums - with top total rating (in selected genre)
+	FR	Albums - mieux notés (dans le genre sélectionné)
+	DE	Alben - mit TOP Gesamtbewertung (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_MOSTPLAYED
+	EN	Albums - most played (total count) (in selected genre)
+	FR	Albums - avec les meilleures notes moyennes (dans le genre sélectionné)
+	DE	Alben - meistgespielt (absolut) (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_MOSTPLAYEDAVG
+	EN	Albums - most played (average count) (in selected genre)
+	FR	Albums - les plus joués (compte moyen) (dans le genre sélectionné)
+	DE	Alben - meistgespielt (Durchschnitt) (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_LEASTPLAYED
+	EN	Albums - least played (total count) (in selected genre)
+	FR	Albums - les moins joués (compte absolu) (dans le genre sélectionné)
+	DE	Alben - am wenigsten gespielt (absolut) (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_LEASTPLAYEDAVG
+	EN	Albums - least played (average count) (in selected genre)
+	FR	Albums - les moins joués (compte moyen) (dans le genre sélectionné)
+	DE	Alben - am wenigsten gespielt (Durchschnitt) (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_NEVERPLAYED
+	EN	Albums - never played (in selected genre)
+	FR	Albums - jamais joués (dans le genre sélectionné)
+	DE	Alben - nie gespielt (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_PLAYEDLONGAGO
+	EN	Albums - played long ago (in selected genre)
+	FR	Albums - joués il y a longtemps (dans le genre sélectionné)
+	DE	Alben - vor langer Zeit gespielt (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_RANDOM
+	EN	Artists - random (in selected genre)
+	FR	Artistes - aléatoire (dans le genre sélectionné)
+	DE	Interpreten - zufällig (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_TOPRATEDAVG
+	EN	Artists - with top average rating (in selected genre)
+	FR	Artistes - avec les meilleures notes moyennes (dans le genre sélectionné)
+	DE	Interpreten - mit TOP Durchschnittsbewertung (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_TOPRATEDTOTAL
+	EN	Artists - with top total rating (in selected genre)
+	FR	Artistes - mieux notés (dans le genre sélectionné)
+	DE	Interpreten - mit TOP Gesamtbewertung (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_MOSTPLAYED
+	EN	Artists - most played (total count) (in selected genre)
+	FR	Artistes - les plus joués (compte absolu) (dans le genre sélectionné)
+	DE	Interpreten - meistgespielt (absolut) (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_MOSTPLAYEDAVG
+	EN	Artists - most played (average count) (in selected genre)
+	FR	Artistes - les plus joués (compte moyen) (dans le genre sélectionné)
+	DE	Interpreten - meistgespielt (Durchschnitt) (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_LEASTPLAYED
+	EN	Artists - least played (total count) (in selected genre)
+	FR	Artistes - les moins joués (compte absolu) (dans le genre sélectionné)
+	DE	Interpreten - am wenigsten gespielt (absolut) (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_LEASTPLAYEDAVG
+	EN	Artists - least played (average count) (in selected genre)
+	FR	Artistes - les moins joués (compte moyen) (dans le genre sélectionné)
+	DE	Interpreten - am wenigsten gespielt (Durchschnitt) (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_NEVERPLAYED
+	EN	Artists - never played (in selected genre)
+	FR	Artistes - jamais joués (dans le genre sélectionné)
+	DE	Interpreten - nie gespielt (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_PLAYEDLONGAGO
+	EN	Artists - played long ago (in selected genre)
+	FR	Artistes - joués il y a longtemps (dans le genre sélectionné)
+	DE	Interpreten - vor langer Zeit gespielt (von gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_RANDOM
+	EN	Songs - random (from selected playlist)
+	FR	Morceaux - aléatoire (de la liste de lecture sélectionnée)
+	DE	Interpreten - zufällig (von gewählter Wiedergabeliste)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_GENRE_DECADE
+	EN	Songs - random (by genre + decade) (from selected playlist)
+	FR	Morceaux - aléatoire (par genre + décennie) (de la liste de lecture sélectionnée)
+	DE	Interpreten - zufällig (nach Stilrichtung + Jahrzehnt) (von gewählter Wiedergabeliste)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_RATED
+	EN	Songs - rated (from selected playlist)
+	FR	Morceaux - notés (de la liste de lecture sélectionnée)
+	DE	Interpreten - bewertet (von gewählter Wiedergabeliste)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_TOPRATED
+	EN	Songs - top rated (from selected playlist)
+	FR	Morceaux - mieux notés (de la liste de lecture sélectionnée)
+	DE	Titel - TOP bewertet (von gewählter Wiedergabeliste)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_UNRATED
+	EN	Songs - not rated (from selected playlist)
+	FR	Morceaux - non notés (de la liste de lecture sélectionnée)
+	DE	Titel - nicht bewertet (von gewählter Wiedergabeliste)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_MOSTPLAYED
+	EN	Songs - most played (from selected playlist)
+	FR	Morceaux - les plus joués (de la liste de lecture sélectionnée)
+	DE	Titel - meistgespielt (von gewählter Wiedergabeliste)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_LEASTPLAYED
+	EN	Songs - least played (from selected playlist)
+	FR	Morceaux - les moins joués (de la liste de lecture sélectionnée)
+	DE	Titel - am wenigsten gespielt (von gewählter Wiedergabeliste)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_NEVERPLAYED
+	EN	Songs - never played (from selected playlist)
+	FR	Morceaux - jamais joués (de la liste de lecture sélectionnée)
+	DE	Titel - nie gespielt (von gewählter Wiedergabeliste)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_PLAYEDLONGAGO
+	EN	Songs - played long ago (from selected playlist)
+	FR	Morceaux - joués il y a longtemps (de la liste de lecture sélectionnée)
+	DE	Titel - vor langer Zeit gespielt (von gewählter Wiedergabeliste)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_ALBUMS_RANDOM
+	EN	Albums - random (from selected playlist)
+	FR	Albums - aléatoire (de la liste de lecture sélectionnée)
+	DE	Alben - zufällig (von gewählter Wiedergabeliste)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_RANDOM
+	EN	Songs - random (from selected year)
+	FR	Morceaux - aléatoire (de l'année sélectionnée)
+	DE	Titel - zufällig (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_RANDOM
+	EN	Songs - random (from this DECADE)
+	FR	Morceaux - aléatoire (de cette décennie)
+	DE	Titel - zufällig (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_GENRE
+	EN	Songs - by genre (from selected year)
+	FR	Morceaux - par genre (de l'année sélectionnée)
+	DE	Titel - nach Stilrichtung (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_GENRE
+	EN	Songs - by genre (from this DECADE)
+	FR	Morceaux - par genre (de cette décennie)
+	DE	Titel - nach Stilrichtung (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_RANDOM_PERCENTAGERATED
+	EN	Songs - random with rated percentage (from selected year)
+	FR	Morceaux - aléatoire avec un pourcentage de notés (de l'année sélectionnée)
+	DE	Titel - zufällig mit Anteil an bewerteten Titeln (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_RANDOM_PERCENTAGERATED
+	EN	Songs - random with rated percentage (from this DECADE)
+	FR	Morceaux - aléatoire avec un pourcentage de notés (de cette décennie)
+	DE	Titel - zufällig mit Anteil an bewerteten Titeln (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_RATED
+	EN	Songs - rated (from selected year)
+	FR	Morceaux - notés (de l'année sélectionnée)
+	DE	Titel - bewertet (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_RATED
+	EN	Songs - rated (from this DECADE)
+	FR	Morceaux - notés (de cette décennie)
+	DE	Titel - bewertet (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_RATED_GENRE
+	EN	Songs - rated by genre (from selected year)
+	FR	Morceaux - notés par genre (de l'année sélectionnée)
+	DE	Titel - bewertet nach Stilrichtung (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_RATED_GENRE
+	EN	Songs - rated by genre (from this DECADE)
+	FR	Morceaux - notés par genre (de cette décennie)
+	DE	Titel - bewertet nach Stilrichtung (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_TOPRATED
+	EN	Songs - top rated (from selected year)
+	FR	Morceaux - mieux notés (de l'année sélectionnée)
+	DE	Titel - TOP bewertet (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_TOPRATED
+	EN	Songs - top rated (from this DECADE)
+	FR	Morceaux - mieux notés (de cette décennie)
+	DE	Titel - TOP bewertet (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_UNRATED
+	EN	Songs - not rated (from selected year)
+	FR	Morceaux - non notés (de l'année sélectionnée)
+	DE	Titel - nicht bewertet (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_UNRATED
+	EN	Songs - not rated (from this DECADE)
+	FR	Morceaux - non notés (de cette décennie)
+	DE	Titel - nicht bewertet (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_MOSTPLAYED
+	EN	Songs - most played (from selected year)
+	FR	Morceaux - les plus joués (de l'année sélectionnée)
+	DE	Titel - meistgespielt (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_MOSTPLAYED
+	EN	Songs - most played (from this DECADE)
+	FR	Morceaux - les plus joués (de cette décennie)
+	DE	Titel - meistgespielt (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_LEASTPLAYED
+	EN	Songs - least played (from selected year)
+	FR	Morceaux - les moins joués (de l'année sélectionnée)
+	DE	Titel - am wenigsten gespielt (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_LEASTPLAYED
+	EN	Songs - least played (from this DECADE)
+	FR	Morceaux - les moins joués (de cette décennie)
+	DE	Titel - am wenigsten gespielt (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_NEVERPLAYED
+	EN	Songs - never played (from selected year)
+	FR	Morceaux - jamais joués (de l'année sélectionnée)
+	DE	Titel - nie gespielt (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_NEVERPLAYED
+	EN	Songs - never played (from this DECADE)
+	FR	Morceaux - jamais joués (de cette décennie)
+	DE	Titel - nie gespielt (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_PLAYEDLONGAGO
+	EN	Songs - played long ago (from selected year)
+	FR	Morceaux - joués il y a longtemps (de l'année sélectionnée)
+	DE	Titel - vor langer Zeit gespielt (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_PLAYEDLONGAGO
+	EN	Songs - played long ago (from this DECADE)
+	FR	Morceaux - joués il y a longtemps (de cette décennie)
+	DE	Titel - vor langer Zeit gespielt (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_RANDOM
+	EN	Albums - random (from selected year)
+	FR	Albums - aléatoire (de l'année sélectionnée)
+	DE	Alben - zufällig (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_RANDOM
+	EN	Albums - random (from this DECADE)
+	FR	Albums - aléatoire (de cette décennie)
+	DE	Alben - (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_TOPRATEDAVG
+	EN	Albums - with top average rating (from selected year)
+	FR	Albums - avec les meilleures notes moyennes (de l'année sélectionnée)
+	DE	Alben - mit TOP Durchschnittsbewertung (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_TOPRATEDAVG
+	EN	Albums - with top average rating (from this DECADE)
+	FR	Albums - avec les meilleures notes moyennes (de cette décennie)
+	DE	Alben - mit TOP Durchschnittsbewertung (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_TOPRATEDTOTAL
+	EN	Albums - with top total rating (from selected year)
+	FR	Albums - mieux notés (de l'année sélectionnée)
+	DE	Alben - mit TOP Gesamtbewertung (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_TOPRATEDTOTAL
+	EN	Albums - with top total rating (from this DECADE)
+	FR	Albums - mieux notés (de cette décennie)
+	DE	Alben - mit TOP Gesamtbewertung (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_MOSTPLAYED
+	EN	Albums - most played (total count) (from selected year)
+	FR	Albums - les plus joués (compte absolu) (de l'année sélectionnée)
+	DE	Alben - meistgespielt (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_MOSTPLAYED
+	EN	Albums - most played (total count) (from this DECADE)
+	FR	Albums - les plus joués (compte absolu) (de cette décennie)
+	DE	Alben - meistgespielt (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_MOSTPLAYEDAVG
+	EN	Albums - most played (average count) (from selected year)
+	FR	Albums - les plus joués (compte moyen) (de l'année sélectionnée)
+	DE	Alben - meistgespielt (Durchschnitt) (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_MOSTPLAYEDAVG
+	EN	Albums - most played (average count) (from this DECADE)
+	FR	Albums - les plus joués (compte moyen) (de cette décennie)
+	DE	Alben - meistgespielt (Durchschnitt) (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_LEASTPLAYED
+	EN	Albums - least played (total count) (from selected year)
+	FR	Albums - les moins joués (compte absolu) (de l'année sélectionnée)
+	DE	Alben - am wenigsten gespielt (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_LEASTPLAYED
+	EN	Albums - least played (total count) (from this DECADE)
+	FR	Albums - les moins joués (compte absolu) (de cette décennie)
+	DE	Alben - am wenigsten gespielt (absolut) (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_LEASTPLAYEDAVG
+	EN	Albums - least played (average count) (from selected year)
+	FR	Albums - les moins joués (compte moyen) (de l'année sélectionnée)
+	DE	Alben - am wenigsten gespuelt (Durchschnitt) (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_LEASTPLAYEDAVG
+	EN	Albums - least played (average count) (from this DECADE)
+	FR	Albums - les moins joués (compte moyen) (de cette décennie)
+	DE	Alben - am wenigsten gespielt (Durchschnitt) (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_NEVERPLAYED
+	EN	Albums - never played (from selected year)
+	FR	Albums - jamais joués (de l'année sélectionnée)
+	DE	Alben - nie gespielt (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_NEVERPLAYED
+	EN	Albums - never played (from this DECADE)
+	FR	Albums - jamais joués (de cette décennie)
+	DE	Alben - nie gespielt (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_PLAYEDLONGAGO
+	EN	Albums - played long ago (from selected year)
+	FR	Albums - joués il y a longtemps (de l'année sélectionnée)
+	DE	Alben - vor langer Zeit gespielt (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_PLAYEDLONGAGO
+	EN	Albums - played long ago (from this DECADE)
+	FR	Albums - joués il y a longtemps (de cette décennie)
+	DE	Alben - vor langer Zeit gespielt (aus diesem Jahrzehnt)
+
+
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTALBUM
+	EN	Select album
+	FR	Sélectionner l'album
+	DE	Album auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTARTIST
+	EN	Select artist
+	FR	Sélectionner l'artiste
+	DE	Interpret auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTDECADE
+	EN	Select decade
+	FR	Sélectionner la décennie
+	DE	Jahrzehnt auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTDECADES
+	EN	Select decades
+	FR	Sélectionner les décennies
+	DE	Jahrzehnte auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTYEAR
+	EN	Select year
+	FR	Sélectionner l'année
+	DE	Jahr auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTYEARS
+	EN	Select years
+	FR	Sélectionner les années
+	DE	Jahre auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTGENRE
+	EN	Select genre
+	FR	Sélectionner le genre
+	DE	Stilrichtung auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTGENRES
+	EN	Select genres
+	FR	Sélectionner les genres
+	DE	Stilrichtungen auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTGENRES_LOCAL
+	EN	Select genres for local library tracks
+	FR	Sélectionner les genres pour les morceaux de la bibliothèque locale
+	DE	Stilrichtungen für Titel der lokalen Sammlung auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPLAYLIST
+	EN	Select playlist
+	FR	Sélectionner la liste de lecture
+	DE	Wiedergabeliste auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPLAYLISTS
+	EN	Select playlists
+	FR	Sélectionner les listes de lecture
+	DE	Wiedergabelisten auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPLAYLIST_IGNORE
+	EN	Select playlist to ignore
+	FR	Sélectionner la liste de lecture à ignorer
+	DE	Zu ignorierende Wiedergabeliste auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTMINRATING
+	EN	Select minimum rating (stars)
+	FR	Sélectionner la note minimum (étoiles)
+	DE	Minimale Bewertung (Sterne) auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTMAXRATING
+	EN	Select maximum rating (stars)
+	FR	Sélectionner la note maximum (étoiles)
+	DE	Maximale Bewertung (Sterne) auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTEXACTRATING
+	EN	Select exact rating (stars)
+	FR	Sélectionner la note exacte (étoiles)
+	DE	Exakte Bewertung (Sterne) auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPERCENTAGERATED
+	EN	Select percentage of rated songs
+	FR	Sélectionner le pourcentage de morceaux notés
+	DE	Anteil der bewerteten Titel auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPERCENTAGETOPRATED
+	EN	Select percentage of top rated songs
+	FR	Sélectionner le pourcentage de morceaux bien notés
+	DE	Anteil der TOP bewerteten Titel auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTVLIB
+	EN	Select virtual library
+	FR	Sélectionner la bibliothèque virtuelle
+	DE	Virtuelle Sammlung auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS
+	EN	Choose songs to include
+	FR	Choisir les morceaux à inclure
+	DE	Einzuschließende Titel auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDECOMPIS
+	EN	Choose albums to include
+	FR	Choisir les albums à inclure
+	DE	Einzuschließende Alben auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SONGS_LASTPLAYED
+	EN	Limit to last played songs?
+	FR	Limiter aux derniers morceaux joués ?
+	DE	Auf zuletzt gespielte Titel begrenzen?
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SONGS_IGNORERECENTLYPLAYED
+	EN	Ignore recently played songs?
+	FR	Ignorer des morceaux joués récemment ?
+	DE	Kürzlich gespielte Titel ignorieren?
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_ALBUMS_RECENTLYPLAYED
+	EN	Limit to albums that contain recently PLAYED songs?
+	FR	Limiter aux albums contenant les morceaux joués récemment ?
+	DE	Auf Alben mit neulich gespielten Titeln begrenzen?
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_ARTISTS_RECENTLYPLAYED
+	EN	Limit to artists with recently PLAYED songs?
+	FR	Limiter aux artistes avec des morceaux joués récemment ?
+	DE	Auf Interpreten mit neulich gespielten Titeln begrenzen?
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_GENRES_RECENTLYPLAYED
+	EN	Limit to genres that contain recently PLAYED songs?
+	FR	Limiter aux genres avec des morceaux joués récemment ?
+	DE	Auf Stilrichtungen mit neulich gespielten Titeln begrenzen?
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_YEARS_RECENTLYPLAYED
+	EN	Limit to years that contain recently PLAYED songs?
+	FR	Limiter aux années avec des morceaux joués récemment ?
+	DE	Auf Jahre mit neulich gespielten Titeln begrenzen?
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTLASTADDEDPERIOD_SONGS
+	EN	Limit to last ADDED songs?
+	FR	Limiter aux derniers morceaux ajoutés ?
+	DE	Auf zuletzt hinzugefügte Titell begrenzen?
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTLASTADDEDPERIOD_ALBUMS
+	EN	Limit to last ADDED albums?
+	FR	Limiter aux derniers albums ajoutés ?
+	DE	Auf zuletzt hinzugefügte Alben begrenzen?
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTLASTADDEDPERIOD_ARTISTS
+	EN	Limit to artists with last ADDED songs?
+	FR	Limiter aux artistes avec les derniers morceaux ajoutés ?
+	DE	Auf Interpreten mit zuletzt hinzugefügten Titeln begrenzen?
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTLASTADDEDPERIOD_GENRES
+	EN	Limit to genres with last ADDED songs?
+	FR	Limiter aux genres avec les derniers morceaux ajoutés ?
+	DE	Auf Stilrichtungen mit zuletzt hinzugefügten Titeln begrenzen?
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTLASTADDEDPERIOD_YEARS
+	EN	Limit to years with last ADDED songs?
+	FR	Limiter aux années avec les derniers morceaux ajoutés ?
+	DE	Auf Jahre mit zuletzt hinzugefügten Toiteln begrenzen?
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTMAXDPSV
+	EN	Select maximum dynamic played/skipped value
+	FR	Sélectionner la DPSV maximale
+	DE	Maiximales Gespielt/Übersprungen Verhältnis auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTMINDPSV
+	EN	Select minimum dynamic played/skipped value
+	FR	Sélectionner la DPSV minimale
+	DE	Minimales Gespielt/Übersprungen Verhältnis auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPERCENTAGEPLAYLIST
+	EN	Select percentage of songs from playlists
+	FR	Sélectionner le pourcentage de morceaux des listes de lecture
+	DE	Prozentualer Anteil der Wiedergabeliste auswählen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_TITLECONTAINS_ALBUM
+	EN	Album title contains
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_TITLECONTAINS_TRACK
+	EN	Track title contains
+
+
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL
+	EN	all songs
+	FR	tous les morceaux
+	DE	Alle Titel
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
+	EN	played songs
+	FR	morceaux joués
+	DE	gespielte Titel
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED
+	EN	unplayed songs
+	FR	morceaux non joués
+	DE	ungespielte Titel
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_UNRATED
+	EN	unrated
+	FR	pas notés
+	DE	unbewertet
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_ALL
+	EN	Don’t limit
+	FR	Ne pas limiter
+	DE	Nicht begrenzen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_1WEEK
+	EN	Played in the last week
+	FR	Joués dans la dernière semaine
+	DE	In der letzten Woche gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_1WEEK_NOT
+	EN	NOT played in the last week
+	FR	NON joués dans la dernière semaine
+	DE	NICHT in der letzten Woche gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_2WEEKS
+	EN	Played in the last 2 weeks
+	FR	Joués dans les 2 dernières semaines
+	DE	In den letzten 2 Wochen gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_2WEEKS_NOT
+	EN	NOT played in the last 2 weeks
+	FR	NON joués dans les 2 dernières semaines
+	DE	NICHT in den letzten 2 Wochen gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_3WEEKS
+	EN	Played in the last 3 weeks
+	FR	Joués dans les 3 dernières semaines
+	DE	In den letzten 3 Wochen gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_3WEEKS_NOT
+	EN	NOT played in the last 3 weeks
+	FR	NON joués dans les 3 dernières semaines
+	DE	NICHT in den letzten 3 Wochen gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_4WEEKS
+	EN	Played in the last 4 weeks
+	FR	Joués dans les 4 dernières semaines
+	DE	In den letzten 4 WOchen gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_4WEEKS_NOT
+	EN	NOT played in the last 4 weeks
+	FR	NON joués dans les 4 dernières semaines
+	DE	NICHT in den letzten 4 Wochen gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_3MONTHS
+	EN	Played in the last 3 months
+	FR	Joués dans les 3 derniers mois
+	DE	In den letzten 3 Monaten gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_3MONTHS_NOT
+	EN	NOT played in the last 3 months
+	FR	NON joués dans les 3 derniers mois
+	DE	NICHT in den letzten 3 Monaten gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_6MONTHS
+	EN	Played in the last 6 months
+	FR	Joués dans les 6 derniers mois
+	DE	In den letzten 6 Monaten gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_6MONTHS_NOT
+	EN	NOT played in the last 6 months
+	FR	NON joués dans les 6 derniers mois
+	DE	NICHT in den letzten 6 Monaten gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTRECENTLYPLAYEDPERIOD_12MONTHS
+	EN	Played in the last 12 months
+	FR	Joués dans les 12 derniers mois
+	DE	In den letzten 12 Monaten gespielt
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTLASTADDEDPERIOD_ALL
+	EN	Don’t limit
+	FR	Ne pas limiter
+	DE	Nicht begrenzen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTLASTADDEDPERIOD_1WEEK
+	EN	Added in the week before the last library import
+	FR	Ajoutés dans la semaine avant le dernier import de la bibliothèque
+	DE	Hinzugefügt in der Woche vor dem letzten Durchsuchen der Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTLASTADDEDPERIOD_2WEEKS
+	EN	Added in the 2 weeks before the last library import
+	FR	Ajoutés dans les 2 semaines avant le dernier import de la bibliothèque
+	DE	Hinzugefügt innerhalb von 2 Wochen vor dem letzten Durchsuchen der Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTLASTADDEDPERIOD_4WEEKS
+	EN	Added in the 4 weeks before the last library import
+	FR	Ajoutés dans les 4 semaines avant le dernier import de la bibliothèque
+	DE	Hinzugefügt innerhalb von 4 Wochen vor dem letzten Durchsuchen der Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTLASTADDEDPERIOD_3MONTHS
+	EN	Added in the 3 months before the last library import
+	FR	Ajoutés dans les 3 mois avant le dernier import de la bibliothèque
+	DE	Hinzugefügt innerhalb von 3 Monaten vor dem letzten Durchsuchen der Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTLASTADDEDPERIOD_6MONTHS
+	EN	Added in the 6 months before the last library import
+	FR	Ajoutés dans les 6 mois avant le dernier import de la bibliothèque
+	DE	Hinzugefügt innerhalb von 6 Monaten vor dem letzten Durchsuchen der Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SELECTLASTADDEDPERIOD_12MONTHS
+	EN	Added in the 12 months before the last library import
+	FR	Ajoutés dans les 12 mois avant le dernier import de la bibliothèque
+	DE	Hinzugefügt innerhalb von 12 Monaten vor dem letzten Durchsuchen der Sammlung
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_ALBUMS_ALL
+	EN	all albums
+	FR	tous les albums
+	DE	Alle Alben
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_ALBUMS_COMPISONLY
+	EN	compilations only
+	FR	seulement les compilations
+	DE	Nur Kompilationen
+
+PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_ALBUMS_NOCOMPIS
+	EN	no compilations
+	FR	pas de compilations
+	DE	keine Kompilationen
+
+
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_APC_PLAYLISTS_BATCH
+	EN	Batch enable/disable<br>APC (duplicate) playlists
+	FR	Activation/désactivation groupées<br>Liste de lecture APC (dupliquées)
+	DE	Aktivieren/Deaktivieren aller APC Wiedergabelisten (Duplikate)
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_APC_PLAYLISTS_BATCH_DESC
+	EN	The APC dynamic playlists have the same purpose as some of DPL's built-in dynamic playlists. They just use different values.<br>These buttons allow you to enable <b>all</b> dynamic playlists of both versions (default) or just one version <i>in one go</i>.<br><b>You can still enable or disable individual lists in the section below.</b>
+	FR	Les listes de lecture dynamiques d'APC ont le même objectif que certaines listes de lecture intégrées de DPL. Elles utilisent juste des valeurs différentes.<br>Ces boutons vous permettent d'activer <b>toutes</b> les listes de lecture dynamiques des deux versions (par défaut) ou juste une version <i>en une seule fois</i>.<br><b>Vous pouvez toujours activer ou désactiver les listes de manière individuelle dans la section ci-dessous.</b>
+	DE	Die APC dynamischen Wiedergabelisten haben den gleichen Zweck wie einige integrierte dynamische Playlisten dieses Plugins. Sie nutzen nur andere Werte.<br>Diese Tasten erlauben die Aktivierung <b>beider</b> Versionen (Standard) oder nur einer Version.<br><b>Es können auch einzelne Listen im unteren Bereich ausgewählt werden.</b>
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_APCDUPES_ENABLE_BUTTON_DPLONLY
+	EN	Only DPL playlists
+	FR	Seulement les listes de DPL
+	DE	Nur DPL Wiedergabelisten
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_APCDUPES_ENABLE_BUTTON_APCONLY
+	EN	Only APC playlists
+	FR	Seulement les listes d'APC
+	DE	Nur APC Wiedergabelisten
+
+SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_APCDUPES_ENABLE_BUTTON_BOTH
+	EN	DPL and APC playlists
+	FR	Les listes de DPL et APC
+	DE	DPL und APC Wiedergabelisten
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_PARTLYPLAYED_GENRE_DECADE_APC
+	EN	Albums - partly played (by genre + decade) (APC)
+	FR	Albums - partiellement joués (par genre + décennie)
+	DE	Alben - teilweise gespielt (nach Stilrichtung und Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_MOSTPLAYED_APC
+	EN	Albums - most played (total count) (APC)
+	FR	Albums - les plus joués (compte absolu) (APC)
+	DE	Alben - meistgespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_MOSTPLAYEDAVG_APC
+	EN	Albums - most played (average count) (APC)
+	FR	Albums - les plus joués (compte moyen) (APC)
+	DE	Alben - meistgespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_LEASTPLAYED_APC
+	EN	Albums - least played (total count) (APC)
+	FR	Albums - les moins joués (compte absolu) (APC)
+	DE	Alben - am wenigsten gespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_LEASTPLAYEDAVG_APC
+	EN	Albums - least played (average count) (APC)
+	FR	Albums - les moins joués (compte moyen) (APC)
+	DE	Âlben - am wenigsten gespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_RECENTLYPLAYEDORLASTADDEDSONGS_APC
+	EN	Albums - recently played or lasted added songs (APC)
+	FR	Albums - joués récemment ou derniers morceaux ajoutés (APC)
+	DE	Alben - neulich gespielt oder zuletzt hinzugefügt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_NEVERPLAYED_APC
+	EN	Albums - never played (APC)
+	FR	Albums - jamais joués (APC)
+	DE	Alben - nie gespielt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ALBUMS_PLAYEDLONGAGO_APC
+	EN	Albums - played long ago (APC)
+	FR	Albums - joués il y a longtemps (APC)
+	DE	Alben - vor langer Zeit gespielt (APC)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_PARTLYPLAYED_GENRE_DECADE_APC
+	EN	Artists - partly played (by genre + decade) (APC)
+	FR	Artistes - partiellement joués (par genre + décennie) (APC)
+	DE	Interpreten - teilweise gespielt (nach Stilrichtung und Jahrzehnt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_MOSTPLAYED_APC
+	EN	Artists - most played (total count) (APC)
+	FR	Artistes - les plus joués (compte absolu) (APC)
+	DE	Interpreten - meistgespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_MOSTPLAYEDAVG_APC
+	EN	Artists - most played (average count) (APC)
+	FR	Artistes - les plus joués (compte moyen) (APC)
+	DE	Interpreten - meistgespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_LEASTPLAYED_APC
+	EN	Artists - least played (APC)
+	FR	Artistes - les moins joués (APC)
+	DE	Interpreten - am wenigsten gespielt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_LEASTPLAYEDAVG_APC
+	EN	Artists - least played (average count) (APC)
+	FR	Artistes - les moins joués (compte moyen) (APC)
+	DE	Interpreten - am wenigsten gespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_RECENTLYPLAYEDORLASTADDEDSONGS_APC
+	EN	Artists - recently played or lasted added songs (APC)
+	FR	Artistes - joués récemment ou derniers morceaux ajoutés (APC)
+	DE	Interpreten - neulich gespielt oder hinzugefügt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_NEVERPLAYED_APC
+	EN	Artists - never played (APC)
+	FR	Artistes - jamais joués (APC)
+	DE	Interpreten - nie gespielt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_ARTISTS_PLAYEDLONGAGO_APC
+	EN	Artists - played long ago (APC)
+	FR	Artistes - joués il y a longtemps (APC)
+	DE	Interpreten - vor langer Zeit gespielt (APC)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_MOSTPLAYED_APC
+	EN	Genres - most played (total count) (APC)
+	FR	Genres - les plus joués (compte absolu) (APC)
+	DE	Stilrichtungen - meistgespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_MOSTPLAYEDAVG_APC
+	EN	Genres - most played (average count) (APC)
+	FR	Genres - les plus joués (compte moyen) (APC)
+	DE	Stilrichtungen - meistgespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_LEASTPLAYED_APC
+	EN	Genres - least played (total count) (APC)
+	FR	Genres - les moins joués (compte absolu) (APC)
+	DE	Stilrichtungen - am wenigsten gespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_LEASTPLAYEDAVG_APC
+	EN	Genres - least played (average count) (APC)
+	FR	Genres - les moins joués (compte moyen) (APC)
+	DE	Stilrichtungen - am wenigsten gespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_RECENTLYPLAYEDORLASTADDEDSONGS_APC
+	EN	Genres - recently played or lasted added songs (APC)
+	FR	Genres - joués récemment ou derniers morceaux ajoutés (APC)
+	DE	Stilrichtungen - neulich gespielt oder hinzugefügt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_NEVERPLAYED_APC
+	EN	Genres - never played (APC)
+	FR	Genres - jamais joués (APC)
+	DE	Stilrichtungen - nie gespielt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_GENRES_PLAYEDLONGAGO_APC
+	EN	Genres - played long ago (APC)
+	FR	Genres - joués il y a longtemps (APC)
+	DE	Stilrichtungen - vor langer Zeit gespielt (APC)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_MOSTPLAYED_APC
+	EN	Playlists - most played (total count) (APC)
+	FR	Listes de lecture - les plus jouées (compte absolu) (APC)
+	DE	Wiedergabelisten - meistgespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_MOSTPLAYEDAVG_APC
+	EN	Playlists - most played (average count) (APC)
+	FR	Listes de lecture - les plus jouées (compte moyen) (APC)
+	DE	Wiedergabelisten - meistgespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_LEASTPLAYED_APC
+	EN	Playlists - least played (total count) (APC)
+	FR	Listes de lecture - les moins jouées (compte absolu) (APC)
+	DE	Wiedergabelisten - am wenigsten gespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_LEASTPLAYEDAVG_APC
+	EN	Playlists - least played (average count) (APC)
+	FR	Listes de lecture - les moins jouées (compte moyen) (APC)
+	DE	Wiedergabelisten - am wenigsten gespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_NEVERPLAYED_APC
+	EN	Playlists - never played (APC)
+	FR	Listes de lecture - jamais jouées (APC)
+	DE	Wiedergabelisten - nie gespielt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_PLAYEDLONGAGO_APC
+	EN	Playlists - played long ago (APC)
+	FR	Listes de lecture - jouées il y a longtemps (APC)
+	DE	Wiedergabelisten - vor langer Zeit gespielt (APC)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_DPSV_APC
+	EN	Songs - random (by dynamic played/skipped value range) (APC)
+	FR	Morceaux - aléatoire (par gamme de DPSV) (APC)
+	DE	Titel - zufällig (nach dynamisch gespielt/übersprungen Wertebereich) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RANDOM_GENRE_DECADE_DPSV_APC
+	EN	Songs - random (by genre, decade & dynamic played/skipped value range) (APC)
+	FR	Morceaux - aléatoire (par genre, décennie et gamme de DPSV) (APC)
+	DE	Titel - zufällig (nach Stilrichtung, Jahrzehnt, und dynamisch gespielt/übersprungen Wertebereich) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_MINDPSV_PERCENTAGETOPRATED_APC
+	EN	Songs - RATED (by genre + min. DPSV with % of top rated songs) (APC)
+	FR	Morceaux - notés (par genre + DPSV min. avec un % de morceaux bien notés) (APC)
+	DE	Titel - bewertet (nach Stilrichtung und min. DPSV mit % TOP Bewertung) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_DECADE_PERCENTAGERATED_MINDPSV_APC
+	EN	Songs - not RATED (by genre, decade + min. DPSV with % of rated songs) (APC)
+	FR	Morceaux - non notés (par genre, décennie + DPSV min. avec un % de morceaux notés) (APC)
+	DE	Titel - unbewertet (nach Stilrichtung, Jahrzehnt und DPSV mit Anteil bewerteter Titel) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_RATED_GENRE_YEAR_PERCENTAGERATED_MINDPSV_APC
+	EN	Songs - not RATED (by genre, year + min. DPSV with % of rated songs) (APC)
+	FR	Morceaux - non notés (par genre, année + DPSV min. avec un % de morceaux notés) (APC)
+	DE	Titel - unbewertet (nach Stilrichtung, Jahr und DPSV mit Anteil bewerteter Titel) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PERCENTAGEPLAYLIST_GENRE_DECADE_MINRATING_NOTRECENTLYPLAYED_APC
+	EN	Songs - mix of songs from selected (online) playlists and from the local library (filters: genres, decades, min. rating, recently played) (APC)
+	FR	Morceaux - mélange de morceaux des listes de lecture sélectionnées et du reste de la bibliothèque (filtres: genres, décennies, note min., récemment écoutées) (APC)
+	DE	Titel - Mix von Titeln aus gewählter (online) Wiedergabeliste und lokaler Sammlung (Filter: Stilrichtung, Jahrzehnte, Mindestbewertung, neulich gespielt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED_MINRATING_APC
+	EN	Songs - most played (min. rating) (APC)
+	FR	Morceaux - les plus joués (note min.) (APC)
+	DE	Titel - meistgespielt (Mindestbewertung) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_LEASTPLAYED_APC
+	EN	Songs - least played (APC)
+	FR	Morceaux - les moins joués (APC)
+	DE	Titel - am wenigsten gespielt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_NEVERPLAYED_APC
+	EN	Songs - never played (APC)
+	FR	Morceaux - jamais joués (APC)
+	DE	Titel - nie gespielt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PLAYEDLONGAGO_APC
+	EN	Songs - played long ago (APC)
+	FR	Morceaux - joués il y a longtemps (APC)
+	DE	Titel - vor langer Zeit gespielt (APC)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_MOSTPLAYED_APC
+	EN	Years - most played (total count) (APC)
+	FR	Années - les plus jouées (compte absolu) (APC)
+	DE	Jahre - meistgespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_MOSTPLAYEDAVG_APC
+	EN	Years - most played (average count) (APC)
+	FR	Années - les plus jouées (compte moyen) (APC)
+	DE	Jahre - meistgespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_LEASTPLAYED_APC
+	EN	Years - least played (total count) (APC)
+	FR	Années - les moins jouées (compte absolu) (APC)
+	DE	Jahre - am wenigsten gespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_LEASTPLAYEDAVG_APC
+	EN	Years - least played (average count) (APC)
+	FR	Années - les moins jouées (compte moyen) (APC)
+	DE	Jahre - am wenigsten gespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_RECENTLYPLAYEDORLASTADDEDSONGS_APC
+	EN	Years - recently played or lasted added songs (APC)
+	FR	Années - jouées récemment ou derniers morceaux ajoutés (APC)
+	DE	Jahre - neulich gespielt oder hinzugefügt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_NEVERPLAYED_APC
+	EN	Years - never played (APC)
+	FR	Années - jamais jouées (APC)
+	DE	Jahre - nie gespielt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_YEARS_PLAYEDLONGAGO_APC
+	EN	Years - played long ago (APC)
+	FR	Années - jouées il y a longtemps (APC)
+	DE	Jahre - vor langer Zeit gespielt (APC)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_MOSTPLAYED_APC
+	EN	Songs - most played (APC) (from selected album)
+	FR	Morceaux - les plus joués (APC) (de l'album sélectionné)
+	DE	Titel - meistgespielt (APC) (aus gewähltem Album)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_LEASTPLAYED_APC
+	EN	Songs - least played (APC) (from selected album)
+	FR	Morceaux - les moins joués (APC) (de l'album sélectionné)
+	DE	Titel - am wenigsten gespielt (APC) (aus gewähltem Album)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_NEVERPLAYED_APC
+	EN	Songs - never played (APC) (from selected album)
+	FR	Morceaux - jamais joués (APC) (de l'album sélectionné)
+	DE	Titel - nie gespielt (APC) (aus gewähltem Album)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_PLAYEDLONGAGO_APC
+	EN	Songs - played long ago (APC) (from selected album)
+	FR	Morceaux - joués il y a longtemps (APC) (de l'album sélectionné)
+	DE	Titel - vor langer Zeit gespielt (APC) (aus gewähltem Album)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_MOSTPLAYED_APC
+	EN	Songs - most played (APC) (by selected artist)
+	FR	Morceaux - les plus joués (APC) (de l'artiste sélectionné)
+	DE	Titel - meistgespielt (APC) (von gewähltem Interpret)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_LEASTPLAYED_APC
+	EN	Songs - least played (APC) (by selected artist)
+	FR	Morceaux - les moins joués (APC) (de l'artiste sélectionné)
+	DE	Titel - am wenigsten gespielt (APC) (von gewähltem Interpret)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_NEVERPLAYED_APC
+	EN	Songs - never played (APC) (by selected artist)
+	FR	Morceaux - jamais joués (APC) (de l'artiste sélectionné)
+	DE	Titel - nie gespielt (APC) (von gewähltem Interpret)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_PLAYEDLONGAGO_APC
+	EN	Songs - played long ago (APC) (by selected artist)
+	FR	Morceaux - joués il y a longtemps (APC) (de l'artiste sélectionné)
+	DE	Titel - vor langer Zeit gespielt (APC) (von gewähltem Interpret)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYED_APC
+	EN	Albums - most played (total count) (APC) (by selected artist)
+	FR	Albums - les plus joués (compte absolu) (APC) (de l'artiste sélectionné)
+	DE	Alben - meistgespielt (absolut) (APC) (von gewähltem Interpret)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_MOSTPLAYEDAVG_APC
+	EN	Albums - most played (average count) (APC) (by selected artist)
+	FR	Albums - les plus joués (compte moyen) (APC) (de l'artiste sélectionné)
+	DE	Alben - meistgespielt (Durchschnitt) (APC) (von gewähltem Interpret)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYED_APC
+	EN	Albums - least played (total count) (APC) (by selected artist)
+	FR	Albums - les moins joués (compte absolu) (APC) (de l'artiste sélectionné)
+	DE	Alben - am wenigsten gespielt (absolut) (APC) (von gewähltem Interpret)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_LEASTPLAYEDAVG_APC
+	EN	Albums - least played (average count) (APC) (by selected artist)
+	FR	Albums - les moins joués (compte moyen) (APC) (de l'artiste sélectionné)
+	DE	Alben - am wenigsten gespielt (Durchschnitt) (APC) (von gewähltem Interpret)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_NEVERPLAYED_APC
+	EN	Albums - never played (APC) (by selected artist)
+	FR	Albums - jamais joués (APC) (de l'artiste sélectionné)
+	DE	Alben - nie gespielt (APC) (von gewähltem Interpret)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_PLAYEDLONGAGO_APC
+	EN	Albums - played long ago (APC) (by selected artist)
+	FR	Albums - joués il y a longtemps (APC) (de l'artiste sélectionné)
+	DE	Alben - vor langer Zeit gespielt (APC) (von gewähltem Interpret)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_MOSTPLAYED_APC
+	EN	Songs - most played (APC) (in selected genre)
+	FR	Morceaux - les plus joués (APC) (dans le genre sélectionné)
+	DE	Titel - meistgespielt (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_LEASTPLAYED_APC
+	EN	Songs - least played (APC) (in selected genre)
+	FR	Morceaux - les moins joués (APC) (dans le genre sélectionné)
+	DE	Titel - am wenigsten gespielt (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_NEVERPLAYED_APC
+	EN	Songs - never played (APC) (in selected genre)
+	FR	Morceaux - jamais joués (APC) (dans le genre sélectionné)
+	DE	Titel - nie gespielt (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_PLAYEDLONGAGO_APC
+	EN	Songs - played long ago (APC) (in selected genre)
+	FR	Morceaux - joués il y a longtemps (APC) (dans le genre sélectionné)
+	DE	Titel - vor langer Zeit gespielt (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_MOSTPLAYED_APC
+	EN	Albums - most played (total count) (APC) (in selected genre)
+	FR	Albums - les plus joués (compte absolu) (APC) (dans le genre sélectionné)
+	DE	Alben - meistgespielt (absolut) (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_MOSTPLAYEDAVG_APC
+	EN	Albums - most played (average count) (APC) (in selected genre)
+	FR	Albums - les plus joués (compte moyen) (APC) (dans le genre sélectionné)
+	DE	Alben - meistgespielt (Durchschnitt) (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_LEASTPLAYED_APC
+	EN	Albums - least played (total count) (APC) (in selected genre)
+	FR	Albums - les moins joués (compte absolu) (APC) (dans le genre sélectionné)
+	DE	Alben - am wenigsten gespielt (absolut) (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_LEASTPLAYEDAVG_APC
+	EN	Albums - least played (average count) (APC) (in selected genre)
+	FR	Albums - les moins joués (compte moyen) (APC) (dans le genre sélectionné)
+	DE	Alben - am wenigsten gespielt (Durchschnitt) (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_NEVERPLAYED_APC
+	EN	Albums - never played (APC) (in selected genre)
+	FR	Albums - jamais joués (APC) (dans le genre sélectionné)
+	DE	Alben - nie gespielt (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_PLAYEDLONGAGO_APC
+	EN	Albums - played long ago (APC) (in selected genre)
+	FR	Albums - joués il y a longtemps (APC) (dans le genre sélectionné)
+	DE	Alben - vor langer Zeit gespielt (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_MOSTPLAYED_APC
+	EN	Artists - most played (total count) (APC) (in selected genre)
+	FR	Artistes - les plus joués (compte absolu) (APC) (dans le genre sélectionné)
+	DE	Interpreten - meistgespielt (absolut) (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_MOSTPLAYEDAVG_APC
+	EN	Artists - most played (average count) (APC) (in selected genre)
+	FR	Artistes - les plus joués (compte moyen) (APC) (dans le genre sélectionné)
+	DE	Interpreten - meistgespielt (Durchschnitt) (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_LEASTPLAYED_APC
+	EN	Artists - least played (total count) (APC) (in selected genre)
+	FR	Artistes - les moins joués (compte absolu) (APC) (dans le genre sélectionné)
+	DE	Interpreten - am wenigsten gespielt (absolut) (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_LEASTPLAYEDAVG_APC
+	EN	Artists - least played (average count) (APC) (in selected genre)
+	FR	Artistes - les moins joués (compte moyen) (APC) (dans le genre sélectionné)
+	DE	Interpreten - am wenigsten gespielt (Durchschnitt) (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_NEVERPLAYED_APC
+	EN	Artists - never played (APC) (in selected genre)
+	FR	Artistes - jamais joués (APC) (dans le genre sélectionné)
+	DE	Interpreten - nie gespielt (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_PLAYEDLONGAGO_APC
+	EN	Artists - played long ago (APC) (in selected genre)
+	FR	Artistes - joués il y a longtemps (APC) (dans le genre sélectionné)
+	DE	Interpreten - vor langer Zeit gespielt (APC) (aus gewählter Stilrichtung)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_MOSTPLAYED_APC
+	EN	Songs - most played (APC) (from selected playlist)
+	FR	Morceaux - les plus joués (APC) (de la liste de lecture sélectionnée)
+	DE	Titel - meistgespielt (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_LEASTPLAYED_APC
+	EN	Songs - least played (APC) (from selected playlist)
+	FR	Morceaux - les moins joués (APC) (de la liste de lecture sélectionnée)
+	DE	Titel - am wenigsten gespielt (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_NEVERPLAYED_APC
+	EN	Songs - never played (APC) (from selected playlist)
+	FR	Morceaux - jamais joués (APC) (de la liste de lecture sélectionnée)
+	DE	Titel - nie gespielt (APC) (aus gewählter Stilrichtung)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_PLAYEDLONGAGO_APC
+	EN	Songs - played long ago (APC) (from selected playlist)
+	FR	Morceaux - joués il y a longtemps (APC) (de la liste de lecture sélectionnée)
+	DE	Titel - vor langer Zeit gespielt (APC) (aus gewählter Stilrichtung)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_PARTLYPLAYED_GENRE_DECADE_APC
+	EN	Works - partly played (by genre + decade) (APC)
+	FR	Œuvres - partiellement joués (par genre + décennie)
+	DE	Werke - teilweise gespielt (nach Stilrichtung und Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTPLAYED_APC
+	EN	Works - most played (total count) (APC)
+	FR	Œuvres - les plus joués (compte absolu) (APC)
+	DE	Werke - meistgespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_MOSTPLAYEDAVG_APC
+	EN	Works - most played (average count) (APC)
+	FR	Œuvres - les plus joués (compte moyen) (APC)
+	DE	Werke - meistgespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_LEASTPLAYED_APC
+	EN	Works - least played (total count) (APC)
+	FR	Œuvres - les moins joués (compte absolu) (APC)
+	DE	Werke - am wenigsten gespielt (absolut) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_LEASTPLAYEDAVG_APC
+	EN	Works - least played (average count) (APC)
+	FR	Œuvres - les moins joués (compte moyen) (APC)
+	DE	Âlben - am wenigsten gespielt (Durchschnitt) (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_RECENTLYPLAYEDORLASTADDEDSONGS_APC
+	EN	Works - recently played or lasted added songs (APC)
+	FR	Œuvres - joués récemment ou derniers morceaux ajoutés (APC)
+	DE	Werke - neulich gespielt oder zuletzt hinzugefügt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_NEVERPLAYED_APC
+	EN	Works - never played (APC)
+	FR	Œuvres - jamais joués (APC)
+	DE	Werke - nie gespielt (APC)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_WORKS_PLAYEDLONGAGO_APC
+	EN	Works - played long ago (APC)
+	FR	Œuvres - joués il y a longtemps (APC)
+	DE	Werke - vor langer Zeit gespielt (APC)
+
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_MOSTPLAYED_APC
+	EN	Songs - most played (APC) (from selected year)
+	FR	Morceaux - les plus joués (APC) (de l'année sélectionnée)
+	DE	Titel - meistgespielt (APC) (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_MOSTPLAYED_APC
+	EN	Songs - most played (APC) (from this DECADE)
+	FR	Morceaux - les plus joués (APC) (de cette décennie)
+	DE	Titel - meistgespielt (APC) (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_LEASTPLAYED_APC
+	EN	Songs - least played (APC) (from selected year)
+	FR	Morceaux - les moins joués (APC) (de l'année sélectionnée)
+	DE	Titel - am wenigsten gespielt (APC) (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_LEASTPLAYED_APC
+	EN	Songs - least played (APC) (from this DECADE)
+	FR	Morceaux - les moins joués (APC) (de cette décennie)
+	DE	Titel - am wenigsten gespielt (APC) (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_NEVERPLAYED_APC
+	EN	Songs - never played (APC) (from selected year)
+	FR	Morceaux - jamais joués (APC) (de l'année sélectionnée)
+	DE	Titel - nie gespielt (APC) (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_NEVERPLAYED_APC
+	EN	Songs - never played (APC) (from this DECADE)
+	FR	Morceaux - jamais joués (APC) (de cette décennie)
+	DE	Titel - nie gespielt (APC) (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_SONGS_PLAYEDLONGAGO_APC
+	EN	Songs - played long ago (APC) (from selected year)
+	FR	Morceaux - joués il y a longtemps (APC) (de l'année sélectionnée)
+	DE	Titel - vor langer Zeit gespielt (APC) (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_SONGS_PLAYEDLONGAGO_APC
+	EN	Songs - played long ago (APC) (from this DECADE)
+	FR	Morceaux - joués il y a longtemps (APC) (de cette décennie)
+	DE	Titel - vor langer Zeit gespielt (APC) (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_MOSTPLAYED_APC
+	EN	Albums - most played (total count) (APC) (from selected year)
+	FR	Albums - les plus joués (compte absolu) (APC) (de l'année sélectionnée)
+	DE	Alben - meistgespielt (APC) (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_MOSTPLAYED_APC
+	EN	Albums - most played (total count) (APC) (from this DECADE)
+	FR	Albums - les plus joués (compte absolu) (APC) (de cette décennie)
+	DE	Alben - meistgespielt (absolut) (APC) (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_MOSTPLAYEDAVG_APC
+	EN	Albums - most played (average count) (APC) (from selected year)
+	FR	Albums - les plus joués (compte moyen) (APC) (de l'année sélectionnée)
+	DE	Alben - meistgespielt (Durchschnitt) (APC) (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_MOSTPLAYEDAVG_APC
+	EN	Albums - most played (average count) (APC) (from this DECADE)
+	FR	Albums - les plus joués (compte moyen) (APC) (de cette décennie)
+	DE	Alben - meistgespielt (Durchschnitt) (APC) (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_LEASTPLAYED_APC
+	EN	Albums - least played (total count) (APC) (from selected year)
+	FR	Albums - les moins joués (compte absolu) (APC) (de l'année sélectionnée)
+	DE	Alben - am wenigsten gespielt (absolut) (APC) (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_LEASTPLAYED_APC
+	EN	Albums - least played (total count) (APC) (from this DECADE)
+	FR	Albums - les moins joués (compte absolu) (APC) (de cette décennie)
+	DE	Alben - am wenigsten gespielt (absolut) (APC) (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_LEASTPLAYEDAVG_APC
+	EN	Albums - least played (average count) (APC) (from selected year)
+	FR	Albums - les moins joués (compte moyen) (APC) (de l'année sélectionnée)
+	DE	Alben - am wenigsten gespielt (Durchschnitt) (APC) (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_LEASTPLAYEDAVG_APC
+	EN	Albums - least played (average count) (APC) (from this DECADE)
+	FR	Albums - les moins joués (compte moyen) (APC) (de cette décennie)
+	DE	Alben - am wenigsten gespielt (Durchschnitt) (APC) (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_NEVERPLAYED_APC
+	EN	Albums - never played (APC) (from selected year)
+	FR	Albums - jamais joués (APC) (de l'année sélectionnée)
+	DE	Alben - nie gespielt (APC) (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_NEVERPLAYED_APC
+	EN	Albums - never played (APC) (from this DECADE)
+	FR	Albums - jamais joués (APC) (de cette décennie)
+	DE	Alben - nie gespielt (APC) (aus diesem Jahrzehnt)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_PLAYEDLONGAGO_APC
+	EN	Albums - played long ago (APC) (from selected year)
+	FR	Albums - joués il y a longtemps (APC) (de l'année sélectionnée)
+	DE	Alben - vor langer Zeit gespielt (APC) (aus gewähltem Jahr)
+
+PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_PLAYEDLONGAGO_APC
+	EN	Albums - played long ago (APC) (from this DECADE)
+	FR	Albums - joués il y a longtemps (APC) (de cette décennie)
+	DE	Alben - vor langer Zeit gespielt (APC) (aus diesem Jahrzehnt)

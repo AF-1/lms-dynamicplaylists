@@ -1,0 +1,285 @@
+<link href="[% webroot %]plugins/DynamicPlaylists4/html/dpl.css" rel="stylesheet" />
+[% pagetitle = 'PLUGIN_DYNAMICPLAYLISTS4' | string; pageicon = 'PLUGIN_DYNAMICPLAYLISTS4' %]
+
+[% pwd_list = BLOCK %]/
+	<a href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?player=[% player | uri %]">
+		[% "PLUGIN_DYNAMICPLAYLISTS4" | string %]
+	</a>
+	[%- FOREACH group IN pluginDynamicPlaylists4Groups %]
+		[% IF group.id == '_' _ currentgroup %][% IF systemSkin == 'Classic' %]/[% ELSE %]>[% END %]
+			<a href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?[% group.url %]&amp;player=[% player | uri %]">[% group.displayname %]</a>
+		[% END %]
+	[% END -%]
+	[% IF pluginDynamicPlaylists4Playlist.name %][% IF systemSkin == 'Classic' %]/[% ELSE %]>[% END %] [% pluginDynamicPlaylists4Playlist.name | html %][% END %]
+[% END %]
+[% PROCESS pageheader.html %]
+
+[% BLOCK href %]
+href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html?type=[% type %]&amp;player=[% player | uri %]"
+		 onclick='document.editForm.type.value = "[% type %]";
+							document.editForm.submit();
+							return false;'
+[% END %]
+
+[% IF !pluginDynamicPlaylists4noParamsStaticPLsave %]
+<br><p>[% "PLUGIN_DYNAMICPLAYLISTS4_PARAMETERS_TITLE" | string %]: <span class="boldtitle">[% pluginDynamicPlaylists4Playlist.name | html %]</span></p>
+[% END %]
+<br>
+<form[% IF lastparameter && addOnly == 77 %] onsubmit="return checkBeforeSubmit();"[% END %] action="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html" name="editForm" accept-charset="iso8859-1">
+	<input type="hidden" name="type" value="[% pluginDynamicPlaylists4PlaylistId %]">
+	<input type="hidden" name="addOnly" value="[% pluginDynamicPlaylists4AddOnly %]">
+	<input type="hidden" name="queue" value="[% pluginDynamicPlaylists4Queue %]">
+	<input type="hidden" name="group" value="[% currentgroup %]">
+
+[% FOREACH param IN pluginDynamicPlaylists4MixParameters %]
+
+<br><br>
+-----
+[% USE Dumper %]
+[% Dumper.dump_html(param.parameter.name)%]
+-----
+<br><br>
+	[% IF param.parameter.type == "multiplegenres" || param.parameter.type == "multipledecades" || param.parameter.type == "multipleyears" || param.parameter.type == "multiplestaticplaylists" %]
+	<span class="boldtitle">[% param.parameter.name %]:</span><br>
+		[% IF param.parameter.type == "multiplegenres" %]
+		<table border="0" width="100%">[% USE table genrelistsorted, cols=3, pad=0 %]
+			[% FOREACH genrerow = table.rows %]
+				<tr class="">
+					[% FOREACH genre = genrerow %]
+					[% genreid = genrelist.item("$genre").id %]
+					<td>
+						<input type="checkbox" name="[% genreid %]" id="[% genreid %]" [% genrelist.item("$genre").selected ? "checked" : "" %] onclick="changeNumSelected(this)" [% IF currentparam != "multiplegenres" %]disabled[% END %]>
+						<label style="font-weight: normal;" for="[% genreid %]">[% genrelist.item("$genre").name | html %]</label>
+					</td>
+					[% END %]
+				</tr>
+			<tr>&nbsp;&nbsp;</tr><tr>&nbsp;&nbsp;</tr>
+			[% END %]
+			<input type="hidden" id="dynamicplaylist_parameter_[% param.parameter.id %]" name="dynamicplaylist_parameter_[% param.parameter.id %]" value="[% param.value %]">
+		</table>
+		[% END %]
+		[% IF param.parameter.type == "multipledecades" %]
+		<table border="0" width="100%">[% USE table decadelistsorted, cols=3, pad=0 %]
+			[% FOREACH decaderow = table.rows %]
+				<tr class="">
+					[% FOREACH decade = decaderow %]
+					[% decadeid = decadelist.item("$decade").id %]
+					<td>
+						<input type="checkbox" name="[% decadeid %]" id="[% decadeid %]" [% decadelist.item("$decade").selected ? "checked" : "" %] onclick="changeNumSelected(this)" [% IF currentparam != "multipledecades" %]disabled[% END %]>
+						<label style="font-weight: normal;" for="[% decadeid %]">[% decadelist.item("$decade").name | html %]</label>
+					</td>
+					[% END %]
+				</tr>
+			<tr>&nbsp;&nbsp;</tr><tr>&nbsp;&nbsp;</tr>
+			[% END %]
+			<input type="hidden" id="dynamicplaylist_parameter_[% param.parameter.id %]" name="dynamicplaylist_parameter_[% param.parameter.id %]" value="[% param.value %]">
+		</table>
+		[% END %]
+		[% IF param.parameter.type == "multipleyears" %]
+		<table border="0" width="100%">[% USE table yearlistsorted, cols=3, pad=0 %]
+			[% FOREACH yearrow = table.rows %]
+				<tr class="">
+					[% FOREACH year = yearrow %]
+					[% yearid = yearlist.item("$year").id %]
+					<td>
+						<input type="checkbox" name="[% yearid %]" id="[% yearid %]" [% yearlist.item("$year").selected ? "checked" : "" %] onclick="changeNumSelected(this)" [% IF currentparam != "multipleyears" %]disabled[% END %]>
+						<label style="font-weight: normal;" for="[% yearid %]">[% yearlist.item("$year").name | html %]</label>
+					</td>
+					[% END %]
+				</tr>
+			<tr>&nbsp;&nbsp;</tr><tr>&nbsp;&nbsp;</tr>
+			[% END %]
+			<input type="hidden" id="dynamicplaylist_parameter_[% param.parameter.id %]" name="dynamicplaylist_parameter_[% param.parameter.id %]" value="[% param.value %]">
+		</table>
+		[% END %]
+		[% IF param.parameter.type == "multiplestaticplaylists" %]
+		<table border="0" width="100%">[% USE table staticplaylistlistsorted, cols=1, pad=0 %]
+			[% FOREACH staticplaylistrow = table.rows %]
+				<tr class="">
+					[% FOREACH staticplaylist = staticplaylistrow %]
+					[% staticplaylistid = staticplaylistlist.item("$staticplaylist").id %]
+					<td>
+						<input type="checkbox" name="[% staticplaylistid %]" id="[% staticplaylistid %]" [% staticplaylistlist.item("$staticplaylist").selected ? "checked" : "" %] onclick="changeNumSelected(this)" [% IF currentparam != "multiplestaticplaylists" %]disabled[% END %]>
+						<label style="font-weight: normal;" for="[% staticplaylistid %]">[% staticplaylistlist.item("$staticplaylist").name | html %]</label>
+					</td>
+					[% END %]
+				</tr>
+			<tr>&nbsp;&nbsp;</tr><tr>&nbsp;&nbsp;</tr>
+			[% END %]
+			<input type="hidden" id="dynamicplaylist_parameter_[% param.parameter.id %]" name="dynamicplaylist_parameter_[% param.parameter.id %]" value="[% param.value %]">
+		</table>
+		[% END %]
+	<br>
+
+	[% ELSIF param.parameter.type == "albumtitlecontains" || param.parameter.type == "tracktitlecontains" %]
+	<span class="boldtitle">[% param.parameter.name %]:</span>&nbsp;&nbsp;<input type="text" name="dynamicplaylist_parameter_[% param.parameter.id %]" value="[% param.value %]">
+	<br><br>
+
+	[% ELSE %]
+	<table border="0">
+		<tr>
+		<td class="vcenter">[% param.parameter.name %]</td>
+		<td>&nbsp;</td>
+		<td>
+			<select name="dynamicplaylist_parameter_[% param.parameter.id %]">
+			[% FOREACH value = param.values %]
+				<option value="[% value.id %]" [% IF param.value == value.id %]selected="selected"[% END %]>[% value.name | html %]</option>
+			[% END %]
+			</select>
+		</td>
+		</tr>
+	</table>
+	<br>
+	[% END %]
+[% END %]
+
+[% IF lastparameter && addOnly == 99 %]
+	<hr class="lastparamsep">
+	<br>
+	<table border="0">
+		<tr>
+		<td class="vcenter">[% "PLUGIN_DYNAMICPLAYLISTS4_CUSTOMFAVTITLE" | string %]</td>
+		<td>&nbsp;&nbsp;</td>
+		<td>
+			<input type="text" id="dpl_customfavtitle" name="dpl_customfavtitle" value="[% pluginDynamicPlaylists4Playlist.name | html %]" size="40">
+		</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+		<td class="vcenter">[% "PLUGIN_DYNAMICPLAYLISTS4_FAVADDONLY" | string %]</td>
+		<td>&nbsp;&nbsp;</td>
+		<td>
+			<input type="checkbox" id="dpl_favaddonly" name="dpl_favaddonly" value="0" onclick="this.value=1">
+		</td>
+		</tr>
+	</table>
+[% END %]
+[% IF lastparameter && addOnly == 77 %]
+	[% IF !pluginDynamicPlaylists4noParamsStaticPLsave %]
+	<hr class="lastparamsep">
+	<br>
+	[% END %]
+	<table border="0">
+		<tr>
+		<td class="vcenter">[% "PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLNAME" | string %]</td>
+		<td>&nbsp;&nbsp;</td>
+		<td>
+			<input type="text" id="dpl_customstaticplname" name="dpl_customstaticplname" value="[% IF staticplname %][% staticplname %][% ELSE %][% pluginDynamicPlaylists4Playlist.name | html %][% END %]" size="40">
+		</td>
+		</tr>
+		<tr><td>&nbsp;&nbsp;</td></tr>
+		<tr>
+		<td class="vcenter">[% "PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLMAXTRACKLIMIT" | string %]</td>
+		<td>&nbsp;&nbsp;</td>
+		<td>
+			<input type="text" class="stdedit sliderInput_100_4000_100" name="dpl_customstaticplmaxtracklimit" id="dpl_customstaticplmaxtracklimit" value="4000" size="3">
+		</td>
+		</tr>
+		<tr>
+		<tr><td>&nbsp;&nbsp;</td></tr>
+		<tr>
+		<td class="vcenter">[% "PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLSORTORDER" | string %]</td>
+		<td>&nbsp;&nbsp;</td>
+		<td>
+			<select name="dpl_customstaticplsortorder">
+				<option value="1" selected>[% "PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLSORTORDER_SORT1" | string %]</option>
+				<option value="2">[% "PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLSORTORDER_SORT2" | string %]</option>
+				<option value="3">[% "PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLSORTORDER_SORT3" | string %]</option>
+				<option value="4">[% "PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPLSORTORDER_SORT4" | string %]</option>
+			</select>
+		</td>
+		</tr>
+		<tr>
+	</table>
+[% END %]
+	<br>
+	<input id="formsubmitbtn" type="submit" class="dplbtn" value="[% IF lastparameter %][% IF addOnly == 1 %][% "PLUGIN_DYNAMICPLAYLISTS4_ADD" | string %][% ELSIF addOnly == 99 %][% "PLUGIN_DYNAMICPLAYLISTS4_ADDTOLMSFAVORITES_BTN" | string %][% ELSIF addOnly == 88 %][% "PLUGIN_DYNAMICPLAYLISTS4_QUEUE_DPL" | string %][% ELSIF addOnly == 77 %][% "PLUGIN_DYNAMICPLAYLISTS4_SAVE_BTN" | string %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS4_PLAY" | string %][% END %][% ELSE %][% "PLUGIN_DYNAMICPLAYLISTS4_NEXT" | string %][% END %]">
+
+<script type="text/javascript">
+	// prevent multiple submits
+	var alreadySubmitted = false;
+	function checkBeforeSubmit(){
+		if(!alreadySubmitted) {
+			alreadySubmitted = true;
+			document.getElementById('formsubmitbtn').disabled = true;
+			document.getElementById('staticplsavingstatus').className = "inprogress";
+			return alreadySubmitted;
+		}
+		return false;
+	}
+
+	// handle multiple selection checkboxes
+	var f = document.editForm;
+	var selectedItems = [];
+	var numSelected = 0;
+	var numCheckBoxes = 0;
+	var selectAllString = '[% "PLUGIN_DYNAMICPLAYLISTS4_SELECT_ALL" | string %]';
+	var selectNoneString = '[% "PLUGIN_DYNAMICPLAYLISTS4_SELECT_NONE" | string %]';
+
+	// get number of checkboxes
+	for (var i=0; i < f.elements.length; i++) {
+		if (f.elements[i].type == 'checkbox') {
+			numCheckBoxes++;
+		}
+	}
+
+	// select all or none
+	function selectAll() {
+		var newState = numSelected != numCheckBoxes;
+
+		for (var i=0; i < f.elements.length; i++) {
+			if (f.elements[i].type == 'checkbox' && f.elements[i].disabled == false) {
+				f.elements[i].checked = newState;
+			}
+		}
+		if (newState) { // if numSelected < numCheckBoxes => select all
+			numSelected = numCheckBoxes;
+			f.selectAllButton.value = selectNoneString;
+			for (var i=0; i < f.elements.length; i++) {
+				if (f.elements[i].type == 'checkbox' && f.elements[i].disabled == false) {
+					if(!selectedItems.some(el => el === f.elements[i].id)) selectedItems.push(f.elements[i].id);
+				}
+			}
+		} else { // if numSelected = numCheckBoxes => select none
+			numSelected = 0;
+			f.selectAllButton.value = selectAllString;
+			for (var i=0; i < f.elements.length; i++) {
+				if (f.elements[i].type == 'checkbox' && f.elements[i].disabled == false) {
+					selectedItems = selectedItems.filter(function(item) {
+						return item !== f.elements[i].id
+					});
+				}
+			}
+		}
+		document.getElementById("dynamicplaylist_parameter_[% param.parameter.id %]").value = selectedItems;
+	}
+
+	// increase/decrease numSelected every time a checkbox changes
+	function changeNumSelected(checkBox) {
+		if (checkBox.checked) {
+			numSelected++;
+			if(!selectedItems.some(el => el === f.elements[i].id)) selectedItems.push(checkBox.id);
+		} else {
+			numSelected--;
+			selectedItems = selectedItems.filter(function(item) {
+				return item !== checkBox.id
+			});
+		}
+		document.getElementById("dynamicplaylist_parameter_[% param.parameter.id %]").value = selectedItems;
+
+		if (numSelected == numCheckBoxes) {
+			f.selectAllButton.value = selectNoneString;
+		} else {
+			f.selectAllButton.value = selectAllString;
+		}
+	}
+</script>
+[% IF param.parameter.type == "multiplegenres" || param.parameter.type == "multipledecades" || param.parameter.type == "multipleyears" || param.parameter.type == "multiplestaticplaylists" %]
+	<script type="text/javascript">
+		document.write('<span class="padleft"><input type="button" class="dplbtn" value="' + (numSelected == numCheckBoxes ? selectNoneString : selectAllString) + '" id="selectAllButton" onclick="selectAll()"></span>');
+	</script>
+[% END %]
+<span class='status' id='staticplsavingstatus'>[% "PLUGIN_DYNAMICPLAYLISTS4_NEWSTATICPL_SAVESTATUS" | string %]</span>
+</form>
+<br>
+[% PROCESS pagefooter.html %]

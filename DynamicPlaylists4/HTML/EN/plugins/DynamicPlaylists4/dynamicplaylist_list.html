@@ -1,0 +1,117 @@
+<link href="[% webroot %]plugins/DynamicPlaylists4/html/dpl.css" rel="stylesheet" />
+[% PROCESS plugins/DynamicPlaylists4/dpcomponents.html %]
+[%- pagetitle = 'PLUGIN_DYNAMICPLAYLISTS4' | string; pageicon = 'PLUGIN_DYNAMICPLAYLISTS4' -%]
+
+[%- pwd_list = BLOCK -%]
+	<a href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?player=[% player | uri %]">[% "PLUGIN_DYNAMICPLAYLISTS4" | string %]</a>
+	[%- FOREACH group IN pluginDynamicPlaylists4Context %]
+		[% IF group.dynamicplaylistenabled %][% IF systemSkin == 'Classic' %]/[% ELSE %]>[% END %]
+			<a href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_list.html?[% group.url %]&amp;player=[% player | uri %]">[% group.displayname %]</a>
+		[% END %]
+	[% END -%]
+[% END -%]
+
+[% PROCESS pageheader.html %]
+[% PROCESS plugins/DynamicPlaylists4/dynamicplaylistlink.html %]
+
+[% BLOCK href %]
+href="[% webroot %]
+		[%- IF customurl -%]
+			[%- customurl -%]&amp;player=[% player | uri %]"
+		[%- ELSE -%]
+			plugins/DynamicPlaylists4/dynamicplaylist_mix.html?type=[% type %]&amp;addOnly=[% addOnly %]&amp;player=[% player | uri %][% IF group.contextname %]&amp;group=[% group.contextname %][% END %][% IF playlisttype and dynamicplaylist_parameter_1 %]&amp;dynamicplaylist_parameter_1=[% dynamicplaylist_parameter_1 %][% END %]"
+		[%- END -%]
+[% END %]
+
+[% WRAPPER dpcontentcontainer %]
+	[% IF player == '' %]
+		[% "NO_PLAYER_FOUND" | string %]
+	[% ELSE %]
+		<br>
+		[%- IF activeClientMixName -%]
+			[%- WRAPPER contentitem controls='stopaddingcontrols' %]
+				[% "PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_ACTIVEDPL" | string %] "[% activeClientName %]": <span class="boldtitle">[% activeClientMixName %]</span>
+			[% END %]
+		<br>
+			[%- IF pluginDynamicPlaylists4transferdpl && clientnotsynced && targetplayerlist -%]
+				[%- WRAPPER contentitem controls='transferdplcontrols' %]
+					<form action="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_transferactivedpl.html" id="transferDPLform" accept-charset="iso8859-1">
+					<input type="hidden" name="activedplid" value="[% activeClientMixID %]">
+					[% "PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_TRANSFERDPL" | string %]: &nbsp;
+					<select name="targetplayer">
+					[% FOREACH player IN targetplayerlist %]
+						<option value="[% player.id %]">[% player.name | html %]</option>
+					[% END %]
+					</select>
+					</form>
+				[%- END %]
+				<br>
+			[%- END -%]
+		[%- END -%]
+
+		[% IF pluginDynamicPlaylists4DPLqueueingEnabled && pluginDynamicPlaylists4dplQueue %]
+			[%- WRAPPER contentitem %]
+				<span class="icon-homemenutoplevellist"></span>
+				<a style="text-decoration:none;" href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_dplqueue.html?player=[% player | uri %]">
+				[% "PLUGIN_DYNAMICPLAYLISTS4_DPLQUEUE_CURRENTLYQUEUED" | string %]
+				</a>
+			[% END %]
+		[% END %]
+
+		[% IF pluginDynamicPlaylists4preselectionListArtists %]
+			[%- WRAPPER contentitem %]
+				<span class="icon-homemenutoplevellist"></span>
+				<a style="text-decoration:none;" href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_preselectionmenu.html?objecttype=artist&amp;source=dplhome&amp;player=[% player | uri %]">
+					[% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ARTISTS_LIST" | string %]
+				</a>
+			[% END %]
+		[% END %]
+		[% IF pluginDynamicPlaylists4preselectionListAlbums %]
+			[%- WRAPPER contentitem %]
+				<span class="icon-homemenutoplevellist"></span>
+				<a style="text-decoration:none;" href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_preselectionmenu.html?objecttype=album&amp;source=dplhome&amp;player=[% player | uri %]">
+				[% "PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ALBUMS_LIST" | string %]
+				</a>
+			[% END %]
+		[% END %]
+		[% IF pluginDynamicPlaylists4dplQueue || pluginDynamicPlaylists4preselectionListAlbums || pluginDynamicPlaylists4preselectionListArtists %]<br>[% END %]
+		<div class="filler"></div>
+		[% WRAPPER contentanchor %][% "PLUGIN_DYNAMICPLAYLISTS4_CHOOSE_BELOW" | string %][% END %]
+		<div class="filler"></div>
+
+		[% odd = 1 %]
+		[% FOREACH group IN pluginDynamicPlaylists4Groups %]
+		[% IF group.name != "Context menu lists" && group.name != "Home extras menus" %]
+			[% IF group.dynamicplaylistenabled %]
+				[%- WRAPPER contentitem %]
+					[% PROCESS dpcontentitemgroup %]
+				[% END %]
+				[% odd = (not odd) %]
+			[% END %]
+		[% END %]
+		[% END %]
+		[% FOREACH playlist IN pluginDynamicPlaylists4PlayLists %]
+			[% IF (playlist.menulisttype != "homeextrasmenu" && (playlist.menulisttype != "contextmenu" || iscontextmenu == 1)) %]
+				[% IF playlist.dynamicplaylistenabled %]
+					[%- WRAPPER contentitem controls='controls' %]
+						[% PROCESS dpcontentitemplaylist %]
+					[% END %]
+					[% odd = (not odd) %]
+				[% END %]
+			[% END %]
+		[% END %]
+	[% END %]
+[% END %]
+
+<script type="text/javascript">
+	// prevent multiple submits
+	var alreadySubmitted = false;
+	function transferdpl(){
+		if(!alreadySubmitted) {
+			alreadySubmitted = true;
+			document.getElementById('transferDPLform').submit();
+		}
+	}
+</script>
+
+[% PROCESS pagefooter.html %]
