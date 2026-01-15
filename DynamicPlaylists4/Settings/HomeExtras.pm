@@ -37,10 +37,26 @@ my $log = logger('plugin.dynamicplaylists4');
 
 my $plugin;
 
+my @homeExtraItemsPrefs = qw(homeextras_dynamicalbumdiscovery01 homeextras_dynamicalbumdiscovery02 homeextras_dynamicartistdiscovery01);
 
 sub new {
 	my $class = shift;
 	$plugin = shift;
+
+	if (Plugins::MaterialSkin::Plugin->can('setHomeExtraTitle')) {
+		$prefs->setChange(sub {
+			my ($pref, $value, $client) = @_;
+
+			my $playlist = Plugins::DynamicPlaylists4::Plugin::getPlayList($client, $value) if $value;
+
+			if ($playlist && (my $name = $playlist->{name})) {
+				my $homeExtraId = $pref;
+				$homeExtraId =~ s/^homeextras_/DynamicPlaylistsExtras/;
+				Plugins::MaterialSkin::Plugin->setHomeExtraTitle($homeExtraId, $name);
+			}
+		}, @homeExtraItemsPrefs);
+	}
+
 	$class->SUPER::new($plugin);
 }
 sub name {
@@ -65,7 +81,7 @@ sub pages {
 }
 
 sub prefs {
-	return ($prefs, qw(homeextras_dynamicalbumdiscovery01 homeextras_dynamicalbumdiscovery02 homeextras_dynamicartistdiscovery01));
+	return ($prefs, @homeExtraItemsPrefs);
 }
 
 sub handler {
@@ -75,7 +91,5 @@ sub handler {
 
 	return $class->SUPER::handler($client, $paramRef);
 }
-
-*escape = \&URI::Escape::uri_escape_utf8;
 
 1;

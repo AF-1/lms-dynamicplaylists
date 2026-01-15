@@ -39,19 +39,27 @@ use utf8;
 use base qw(Plugins::MaterialSkin::HomeExtraBase);
 
 use Slim::Utils::Prefs;
-use Slim::Utils::Log;
 use Plugins::DynamicPlaylists4::Plugin;
 
 sub initPlugin {
 	my ($class, %args) = @_;
 
 	my $tag = $args{tag};
+	my $prefs = preferences('plugin.dynamicplaylists4');
+	my $title = $args{title};
+
+	if (my $playlistId = $prefs->get("homeextras_$tag")) {
+		my $playlist = Plugins::DynamicPlaylists4::Plugin::getPlayList(undef, $playlistId);
+		if ($playlist && (my $name = $playlist->{name})) {
+			$title = $name;
+		}
+	}
 
 	$class->SUPER::initPlugin(
 		feed => sub { handleFeed($tag, @_) },
 		tag => "DynamicPlaylistsExtras${tag}",
 		extra => {
-			title => $args{title},
+			title => $title,
 			subtitle => $args{subtitle},
 			icon => $args{icon} || Plugins::DynamicPlaylists4::Plugin->_pluginDataFor('icon'),
 			needsPlayer => 1,
