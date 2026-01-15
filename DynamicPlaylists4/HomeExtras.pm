@@ -27,8 +27,8 @@ use utf8;
 use Plugins::DynamicPlaylists4::Plugin;
 
 Plugins::DynamicPlaylists4::HomeExtraDynamicAlbumDiscovery01->initPlugin();
-# Plugins::DynamicPlaylists4::HomeExtraDynamicAlbumDiscovery02->initPlugin();
-# Plugins::DynamicPlaylists4::HomeExtraDynamicAristDiscovery01->initPlugin();
+Plugins::DynamicPlaylists4::HomeExtraDynamicAlbumDiscovery02->initPlugin();
+Plugins::DynamicPlaylists4::HomeExtraDynamicArtistDiscovery01->initPlugin();
 
 1;
 
@@ -42,9 +42,6 @@ use Slim::Utils::Prefs;
 use Slim::Utils::Log;
 use Plugins::DynamicPlaylists4::Plugin;
 
-my $log = logger('plugin.dynamicplaylists4');
-my $prefs = preferences('plugin.dynamicplaylists4');
-
 sub initPlugin {
 	my ($class, %args) = @_;
 
@@ -52,7 +49,7 @@ sub initPlugin {
 
 	$class->SUPER::initPlugin(
 		feed => sub { handleFeed($tag, @_) },
-		tag => "DynamicPlaylists${tag}",
+		tag => "DynamicPlaylistsExtras${tag}",
 		extra => {
 			title => $args{title},
 			subtitle => $args{subtitle},

@@ -7323,29 +7323,29 @@ sub getHomeExtraMenuItems {
 		return;
 	}
 
-	$log->info('args = '.Data::Dump::dump($args));
+	main::DEBUGLOG && $log->is_debug && $log->debug('args = '.Data::Dump::dump($args));
 	my $tag = $args->{params}->{tag};
 	return unless $tag;
 
 	my $dynamicplaylistID = $prefs->get('homeextras_'.$tag);
-	$log->info('dynamicplaylistID = '.Data::Dump::dump($dynamicplaylistID));
+	main::DEBUGLOG && $log->is_debug && $log->debug('dynamicplaylistID = '.Data::Dump::dump($dynamicplaylistID)) if $debugVerbose;
 	if (!$dynamicplaylistID) {
-		$log->info('Please select a definition for the Material Home Extras menu in the DPL plugin settings.');
+		$log->info("Please select a definition for the Material Home Extras menu '$tag' in the DPL plugin settings.");
 		$cb->([]);
 		return;
 	}
 
 	my $playlist = $playLists->{$dynamicplaylistID};
-# 	$log->info('playlist = '.Data::Dump::dump($playlist));
+	main::DEBUGLOG && $log->is_debug && $log->debug('playlist = '.Data::Dump::dump($playlist)) if $debugVerbose;
 	if (!$playlist) {
-		$log->info("Could not find a valid definition for Material Home Extras Menu: $tag. Please select a valid definition in the DPL plugin settings.");
+		$log->info("Could not find definition 'dynamicplaylistID' for Material Home Extras menu: $tag. Please select a valid definition in the DPL plugin settings.");
 		$cb->([]);
 		return;
 	}
 
 	if ($args->{params} && $args->{params}->{menu} && (my ($homeExtra) = $args->{params}->{menu} =~ /^home_heroes_(.*)/) ) {
 		my $localDynamicPlaylist = $localDynamicPlaylists->{$playlist->{'id'}};
-		#$log->info('localDynamicPlaylist = '.Data::Dump::dump($localDynamicPlaylist));
+		main::DEBUGLOG && $log->is_debug && $log->debug('localDynamicPlaylist = '.Data::Dump::dump($localDynamicPlaylist)) if $debugVerbose;
 
 		unless ($playlist && $localDynamicPlaylist) {
 			$log->info('No data for dynamicplaylist with id: '.Data::Dump::dump($dynamicplaylistID));
@@ -7353,71 +7353,114 @@ sub getHomeExtraMenuItems {
 			return;
 		}
 
-		my $playlistName = $playlist->{name};
-# 		$log->info('playlistName = '.Data::Dump::dump($playlistName));
-		my $localDynamicPlaylistSQLstatement = $localDynamicPlaylist->{'sql'};
-# 		$log->info('localDynamicPlaylistSQLstatement = '.Data::Dump::dump($localDynamicPlaylistSQLstatement));
+		my @items;
+		my $cacheKey = "dpl_homeExtra_$tag";
+		if ($args->{params} && $args->{quantity} == 1 && defined $args->{params}->{item_id} && (my $cached = $cache->get($cacheKey))) {
+			@items = @{$cached}
+		} else {
+			my $playlistName = $playlist->{name};
+			main::DEBUGLOG && $log->is_debug && $log->debug('playlistName = '.Data::Dump::dump($playlistName)) if $debugVerbose;
+			my $localDynamicPlaylistSQLstatement = $localDynamicPlaylist->{'sql'};
+			main::DEBUGLOG && $log->is_debug && $log->debug('localDynamicPlaylistSQLstatement = '.Data::Dump::dump($localDynamicPlaylistSQLstatement)) if $debugVerbose;
 
-		## replace internal parameter values
-		my %parameterHash;
-		if (defined($playlist->{'parameters'})) {
-			my $parameters = $playlist->{'parameters'};
-			%parameterHash = ();
-			foreach my $pk (keys %{$parameters}) {
-				if (defined($parameters->{$pk}->{'value'})) {
-					my %parameter = (
-						'id' => $parameters->{$pk}->{'id'},
-						'value' => $parameters->{$pk}->{'value'}
-					);
-					$parameterHash{$pk} = \%parameter;
+			## replace internal parameter values
+			my %parameterHash;
+			if (defined($playlist->{'parameters'})) {
+				my $parameters = $playlist->{'parameters'};
+				%parameterHash = ();
+				foreach my $pk (keys %{$parameters}) {
+					if (defined($parameters->{$pk}->{'value'})) {
+						my %parameter = (
+							'id' => $parameters->{$pk}->{'id'},
+							'value' => $parameters->{$pk}->{'value'}
+						);
+						$parameterHash{$pk} = \%parameter;
+					}
 				}
 			}
-		}
-# 		main::DEBUGLOG && $log->is_debug && $log->debug
-		$log->info('parameterHash = '.Data::Dump::dump(\%parameterHash));# if $debugVerbose;
+			main::DEBUGLOG && $log->is_debug && $log->debug('parameterHash = '.Data::Dump::dump(\%parameterHash)) if $debugVerbose;
 
-		my $sqlstatement = replaceParametersInSQL($localDynamicPlaylistSQLstatement, \%parameterHash);
-		my $predefinedParameters = getInternalParameters($client, $playlist);
-		$sqlstatement = replaceParametersInSQL($sqlstatement, $predefinedParameters, 'Playlist');
-# 		main::DEBUGLOG && $log->is_debug && $log->debug
-		$log->info('sqlstatement = '.$sqlstatement);
+			my $sqlstatement = replaceParametersInSQL($localDynamicPlaylistSQLstatement, \%parameterHash);
+			my $predefinedParameters = getInternalParameters($client, $playlist);
+			$sqlstatement = replaceParametersInSQL($sqlstatement, $predefinedParameters, 'Playlist');
+			main::DEBUGLOG && $log->is_debug && $log->debug('sqlstatement = '.$sqlstatement);
 
-		my $dbh = Slim::Schema->dbh;
-		my @items;
+			my $dbh = Slim::Schema->dbh;
+			for my $sql (split /[\n\r]+/, $sqlstatement) {
+				next unless $sql =~ /\S/;
 
-		for my $sql (split /[\n\r]+/, $sqlstatement) {
-			next unless $sql =~ /\S/;
+				my $sth = $dbh->prepare($sql);
+				next unless $sth->execute;
 
-			my $sth = $dbh->prepare($sql);
-			next unless $sth->execute;
+				my $id;
+				$sth->bind_col(1, \$id);
 
-			my $id;
-			$sth->bind_col(1, \$id);
-
-			while ($sth->fetch) {
-				push @items, $id;
+				while ($sth->fetch) {
+					push @items, $id;
+				}
+				$sth->finish;
 			}
-			$sth->finish;
-		}
 
-		$log->info('items = '.Data::Dump::dump(\@items));
-		unless (@items) {
-			$cb->([]);
-			return;
+			main::DEBUGLOG && $log->is_debug && $log->debug('items = '.Data::Dump::dump(\@items)) if $debugVerbose;
+			unless (@items) {
+				$cb->([]);
+				return;
+			}
+
+			$cache->set($cacheKey, \@items);
 		}
 
 		require Slim::Menu::BrowseLibrary;
-		Slim::Menu::BrowseLibrary::_albums(
-			$client,
-			$cb,
-			{
-# 				library_id => 'fd7d0465'
-				searchTags => [
-					'album_id:'.join ",", @items
-				]
-			}
-		);
 
+		if ($tag =~ 'dynamicalbumdiscovery') {
+			Async::Util::amap(
+				inputs => \@items,
+				action => sub {
+					my ($albumID, $acb) = @_;
+					Slim::Menu::BrowseLibrary::_albums(
+						$client,
+						$acb,
+						{},
+						{
+							searchTags => [ "album_id:$albumID" ]
+						}
+					);
+				},
+				cb => sub {
+					my ($albumMenuItems, $error) = @_;
+
+					my @items = map {
+						@{ $_->{items} }
+					} @$albumMenuItems;
+
+					$cb->({ items => \@items });
+				}
+			);
+		} elsif ($tag =~ 'dynamicartistdiscovery') {
+			Async::Util::amap(
+				inputs => \@items,
+				action => sub {
+					my ($artistID, $acb) = @_;
+					Slim::Menu::BrowseLibrary::_artists(
+						$client,
+						$acb,
+						{},
+						{
+							searchTags => [ "artist_id:$artistID" ]
+						}
+					);
+				},
+				cb => sub {
+					my ($artistMenuItems, $error) = @_;
+
+					my @items = map {
+						@{ $_->{items} }
+					} @$artistMenuItems;
+
+					$cb->({ items => \@items });
+				}
+			);
+		}
 
 	}
 	return;
