@@ -7460,6 +7460,30 @@ sub getHomeExtraMenuItems {
 					$cb->({ items => \@items });
 				}
 			);
+		} elsif ($tag =~ 'dynamicplaylistdiscovery') {
+			Async::Util::amap(
+				inputs => \@items,
+				action => sub {
+					my ($playlistID, $acb) = @_;
+					Slim::Menu::BrowseLibrary::_playlists(
+						$client,
+						$acb,
+						{},
+						{
+							searchTags => [ "playlist_id:$playlistID" ]
+						}
+					);
+				},
+				cb => sub {
+					my ($playlistMenuItems, $error) = @_;
+
+					my @items = map {
+						@{ $_->{items} }
+					} @$playlistMenuItems;
+
+					$cb->({ items => \@items });
+				}
+			);
 		}
 
 	}

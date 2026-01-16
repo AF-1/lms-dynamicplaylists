@@ -29,6 +29,7 @@ use Plugins::DynamicPlaylists4::Plugin;
 Plugins::DynamicPlaylists4::HomeExtraDynamicAlbumDiscovery01->initPlugin();
 Plugins::DynamicPlaylists4::HomeExtraDynamicAlbumDiscovery02->initPlugin();
 Plugins::DynamicPlaylists4::HomeExtraDynamicArtistDiscovery01->initPlugin();
+Plugins::DynamicPlaylists4::HomeExtraDynamicPlaylistDiscovery01->initPlugin();
 
 1;
 
@@ -108,6 +109,18 @@ sub initPlugin {
 	$class->SUPER::initPlugin(
 		title => 'SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_HOMEEXTRASMENUS_ARTISTS01',
 		tag => 'dynamicartistdiscovery01'
+	);
+}
+1;
+
+package Plugins::DynamicPlaylists4::HomeExtraDynamicPlaylistDiscovery01;
+use base qw(Plugins::DynamicPlaylists4::HomeExtraBase);
+sub initPlugin {
+	my ($class, %args) = @_;
+
+	$class->SUPER::initPlugin(
+		title => 'SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_HOMEEXTRASMENUS_PLAYLISTS01',
+		tag => 'dynamicplaylistdiscovery01'
 	);
 }
 1;

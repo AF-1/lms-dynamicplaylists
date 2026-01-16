@@ -37,7 +37,7 @@ my $log = logger('plugin.dynamicplaylists4');
 
 my $plugin;
 
-my @homeExtraItemsPrefs = qw(homeextras_dynamicalbumdiscovery01 homeextras_dynamicalbumdiscovery02 homeextras_dynamicartistdiscovery01);
+my @homeExtraItemsPrefs = qw(homeextras_dynamicalbumdiscovery01 homeextras_dynamicalbumdiscovery02 homeextras_dynamicartistdiscovery01 homeextras_dynamicplaylistdiscovery01);
 
 sub new {
 	my $class = shift;
