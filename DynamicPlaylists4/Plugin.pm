@@ -7461,18 +7461,70 @@ sub getHomeExtraMenuItems {
 				}
 			);
 		} elsif ($tag =~ 'dynamicplaylistdiscovery') {
+
 			Async::Util::amap(
 				inputs => \@items,
 				action => sub {
 					my ($playlistID, $acb) = @_;
-					Slim::Menu::BrowseLibrary::_playlists(
-						$client,
-						$acb,
-						{},
-						{
-							searchTags => [ "playlist_id:$playlistID" ]
-						}
+
+					# get all playlists
+					my $request = Slim::Control::Request->new(
+						$client->id,
+						['playlists', 0, 999, 'tags:sux']
 					);
+					$request->execute();
+
+					if ($request->isStatusError()) {
+						$log->error($request->getStatusText());
+						$acb->({ items => [] });
+						return;
+					}
+
+					my $results = $request->getResults();
+					my $items = $results->{'playlists_loop'} || [];
+
+					# filter by playlist_id
+					my @filtered = grep { $_->{'id'} eq $playlistID } @$items;
+
+					# create menu items in BrowseLibrary format
+					foreach my $item (@filtered) {
+						$item->{'name'} = $item->{'playlist'};
+						$item->{'type'} = 'playlist';
+						$item->{'playlist'} = \&Slim::Menu::BrowseLibrary::_playlistTracks;
+						$item->{'url'} = \&Slim::Menu::BrowseLibrary::_playlistTracks;
+						$item->{'passthrough'} = [{
+							searchTags => ['playlist_id:' . $item->{'id'}]
+						}];
+						$item->{'itemActions'} = {
+							info => {
+								command     => ['playlistinfo', 'items'],
+								fixedParams => {playlist_id => $item->{'id'}},
+							},
+							items => {
+								command     => ['browselibrary', 'items'],
+								fixedParams => {
+									mode        => 'playlistTracks',
+									playlist_id => $item->{'id'},
+								},
+							},
+							play => {
+								command     => ['playlistcontrol'],
+								fixedParams => {cmd => 'load', playlist_id => $item->{'id'}},
+							},
+							add => {
+								command     => ['playlistcontrol'],
+								fixedParams => {cmd => 'add', playlist_id => $item->{'id'}},
+							},
+							insert => {
+								command     => ['playlistcontrol'],
+								fixedParams => {cmd => 'insert', playlist_id => $item->{'id'}},
+							},
+						};
+						$item->{'itemActions'}->{'playall'} = $item->{'itemActions'}->{'play'};
+						$item->{'itemActions'}->{'addall'} = $item->{'itemActions'}->{'add'};
+					}
+
+					$acb->({ items => \@filtered });
 				},
 				cb => sub {
 					my ($playlistMenuItems, $error) = @_;
@@ -7484,8 +7536,9 @@ sub getHomeExtraMenuItems {
 					$cb->({ items => \@items });
 				}
 			);
-		}
 
+
+		}
 	}
 	return;
 }
