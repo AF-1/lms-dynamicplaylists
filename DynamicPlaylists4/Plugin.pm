@@ -7461,7 +7461,6 @@ sub getHomeExtraMenuItems {
 				}
 			);
 		} elsif ($tag =~ 'dynamicplaylistdiscovery') {
-
 			Async::Util::amap(
 				inputs => \@items,
 				action => sub {
@@ -7536,8 +7535,6 @@ sub getHomeExtraMenuItems {
 					$cb->({ items => \@items });
 				}
 			);
-
-
 		}
 	}
 	return;
