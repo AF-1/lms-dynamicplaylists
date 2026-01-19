@@ -48,11 +48,13 @@ sub initPlugin {
 	my $tag = $args{tag};
 	my $prefs = preferences('plugin.dynamicplaylists4');
 	my $title = $args{title};
+	my $subtitle = 'SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_HOMEEXTRASMENUS_SUBTITLE';
 
 	if (my $playlistId = $prefs->get("homeextras_$tag")) {
 		my $playlist = Plugins::DynamicPlaylists4::Plugin::getPlayList(undef, $playlistId);
 		if ($playlist && (my $name = $playlist->{name})) {
 			$title = $name;
+			$subtitle = undef;
 		}
 	}
 
@@ -61,7 +63,7 @@ sub initPlugin {
 		tag => "DynamicPlaylistsExtras${tag}",
 		extra => {
 			title => $title,
-			subtitle => $args{subtitle},
+			subtitle => $subtitle,
 			icon => $args{icon} || Plugins::DynamicPlaylists4::Plugin->_pluginDataFor('icon'),
 			needsPlayer => 1,
 		}

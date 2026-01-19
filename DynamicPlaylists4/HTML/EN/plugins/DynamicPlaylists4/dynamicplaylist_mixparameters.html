@@ -34,11 +34,6 @@ href="[% webroot %]plugins/DynamicPlaylists4/dynamicplaylist_mixparameters.html?
 [% FOREACH param IN pluginDynamicPlaylists4MixParameters %]
 
 <br><br>
------
-[% USE Dumper %]
-[% Dumper.dump_html(param.parameter.name)%]
------
-<br><br>
 	[% IF param.parameter.type == "multiplegenres" || param.parameter.type == "multipledecades" || param.parameter.type == "multipleyears" || param.parameter.type == "multiplestaticplaylists" %]
 	<span class="boldtitle">[% param.parameter.name %]:</span><br>
 		[% IF param.parameter.type == "multiplegenres" %]

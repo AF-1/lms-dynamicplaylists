@@ -7356,6 +7356,7 @@ sub getHomeExtraMenuItems {
 		my @items;
 		my $cacheKey = "dpl_homeExtra_$tag";
 		if ($args->{params} && $args->{quantity} == 1 && defined $args->{params}->{item_id} && (my $cached = $cache->get($cacheKey))) {
+			main::DEBUGLOG && $log->is_debug && $log->debug('Using cached items');
 			@items = @{$cached}
 		} else {
 			my $playlistName = $playlist->{name};
@@ -7363,26 +7364,10 @@ sub getHomeExtraMenuItems {
 			my $localDynamicPlaylistSQLstatement = $localDynamicPlaylist->{'sql'};
 			main::DEBUGLOG && $log->is_debug && $log->debug('localDynamicPlaylistSQLstatement = '.Data::Dump::dump($localDynamicPlaylistSQLstatement)) if $debugVerbose;
 
-			## replace internal parameter values
-			my %parameterHash;
-			if (defined($playlist->{'parameters'})) {
-				my $parameters = $playlist->{'parameters'};
-				%parameterHash = ();
-				foreach my $pk (keys %{$parameters}) {
-					if (defined($parameters->{$pk}->{'value'})) {
-						my %parameter = (
-							'id' => $parameters->{$pk}->{'id'},
-							'value' => $parameters->{$pk}->{'value'}
-						);
-						$parameterHash{$pk} = \%parameter;
-					}
-				}
-			}
-			main::DEBUGLOG && $log->is_debug && $log->debug('parameterHash = '.Data::Dump::dump(\%parameterHash)) if $debugVerbose;
-
-			my $sqlstatement = replaceParametersInSQL($localDynamicPlaylistSQLstatement, \%parameterHash);
 			my $predefinedParameters = getInternalParameters($client, $playlist);
-			$sqlstatement = replaceParametersInSQL($sqlstatement, $predefinedParameters, 'Playlist');
+			main::DEBUGLOG && $log->is_debug && $log->debug('predefinedParameters = '.Data::Dump::dump($predefinedParameters)) if $debugVerbose;
+
+			my $sqlstatement = replaceParametersInSQL($localDynamicPlaylistSQLstatement, $predefinedParameters, 'Playlist');
 			main::DEBUGLOG && $log->is_debug && $log->debug('sqlstatement = '.$sqlstatement);
 
 			my $dbh = Slim::Schema->dbh;
@@ -7410,8 +7395,12 @@ sub getHomeExtraMenuItems {
 			$cache->set($cacheKey, \@items);
 		}
 
-		require Slim::Menu::BrowseLibrary;
+		my $limit = $prefs->get('materialhomeextramenuitemslimit') || 300;
+		if (scalar(@items) > $limit) {
+			@items = splice @items, 0, $limit;
+		}
 
+		require Slim::Menu::BrowseLibrary;
 		if ($tag =~ 'dynamicalbumdiscovery') {
 			Async::Util::amap(
 				inputs => \@items,
@@ -7422,7 +7411,8 @@ sub getHomeExtraMenuItems {
 						$acb,
 						{},
 						{
-							searchTags => [ "album_id:$albumID" ]
+							searchTags => [ "album_id:$albumID" ],
+							wantMetadata => 1
 						}
 					);
 				},
@@ -7446,7 +7436,8 @@ sub getHomeExtraMenuItems {
 						$acb,
 						{},
 						{
-							searchTags => [ "artist_id:$artistID" ]
+							searchTags => [ "artist_id:$artistID" ],
+							wantMetadata => 1
 						}
 					);
 				},
@@ -7496,26 +7487,26 @@ sub getHomeExtraMenuItems {
 						}];
 						$item->{'itemActions'} = {
 							info => {
-								command     => ['playlistinfo', 'items'],
+								command => ['playlistinfo', 'items'],
 								fixedParams => {playlist_id => $item->{'id'}},
 							},
 							items => {
-								command     => ['browselibrary', 'items'],
+								command => ['browselibrary', 'items'],
 								fixedParams => {
-									mode        => 'playlistTracks',
+									mode => 'playlistTracks',
 									playlist_id => $item->{'id'},
 								},
 							},
 							play => {
-								command     => ['playlistcontrol'],
+								command => ['playlistcontrol'],
 								fixedParams => {cmd => 'load', playlist_id => $item->{'id'}},
 							},
 							add => {
-								command     => ['playlistcontrol'],
+								command => ['playlistcontrol'],
 								fixedParams => {cmd => 'add', playlist_id => $item->{'id'}},
 							},
 							insert => {
-								command     => ['playlistcontrol'],
+								command => ['playlistcontrol'],
 								fixedParams => {cmd => 'insert', playlist_id => $item->{'id'}},
 							},
 						};
