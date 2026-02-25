@@ -10,7 +10,7 @@
 drop table if exists randomweightedplaylisttracks;
 drop table if exists randomweightedlibrarylocal;
 drop table if exists randomweightedlibrarycombined;
-create temporary table randomweightedlibrarylocal as select tracks.id, tracks.primary_artist from tracks
+create temporary table randomweightedlibrarylocal as select distinct tracks.id, tracks.primary_artist from tracks
 	join genre_track on genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter2')
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) >= 'PlaylistParameter6'
 	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
@@ -24,10 +24,9 @@ create temporary table randomweightedlibrarylocal as select tracks.id, tracks.pr
 				when 'PlaylistParameter5' > 0 then (ifnull(tracks_persistent.lastPlayed, 0) < (strftime('%s',DATE('NOW')) - ('PlaylistParameter5')))
 				else 1
 			end
-	group by tracks.id
 	order by random()
 	limit (100 - 'PlaylistParameter4');
-create temporary table randomweightedplaylisttracks as select tracks.id, tracks.primary_artist from tracks
+create temporary table randomweightedplaylisttracks as select distinct tracks.id, tracks.primary_artist from tracks
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) >= 'PlaylistParameter6'
 	join playlist_track on playlist_track.track = tracks.url and playlist_track.playlist in ('PlaylistParameter1')
 	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
@@ -41,7 +40,6 @@ create temporary table randomweightedplaylisttracks as select tracks.id, tracks.
 				when 'PlaylistParameter5' > 0 then (ifnull(tracks_persistent.lastPlayed, 0) < (strftime('%s',DATE('NOW')) - ('PlaylistParameter5')))
 				else 1
 			end
-	group by tracks.id
 	order by random()
 	limit 'PlaylistParameter4';
 create temporary table randomweightedlibrarycombined as select * from randomweightedlibrarylocal union select * from randomweightedplaylisttracks;

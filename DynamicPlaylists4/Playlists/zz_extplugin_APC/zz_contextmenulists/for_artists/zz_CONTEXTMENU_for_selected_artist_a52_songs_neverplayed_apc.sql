@@ -4,7 +4,7 @@
 -- PlaylistCategory:artists
 -- PlaylistUseCache: 1
 -- PlaylistParameter1:artist:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTARTIST:
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join contributor_track on contributor_track.track = tracks.id and contributor_track.contributor = 'PlaylistParameter1'
 	left join library_track on library_track.track = tracks.id
 	join alternativeplaycount on alternativeplaycount.urlmd5 = tracks.urlmd5 and ifnull(alternativeplaycount.playCount, 0) = 0
@@ -25,4 +25,3 @@ select tracks.id, tracks.primary_artist from tracks
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id

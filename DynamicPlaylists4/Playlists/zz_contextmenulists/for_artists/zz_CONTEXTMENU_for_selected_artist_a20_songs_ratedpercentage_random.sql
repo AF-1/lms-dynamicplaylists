@@ -8,7 +8,7 @@
 drop table if exists randomweightedratingshigh;
 drop table if exists randomweightedratingslow;
 drop table if exists randomweightedratingscombined;
-create temporary table randomweightedratingslow as select tracks.id, tracks.primary_artist from tracks
+create temporary table randomweightedratingslow as select distinct tracks.id, tracks.primary_artist from tracks
 	join contributor_track on contributor_track.track = tracks.id and contributor_track.contributor = 'PlaylistParameter1'
 	left join library_track on library_track.track = tracks.id
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) = 0
@@ -35,10 +35,9 @@ create temporary table randomweightedratingslow as select tracks.id, tracks.prim
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id
 	order by random()
 	limit (100-'PlaylistParameter2');
-create temporary table randomweightedratingshigh as select tracks.id, tracks.primary_artist from tracks
+create temporary table randomweightedratingshigh as select distinct tracks.id, tracks.primary_artist from tracks
 	join contributor_track on contributor_track.track = tracks.id and contributor_track.contributor = 'PlaylistParameter1'
 	left join library_track on library_track.track = tracks.id
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.rating, 0) > 0
@@ -65,7 +64,6 @@ create temporary table randomweightedratingshigh as select tracks.id, tracks.pri
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id
 	order by random()
 	limit 'PlaylistParameter2';
 create temporary table randomweightedratingscombined as select * from randomweightedratingslow union select * from randomweightedratingshigh;

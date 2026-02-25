@@ -8,31 +8,34 @@
 -- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
-	select tracks.album as album, sum(ifnull(tracks_persistent.rating,0))/count(distinct contributor_track.role) as totalrating, count(distinct tracks.id) as totaltrackcount from tracks
-	join contributor_track on contributor_track.track = tracks.id and contributor_track.contributor = 'PlaylistParameter1'
-	left join library_track on library_track.track = tracks.id
-	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
-	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
+	select t.album as album, sum(t.rating) as totalrating, count(distinct t.id) as totaltrackcount
+	from (
+		select tracks.id, tracks.album,
+			ifnull(tracks_persistent.rating, 0) as rating
+		from tracks
+		join contributor_track on contributor_track.track = tracks.id and contributor_track.contributor = 'PlaylistParameter1'
+		join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
+		where tracks.audio = 1
+			and not exists (select * from tracks t2,genre_track,genres
+				where t2.id = tracks.id and tracks.id = genre_track.track
+				and genre_track.genre = genres.id and genres.namesearch in ('PlaylistExcludedGenres'))
+		group by tracks.id
+	) as t
+	left join library_track on library_track.track = t.id
+	left join dynamicplaylist_history on dynamicplaylist_history.id = t.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
-		tracks.audio = 1
-		and dynamicplaylist_history.id is null
+		dynamicplaylist_history.id is null
 		and
 			case
 				when ('PlaylistCurrentVirtualLibraryForClient' != '' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
-		and not exists (select * from tracks t2,genre_track,genres
-						where
-							t2.id = tracks.id and
-							tracks.id = genre_track.track and
-							genre_track.genre = genres.id and
-							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.album
-		having totaltrackcount >= 'PlaylistMinArtistTracks'
+	group by t.album
+	having totaltrackcount >= 'PlaylistMinArtistTracks'
 	order by totalrating desc, random()
 	limit 1;
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join dynamicplaylist_random_albums on dynamicplaylist_random_albums.album = tracks.album
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
 	left join library_track on library_track.track = tracks.id
@@ -54,12 +57,11 @@ select tracks.id, tracks.primary_artist from tracks
 				else 1
 			end
 		and not exists (select * from tracks t2,genre_track,genres
-						where
-							t2.id = tracks.id and
-							tracks.id = genre_track.track and
-							genre_track.genre = genres.id and
-							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id
-	order by dynamicplaylist_random_albums.album,tracks.disc,tracks.tracknum
+					where
+						t2.id = tracks.id and
+						tracks.id = genre_track.track and
+						genre_track.genre = genres.id and
+						genres.namesearch in ('PlaylistExcludedGenres'))
+	order by dynamicplaylist_random_albums.album, tracks.disc, tracks.tracknum
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_albums;

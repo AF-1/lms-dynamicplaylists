@@ -29,20 +29,20 @@ create temporary table dynamicplaylist_random_works as
 					else 1
 				end
 		group by case when tracks.performance is not null then tracks.performance else tracks.work end
-			having totaltrackcount >= 'PlaylistMinAlbumTracks'
-				and
-					case
-						when 'PlaylistParameter1'<0 then (ifnull(alternativeplaycount.lastPlayed,0) < (strftime('%s',DATE('NOW')) + ('PlaylistParameter1')))
-						else 1
-					end
-				and
-					case
-						when 'PlaylistParameter2'>0 then (tracks_persistent.added >= (select max(ifnull(tracks_persistent.added,0)) from tracks_persistent) - 'PlaylistParameter2')
-						else 1
-					end
+		having totaltrackcount >= 'PlaylistMinAlbumTracks'
+			and
+				case
+					when 'PlaylistParameter1'<0 then (max(ifnull(alternativeplaycount.lastPlayed,0)) < (strftime('%s',DATE('NOW')) + ('PlaylistParameter1')))
+					else 1
+				end
+			and
+				case
+					when 'PlaylistParameter2'>0 then (max(ifnull(tracks_persistent.added,0)) >= (select max(ifnull(tracks_persistent.added,0)) from tracks_persistent) - 'PlaylistParameter2')
+					else 1
+				end
 		order by random()
 		limit 1;
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join dynamicplaylist_random_works on (tracks.album = dynamicplaylist_random_works.album and tracks.work = dynamicplaylist_random_works.work and case when dynamicplaylist_random_works.performance is not null then tracks.performance = dynamicplaylist_random_works.performance else 1 end)
 	left join library_track on library_track.track = tracks.id
 	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
@@ -56,7 +56,6 @@ select tracks.id, tracks.primary_artist from tracks
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
-	group by tracks.id
-	order by dynamicplaylist_random_works.album,tracks.disc,tracks.tracknum
+	order by dynamicplaylist_random_works.album, tracks.disc, tracks.tracknum
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_works;

@@ -5,7 +5,7 @@
 -- PlaylistUseCache: 1
 -- PlaylistParameter1:playlist:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPLAYLIST:
 -- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join playlist_track on playlist_track.track = tracks.url
 	join alternativeplaycount on alternativeplaycount.urlmd5 = tracks.urlmd5
 	left join library_track on library_track.track = tracks.id
@@ -13,6 +13,8 @@ select tracks.id, tracks.primary_artist from tracks
 	where
 		playlist_track.playlist = 'PlaylistParameter1'
 		and tracks.audio = 1
+		and ifnull(alternativeplaycount.lastPlayed,0) > 0
+		and (strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR')) - ifnull(alternativeplaycount.lastPlayed,0)) > 0
 		and (strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR')) - ifnull(alternativeplaycount.lastPlayed,0)) > 0
 		and tracks.secs >= 'PlaylistTrackMinDuration'
 		and dynamicplaylist_history.id is null
@@ -34,4 +36,3 @@ select tracks.id, tracks.primary_artist from tracks
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id

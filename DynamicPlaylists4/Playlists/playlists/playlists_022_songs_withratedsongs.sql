@@ -10,14 +10,15 @@ create temporary table dynamicplaylist_random_playlists as
 		left join library_track on library_track.track = tracks.id
 		left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 		where
-			dynamicplaylist_history.id is null
+			tracks.audio = 1
+			and dynamicplaylist_history.id is null
 			and
 				case
 					when ('PlaylistCurrentVirtualLibraryForClient' != '' and 'PlaylistCurrentVirtualLibraryForClient' is not null)
 					then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 					else 1
 				end
-			and not exists (select * from tracks t2,genre_track,genres
+			and not exists (select * from tracks t2, genre_track, genres
 							where
 								t2.id = tracks.id and
 								tracks.id = genre_track.track and
@@ -26,7 +27,7 @@ create temporary table dynamicplaylist_random_playlists as
 		group by playlist_track.playlist
 		order by random()
 		limit 1;
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join playlist_track on playlist_track.track = tracks.url
 	join dynamicplaylist_random_playlists on dynamicplaylist_random_playlists.playlist = playlist_track.playlist
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
@@ -48,13 +49,12 @@ select tracks.id, tracks.primary_artist from tracks
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
-		and not exists (select * from tracks t2,genre_track,genres
+		and not exists (select * from tracks t2, genre_track, genres
 						where
 							t2.id = tracks.id and
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id
 	order by random()
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_playlists;

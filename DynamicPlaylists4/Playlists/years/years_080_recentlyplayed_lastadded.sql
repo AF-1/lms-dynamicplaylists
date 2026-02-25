@@ -37,20 +37,19 @@ create temporary table dynamicplaylist_random_years as
 					else 1
 				end
 		group by tracks.year
-			having
-					case
-						when 'PlaylistParameter1'<0 then (ifnull(tracks_persistent.lastPlayed,0) < (strftime('%s',DATE('NOW')) + ('PlaylistParameter1')))
-						else 1
-					end
+		having
+			case
+				when 'PlaylistParameter1'<0 then (max(ifnull(tracks_persistent.lastPlayed,0)) < (strftime('%s',DATE('NOW')) + ('PlaylistParameter1')))
+				else 1
+			end
 		order by random()
 		limit 1;
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join dynamicplaylist_random_years on tracks.year = dynamicplaylist_random_years.year
 	left join library_track on library_track.track = tracks.id
 	left join dynamicplaylist_history on dynamicplaylist_history.id = tracks.id and dynamicplaylist_history.client = 'PlaylistPlayer'
 	where
 		tracks.audio = 1
-		and tracks.year = dynamicplaylist_random_years.year
 		and tracks.secs >= 'PlaylistTrackMinDuration'
 		and dynamicplaylist_history.id is null
 		and
@@ -65,7 +64,6 @@ select tracks.id, tracks.primary_artist from tracks
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id
 	order by random()
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_years;

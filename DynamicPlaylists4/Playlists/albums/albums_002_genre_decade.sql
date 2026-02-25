@@ -30,7 +30,7 @@ create temporary table dynamicplaylist_random_albums as
 								genre_track.genre = genres.id and
 								genres.namesearch in ('PlaylistExcludedGenres'))
 		group by tracks.album
-			having totaltrackcount >= 'PlaylistMinAlbumTracks'
+		having totaltrackcount >= 'PlaylistMinAlbumTracks'
 			and ifnull(albums.year, 0) in ('PlaylistParameter3')
 			and
 				case
@@ -40,7 +40,7 @@ create temporary table dynamicplaylist_random_albums as
 				end
 		order by random()
 		limit 1;
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join dynamicplaylist_random_albums on dynamicplaylist_random_albums.album = tracks.album
 	join genre_track on genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter2')
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
@@ -68,7 +68,6 @@ select tracks.id, tracks.primary_artist from tracks
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id
 	order by dynamicplaylist_random_albums.album,tracks.disc,tracks.tracknum
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_albums;

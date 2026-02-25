@@ -5,7 +5,7 @@
 -- PlaylistUseCache: 1
 -- PlaylistTrackOrder:orderedascrandom
 -- PlaylistParameter1:genre:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTGENRE:
-select tracks.id, tracks.primary_artist, alternativeplaycount.playCount from tracks
+select distinct tracks.id, tracks.primary_artist, alternativeplaycount.playCount from tracks
 	join genre_track on genre_track.track = tracks.id and genre_track.genre = 'PlaylistParameter1'
 	join alternativeplaycount on alternativeplaycount.urlmd5 = tracks.urlmd5
 	left join library_track on library_track.track = tracks.id
@@ -20,5 +20,4 @@ select tracks.id, tracks.primary_artist, alternativeplaycount.playCount from tra
 			then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 			else 1
 		end
-	group by tracks.id
 	order by alternativeplaycount.playCount asc, random()

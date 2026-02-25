@@ -23,10 +23,12 @@ create temporary table dynamicplaylist_random_albums as
 					else 1
 				end
 		group by tracks.album
-			having totaltrackcount >= 'PlaylistMinAlbumTracks' and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-max(ifnull(alternativeplaycount.lastPlayed,0))) > 0)
+		having totaltrackcount >= 'PlaylistMinAlbumTracks'
+			and max(ifnull(alternativeplaycount.lastPlayed,0)) > 0
+			and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-max(ifnull(alternativeplaycount.lastPlayed,0))) > 0)
 		order by random()
 		limit 1;
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join dynamicplaylist_random_albums on dynamicplaylist_random_albums.album = tracks.album
 	join genre_track on genre_track.track = tracks.id and genre_track.genre = 'PlaylistParameter1'
 	join alternativeplaycount on alternativeplaycount.urlmd5 = tracks.urlmd5
@@ -48,7 +50,6 @@ select tracks.id, tracks.primary_artist from tracks
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
-	group by tracks.id
 	order by dynamicplaylist_random_albums.album,tracks.disc,tracks.tracknum
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_albums;

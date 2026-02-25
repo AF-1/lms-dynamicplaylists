@@ -6,7 +6,7 @@
 -- PlaylistTrackOrder:ordereddescrandom
 -- PlaylistAPCdupe:yes
 -- PlaylistParameter1:playlist:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPLAYLIST:
-select tracks.id, tracks.primary_artist, tracks_persistent.playCount from tracks
+select distinct tracks.id, tracks.primary_artist, tracks_persistent.playCount from tracks
 	join playlist_track on playlist_track.track = tracks.url
 	left join library_track on library_track.track = tracks.id
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
@@ -28,5 +28,4 @@ select tracks.id, tracks.primary_artist, tracks_persistent.playCount from tracks
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id
 	order by tracks_persistent.playCount desc, random()

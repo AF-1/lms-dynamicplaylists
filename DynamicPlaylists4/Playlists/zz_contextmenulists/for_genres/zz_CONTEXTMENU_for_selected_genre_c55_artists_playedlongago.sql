@@ -30,10 +30,12 @@ create temporary table dynamicplaylist_random_contributors as
 								genre_track.genre = genres.id and
 								genres.namesearch in ('PlaylistExcludedGenres'))
 		group by contributor_track.contributor
-			having totaltrackcount >= 'PlaylistMinArtistTracks' and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-max(ifnull(tracks_persistent.lastPlayed,0))) > 0)
+		having totaltrackcount >= 'PlaylistMinArtistTracks'
+			and max(ifnull(tracks_persistent.lastPlayed,0)) > 0
+			and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-max(ifnull(tracks_persistent.lastPlayed,0))) > 0)
 		order by random()
 		limit 1;
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join contributor_track on contributor_track.track = tracks.id and contributor_track.role in (1,4,5,6)
 	join dynamicplaylist_random_contributors on dynamicplaylist_random_contributors.contributor = contributor_track.contributor
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
@@ -56,7 +58,6 @@ select tracks.id, tracks.primary_artist from tracks
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
-	group by tracks.id
 	order by dynamicplaylist_random_contributors.contributor, random()
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_contributors;
