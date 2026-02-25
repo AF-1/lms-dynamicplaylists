@@ -15,7 +15,7 @@ create temporary table dynamicplaylist_random_contributors as
 			tracks.audio = 1
 			and dynamicplaylist_history.id is null
 			and contributor_track.contributor != 'PlaylistVariousArtistsID'
-			and not exists (select * from tracks t2,genre_track,genres
+			and not exists (select * from tracks t2, genre_track, genres
 							where
 								t2.id = tracks.id and
 								tracks.id = genre_track.track and
@@ -29,11 +29,24 @@ create temporary table dynamicplaylist_random_contributors as
 					else 1
 				end
 		group by contributor_track.contributor
-			having totaltrackcount >= 'PlaylistMinArtistTracks'
-			and min(ifnull(tracks_persistent.playCount,0)) = 0 and avg(ifnull(tracks_persistent.playCount,0)) > 0
+		having totaltrackcount >= 'PlaylistMinArtistTracks'
+			and exists (
+				select 1 from tracks t3
+				join contributor_track ct2 on ct2.track = t3.id and ct2.role in (1,4,5,6)
+				join tracks_persistent tp2 on tp2.urlmd5 = t3.urlmd5
+				where ct2.contributor = contributor_track.contributor
+				and ifnull(tp2.playCount, 0) = 0
+			)
+			and exists (
+				select 1 from tracks t3
+				join contributor_track ct2 on ct2.track = t3.id and ct2.role in (1,4,5,6)
+				join tracks_persistent tp2 on tp2.urlmd5 = t3.urlmd5
+				where ct2.contributor = contributor_track.contributor
+				and ifnull(tp2.playCount, 0) > 0
+			)
 		order by random()
 		limit 1;
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join contributor_track on contributor_track.track = tracks.id and contributor_track.role in (1,4,5,6)
 	join genre_track on genre_track.track = tracks.id and genre_track.genre in ('PlaylistParameter1')
 	join dynamicplaylist_random_contributors on dynamicplaylist_random_contributors.contributor = contributor_track.contributor
@@ -56,7 +69,6 @@ select tracks.id, tracks.primary_artist from tracks
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id
 	order by dynamicplaylist_random_contributors.contributor, random()
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_contributors;

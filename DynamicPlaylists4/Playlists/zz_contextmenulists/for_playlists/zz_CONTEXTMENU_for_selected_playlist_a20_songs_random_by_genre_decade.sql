@@ -7,7 +7,7 @@
 -- PlaylistParameter2:multiplegenres:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTGENRES:
 -- PlaylistParameter3:multipledecades:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTDECADES:
 -- PlaylistParameter4:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join playlist_track on playlist_track.track = tracks.url
 	left join library_track on library_track.track = tracks.id
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
@@ -31,4 +31,3 @@ select tracks.id, tracks.primary_artist from tracks
 				when 'PlaylistParameter4' = 2 then ifnull(tracks_persistent.playCount, 0) > 0
 				else 1
 			end
-	group by tracks.id

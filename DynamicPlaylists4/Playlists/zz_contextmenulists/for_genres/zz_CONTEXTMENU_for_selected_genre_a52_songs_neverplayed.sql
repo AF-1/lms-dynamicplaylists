@@ -5,7 +5,7 @@
 -- PlaylistUseCache: 1
 -- PlaylistAPCdupe:yes
 -- PlaylistParameter1:genre:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTGENRE:
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join genre_track on genre_track.track = tracks.id and genre_track.genre = 'PlaylistParameter1'
 	left join library_track on library_track.track = tracks.id
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5 and ifnull(tracks_persistent.playCount, 0) = 0
@@ -20,4 +20,3 @@ select tracks.id, tracks.primary_artist from tracks
 				then library_track.library = 'PlaylistCurrentVirtualLibraryForClient'
 				else 1
 			end
-	group by tracks.id

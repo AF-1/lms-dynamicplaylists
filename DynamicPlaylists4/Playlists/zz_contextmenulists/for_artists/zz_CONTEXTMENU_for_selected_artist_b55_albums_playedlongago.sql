@@ -24,16 +24,18 @@ create temporary table dynamicplaylist_random_albums as
 				else 1
 			end
 		and not exists (select * from tracks t2,genre_track,genres
-						where
-							t2.id = tracks.id and
-							tracks.id = genre_track.track and
-							genre_track.genre = genres.id and
-							genres.namesearch in ('PlaylistExcludedGenres'))
+					where
+						t2.id = tracks.id and
+						tracks.id = genre_track.track and
+						genre_track.genre = genres.id and
+						genres.namesearch in ('PlaylistExcludedGenres'))
 	group by tracks.album
-		having totaltrackcount >= 'PlaylistMinArtistTracks' and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-max(ifnull(tracks_persistent.lastPlayed,0))) > 0)
+	having totaltrackcount >= 'PlaylistMinArtistTracks'
+		and max(ifnull(tracks_persistent.lastPlayed,0)) > 0
+		and ((strftime('%s',DATE('NOW','-'PlaylistPeriodPlayedLongAgo' YEAR'))-max(ifnull(tracks_persistent.lastPlayed,0))) > 0)
 	order by random()
 	limit 1;
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join dynamicplaylist_random_albums on dynamicplaylist_random_albums.album = tracks.album
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
 	left join library_track on library_track.track = tracks.id
@@ -55,12 +57,11 @@ select tracks.id, tracks.primary_artist from tracks
 				else 1
 			end
 		and not exists (select * from tracks t2,genre_track,genres
-						where
-							t2.id = tracks.id and
-							tracks.id = genre_track.track and
-							genre_track.genre = genres.id and
-							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id
-	order by dynamicplaylist_random_albums.album,tracks.disc,tracks.tracknum
+					where
+						t2.id = tracks.id and
+						tracks.id = genre_track.track and
+						genre_track.genre = genres.id and
+						genres.namesearch in ('PlaylistExcludedGenres'))
+	order by dynamicplaylist_random_albums.album, tracks.disc, tracks.tracknum
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_albums;

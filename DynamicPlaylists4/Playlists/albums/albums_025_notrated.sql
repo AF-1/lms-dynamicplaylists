@@ -7,7 +7,7 @@
 -- PlaylistParameter2:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
 drop table if exists dynamicplaylist_random_albums;
 create temporary table dynamicplaylist_random_albums as
-	select notrated.album as album, notrated.sumrating as sumrating from
+	select notrated.album as album from
 		(select tracks.album as album, sum(ifnull(tracks_persistent.rating,0)) as sumrating, count(distinct tracks.id) as totaltrackcount from tracks
 			join albums on albums.id = tracks.album
 			join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
@@ -29,19 +29,19 @@ create temporary table dynamicplaylist_random_albums as
 									genre_track.genre = genres.id and
 									genres.namesearch in ('PlaylistExcludedGenres'))
 			group by tracks.album
-				having totaltrackcount >= 'PlaylistMinAlbumTracks' and sumrating = 0
+			having totaltrackcount >= 'PlaylistMinAlbumTracks'
+				and sumrating = 0
 				and
 					case
 						when 'PlaylistParameter1' = 1 then ifnull(albums.compilation, 0) = 1
 						when 'PlaylistParameter1' = 2 then ifnull(albums.compilation, 0) = 0
 						else 1
 					end
-			order by sumrating asc, random()
+			order by random()
 			limit 30) as notrated
-	where sumrating = 0
 	order by random()
 	limit 1;
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join dynamicplaylist_random_albums on dynamicplaylist_random_albums.album = tracks.album
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
 	left join library_track on library_track.track = tracks.id
@@ -68,7 +68,6 @@ select tracks.id, tracks.primary_artist from tracks
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id
 	order by dynamicplaylist_random_albums.album,tracks.disc,tracks.tracknum
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_albums;

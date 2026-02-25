@@ -27,12 +27,12 @@ create temporary table dynamicplaylist_random_contributors as
 					else 1
 				end
 		group by contributor_track.contributor
-			having totaltrackcount >= 'PlaylistMinArtistTracks'
+		having totaltrackcount >= 'PlaylistMinArtistTracks'
 		order by avgrating desc, random()
-			limit 30) as topavgrated
+		limit 30) as topavgrated
 	order by random()
 	limit 1;
-select tracks.id, tracks.primary_artist from tracks
+select distinct tracks.id, tracks.primary_artist from tracks
 	join contributor_track on contributor_track.track = tracks.id and contributor_track.role in (1,4,5,6)
 	join dynamicplaylist_random_contributors on dynamicplaylist_random_contributors.contributor = contributor_track.contributor
 	join tracks_persistent on tracks_persistent.urlmd5 = tracks.urlmd5
@@ -60,7 +60,6 @@ select tracks.id, tracks.primary_artist from tracks
 							tracks.id = genre_track.track and
 							genre_track.genre = genres.id and
 							genres.namesearch in ('PlaylistExcludedGenres'))
-	group by tracks.id
 	order by dynamicplaylist_random_contributors.contributor, random()
 	limit 'PlaylistLimit';
 drop table dynamicplaylist_random_contributors;
