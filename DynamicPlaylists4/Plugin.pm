@@ -1,23 +1,7 @@
 #
 # Dynamic Playlists 4
-#
 # (c) 2021 AF
-#
-# Some code based on the DynamicPlayList plugin by (c) 2006 Erland Isaksson
-#
-# GPLv3 license
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <https://www.gnu.org/licenses/>.
+# Licensed under the GPLv3 - see LICENSE file
 #
 
 package Plugins::DynamicPlaylists4::Plugin;
@@ -735,7 +719,7 @@ sub findAndAdd {
 		# Add the remaining items to the end
 		if (!defined $limit || $limit > 1 || scalar(@{$randomIDs2add}) >= 1) {
 			main::DEBUGLOG && $log->is_debug && $log->debug('Adding '.scalar(@{$randomIDs2add}).' tracks to the end of the playlist.');
-			if(scalar(@{$randomIDs2add}) >= 1) {
+			if (scalar(@{$randomIDs2add}) >= 1) {
 				foreach my $id (@{$randomIDs2add}) {
 					$request = $client->execute(['playlist', 'addtracks', sprintf('%s=%d', getLinkAttribute('track'), $id)]);
 					$request->source('PLUGIN_DYNAMICPLAYLISTS4');
@@ -2234,7 +2218,7 @@ sub cliJiveHandler {
 	}
 
 	my $cnt = 0;
-	my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
+	my $materialCaller = (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC') ? 1 : 0;
 
 	# get menu level and check if active dynamic playlist
 	my $masterClient = masterOrSelf($client);
@@ -2477,7 +2461,7 @@ sub cliJivePlaylistParametersHandler {
 		return;
 	}
 
-	my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
+	my $materialCaller = (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC') ? 1 : 0;
 
 	my $params = $request->getParamsCopy();
 
@@ -3024,7 +3008,7 @@ sub _cliJiveActionsMenuHandler {
 	# if we have params, display if params = non-volatile or pref setting = enabled
 
 	if ($paramCount == 0 || ($paramCount > 0 && ($prefs->get('paramsdplsaveenabled') || $hasNoVolatileParams))) {
-		my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
+		my $materialCaller = (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC') ? 1 : 0;
 		my $input = {
 			initialText => $playLists->{$playlistID}->{'name'},
 			len => 1,
@@ -4817,7 +4801,7 @@ sub _saveStaticPlaylistJiveParams {
 	my $staticPLname = $request->getParam('staticplaylistname');
 
 	my $cnt = 0;
-	my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
+	my $materialCaller = (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC') ? 1 : 0;
 
 	if (!$sortOrder) {
 		$request->addResult('window', {
@@ -5611,7 +5595,7 @@ sub _preselectionMenuJive {
 	my $request = shift;
 	main::DEBUGLOG && $log->is_debug && $log->debug('request = '.Data::Dump::dump($request)) if $debugVerbose;
 	my $client = $request->client();
-	my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
+	my $materialCaller = (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC') ? 1 : 0;
 
 	if (!$request->isQuery([['dynamicplaylist'], ['preselect']])) {
 		$log->warn('Incorrect command');
@@ -5781,7 +5765,7 @@ sub _queueMenuJive {
 	my $request = shift;
 	main::DEBUGLOG && $log->is_debug && $log->debug('request = '.Data::Dump::dump($request)) if $debugVerbose;
 	my $client = $request->client();
-	my $materialCaller = 1 if (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC');
+	my $materialCaller = (defined($request->{'_connectionid'}) && $request->{'_connectionid'} =~ 'Slim::Web::HTTP::ClientConn' && defined($request->{'_source'}) && $request->{'_source'} eq 'JSONRPC') ? 1 : 0;
 
 	if (!$request->isQuery([['dynamicplaylist'], ['queuelist']])) {
 		$log->warn('Incorrect command');
