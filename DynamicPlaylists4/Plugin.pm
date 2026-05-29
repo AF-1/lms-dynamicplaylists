@@ -601,9 +601,10 @@ sub findAndAdd {
 			}
 
 			if (keys %{$newTracksCompleteInfo} > 0) {
-				$totalTracksCompleteInfo = $newTracksCompleteInfo if keys %{$newTracksCompleteInfo} > 0;
-			} else {
-				$totalTracksCompleteInfo = { %{$totalTracksCompleteInfo}, %{$newTracksCompleteInfo} } if keys %{$newTracksCompleteInfo} > 0;
+				for my $id (keys %{$newTracksCompleteInfo}) {
+					next if exists $totalTracksCompleteInfo->{$id};
+					$totalTracksCompleteInfo->{$id} = $newTracksCompleteInfo->{$id};
+				}
 			}
 			main::DEBUGLOG && $log->is_debug && $log->debug('Adding new tracks to total tracks vars exec time = '.(time() - $addingNewTracksToTotalVars).' secs');
 			main::DEBUGLOG && $log->is_debug && $log->debug('Total track IDs found so far = '.scalar(@{$totalTrackIDList}));
@@ -4639,9 +4640,10 @@ sub saveAsStaticPlaylist {
 		}
 
 		if (keys %{$newTracksCompleteInfo} > 0) {
-			$totalTracksCompleteInfo = $newTracksCompleteInfo if keys %{$newTracksCompleteInfo} > 0;
-		} else {
-			$totalTracksCompleteInfo = { %{$totalTracksCompleteInfo}, %{$newTracksCompleteInfo} } if keys %{$newTracksCompleteInfo} > 0;
+			for my $id (keys %{$newTracksCompleteInfo}) {
+				next if exists $totalTracksCompleteInfo->{$id};
+				$totalTracksCompleteInfo->{$id} = $newTracksCompleteInfo->{$id};
+			}
 		}
 		main::DEBUGLOG && $log->is_debug && $log->debug('Adding new tracks to total tracks vars exec time = '.(time() - $addingNewTracksToTotalVars).' secs');
 		main::DEBUGLOG && $log->is_debug && $log->debug('Total track IDs found so far = '.scalar(@{$totalTrackIDList}));
