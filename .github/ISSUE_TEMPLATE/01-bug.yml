@@ -175,11 +175,3 @@ body:
 - type: markdown
   attributes:
     value: "<br><br>"
-- type: markdown
-  attributes:
-    value: |
-      ## ⭐ Help others discover this project
-      If you find this project useful, giving it a [**star**](https://github.com/AF-1/lms-dynamicplaylists#-help-others-discover-this-project) is a great way to show your support and help others discover it. Thank you.
-- type: markdown
-  attributes:
-    value: "<br><br>"

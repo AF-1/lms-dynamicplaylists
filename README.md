@@ -75,12 +75,6 @@ If you want to test a new patch that hasn't made it into a release version yet, 
 ## Report a new issue
 
 To report a new issue please file a GitHub [**issue report**](https://github.com/AF-1/lms-dynamicplaylists/issues/new/choose).
-<br><br><br>
-
-
-## ⭐ Help others discover this project
-
-If you find this project useful, giving it a <img src="screenshots/githubstar.png" width="20" height="20" alt="star" /> (top right of this page) is a great way to show your support and help others discover it. Thank you.
 <br><br><br><br>
 
 
@@ -177,6 +171,10 @@ If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create 
 
 <details><summary>»<b>Can this plugin be <i>displayed in my language</i>?</b>«</summary><br><p>If you want localized strings in your language, please read <a href="https://github.com/AF-1/sobras/wiki/Adding-localization-to-LMS-plugins"><b>this</b></a>.</p></details>
 
+<br><br><br>
+---
+
+If this project was useful to you, you can star the repository using the <img src="screenshots/githubstar.png" width="20" height="20" alt="star" /> button in the top-right corner of this page.
 <br><br><br>
 
 [^1]: The screenshots might not correspond to the UI of the latest release in every detail.
