@@ -1,0 +1,13 @@
+name: Stale issues
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: "39 1 * * *"
+
+jobs:
+  stale:
+    uses: AF-1/.github/.github/workflows/close-inactive-issues.yml@main
+    permissions:
+      issues: write
