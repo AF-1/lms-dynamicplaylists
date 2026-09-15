@@ -16,7 +16,7 @@
 			PROCESS favoritescontrol isFavorite = playlist.isFavorite
 		%]
 	[% ELSE %]
-		[% IF paramsdplsaveenabled or playlist.hasnovolatileparams %]
+		[% IF paramsdplsaveenabled or !playlist.hasvolatileparams %]
 		[% PROCESS dynamicPlayListLink type="$playlist.dynamicplaylistid" addOnly="99" parameters=playlist.parameters %]
 		[% END %]
 	[% END %]

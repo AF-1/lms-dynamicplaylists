@@ -1,6 +1,6 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ALBUMS_MOSTPLAYEDAVG
 -- PlaylistGroups:Context menu lists/ genre
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:genres
 -- PlaylistAPCdupe:yes
 -- PlaylistTrackOrder:ordered

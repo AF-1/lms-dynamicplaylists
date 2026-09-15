@@ -1,7 +1,7 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_PLAYLISTS_MULTIPLE_GENRE_DECADE_MINRATING
 -- PlaylistGroups:Playlists
 -- PlaylistCategory:playlists
--- PlaylistUseCache: 1
+-- PlaylistUseCache:1
 -- PlaylistParameter1:multiplestaticplaylists:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPLAYLISTS:
 -- PlaylistParameter2:multiplegenres:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTGENRES:
 -- PlaylistParameter3:multipledecades:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTDECADES:

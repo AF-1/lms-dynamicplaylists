@@ -1,7 +1,7 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_NEVERPLAYED_APC
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
--- PlaylistUseCache: 1
+-- PlaylistUseCache:1
 select distinct tracks.id, tracks.primary_artist from tracks
 	left join library_track on library_track.track = tracks.id
 	join alternativeplaycount on alternativeplaycount.urlmd5 = tracks.urlmd5 and ifnull(alternativeplaycount.playCount, 0) = 0

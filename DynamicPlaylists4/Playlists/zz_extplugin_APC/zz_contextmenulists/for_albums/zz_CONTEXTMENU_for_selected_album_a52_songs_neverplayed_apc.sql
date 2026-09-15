@@ -1,8 +1,8 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ALBUM_SONGS_NEVERPLAYED_APC
 -- PlaylistGroups:Context menu lists/ album
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:albums
--- PlaylistUseCache: 1
+-- PlaylistUseCache:1
 -- PlaylistParameter1:album:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTALBUM:
 select distinct tracks.id, tracks.primary_artist from tracks
 	left join library_track on library_track.track = tracks.id

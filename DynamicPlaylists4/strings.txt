@@ -26,6 +26,8 @@ PLUGIN_DYNAMICPLAYLISTS4_PLAYLISTSETTINGS
 
 PLUGIN_DYNAMICPLAYLISTS4_PLAYLISTDETAILS
 	EN	Dynamic playlist details
+	FR	Détails de la liste de lecture dynamique
+	DE	Details zur dynamischen Playlist
 
 PLUGIN_DYNAMICPLAYLISTS4_DISABLED
 	EN	Dynamic playlist stopped
@@ -44,8 +46,6 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_FAQ_LINK_TEXT
 
 PLUGIN_DYNAMICPLAYLISTS4_FAQ_LINK
 	EN	https://github.com/AF-1
-	FR	https://github.com/AF-1
-	DE	https://github.com/AF-1
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_SECTION
 	EN	Settings Section
@@ -61,7 +61,6 @@ PLUGIN_DYNAMICPLAYLISTS4_DYNAMICPLAYLIST
 	EN	Dynamic Playlist
 	FR	Liste de lecture dynamique
 	DE	Dynamische Wiedergabeliste
-
 
 
 PLUGIN_DYNAMICPLAYLISTS4_PLAYING
@@ -98,6 +97,7 @@ PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED_LONG
 	EN	Found no songs matching your criteria for dynamic playlist:
 	FR	Aucun morceau trouvé qui correspond à vos critères de liste de lecture dynamique :
 	DE	Keine Titel entsprechen den Selektionskriterien für die dynamische Wiedergabeliste
+
 
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_MAX_NUMBER_OF_UNPLAYED_TRACKS
@@ -267,15 +267,23 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_REMEMBERACTIVEPLAYLIST_DESC
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW
 	EN	Jivelite players: next window jump
+	FR	Lecteurs Jivelite: fenêtre suivante
+	DE	Jivelite-Player: nächstes Fenster
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW_DESC
 	EN	Some dynamic playlists require you to traverse multiple menus to set various parameters.<br>When you select <i>play</i>, <i>add</i> or <i>create DSTM seed list and play</i> in the <i>final</i> menu, jivelite players will jump to the <i>Now Playing screen</i> by default.<br>Exiting the Now Playing screen will take you back to this final menu. To get back to the <i>Home</i> menu, you need to long press the top left button.<br><br>This setting allows you to change this: if you choose "Home menu", then selecting <i>play</i>, <i>add</i> and <i>create DSTM seed list and play</i> in the final menu will take you back to the <i>Home</i> menu. But you have to press the top right note icon to enter the Now Playing screen.<br><br><b>This is a <i>global</i> setting that only applies <i>jivelite</i> players/controllers like <i>SB Radio</i>, <i>SB Touch</i>, <i>SqueezePlay</i> or <i>piCorePlayer</i>.</b>
+	FR	Certaines listes de lecture dynamiques nécessitent de parcourir plusieurs menus pour définir divers paramètres.<br>Lorsque vous sélectionnez <i>lecture</i>, <i>ajouter</i> ou <i>créer une liste de départ DSTM et lire</i> dans le menu <i>final</i>, les lecteurs jivelite passent par défaut à l'<i>écran En cours de lecture</i>.<br>Quitter l'écran En cours de lecture vous ramène à ce menu final. Pour revenir au menu <i>Accueil</i>, vous devez appuyer longuement sur le bouton supérieur gauche.<br><br>Ce paramètre vous permet de modifier cela: si vous choisissez \"Menu Accueil\", la sélection de <i>lecture</i>, <i>ajouter</i> et <i>créer une liste de départ DSTM et lire</i> dans le menu final vous ramènera au menu <i>Accueil</i>. Mais vous devez appuyer sur l'icône de note en haut à droite pour accéder à l'écran En cours de lecture.<br><br><b>Il s'agit d'un paramètre <i>global</i> qui s'applique uniquement aux lecteurs/contrôleurs <i>jivelite</i> comme <i>SB Radio</i>, <i>SB Touch</i>, <i>SqueezePlay</i> ou <i>piCorePlayer</i>.</b>
+	DE	Einige dynamische Playlisten erfordern das Durchlaufen mehrerer Menüs zum Festlegen verschiedener Parameter.<br>Wenn Sie im <i>letzten</i> Menü <i>Wiedergabe</i>, <i>Hinzufügen</i> oder <i>DSTM-Startliste erstellen und abspielen</i> wählen, springen Jivelite-Player standardmäßig zum <i>Now-Playing-Bildschirm</i>.<br>Wenn Sie den Now-Playing-Bildschirm verlassen, gelangen Sie zurück zu diesem letzten Menü. Um zum <i>Startmenü</i> zurückzukehren, müssen Sie die obere linke Taste lang drücken.<br><br>Diese Einstellung erlaubt eine Änderung: Bei Auswahl von \"Startmenü\" kehren Sie nach Drücken von <i>Wiedergabe</i>, <i>Hinzufügen</i> und <i>DSTM-Startliste erstellen und abspielen</i> im letzten Menü direkt zum <i>Startmenü</i> zurück. Um zum Now-Playing-Bildschirm zu gelangen, müssen Sie das Notensymbol oben rechts drücken.<br><br><b>Dies ist eine <i>globale</i> Einstellung, die nur für <i>Jivelite</i>-Player/-Controller wie <i>SB Radio</i>, <i>SB Touch</i>, <i>SqueezePlay</i> oder <i>piCorePlayer</i> gilt.</b>
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW_NPSCREEN
 	EN	Now Playing screen
+	FR	Écran En cours de lecture
+	DE	Now-Playing-Bildschirm
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_JIVENEXTWINDOW_HOME
 	EN	Home menu
+	FR	Menu Accueil
+	DE	Startmenü
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_GROUPCUSTOMPLAYLISTS
 	EN	Group custom dynamic playlists <wbr>without&nbsp;group&nbsp;classification
@@ -339,9 +347,13 @@ SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_STRUCTURED_SAVEDPLAYLISTS_DESC
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DEBUGVERBOSE
 	EN	Verbose debug log
+	FR	Journal de débogage détaillé
+	DE	Ausführliches Debug-Protokoll
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_DEBUGVERBOSE_DESC
 	EN	If enabled, the <b>debug</b> log level also includes messages that are not necessary to debug issues in most cases. Disabled by default.
+	FR	Si activé, le niveau de journal <b>débogage</b> inclut également des messages qui ne sont pas nécessaires pour déboguer les problèmes dans la plupart des cas. Désactivé par défaut.
+	DE	Wenn aktiviert, enthält die <b>Debug</b>-Protokollebene auch Meldungen, die in den meisten Fällen nicht zur Fehlerbehebung erforderlich sind. Standardmäßig deaktiviert.
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_EXCLUDEDGENRES
 	EN	Exclude genres
@@ -411,18 +423,28 @@ PLUGIN_DYNAMICPLAYLISTS4_SELECT_PLAYLISTS_ALL
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_DPLID
 	EN	Dynamic playlist ID
+	FR	ID de la liste de lecture dynamique
+	DE	ID der dynamischen Playlist
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_APCDATA
 	EN	Uses APC data
+	FR	Utilise les données APC
+	DE	Verwendet APC-Daten
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_HASVOLATILEPARAMS
 	EN	Has volatile parameters
+	FR	A des paramètres volatils
+	DE	Hat volatile Parameter
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_REPEAT
 	EN	Set to repeat (never stops)
+	FR	Réglé pour répéter (ne s'arrête jamais)
+	DE	Auf Wiederholen eingestellt (hört nie auf)
 
 SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_USESCACHE
 	EN	Uses DPL cache
+	FR	Utilise le cache DPL
+	DE	Verwendet DPL-Cache
 
 
 PLUGIN_DYNAMICPLAYLISTS4_SELECT_ALL
@@ -658,14 +680,14 @@ PLUGIN_DYNAMICPLAYLISTS4_PRESELECTALBUMS
 	DE	Dynamische Wiedergabeliste - Vorauswahl Album
 
 PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ARTISTS_LIST
-	EN	Currently preselected <b>artists</b>
-	FR	<b>Artistes</b> présélectionnés
-	DE	Aktuell vorausgewählte <b>Interpreten</b>
+	EN	Currently preselected artists
+	FR	Artistes présélectionnés
+	DE	Aktuell vorausgewählte Interpreten
 
 PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CACHED_ALBUMS_LIST
-	EN	Currently preselected <b>albums</b>
-	FR	<b>Albums</b> présélectionnés
-	DE	Aktuell vorausgewählte <b>Alben</b>
+	EN	Currently preselected albums
+	FR	Albums présélectionnés
+	DE	Aktuell vorausgewählte Alben
 
 PLUGIN_DYNAMICPLAYLISTS4_PRESELECTION_CLEAR_LIST
 	EN	** Clear list **
@@ -2218,9 +2240,13 @@ PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPERCENTAGEPLAYLIST
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_TITLECONTAINS_ALBUM
 	EN	Album title contains
+	FR	Le titre de l'album contient
+	DE	Albumtitel enthält
 
 PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_TITLECONTAINS_TRACK
 	EN	Track title contains
+	FR	Le titre de la piste contient
+	DE	Tracktitel enthält
 
 
 

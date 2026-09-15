@@ -1,7 +1,7 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_MOSTPLAYED_MINRATING
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
--- PlaylistUseCache: 1
+-- PlaylistUseCache:1
 -- PlaylistTrackOrder:ordereddescrandom
 -- PlaylistAPCdupe:yes
 -- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTMINRATING:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_UNRATED,20:*,40:**,60:***,80:****,100:*****

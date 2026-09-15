@@ -1,8 +1,8 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_NEVERPLAYED_APC
 -- PlaylistGroups:Context menu lists/ playlist
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:playlists
--- PlaylistUseCache: 1
+-- PlaylistUseCache:1
 -- PlaylistParameter1:playlist:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPLAYLIST:
 select distinct tracks.id, tracks.primary_artist from tracks
 	join playlist_track on playlist_track.track = tracks.url

@@ -1,8 +1,8 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_MOSTPLAYED
 -- PlaylistGroups:Context menu lists/ playlist
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:playlists
--- PlaylistUseCache: 1
+-- PlaylistUseCache:1
 -- PlaylistTrackOrder:ordereddescrandom
 -- PlaylistAPCdupe:yes
 -- PlaylistParameter1:playlist:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPLAYLIST:

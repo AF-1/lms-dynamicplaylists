@@ -1,6 +1,6 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_ARTISTS_NEVERPLAYED_APC
 -- PlaylistGroups:Context menu lists/ genre
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:genres
 -- PlaylistParameter1:genre:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTGENRE:
 drop table if exists dynamicplaylist_random_contributors;

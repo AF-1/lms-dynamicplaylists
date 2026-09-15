@@ -1,6 +1,6 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_TOPRATEDAVG
 -- PlaylistGroups:Context menu lists/ year
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:years
 -- PlaylistTrackOrder:ordered
 -- PlaylistLimitOption:unlimited

@@ -1,8 +1,8 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_SONGS_LEASTPLAYED_APC
 -- PlaylistGroups:Context menu lists/ playlist
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:playlists
--- PlaylistUseCache: 1
+-- PlaylistUseCache:1
 -- PlaylistTrackOrder:orderedascrandom
 -- PlaylistParameter1:playlist:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTPLAYLIST:
 select distinct tracks.id, tracks.primary_artist, alternativeplaycount.playCount from tracks

@@ -1,7 +1,8 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_SONGS_PRESEL_ARTISTS_SONGS_RANDOM
 -- PlaylistGroups:Songs
 -- PlaylistCategory:songs
--- PlaylistUseCache: 1
+-- PlaylistUseCache:1
+-- PlaylistUsesPreselection:1
 -- PlaylistParameter1:list:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_INCLUDESONGS:0:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_ALL,1:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_UNPLAYED,2:PLUGIN_DYNAMICPLAYLISTS4_PARAMVALUENAME_SONGS_PLAYED
 select distinct tracks.id, tracks.primary_artist from tracks
 	join contributor_track on contributor_track.track = tracks.id and contributor_track.role in (1,4,5,6) and contributor_track.contributor in ('PlaylistPreselectedArtists')

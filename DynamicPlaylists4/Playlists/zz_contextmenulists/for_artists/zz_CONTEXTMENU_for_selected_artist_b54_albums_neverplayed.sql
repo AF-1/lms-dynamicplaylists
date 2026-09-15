@@ -1,6 +1,6 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_NEVERPLAYED
 -- PlaylistGroups:Context menu lists/ artist
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:artists
 -- PlaylistAPCdupe:yes
 -- PlaylistTrackOrder:ordered

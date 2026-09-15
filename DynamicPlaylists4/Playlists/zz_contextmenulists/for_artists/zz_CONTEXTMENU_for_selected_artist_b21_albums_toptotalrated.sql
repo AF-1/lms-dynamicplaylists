@@ -1,6 +1,6 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_ALBUMS_TOPRATEDTOTAL
 -- PlaylistGroups:Context menu lists/ artist
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:artists
 -- PlaylistTrackOrder:ordered
 -- PlaylistLimitOption:unlimited

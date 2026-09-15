@@ -26,21 +26,22 @@ sub init {
 	main::DEBUGLOG && $log->is_debug && $log->debug('dstmPlaylists init = '.Data::Dump::dump($dstmPlaylists)) if $prefs->get('debugverbose');
 
 	for my $playlist (keys %{$playlists}) {
-		if ($dstmPlaylists->{$playlist}) {
-			Slim::Plugin::DontStopTheMusic::Plugin->registerHandler(string('PLUGIN_DYNAMICPLAYLISTS4_DYNAMICPLAYLIST').': '.$playlists->{$playlist}->{'name'}, sub {
-				my ($client, $cb) = @_;
-				my $track = Slim::Schema::RemoteTrack->new({
-					url => 'dynamicplaylist://'.$playlist,
-					title => $playlists->{$playlist}->{name},
-					type => 'dynamicplaylist',
-				});
-				$cb->($client, [$track]);
-			});
-			main::DEBUGLOG && $log->is_debug && $log->debug('Registered this dpl with DSTM: '.$playlists->{$playlist}->{'name'});
-		} else {
-			Slim::Plugin::DontStopTheMusic::Plugin->unregisterHandler(string('PLUGIN_DYNAMICPLAYLISTS4_DYNAMICPLAYLIST').': '.$playlists->{$playlist}->{'name'});
-			main::DEBUGLOG && $log->is_debug && $log->debug('UNregistered this dpl with DSTM: '.$playlists->{$playlist}->{'name'});
+		my $title = string('PLUGIN_DYNAMICPLAYLISTS4_DYNAMICPLAYLIST').': '.$playlists->{$playlist}->{'name'};
+		unless ($dstmPlaylists->{$playlist}) {
+			Slim::Plugin::DontStopTheMusic::Plugin->unregisterHandler($title);
+			main::DEBUGLOG && $log->is_debug && $log->debug('UNregistered this dpl with DSTM: '.$playlists->{$playlist}->{'name'}) if $prefs->get('debugverbose');
+			next;
 		}
+		Slim::Plugin::DontStopTheMusic::Plugin->registerHandler($title, sub {
+			my ($client, $cb) = @_;
+			my $track = Slim::Schema::RemoteTrack->new({
+				url => 'dynamicplaylist://'.$playlist,
+				title => $playlists->{$playlist}->{'name'},
+				type => 'dynamicplaylist',
+			});
+			$cb->($client, [$track]);
+		});
+		main::DEBUGLOG && $log->is_debug && $log->debug('Registered this dpl with DSTM: '.$playlists->{$playlist}->{'name'}) if $prefs->get('debugverbose');
 	}
 }
 

@@ -1,6 +1,6 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_PLAYLIST_ALBUMS_RANDOM
 -- PlaylistGroups:Context menu lists/ playlist
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:playlists
 -- PlaylistTrackOrder:ordered
 -- PlaylistLimitOption:unlimited

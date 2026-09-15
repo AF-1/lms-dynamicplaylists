@@ -29,11 +29,6 @@ details summary > *{display: inline;}
 	min-width: 360px;
 }
 .enabledstatus{padding-left: 10px;}
-.playlists td:first-child {
-	padding-left: 10px;
-	min-width: 360px;
-	margin-bottom: 5px;
-}
 .dpllist_source {padding-left: 15px;}
 .apcbutton {
 	padding-left: 2px;
@@ -50,7 +45,7 @@ details summary > *{display: inline;}
 	appearance: none !important;
 	opacity: 0;
 	position: absolute;
-	top: 0px;
+	top: 0;
 	left: 4px;
 	width: 14px !important;
 	height: 14px !important;

@@ -1,8 +1,8 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_ARTIST_SONGS_MOSTPLAYED_APC
 -- PlaylistGroups:Context menu lists/ artist
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:artists
--- PlaylistUseCache: 1
+-- PlaylistUseCache:1
 -- PlaylistTrackOrder:ordereddescrandom
 -- PlaylistParameter1:artist:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTARTIST:
 select distinct tracks.id, tracks.primary_artist, alternativeplaycount.playCount from tracks

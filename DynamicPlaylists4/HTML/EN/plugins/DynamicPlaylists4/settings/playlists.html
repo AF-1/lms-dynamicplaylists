@@ -59,7 +59,7 @@
 				<details><summary><span class="categoryheader">[% categorylangstrings.$category %]</span></summary>
 					<table border="0">
 						[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
-							[% IF item.menulisttype != "contextmenu" && item.playlistcategory == category %]
+							[% IF !item.isdplcontextmenu && item.playlistcategory == category %]
 							<tr>
 								[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
 								<td class="enabledstatus infinity"><input type="checkbox" class="infinity_checkbox[% IF item.parameters %] hide[% END %]" name="[% playlistid _ '_dstm' %]" id="[% playlistid _ '_dstm' %]" value="1" [% item.dynamicplaylistdstmenabled ? "checked" : "" %][% IF item.parameters %] disabled[% END %]><span class="infinity_icon[% IF item.parameters %] hide[% END %]"></span></td>
@@ -73,7 +73,7 @@
 											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_USESCACHE" | string %]:</span></td><td>&nbsp;[% IF item.usecache %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>
 											[% IF item.repeat %]<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_REPEAT" | string %]:</span></td><td>&nbsp;[% IF item.repeat %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>[% END %]
 											<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_APCDATA" | string %]:</span></td><td>&nbsp;[% IF item.apcplaylist %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>
-											[% IF item.defaultplaylist %]<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_HASVOLATILEPARAMS" | string %]:</span></td><td>&nbsp;[% IF item.hasnovolatileparams %][% 'NO' | getstring %][% ELSE %][% 'YES' | getstring %][% END %]</td></tr>[% END %]
+											[% IF item.defaultplaylist %]<tr><td class="detailstab"><span class="emph">[% "SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_PLAYLIST_DETAILS_HASVOLATILEPARAMS" | string %]:</span></td><td>&nbsp;[% IF item.hasvolatileparams %][% 'YES' | getstring %][% ELSE %][% 'NO' | getstring %][% END %]</td></tr>[% END %]
 											<tr><td>&nbsp;</td></tr>
 										</table>
 									</details>
@@ -92,7 +92,7 @@
 				<details><summary><span class="categoryheader">[% "PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_STATICPLAYLISTS" | string %]</span></summary>
 					<table border="0">
 						[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
-							[% IF item.menulisttype != "contextmenu" && item.playlistcategory == 'static LMS playlists' %]
+							[% IF !item.isdplcontextmenu && item.playlistcategory == 'static LMS playlists' %]
 							<tr>
 								[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
 								<td class="enabledstatus heart"><input type="checkbox" class="heart_checkbox" name="[% playlistid _ '_isfav' %]" id="[% playlistid _ '_isfav' %]" value="1" [% item.dynamicplaylistfavourite ? "checked" : "" %]><span class="heart_icon"></span></td>
@@ -121,7 +121,7 @@
 				<details><summary>[% "PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_NOTCLASSIFIED" | string %]</summary>
 					<table border="0">
 						[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
-							[% IF item.menulisttype != "contextmenu" && NOT item.playlistcategory %]
+							[% IF !item.isdplcontextmenu && NOT item.playlistcategory %]
 							<tr>
 								[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
 								<td class="enabledstatus infinity"><input type="checkbox" class="infinity_checkbox[% IF item.parameters %] hide[% END %]" name="[% playlistid _ '_dstm' %]" id="[% playlistid _ '_dstm' %]" value="1" [% item.dynamicplaylistdstmenabled ? "checked" : "" %][% IF item.parameters %] disabled[% END %]><span class="infinity_icon[% IF item.parameters %] hide[% END %]"></span></td>
@@ -155,7 +155,7 @@
 				<details><summary><span class="categoryheader">[% categorylangstrings.$category %]</span></summary>
 					<table border="0">
 						[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
-							[% IF item.menulisttype == "contextmenu" && item.playlistcategory == category %]
+							[% IF item.isdplcontextmenu && item.playlistcategory == category %]
 							<tr>
 								[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
 								<td class="enabledstatus"><input type="checkbox" name="[% playlistid _ '_enabled' %]" id="[% playlistid _ '_enabled' %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)"></td>
@@ -184,7 +184,7 @@
 				<details><summary>[% "PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_WEBLIST_NOTCLASSIFIED" | string %]</summary>
 					<table border="0">
 					[% FOREACH item IN pluginDynamicPlaylists4PlayLists.values.sort('playlistsortname') %]
-						[% IF item.menulisttype == "contextmenu" && NOT item.playlistcategory %]
+						[% IF item.isdplcontextmenu && NOT item.playlistcategory %]
 						<tr>
 							[%- playlistid = "playlist_" _ item.dynamicplaylistid %]
 							<td class="enabledstatus"><input type="checkbox" name="[% playlistid _ '_enabled' %]" id="[% playlistid _ '_enabled' %]" value="1" [% item.dynamicplaylistenabled ? "checked" : "" %] onclick="changeNumSelected(this)"></td>
@@ -220,7 +220,7 @@
 
 		// Work out how many checkboxes are initially selected
 		for (var i=0; i < f.elements.length; i++) {
-			if (f.elements[i].type == 'checkbox' && String(f.elements[i].name).substring(0,9) == 'playlist_' && String(f.elements[i].name).substring(f.elements[i].name.length,f.elements[i].name.length - 8) == '_enabled') {
+			if (f.elements[i].type == 'checkbox' && f.elements[i].name.startsWith('playlist_') && f.elements[i].name.endsWith('_enabled')) {
 				numCheckBoxes++;
 				if (f.elements[i].checked) {
 					numSelected++;
@@ -233,7 +233,7 @@
 			var newState = numSelected != numCheckBoxes;
 
 			for (var i=0; i < f.elements.length; i++) {
-				if (f.elements[i].type == 'checkbox' && ((String(f.elements[i].name).substring(0,9) == 'playlist_' && String(f.elements[i].name).substring(f.elements[i].name.length,f.elements[i].name.length - 8) == '_enabled') || newState==0)) {
+				if (f.elements[i].type == 'checkbox' && ((f.elements[i].name.startsWith('playlist_') && f.elements[i].name.endsWith('_enabled')) || newState==0)) {
 					f.elements[i].checked = newState;
 				}
 			}
@@ -248,9 +248,9 @@
 
 		// Increase/decrease num selected every time a checkbox changes
 		function changeNumSelected(checkBox) {
-			if (checkBox.checked && String(checkBox.name).substring(0,9) == 'playlist_' && String(checkBox.name).substring(checkBox.name.length,checkBox.name.length - 8) == '_enabled') {
+			if (checkBox.checked && checkBox.name.startsWith('playlist_') && checkBox.name.endsWith('_enabled')) {
 				numSelected++;
-			} else if(String(checkBox.name).substring(0,9) == 'playlist_' && String(checkBox.name).substring(checkBox.name.length,checkBox.name.length - 8) == '_enabled') {
+			} else if (checkBox.name.startsWith('playlist_') && checkBox.name.endsWith('_enabled')) {
 				numSelected--;
 			}
 

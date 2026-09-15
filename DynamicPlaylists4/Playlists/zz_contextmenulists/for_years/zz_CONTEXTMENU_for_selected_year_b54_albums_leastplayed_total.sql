@@ -1,6 +1,6 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_YEAR_ALBUMS_LEASTPLAYED
 -- PlaylistGroups:Context menu lists/ year
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:years
 -- PlaylistAPCdupe:yes
 -- PlaylistTrackOrder:ordered

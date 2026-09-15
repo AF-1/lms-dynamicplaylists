@@ -1,6 +1,6 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_DECADE_ALBUMS_MOSTPLAYED
 -- PlaylistGroups:Context menu lists/ decade
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:years
 -- PlaylistAPCdupe:yes
 -- PlaylistTrackOrder:ordered

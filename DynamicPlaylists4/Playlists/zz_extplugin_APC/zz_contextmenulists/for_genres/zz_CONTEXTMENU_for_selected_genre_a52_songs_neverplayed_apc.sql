@@ -1,8 +1,8 @@
 -- PlaylistName:PLUGIN_DYNAMICPLAYLISTS4_BUILTIN_PLAYLIST_CONTEXT_GENRE_SONGS_NEVERPLAYED_APC
 -- PlaylistGroups:Context menu lists/ genre
--- PlaylistMenuListType:contextmenu
+-- PlaylistIsContextMenu:1
 -- PlaylistCategory:genres
--- PlaylistUseCache: 1
+-- PlaylistUseCache:1
 -- PlaylistParameter1:genre:PLUGIN_DYNAMICPLAYLISTS4_PARAMNAME_SELECTGENRE:
 select distinct tracks.id, tracks.primary_artist from tracks
 	join genre_track on genre_track.track = tracks.id and genre_track.genre = 'PlaylistParameter1'

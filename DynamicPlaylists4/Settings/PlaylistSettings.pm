@@ -11,22 +11,17 @@ use warnings;
 use utf8;
 use base qw(Plugins::DynamicPlaylists4::Settings::BaseSettings);
 
-use File::Basename;
-use File::Next;
-
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
 use Slim::Utils::Misc;
 use Slim::Utils::Strings qw(string);
+use File::Basename;
 
 my $prefs = preferences('plugin.dynamicplaylists4');
 my $log = logger('plugin.dynamicplaylists4');
 
-my $plugin;
-
 sub new {
-	my $class = shift;
-	$plugin = shift;
+	my ($class, $plugin) = @_;
 	$class->SUPER::new($plugin);
 }
 
@@ -43,23 +38,17 @@ sub currentPage {
 }
 
 sub pages {
-	my %page = (
-		'name' => name(),
-		'page' => page(),
-	);
-	my @pages = (\%page);
-	return \@pages;
+	return [{ 'name' => name(), 'page' => page() }];
 }
 
 sub handler {
 	my ($class, $client, $paramRef) = @_;
-	my $result = undef;
+	my $result;
 	my $callHandler = 1;
 
-	my ($playLists, $playListItems, $unclassifiedPlaylists, $savedstaticPlaylists) = Plugins::DynamicPlaylists4::Plugin::initPlayLists($client);
+	my ($playLists, $playListMenuItems, $unclassifiedPlaylists, $savedstaticPlaylists) = Plugins::DynamicPlaylists4::Plugin::initPlayLists($client);
 	$paramRef->{'pluginDynamicPlaylists4PlayLists'} = $playLists;
-	my @groupPath = ();
-	my @groupResult = ();
+	my (@groupPath, @groupResult);
 
 	my $categorylangstrings = {
 		'songs' => string("SETTINGS_PLUGIN_DYNAMICPLAYLISTS4_CATNAME_TRACKS"),
@@ -75,7 +64,7 @@ sub handler {
 	$paramRef->{'savedstaticPlaylists'} = $savedstaticPlaylists;
 	$paramRef->{'unclassifiedPlaylists'} = $unclassifiedPlaylists->{'unclassifiedPlaylists'};
 	$paramRef->{'unclassifiedContextMenuPlaylists'} = $unclassifiedPlaylists->{'unclassifiedContextMenuPlaylists'};
-	$paramRef->{'pluginDynamicPlaylists4Groups'} = Plugins::DynamicPlaylists4::Plugin::getPlayListGroups(\@groupPath, $playListItems, \@groupResult);
+	$paramRef->{'pluginDynamicPlaylists4Groups'} = Plugins::DynamicPlaylists4::Plugin::getPlayListGroups(\@groupPath, $playListMenuItems, \@groupResult);
 
 	my @playlistCategories = ('songs', 'artists', 'albums', 'genres', 'years', 'playlists');
 	splice @playlistCategories, 3, 0, 'works' if (Slim::Utils::Versions->compareVersions($::VERSION, '9.0') >= 0);
@@ -84,11 +73,7 @@ sub handler {
 	if ($paramRef->{'saveSettings'}) {
 		foreach my $playlist (keys %{$playLists}) {
 			my $playlistid = "playlist_".$playLists->{$playlist}{'dynamicplaylistid'}."_enabled";
-			if ($paramRef->{$playlistid}) {
-				$prefs->set('playlist_'.$playlist.'_enabled', 1);
-			} else {
-				$prefs->set('playlist_'.$playlist.'_enabled', 0);
-			}
+			$prefs->set('playlist_'.$playlist.'_enabled', $paramRef->{$playlistid} ? 1 : 0);
 
 			# favs
 			my $playlistfavouriteid = "playlist_".$playLists->{$playlist}{'dynamicplaylistid'}."_isfav";
@@ -107,12 +92,10 @@ sub handler {
 			}
 		}
 
-		savePlayListGroups($playListItems, $paramRef, '');
-		($playLists, $playListItems) = Plugins::DynamicPlaylists4::Plugin::initPlayLists($client);
+		savePlayListGroups($playListMenuItems, $paramRef, '');
+		($playLists, $playListMenuItems) = Plugins::DynamicPlaylists4::Plugin::initPlayLists($client);
 		$paramRef->{'pluginDynamicPlaylists4PlayLists'} = $playLists;
-		my @groupPath = ();
-		my @groupResult = ();
-		$paramRef->{'pluginDynamicPlaylists4Groups'} = Plugins::DynamicPlaylists4::Plugin::getPlayListGroups(\@groupPath, $playListItems, \@groupResult);
+		$paramRef->{'pluginDynamicPlaylists4Groups'} = Plugins::DynamicPlaylists4::Plugin::getPlayListGroups(\@groupPath, $playListMenuItems, \@groupResult);
 		$result = $class->SUPER::handler($client, $paramRef);
 		$callHandler = 0;
 	}
@@ -128,7 +111,7 @@ sub handler {
 				$prefs->set('playlist_'.$playlist.'_enabled', 0);
 			}
 		}
-		($playLists, $playListItems) = Plugins::DynamicPlaylists4::Plugin::initPlayLists($client);
+		($playLists, $playListMenuItems) = Plugins::DynamicPlaylists4::Plugin::initPlayLists($client);
 		$paramRef->{'pluginDynamicPlaylists4PlayLists'} = $playLists;
 		$result = $class->SUPER::handler($client, $paramRef);
 	} elsif ($paramRef->{'apc_apconly'}) {
@@ -143,7 +126,7 @@ sub handler {
 				$prefs->set('playlist_'.$playlist.'_enabled', 1);
 			}
 		}
-		($playLists, $playListItems) = Plugins::DynamicPlaylists4::Plugin::initPlayLists($client);
+		($playLists, $playListMenuItems) = Plugins::DynamicPlaylists4::Plugin::initPlayLists($client);
 		$paramRef->{'pluginDynamicPlaylists4PlayLists'} = $playLists;
 		$result = $class->SUPER::handler($client, $paramRef);
 	} elsif ($paramRef->{'apc_both'}) {
@@ -155,7 +138,7 @@ sub handler {
 				$prefs->set('playlist_'.$playlist.'_enabled', 1);
 			}
 		}
-		($playLists, $playListItems) = Plugins::DynamicPlaylists4::Plugin::initPlayLists($client);
+		($playLists, $playListMenuItems) = Plugins::DynamicPlaylists4::Plugin::initPlayLists($client);
 		$paramRef->{'pluginDynamicPlaylists4PlayLists'} = $playLists;
 		$result = $class->SUPER::handler($client, $paramRef);
 	} elsif ($callHandler) {
@@ -172,13 +155,8 @@ sub savePlayListGroups {
 		my $item = $items->{$itemKey};
 		if (!defined($item->{'playlist'}) && defined($item->{'name'})) {
 			my $groupid = escape($path)."_".escape($item->{'name'});
-			my $playlistid = "playlist_".$groupid."_enabled";
-			if ($paramRef->{$playlistid}) {
-				$prefs->set('playlist_group_'.$groupid.'_enabled', 1);
-			} else {
-				$prefs->set('playlist_group_'.$groupid.'_enabled', 0);
-			}
-			if (defined($item->{'childs'})) {
+			$prefs->set('playlist_group_'.$groupid.'_enabled', $paramRef->{'playlist_'.$groupid.'_enabled'} ? 1 : 0);
+			if ($item->{'childs'}) {
 				savePlayListGroups($item->{'childs'}, $paramRef, $path."_".$item->{'name'});
 			}
 		}

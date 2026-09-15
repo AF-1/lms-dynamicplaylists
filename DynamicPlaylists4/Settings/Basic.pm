@@ -11,22 +11,15 @@ use warnings;
 use utf8;
 use base qw(Plugins::DynamicPlaylists4::Settings::BaseSettings);
 
-use File::Basename;
-use File::Next;
-
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
-use Slim::Utils::Misc;
 use Slim::Utils::Strings;
 
 my $prefs = preferences('plugin.dynamicplaylists4');
 my $log = logger('plugin.dynamicplaylists4');
 
-my $plugin;
-
 sub new {
-	my $class = shift;
-	$plugin = shift;
+	my ($class, $plugin) = @_;
 	$class->SUPER::new($plugin,1);
 }
 
@@ -43,12 +36,7 @@ sub currentPage {
 }
 
 sub pages {
-	my %page = (
-		'name' => Slim::Utils::Strings::string('PLUGIN_DYNAMICPLAYLISTS4_SETTINGS'),
-		'page' => page(),
-	);
-	my @pages = (\%page);
-	return \@pages;
+	return [{ 'name' => Slim::Utils::Strings::string('PLUGIN_DYNAMICPLAYLISTS4_SETTINGS'), 'page' => page() }];
 }
 
 sub prefs {
@@ -57,17 +45,11 @@ sub prefs {
 
 sub handler {
 	my ($class, $client, $paramRef) = @_;
-	my $result = undef;
-	my $callHandler = 1;
 	if ($paramRef->{'saveSettings'}) {
 		if ($paramRef->{'pref_min_number_of_unplayed_tracks'} > $paramRef->{'pref_max_number_of_unplayed_tracks'}) {
 			$prefs->set('min_number_of_unplayed_tracks', $paramRef->{'pref_max_number_of_unplayed_tracks'});
 			$paramRef->{'pref_min_number_of_unplayed_tracks'} = $paramRef->{'pref_max_number_of_unplayed_tracks'};
 		}
-
-		$paramRef->{'pref_rememberactiveplaylist'} = $paramRef->{'pref_rememberactiveplaylist'} || 0;
-		$paramRef->{'pref_showactiveplaylistinmainmenu'} = $paramRef->{'pref_showactiveplaylistinmainmenu'} || 0;
-		$paramRef->{'pref_groupunclassifiedcustomplaylists'} = $paramRef->{'pref_groupunclassifiedcustomplaylists'} || 0;
 
 		my $excludegenres_namelist;
 		my $genres = getGenres();
@@ -80,12 +62,8 @@ sub handler {
 		}
 		main::DEBUGLOG && $log->is_debug && $log->debug("*** SAVED *** excludegenres_namelist = ".Data::Dump::dump($excludegenres_namelist));
 		$prefs->set('excludegenres_namelist', $excludegenres_namelist);
-
-		$result = $class->SUPER::handler($client, $paramRef);
-	} elsif ($callHandler) {
-		$result = $class->SUPER::handler($client, $paramRef);
 	}
-	return $result;
+	return $class->SUPER::handler($client, $paramRef);
 }
 
 sub beforeRender {
@@ -106,37 +84,36 @@ sub getGenres {
 
 	my $excludenamelist = $prefs->get('excludegenres_namelist');
 	my %exclude;
-	if (defined $excludenamelist) {
-		%exclude = map { $_ => 1 } @{$excludenamelist}; # Extract each genre name into a hash
+	if ($excludenamelist) {
+		%exclude = map { $_ => 1 } @{$excludenamelist};
 	}
 
 	my $i = 0;
 	my $sth = Slim::Schema->dbh->prepare($genreSQL);
 	main::DEBUGLOG && $log->is_debug && $log->debug("Executing: $genreSQL") if $prefs->get('debugverbose');
 	eval {
-		$sth->execute() or do {
+		if (!$sth->execute()) {
 			$log->error("Error executing: $genreSQL");
-			$genreSQL = undef;
-		};
-
-		my ($id, $name, $namesearch);
-		$sth->bind_col(1, \$id);
-		$sth->bind_col(2, \$name);
-		$sth->bind_col(3, \$namesearch);
-		while($sth->fetch()) {
-			my %item = (
-				'id' => Slim::Utils::Unicode::utf8decode($id, 'utf8'),
-				'name' => Slim::Utils::Unicode::utf8decode($name, 'utf8'),
-				'namesearch' => Slim::Utils::Unicode::utf8decode($namesearch, 'utf8'),
-				'chosen' => $exclude{$namesearch} ? 'yes' : '',
-				'sort' => $i++,
-			);
-			$genres->{$namesearch} = \%item;
+		} else {
+			my ($id, $name, $namesearch);
+			$sth->bind_col(1, \$id);
+			$sth->bind_col(2, \$name);
+			$sth->bind_col(3, \$namesearch);
+			while ($sth->fetch()) {
+				my %item = (
+					'id' => Slim::Utils::Unicode::utf8decode($id, 'utf8'),
+					'name' => Slim::Utils::Unicode::utf8decode($name, 'utf8'),
+					'namesearch' => Slim::Utils::Unicode::utf8decode($namesearch, 'utf8'),
+					'chosen' => $exclude{$namesearch} ? 'yes' : '',
+					'sort' => $i++,
+				);
+				$genres->{$namesearch} = \%item;
+			}
+			$sth->finish();
 		}
-		$sth->finish();
 	};
 	if ($@) {
-		$log->error("Database error: $DBI::errstr");
+		$log->error("Database error: $@");
 	}
 
 	main::DEBUGLOG && $log->is_debug && $log->debug('genre list before render = '.Data::Dump::dump($genres)) if $prefs->get('debugverbose');
@@ -146,7 +123,7 @@ sub getGenres {
 sub getSortedGenres {
 	my $genres = getGenres();
 	return sort {
-		$genres->{$a}->{sort} <=> $genres->{$b}->{sort};
+		$genres->{$a}->{'sort'} <=> $genres->{$b}->{'sort'};
 	} keys %{$genres};
 }
 

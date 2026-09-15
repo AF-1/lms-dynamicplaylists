@@ -11,25 +11,18 @@ use warnings;
 use utf8;
 use base qw(Slim::Web::Settings);
 
-use File::Basename;
-use File::Next;
-
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
-use Slim::Utils::Misc;
 
 my $prefs = preferences('plugin.dynamicplaylists4');
 my $log = logger('plugin.dynamicplaylists4');
 
-my $plugin;
-my %subPages = ();
+my %subPages;
 
 sub new {
-	my $class = shift;
-	$plugin = shift;
-	my $default = shift;
+	my ($class, $plugin, $default) = @_;
 
-	if (!defined($default) || !$default) {
+	if (!$default) {
 		Slim::Web::Pages->addPageFunction($class->page, $class);
 	} else {
 		$class->SUPER::new();
@@ -40,7 +33,7 @@ sub new {
 sub handler {
 	my ($class, $client, $params) = @_;
 
-	my %currentSubPages = ();
+	my %currentSubPages;
 	for my $key (keys %subPages) {
 		my $pages = $subPages{$key}->pages($client, $params);
 		for my $page (@{$pages}) {
