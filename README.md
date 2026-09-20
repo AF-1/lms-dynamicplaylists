@@ -157,7 +157,7 @@ If you have an <i>active</i> dynamic playlist and <i>more than one</i> player, y
 </p></details><br>
 
 <details><summary>»<b>Can I use CLI commands to control DPL?</b>«</summary><br><p>
-For plugins and script: see this <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/CLI-commands-for-plugins-and-scripts">wiki page</a><br>For external apps: see the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/External-API">External API</a> page.
+For <b>plugins and scripts</b>: see this <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/CLI-commands-for-plugins-and-scripts">wiki page</a><br><br>For <b>external apps</b>: see the <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/External-API">External API</a> page.
 </p></details><br>
 
 <details><summary>»<b>The <i>Home > Dynamic Playlists</i> menu doesn't show dynamic playlists for <i>context menus</i>. Why?</b>«</summary><br><p>
