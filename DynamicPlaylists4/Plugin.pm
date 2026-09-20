@@ -3241,7 +3241,7 @@ sub cliGetParameterValues {
 	}
 
 	if (lc($parameter->{'type'}) eq 'albumtitlecontains' || lc($parameter->{'type'}) eq 'tracktitlecontains') {
-		$request->addResult('values', {});
+		$request->addResult('values', []);
 		$request->setStatusDone();
 		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetParameterValues');
 		return;
@@ -3261,15 +3261,7 @@ sub cliGetParameterValues {
 	my @values;
 	addParameterValues($client, \@values, $parameter, \%previousValues, $playlist, $limitingParamSelVLID);
 
-	my %valuesResult;
-	for my $value (@values) {
-		$valuesResult{$value->{'id'}} = {
-			'id' => $value->{'id'},
-			'name' => $value->{'name'},
-		};
-	}
-
-	$request->addResult('values', \%valuesResult);
+	$request->addResult('values', [map { { 'id' => $_->{'id'}, 'name' => $_->{'name'} } } @values]);
 	$request->setStatusDone();
 	main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetParameterValues');
 }
@@ -3338,7 +3330,7 @@ sub cliPlayPlaylist {
 	}
 
 	if ($dplUserReqParamCount && $dplUserReqParamCount != $providedUserReqParamValues) {
-		$request->setStatusDone();
+		$request->setStatusBadParams();
 		$log->warn('This dynamic playlist requires user input but the CLI command did not provide '.($providedUserReqParamValues == 0 ? 'any' : 'all').' parameter values.');
 	} else {
 		my $masterClient = masterOrSelf($client);
@@ -3410,7 +3402,7 @@ sub cliContinuePlaylist {
 	}
 
 	if ($dplUserReqParamCount && $dplUserReqParamCount != $providedUserReqParamValues) {
-		$request->setStatusDone();
+		$request->setStatusBadParams();
 		$log->warn('This dynamic playlist requires user input but the CLI command did not provide '.($providedUserReqParamValues == 0 ? 'any' : 'all').' parameter values.');
 	} else {
 		playRandom($client, $playlistId, 0, 1, undef, 1, \%newParamValues);
@@ -3476,7 +3468,7 @@ sub cliAddPlaylist {
 	}
 
 	if ($dplUserReqParamCount && $dplUserReqParamCount != $providedUserReqParamValues) {
-		$request->setStatusDone();
+		$request->setStatusBadParams();
 		$log->warn('This dynamic playlist requires user input but the CLI command did not provide '.($providedUserReqParamValues == 0 ? 'any' : 'all').' parameter values.');
 	} else {
 		playRandom($client, $playlistId, 1, 1, 1, undef, \%newParamValues);
@@ -3549,7 +3541,7 @@ sub cliDstmSeedListPlay {
 	}
 
 	if ($dplUserReqParamCount && $dplUserReqParamCount != $providedUserReqParamValues) {
-		$request->setStatusDone();
+		$request->setStatusBadParams();
 		$log->warn('This dynamic playlist requires user input but the CLI command did not provide '.($providedUserReqParamValues == 0 ? 'any' : 'all').' parameter values.');
 	} else {
 		playRandom($client, $playlistId, 2, 1, 1, undef, \%newParamValues);
@@ -3625,7 +3617,7 @@ sub cliQueuePlaylist {
 	}
 
 	if ($dplUserReqParamCount && $dplUserReqParamCount != $providedUserReqParamValues) {
-		$request->setStatusDone();
+		$request->setStatusBadParams();
 		$log->warn('This dynamic playlist requires user input but the CLI command did not provide '.($providedUserReqParamValues == 0 ? 'any' : 'all').' parameter values.');
 	} else {
 		_queuePlaylist($client, $url, $playLists->{$playlistId});
@@ -3658,18 +3650,16 @@ sub cliGetQueue {
 		return;
 	}
 
-	my $dplQueue = $client->pluginData('dplQueue') || [];
-	my %queueResult;
-	for my $queuedDPL (@{$dplQueue}) {
+	my @queueResult;
+	for my $queuedDPL (@{$client->pluginData('dplQueue') || []}) {
 		my ($playlistId) = $queuedDPL->{'url'} =~ m{^dynamicplaylist(?:addonly)?://([^?]+)};
-		$queueResult{$queuedDPL->{'urlmd5'}} = {
+		push @queueResult, {
 			'urlmd5' => $queuedDPL->{'urlmd5'},
 			'title' => $queuedDPL->{'title'},
 			'playlistid' => $playlistId,
 		};
 	}
-
-	$request->addResult('queue', \%queueResult);
+	$request->addResult('queue', \@queueResult);
 	$request->setStatusDone();
 	main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetQueue');
 }
@@ -3898,9 +3888,13 @@ sub cliTransferActivePlaylist {
 
 	} else {
 
-		my $params = $request->getParamsCopy();
-		my $targetPlayerID = $params->{'targetplayerid'};
-		return if !$targetPlayerID;
+		my $targetPlayerID = $request->getParam('targetplayerid');
+		if (!$targetPlayerID) {
+			$log->warn('targetplayerid or showtargetplayerlist parameter required');
+			$request->setStatusBadParams();
+			main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliTransferActivePlaylist');
+			return;
+		}
 
 		_transferActivePlaylist($client->id, $targetPlayerID, $playlistId);
 	}
