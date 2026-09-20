@@ -781,7 +781,7 @@ sub playRandom {
 	my $showTimePerChar = $prefs->get('showtimeperchar') / 1000;
 	main::DEBUGLOG && $log->is_debug && $log->debug('playRandom called with type '.$type);
 
-	$masterClient->pluginData('type' => $type);
+	$masterClient->pluginData('type' => $type) unless $addOnly && $forcedAdd;
 	if (main::DEBUGLOG && $log->is_debug && $debugVerbose) {
 		$log->debug('pluginData type for '.Data::Dump::dump($masterClient->name).' = '.Data::Dump::dump($masterClient->pluginData('type')));
 		$log->debug('client pref type = '.Data::Dump::dump($clientDplState{$masterClient}->{'type'}));
@@ -7433,10 +7433,10 @@ sub masterOrSelf {
 sub objectForId {
 	my ($type, $id) = @_;
 	my %typeMap = (
-		artist   => 'Contributor',
-		album    => 'Album',
-		genre    => 'Genre',
-		track    => 'Track',
+		artist => 'Contributor',
+		album => 'Album',
+		genre => 'Genre',
+		track => 'Track',
 		playlist => 'Playlist',
 	);
 	return Slim::Schema->resultset($typeMap{$type} || $type)->find($id);
