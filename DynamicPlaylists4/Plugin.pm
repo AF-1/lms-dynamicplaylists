@@ -6253,7 +6253,7 @@ sub getNextDynamicPlaylistTracks {
 				my $sth = $dbh->prepare($sql);
 				if (!$sth->execute()) {
 					$log->error("Error executing: $sql -- ".$sth->errstr);
-				} elsif ($sql =~ /^\(*\s*select\b/oi) {
+				} elsif ($sql =~ /^\(*\s*(?:select|with)\b/oi) {
 					my ($id, $primary_artist, $playCount);
 					$sth->bind_col(1, \$id);
 					eval {
@@ -6560,8 +6560,6 @@ sub parseContent {
 	my ($item, $content, $items, $parseStrings) = @_;
 
 	if ($content) {
-		decode_entities($content);
-
 		my @playlistDataArray = split(/[\n\r]+/, $content);
 		$playlistDataArray[0] = Slim::Utils::Unicode::stripBOM($playlistDataArray[0]) if @playlistDataArray;
 		my ($name, $playlistLMSminVersion, $useCache, $repeat, $novfd);
@@ -6579,6 +6577,8 @@ sub parseContent {
 				$log->warn("Line in '$item' contains non-ASCII bytes but was not recognized as valid UTF-8 (detected: $lineEncoding) - converting from latin1: $line");
 				$line = Slim::Utils::Unicode::utf8on(Slim::Utils::Unicode::latin1toUTF8($line));
 			}
+			decode_entities($line);
+			utf8::upgrade($line) if $line =~ /[^\x00-\x7F]/;
 
 			$name ||= $parseStrings ? parsePlaylistName($line, 'parseStrings') : parsePlaylistName($line);
 			my $parameter = $parseStrings ? parseParameter($line, 'parseStrings') : parseParameter($line);
