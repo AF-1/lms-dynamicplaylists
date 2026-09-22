@@ -943,7 +943,8 @@ sub playRandom {
 					# Don't do showBrieflys if visualiser screensavers are running as the display messes up
 					my $statusmsg = string($addOnly ? 'ADDING_TO_PLAYLIST' : 'PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING');
 					$statusmsg = string('PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_STATUSMSG') if $addOnly && $addOnly == 2;
-					if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+					my $clientMode = Slim::Buttons::Common::mode($client);
+					if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 						$client->showBriefly({'line' => [$statusmsg,
 											 $playlistName]}, getMsgDisplayTime($statusmsg.$playlistName));
 					}
@@ -953,7 +954,8 @@ sub playRandom {
 					}
 				}
 			} elsif ($showFeedback) {
-					if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+					my $clientMode = Slim::Buttons::Common::mode($client);
+					if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 						$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED'),
 											 string('PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED_LONG').' '.$playlistName]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED').string('PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED_LONG').$playlistName));
 					}
@@ -977,7 +979,8 @@ sub playRandom {
 		# Display status message(s) if $showTimePerChar > 0
 		if ($showTimePerChar > 0) {
 			# Don't do showBrieflys if visualiser screensavers are running as the display messes up
-			if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+			my $clientMode = Slim::Buttons::Common::mode($client);
+			if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 				$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4'), string('PLUGIN_DYNAMICPLAYLISTS4_DISABLED')]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4').string('PLUGIN_DYNAMICPLAYLISTS4_DISABLED')));
 			}
 			if ($material_enabled) {
@@ -1119,7 +1122,8 @@ sub playRandom {
 			# Display status message(s) if $showTimePerChar > 0
 			if ($showTimePerChar > 0) {
 				my $statusmsg = string('PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_FAILED_LONG');
-				if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+				my $clientMode = Slim::Buttons::Common::mode($client);
+				if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 					$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_FAILED'),
 										 $statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_FAILED').$statusmsg));
 				}
@@ -1288,40 +1292,46 @@ sub addParameterValues {
 	if (defined($sql)) {
 		my $paramType = lc($parameter->{'type'});
 		main::DEBUGLOG && $log->is_debug && $log->debug('parameter type = '.$paramType);
-		my $sth = $dbh->prepare($sql);
-		if (!$sth) {
-			$log->error("Error preparing: $sql -- ".$dbh->errstr);
-		} else {
-			main::DEBUGLOG && $log->is_debug && $log->debug("Executing value list: $sql");
-			if (!$sth->execute()) {
-				$log->error("Error executing: $sql -- ".$sth->errstr);
+		eval {
+			my $sth = $dbh->prepare($sql);
+			if (!$sth) {
+				$log->error("Error preparing: $sql -- ".$dbh->errstr);
 			} else {
-				my ($id, $name, $sortlink);
-				if ($paramType eq 'customdecade' || $paramType eq 'year' || $paramType eq 'customyear') {
-					eval { $sth->bind_columns(undef, \$id, \$name) };
+				main::DEBUGLOG && $log->is_debug && $log->debug("Executing value list: $sql");
+				if (!$sth->execute()) {
+					$log->error("Error executing: $sql -- ".$sth->errstr);
 				} else {
-					eval { $sth->bind_columns(undef, \$id, \$name, \$sortlink) };
-					if ($@) {
-						$@ = '';
+					my ($id, $name, $sortlink);
+					if ($paramType eq 'customdecade' || $paramType eq 'year' || $paramType eq 'customyear') {
 						eval { $sth->bind_columns(undef, \$id, \$name) };
+					} else {
+						eval { $sth->bind_columns(undef, \$id, \$name, \$sortlink) };
+						if ($@) {
+							$@ = '';
+							eval { $sth->bind_columns(undef, \$id, \$name) };
+						}
+					}
+					if ($@) {
+						$log->error("Error binding columns: $@");
+						$@ = '';
+					} else {
+						while ($sth->fetch()) {
+							my %listitem = (
+								'id' => $id,
+								'value' => $id,
+								'name' => Slim::Utils::Unicode::utf8decode($name, 'utf8')
+							);
+							$listitem{'sortlink'} = Slim::Utils::Unicode::utf8decode($sortlink, 'utf8') if defined($sortlink);
+							push @{$listRef}, \%listitem;
+						}
+						main::DEBUGLOG && $log->is_debug && $log->debug('Added '.scalar(@{$listRef}).' items to value list');
 					}
 				}
-				if ($@) {
-					$log->error("Error binding columns: $@");
-				} else {
-					while ($sth->fetch()) {
-						my %listitem = (
-							'id' => $id,
-							'value' => $id,
-							'name' => Slim::Utils::Unicode::utf8decode($name, 'utf8')
-						);
-						$listitem{'sortlink'} = Slim::Utils::Unicode::utf8decode($sortlink, 'utf8') if defined($sortlink);
-						push @{$listRef}, \%listitem;
-					}
-					main::DEBUGLOG && $log->is_debug && $log->debug('Added '.scalar(@{$listRef}).' items to value list');
-				}
+				$sth->finish();
 			}
-			$sth->finish();
+		};
+		if ($@) {
+			$log->error("Database error: $@");
 		}
 	}
 }
@@ -2986,7 +2996,8 @@ sub _cliJiveSaveFavWithParams {
 
 	my $showTimePerChar = $prefs->get('showtimeperchar') / 1000;
 	if ($showTimePerChar > 0) {
-		if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+		my $clientMode = Slim::Buttons::Common::mode($client);
+		if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4'),
 								 $statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4').$statusmsg));
 		}
@@ -4097,9 +4108,10 @@ sub setModeMixer {
 		onFavorites => sub {
 			my ($client, $item, $arg) = @_;
 			return if $item->{'playlist'}->{'dynamicplaylistid'} && ($item->{'playlist'}->{'dynamicplaylistid'} eq 'transfer' || $item->{'playlist'}->{'dynamicplaylistid'} eq 'disable');
+			my $clientMode = Slim::Buttons::Common::mode($client);
 			if (defined $arg && $arg =~ /^add$|^add(\d+)/) {
 				addFavorite($client, $item, $1);
-			} elsif (Slim::Buttons::Common::mode($client) ne 'FAVORITES') {
+			} elsif (!defined($clientMode) || $clientMode ne 'FAVORITES') {
 				Slim::Buttons::Common::setMode($client, 'home');
 				Slim::Buttons::Home::jump($client, 'FAVORITES');
 				Slim::Buttons::Common::pushModeLeft($client, 'FAVORITES');
@@ -4487,9 +4499,10 @@ sub getSetModeDataForSubItems {
 		},
 		onFavorites => sub {
 			my ($client, $item, $arg) = @_;
+			my $clientMode = Slim::Buttons::Common::mode($client);
 			if (defined $arg && $arg =~ /^add$|^add(\d+)/) {
 				addFavorite($client, $item, $1);
-			} elsif (Slim::Buttons::Common::mode($client) ne 'FAVORITES') {
+			} elsif (!defined($clientMode) || $clientMode ne 'FAVORITES') {
 				Slim::Buttons::Common::setMode($client, 'home');
 				Slim::Buttons::Home::jump($client, 'FAVORITES');
 				Slim::Buttons::Common::pushModeLeft($client, 'FAVORITES');
@@ -4873,7 +4886,8 @@ sub saveAsStaticPlaylist {
 	my $showTimePerChar = $prefs->get('showtimeperchar') / 1000;
 	if ($showTimePerChar > 0) {
 		my $statusmsg = string('PLUGIN_DYNAMICPLAYLISTS4_SAVINGSTATICPL_DONE').': '.$staticPLname;
-		if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+		my $clientMode = Slim::Buttons::Common::mode($client);
+		if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4'),
 								 $statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4').$statusmsg));
 		}
@@ -5111,7 +5125,8 @@ sub _saveStaticPlaylistJive {
 		my $showTimePerChar = $prefs->get('showtimeperchar') / 1000;
 		if ($showTimePerChar > 0) {
 			my $statusmsg = string('PLUGIN_DYNAMICPLAYLISTS4_SAVINGSTATICPL_INPROGRESS');
-			if (Slim::Buttons::Common::mode($client) !~ /^SCREENSAVER./) {
+			my $clientMode = Slim::Buttons::Common::mode($client);
+			if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 				$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4'),
 									 $statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4').$statusmsg));
 			}
