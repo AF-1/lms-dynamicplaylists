@@ -6549,9 +6549,10 @@ sub readParseLocalDynamicPlaylists {
 						$parsedContent->{'dynamicplaylistid'} = 'dpldefault_'.delete($parsedContent->{'id'});
 						$localBuiltinDynamicPlaylists->{$parsedContent->{'dynamicplaylistid'}} = $parsedContent;
 					} elsif ($localDefDir eq $customPlaylistFolder) {
-						$parsedContent = parseContent($item, $content);
+						$parsedContent = parseContent(Slim::Utils::Unicode::utf8decode_locale($item), $content);
+						next unless $parsedContent;
 						$parsedContent->{'customplaylist'} = 1;
-						$parsedContent->{'dynamicplaylistid'} = 'dplusercustom_'.delete($parsedContent->{'id'});
+						$parsedContent->{'dynamicplaylistid'} = _buildCustomPlaylistId(delete($parsedContent->{'id'}), $localCustomDynamicPlaylists);
 						$localCustomDynamicPlaylists->{$parsedContent->{'dynamicplaylistid'}} = $parsedContent;
 					} elsif ($dplc_customPLfolder && $localDefDir eq $dplc_customPLfolder) {
 						$parsedContent = parseContent($item, $content, undef, 'parseStrings');
@@ -6729,6 +6730,21 @@ sub parseContent {
 		$log->error('Unable to read playlist configuration. Possibly incorrect information in playlist data'.($@ ? ": $@" : '.'));
 	}
 	return undef;
+}
+
+sub _buildCustomPlaylistId {
+	my ($fileBaseName, $existingPlaylists) = @_;
+	# same normalization DPLC uses for its file names: ignore case + punctuation, transliterate to ASCII, whitespace to underscore
+	my $safeName = lc(Slim::Utils::Text::ignoreCase($fileBaseName, 1));
+	$safeName =~ s/\s+/_/g;
+	$safeName = 'unnamed' unless length($safeName);
+	my $playlistId = 'dplusercustom_'.$safeName;
+	my $i = 1;
+	# prevent different file names from normalizing to the same id
+	while ($existingPlaylists && $existingPlaylists->{$playlistId}) {
+		$playlistId = 'dplusercustom_'.$safeName.'_'.$i++;
+	}
+	return $playlistId;
 }
 
 sub parsePlaylistName {
