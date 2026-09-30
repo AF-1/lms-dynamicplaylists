@@ -6259,7 +6259,7 @@ sub getNextDynamicPlaylistTracks {
 		my %idListCompleteInfo;
 		my ($noPrimaryArtistsCol, $noPlayCountCol) = (0, 0);
 
-		my $i = 1;
+		my ($i, $fetchStatements) = (1, 0);
 		for my $sql (_splitSQLStatements($sqlstatement)) {
 			my $sqlExecTime = time();
 
@@ -6269,6 +6269,7 @@ sub getNextDynamicPlaylistTracks {
 				if (!$sth->execute()) {
 					$log->error("Error executing: $sql -- ".$sth->errstr);
 				} elsif ($sql =~ /^\(*\s*(?:select|with)\b/oi) {
+					$fetchStatements++;
 					my ($id, $primary_artist, $playCount);
 					$sth->bind_col(1, \$id);
 					eval {
@@ -6305,8 +6306,9 @@ sub getNextDynamicPlaylistTracks {
 				$log->error("Database error: $@");
 				return 'error';
 			}
-			main::DEBUGLOG && $log->is_debug && $log->debug("sql statement $i: exec time = ".(time() - $sqlExecTime).' secs') if $debugVerbose;
+			main::DEBUGLOG && $log->is_debug && $log->debug('sql statement '.$i++.': exec time = '.(time() - $sqlExecTime).' secs') if $debugVerbose;
 		}
+		$log->warn("Dynamic playlist '".$dynamicplaylist->{'name'}."': none of its sql statements starts with select/with, so no track IDs can be returned.") unless $fetchStatements;
 		main::DEBUGLOG && $log->is_debug && $log->debug('Got '.scalar(@idList).' track IDs');
 		main::DEBUGLOG && $log->is_debug && $log->debug('idList = '.Data::Dump::dump(\@idList)) if $debugVerbose;
 
@@ -6495,6 +6497,38 @@ sub replaceParametersInSQL {
 		}
 	}
 	return $sql;
+}
+
+sub _splitSQLStatements {
+	my $sqlText = shift;
+	my @statements;
+	my $current = '';
+	my ($inString, $inBlockComment) = (0, 0);
+	my @chars = split //, $sqlText;
+	for (my $i = 0; $i < scalar(@chars); $i++) {
+		my $char = $chars[$i];
+		if ($inBlockComment) {
+			# drop the comment content and replace the whole comment with a single space
+			if ($char eq '*' && defined($chars[$i + 1]) && $chars[$i + 1] eq '/') {
+				$inBlockComment = 0;
+				$current .= ' ';
+				$i++;
+			}
+		} elsif ($char eq "'") {
+			$inString = !$inString;
+			$current .= $char;
+		} elsif (!$inString && $char eq '/' && defined($chars[$i + 1]) && $chars[$i + 1] eq '*') {
+			$inBlockComment = 1;
+			$i++;
+		} elsif ($char eq ';' && !$inString) {
+			push @statements, $current if $current =~ /\S/;
+			$current = '';
+		} else {
+			$current .= $char;
+		}
+	}
+	push @statements, $current if $current =~ /\S/;
+	return @statements;
 }
 
 
@@ -7373,26 +7407,6 @@ sub active {
 sub disableDSTM {
 	my ($class, $client) = @_;
 	return active($client);
-}
-
-sub _splitSQLStatements {
-	my $sqlText = shift;
-	my @statements;
-	my $current = '';
-	my $inString = 0;
-	for my $char (split //, $sqlText) {
-		if ($char eq "'") {
-			$inString = !$inString;
-			$current .= $char;
-		} elsif ($char eq ';' && !$inString) {
-			push @statements, $current if $current =~ /\S/;
-			$current = '';
-		} else {
-			$current .= $char;
-		}
-	}
-	push @statements, $current if $current =~ /\S/;
-	return @statements;
 }
 
 sub getExcludedGenreList {
