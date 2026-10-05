@@ -6679,8 +6679,8 @@ sub parseContent {
 				$playlistVLids->{$VLidItem->{'number'}} = $VLidItem->{'id'};
 			}
 
-			# skip and strip comments & empty lines
-			$line =~ s/\s*--.*?$//o;
+			# skip and strip comments & empty lines (a '--' inside a quoted string is not a comment)
+			$line =~ s/^((?:[^'"-]++|-(?!-)|'(?:[^']|'')*+'|"(?:[^"]|"")*+")*+)\s*--.*$/$1/;
 			$line =~ s/^\s*//o;
 
 			next if $line =~ /^--/;
@@ -7498,8 +7498,8 @@ sub getLinkAttribute {
 sub handleSearchText {
 	my ($searchString, $skipExact) = @_;
 	$searchString =~ s/^\s+|\s+$//g;
-	$searchString =~ s/%/\\%/g;
-	$searchString =~ s/_/\\_/g;
+	$searchString =~ s/([\\%_])/\\$1/g;
+	$searchString =~ s/'/''/g;
 	$searchString = Slim::Utils::Unicode::utf8decode_locale($searchString);
 
 	if (!$prefs->get('exacttitlesearch') && !$skipExact) {
