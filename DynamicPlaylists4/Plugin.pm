@@ -1163,29 +1163,30 @@ sub addParameterValues {
 	main::DEBUGLOG && $log->is_debug && $log->debug('Getting values for '.$parameter->{'name'}.' of type '.$parameter->{'type'});
 	my $sql;
 	my $dbh = Slim::Schema->dbh;
+	my $libraryID = Slim::Music::VirtualLibraries->getLibraryIdForClient($client) || $limitingParamSelVLID; # active VL on client takes precedence over VL from dynamic playlist
 	my $unknownString = string('PLUGIN_DYNAMICPLAYLISTS4_LANGSTRINGS_UNKNOWN');
 
 	if (lc($parameter->{'type'}) eq 'album') {
 		$sql = "select id, title, substr(titlesort,1,1) from albums";
-		$sql .= " join library_album on library_album.album = albums.id and library_album.library = ".$dbh->quote($limitingParamSelVLID) if $limitingParamSelVLID;
+		$sql .= " join library_album on library_album.album = albums.id and library_album.library = ".$dbh->quote($libraryID) if $libraryID;
 		$sql .= " order by titlesort";
 	} elsif (lc($parameter->{'type'}) eq 'artist') {
 		$sql = "select id, name, substr(namesort,1,1) from contributors";
-		$sql .= " join library_contributor on library_contributor.contributor = contributors.id and library_contributor.library = ".$dbh->quote($limitingParamSelVLID) if $limitingParamSelVLID;
+		$sql .= " join library_contributor on library_contributor.contributor = contributors.id and library_contributor.library = ".$dbh->quote($libraryID) if $libraryID;
 		$sql .= " where namesort is not null order by namesort";
 	} elsif (lc($parameter->{'type'}) eq 'genre') {
 		$sql = "select id, name, substr(namesort,1,1) from genres";
-		$sql .= " join library_genre on genres.id = library_genre.genre and library_genre.library = ".$dbh->quote($limitingParamSelVLID) if $limitingParamSelVLID;
+		$sql .= " join library_genre on genres.id = library_genre.genre and library_genre.library = ".$dbh->quote($libraryID) if $libraryID;
 		$sql .= " order by namesort";
 	} elsif (lc($parameter->{'type'}) eq 'year') {
 		my $quotedUnknown = $dbh->quote($unknownString);
 		$sql = "select year, case when ifnull(year, 0) > 0 then year else $quotedUnknown end from tracks";
-		$sql .= " join library_track on library_track.track = tracks.id and library_track.library = ".$dbh->quote($limitingParamSelVLID) if $limitingParamSelVLID;
+		$sql .= " join library_track on library_track.track = tracks.id and library_track.library = ".$dbh->quote($libraryID) if $libraryID;
 		$sql .= " group by year order by year desc";
 	} elsif (lc($parameter->{'type'}) eq 'playlist') {
-		$sql = "select playlist_track.playlist, tracks.title, substr(tracks.titlesort,1,1) from tracks, playlist_track";
-		$sql .= " join library_track on library_track.track = tracks.id and library_track.library = ".$dbh->quote($limitingParamSelVLID) if $limitingParamSelVLID;
-		$sql .= " where tracks.id = playlist_track.playlist and playlist_track.track = tracks.url group by playlist_track.playlist order by titlesort";
+		$sql = "select playlist_track.playlist, tracks.title, substr(tracks.titlesort,1,1) from tracks, playlist_track where tracks.id = playlist_track.playlist";
+		$sql .= " and playlist_track.track in (select t.url from tracks t join library_track on library_track.track = t.id and library_track.library = ".$dbh->quote($libraryID).")" if $libraryID;
+		$sql .= " group by playlist_track.playlist order by titlesort";
 	} elsif (lc($parameter->{'type'}) eq 'list') {
 		my $value = $parameter->{'definition'};
 		if (defined($value) && $value ne '') {
