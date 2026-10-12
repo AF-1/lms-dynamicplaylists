@@ -108,10 +108,6 @@ DPL is compatible with <a href="https://github.com/AF-1/#-dynamic-playlist-creat
 If you're familiar with SQLite and know how to create <i>custom</i> dynamic playlists, you can use data from any LMS database table.
 </p></details><br>
 
-<details><summary>»<b>Do I need the <i>Dynamic Mix</i> plugin?</b>«</summary><br><p>
-No. <i>Dynamic Mix</i> version 1.3 is <u><i>not</i></u> compatible with <i>Dynamic Playlists</i> version <b>4</b>. Dynamic Mix used MusicIP to create dynamic playlist mixes for DPL version <b>2</b>. I don't use MusicIP. So I don't know if Dynamic Mix interferes with DPL version <b>4</b>. But since it's not compatible, it's probably better to uninstall it.
-</p></details><br>
-
 <details><summary>»<b>How do I queue dynamic playlists?</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>I've queued dynamic playlists and they disappeared.</b>«</summary><br><p>
 You can queue up to 5 dynamic playlists. When all tracks matching the search criteria for the <i>active</i> dynamic playlist have been added to your client playlist and you have queued dynamic playlists, DPL will add a short silent track and (a placeholder for) the next queued dynamic playlist to your client playlist. The silent track should help with a smooth transition so the last track before the new dynamic playlist isn't cut short.<br><br><b>Please note:</b> The list with queued dynamic playlists is <b>cleared</b> when you <b>restart the server</b>.
 </p></details><br>
@@ -135,6 +131,10 @@ If you always select the same artists, albums, genres or playlists, it's probabl
 This feature is <b>limited to the LMS web UI</b> (<i>(Dark) Default</i> and <i>Classic</i> skin), <b>players with jivelite UI</b> (<i>Touch</i>, <i>Radio</i>, <i>SqueezePlay</i>, <i>piCorePlayer</i>) and <b>Material</b> skin.<br><br>
 Please note: Changing the <b>file</b>name of a <i>custom</i> dynamic playlist alters its dynamic playlist <i>id</i> and thus invalidates any existing favorite for this dynamic playlist. The same applies to <i>built-in</i> dynamic playlists: If a plugin <b>update</b> changes the filename of a built-in dynamic playlist, you'll have to delete and readd favorites based on that dynamic playlist. Doesn't happen very often and always for good reasons.<br><br>
 The favorite icon with the <i>p</i> (default skin) or an orange tint (classic skin) just indicates that this dynamic playlist contains <b>p</b>arameters that will ask for user input when you start it.</p></details><br>
+
+<details><summary>»<b>I need the correct <i>playlist ID</i> of a dynamic playlist for a script or CLI command. Where can I find it?</b>«</summary><br><p>
+Go to <i>LMS Settings > Advanced > Dynamic Playlists > Enabled dynamic playlists</i>, open the group that contains your dynamic playlist (e.g. <i>Songs</i>, <i>Albums</i> or <i>Static playlists</i>) and click the playlist name. The line <b>Dynamic playlist ID</b> below it shows the ID you need.<br>
+The playlist IDs of dynamic playlists are normalized file names (lowercase, spaces and special characters replaced). For example, <code>Z My été Genre Mix.sql</code> becomes <code>dplusercustom_z_my_ete_genre_mix</code>.</p></details><br>
 
 <details><summary>»<b>The <i>Not classified</i> group in the DPL (home) menu has disappeared / doesn't show.</b>«</summary><br><p>
 The <i>Not classified</i> group in the DPL (home) menu and on settings pages will only be displayed if DPL found dynamic playlists <i>without</i> a playlist <b>group</b> name, i.e. if it's not empty.</p></details><br>
@@ -167,6 +167,10 @@ And <b>context menus</b> (= <i><b>M</b>ore</i> menu in the web UI or <i>click/to
 <details><summary>»<b>I want my dynamic playlist to use one of Custom Skip's filter sets.</b>«</summary><br><p>
 Use <a href="https://github.com/AF-1/#-dynamic-playlist-creator"><b>Dynamic Playlist Creator</b></a> to create a custom dynamic playlist with a specific Custom Skip filter set that's enabled/disabled when your dynamic playlists starts/stops.<br>If you have created a custom dynamic playlist from scratch (raw SQLite), just add the necessary <b>action/CLI playlist parameters</b> to your file as described <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters">here</a>.<br>
 If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create a Custom Skip filter set that will <i>only</i> be active if DPL plays a dynamic playlist. See Custom Skip <a href="https://github.com/AF-1/lms-customskip/wiki#i-want-customskip-to-filter-only-dynamic-playlist-tracks">Wiki</a>.
+</p></details><br>
+
+<details><summary>»<b>Do I need the <i>Dynamic Mix</i> plugin?</b>«</summary><br><p>
+No. <i>Dynamic Mix</i> version 1.3 is <u><i>not</i></u> compatible with <i>Dynamic Playlists</i> version <b>4</b>. Dynamic Mix used MusicIP to create dynamic playlist mixes for DPL version <b>2</b>. I don't use MusicIP. So I don't know if Dynamic Mix interferes with DPL version <b>4</b>. But since it's not compatible, it's probably better to uninstall it.
 </p></details><br>
 
 <details><summary>»<b>Can this plugin be <i>displayed in my language</i>?</b>«</summary><br><p>If you want localized strings in your language, please read <a href="https://github.com/AF-1/sobras/wiki/Adding-localization-to-LMS-plugins"><b>this</b></a>.</p></details>
