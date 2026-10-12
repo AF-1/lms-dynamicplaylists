@@ -94,6 +94,7 @@ sub initPlugin {
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'stop'], [1, 0, 0, \&cliStopPlaylist]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'savefavorite'], [1, 0, 1, \&cliSaveFavorite]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'parametervalues'], [1, 1, 1, \&cliGetParameterValues]);
+	Slim::Control::Request::addDispatch(['dynamicplaylist', 'playlist', 'tracks'], [1, 1, 1, \&cliGetPlaylistTracks]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'transfer'], [1, 0, 1, \&cliTransferActivePlaylist]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'browsejive', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJiveHandler]);
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'jiveplaylistparameters', '_start', '_itemsPerResponse'], [1, 1, 1, \&cliJivePlaylistParametersHandler]);
@@ -3232,7 +3233,14 @@ sub cliGetParameterValues {
 	if (defined $playlistId && $playlistId =~ /^playlistid:(.+)$/) {
 		$playlistId = $1;
 	}
-	if (!$playlistId || !$playLists->{$playlistId}) {
+	if (!$playlistId) {
+		$log->warn('playlistid parameter required');
+		$request->setStatusBadParams();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetParameterValues');
+		return;
+	}
+	$playlistId = _resolveCustomPlaylistId($playlistId);
+	if (!$playLists->{$playlistId}) {
 		$log->warn("Playlist '".($playlistId // '')."' not found");
 		$request->setStatusBadParams();
 		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetParameterValues');
@@ -3306,6 +3314,7 @@ sub cliPlayPlaylist {
 		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliPlayPlaylist');
 		return;
 	}
+	$playlistId = _resolveCustomPlaylistId($playlistId);
 
 	if ($playlistId eq 'disable') {
 		playRandom($client, 'disable');
@@ -3386,6 +3395,7 @@ sub cliContinuePlaylist {
 		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliContinuePlaylist');
 		return;
 	}
+	$playlistId = _resolveCustomPlaylistId($playlistId);
 	if (!$playLists->{$playlistId}) {
 		$log->warn("Playlist '$playlistId' not found");
 		$request->setStatusBadParams();
@@ -3452,6 +3462,7 @@ sub cliAddPlaylist {
 		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliAddPlaylist');
 		return;
 	}
+	$playlistId = _resolveCustomPlaylistId($playlistId);
 	if (!$playLists->{$playlistId}) {
 		$log->warn("Playlist '$playlistId' not found");
 		$request->setStatusBadParams();
@@ -3490,6 +3501,122 @@ sub cliAddPlaylist {
 	}
 }
 
+sub cliGetPlaylistTracks {
+	main::DEBUGLOG && $log->is_debug && $log->debug('Entering cliGetPlaylistTracks');
+	my $request = shift;
+	my $client = $request->client();
+
+	if ($request->isNotQuery([['dynamicplaylist'], ['playlist'], ['tracks']])) {
+		$log->warn('Incorrect command');
+		$request->setStatusBadDispatch();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetPlaylistTracks');
+		return;
+	}
+	if (!defined $client) {
+		$log->warn('Client required');
+		$request->setStatusNeedsClient();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetPlaylistTracks');
+		return;
+	}
+
+	my $playlistId = $request->getParam('playlistid');
+	if (defined $playlistId && $playlistId =~ /^playlistid:(.+)$/) {
+		$playlistId = $1;
+	}
+	if (!$playlistId) {
+		$log->warn('playlistid parameter required');
+		$request->setStatusBadParams();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetPlaylistTracks');
+		return;
+	}
+	$playlistId = _resolveCustomPlaylistId($playlistId);
+	my $playlist = getPlayList($client, $playlistId);
+	if (!$playlist) {
+		$log->warn("Playlist '".($playlistId // '')."' not found");
+		$request->setStatusBadParams();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetPlaylistTracks');
+		return;
+	}
+
+	my $limit = $request->getParam('limit');
+	if (!defined $limit || $limit !~ /^\d+$/ || $limit < 1 || $limit > 5000) {
+		$log->warn('limit parameter (integer between 1 and 5000) required');
+		$request->setStatusBadParams();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetPlaylistTracks');
+		return;
+	}
+
+	my $params = $request->getParamsCopy();
+	my $parameters = $playlist->{'parameters'} || {};
+	my %paramValues;
+	for my $k (keys %{$params}) {
+		my ($parameterId) = $k =~ /^dynamicplaylist_parameter_(.*)$/;
+		next unless defined $parameterId && exists $parameters->{$parameterId};
+		$paramValues{$parameterId} = normalizeParameterValue($parameters->{$parameterId}->{'type'}, $params->{$k});
+	}
+	if (scalar(keys %paramValues) != scalar(keys %{$parameters})) {
+		$log->warn('This dynamic playlist requires user input but the CLI command did not provide '.(scalar(keys %paramValues) == 0 ? 'any' : 'all').' parameter values.');
+		$request->setStatusBadParams();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetPlaylistTracks');
+		return;
+	}
+
+	# Optional comma-separated track IDs (e.g. already downloaded by the app) that must not be returned
+	my %excludedTrackIDs = map { $_ => 1 } split(/,/, $request->getParam('excludetrackids') // '');
+
+	# Collect track IDs without touching the player's playlist or the dpl history
+	my $masterClient = masterOrSelf($client);
+	my ($trackIDs, $tracksInfo) = ([], {});
+	my $noNewTracksCount = 0;
+	for (1..($playlist->{'usecache'} ? 1 : 20)) {
+		my ($newTrackIDs, $newTracksInfo) = getTrackIDsForPlaylist($masterClient, $playlist, $limit + scalar(keys %excludedTrackIDs), scalar(@{$trackIDs}), \%paramValues);
+		if ($newTrackIDs && $newTrackIDs eq 'error') {
+			$log->error('Error trying to find tracks. Please check your playlist definition.');
+			$request->setStatusBadConfig();
+			main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetPlaylistTracks');
+			return;
+		}
+		$newTrackIDs = filterTrackIDs($masterClient, $newTrackIDs || [], $trackIDs, 1);
+		$newTrackIDs = [grep { !$excludedTrackIDs{$_} } @{$newTrackIDs}] if %excludedTrackIDs;
+		if (!scalar(@{$newTrackIDs})) {
+			last if ++$noNewTracksCount >= 5;
+			next;
+		}
+		$noNewTracksCount = 0;
+		push @{$trackIDs}, @{$newTrackIDs};
+		%{$tracksInfo} = (%{$newTracksInfo || {}}, %{$tracksInfo});
+		last if scalar(@{$trackIDs}) >= $limit;
+	}
+
+	# Shuffle (unless the dpl is ordered) and limit
+	my $playlistTrackOrder = $playlist->{'playlisttrackorder'} || '';
+	unless ($playlistTrackOrder =~ /^(?:ordered|ordereddescrandom|orderedascrandom)$/ || $playlist->{'isStaticPL'} && $prefs->get('randomsavedplaylists') == 0) {
+		$trackIDs = shuffleIDlist($trackIDs, $tracksInfo);
+	}
+	splice @{$trackIDs}, $limit if scalar(@{$trackIDs}) > $limit;
+
+	my @tracks;
+	if ($request->getParam('primaryartist')) {
+		# Fall back to a db lookup if the dpl's sql didn't return the primary artist ID
+		my $sth = Slim::Schema->dbh->prepare('select primary_artist from tracks where id = ?');
+		for my $trackID (@{$trackIDs}) {
+			my $artistID = $tracksInfo->{$trackID}->{'primary_artist'};
+			if (!$artistID && $sth->execute($trackID)) {
+				($artistID) = $sth->fetchrow_array();
+				$sth->finish();
+			}
+			push @tracks, {'id' => $trackID, 'primary_artist' => $artistID};
+		}
+	} else {
+		@tracks = map { +{'id' => $_} } @{$trackIDs};
+	}
+
+	$request->addResult('count', scalar(@tracks));
+	$request->addResult('tracks', \@tracks);
+	$request->setStatusDone();
+	main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliGetPlaylistTracks');
+}
+
 sub cliDstmSeedListPlay {
 	main::DEBUGLOG && $log->is_debug && $log->debug('Entering cliDstmSeedListPlay');
 	my $request = shift;
@@ -3518,12 +3645,14 @@ sub cliDstmSeedListPlay {
 		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliDstmSeedListPlay');
 		return;
 	}
+	$playlistId = _resolveCustomPlaylistId($playlistId);
 	if (!$playLists->{$playlistId}) {
 		$log->warn("Playlist '$playlistId' not found");
 		$request->setStatusBadParams();
 		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliDstmSeedListPlay');
 		return;
 	}
+
 	my $dstmProvider = preferences('plugin.dontstopthemusic')->client($client)->get('provider') || '';
 	if (!$dstm_enabled || !$dstmProvider) {
 		$log->warn('DSTM is not enabled or no DSTM provider selected');
@@ -3597,6 +3726,7 @@ sub cliQueuePlaylist {
 		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliQueuePlaylist');
 		return;
 	}
+	$playlistId = _resolveCustomPlaylistId($playlistId);
 	if (!$playLists->{$playlistId}) {
 		$log->warn("Playlist '$playlistId' not found");
 		$request->setStatusBadParams();
@@ -3768,7 +3898,14 @@ sub cliSaveFavorite {
 	if (defined $playlistId && $playlistId =~ /^playlistid:(.+)$/) {
 		$playlistId = $1;
 	}
-	if (!$playlistId || !$playLists->{$playlistId}) {
+	if (!$playlistId) {
+		$log->warn('playlistid parameter required');
+		$request->setStatusBadParams();
+		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliSaveFavorite');
+		return;
+	}
+	$playlistId = _resolveCustomPlaylistId($playlistId);
+	if (!$playLists->{$playlistId}) {
 		$log->warn("Playlist '".($playlistId // '')."' not found");
 		$request->setStatusBadParams();
 		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliSaveFavorite');
@@ -3848,6 +3985,7 @@ sub cliTransferActivePlaylist {
 		main::DEBUGLOG && $log->is_debug && $log->debug('Exiting cliTransferActivePlaylist');
 		return;
 	}
+	$playlistId = _resolveCustomPlaylistId($playlistId);
 	if (!$playLists->{$playlistId}) {
 		$log->warn("Playlist '$playlistId' not found");
 		$request->setStatusBadParams();
@@ -4749,7 +4887,7 @@ sub saveAsStaticPlaylist {
 	my $newTrackIDs;
 	my ($totalTracksCompleteInfo, $newTracksCompleteInfo) = ({}, {});
 	my $totalTrackIDList = [];
-	my $noOfRetriesToGetUnplayedTracks = 20;
+	my $noOfRetriesToGetUnplayedTracks = $playlist->{'usecache'} ? 1 : 20;
 
 	my $i = 1;
 	my ($noMatchResults, $noPostFilterResults) = (0, 0);
@@ -4808,6 +4946,7 @@ sub saveAsStaticPlaylist {
 
 		$i++;
 		main::idleStreams();
+		($noMatchResults, $noPostFilterResults) = (0, 0);
 
 		last if scalar(@{$totalTrackIDList}) >= $staticPLmaxTrackLimit;
 	}
@@ -4817,20 +4956,20 @@ sub saveAsStaticPlaylist {
 		return 0;
 	}
 
+	## shuffle all track IDs before limiting (dynamic playlists that return all matching tracks, e.g. with cache option, are not randomized by their sql)
+	my $playlistTrackOrder = $playlist->{'playlisttrackorder'};
+	unless ($playlistTrackOrder && ($playlistTrackOrder eq 'ordered' || $playlistTrackOrder eq 'ordereddescrandom' || $playlistTrackOrder eq 'orderedascrandom')) {
+		main::DEBUGLOG && $log->is_debug && $log->debug('Shuffling all track IDs');
+		my $shuffledIDlist = shuffleIDlist($totalTrackIDList, $totalTracksCompleteInfo);
+		@{$totalTrackIDList} = @{$shuffledIDlist};
+	}
+
 	## limit results if necessary
 	if (scalar(@{$totalTrackIDList}) > $staticPLmaxTrackLimit) {
 		main::DEBUGLOG && $log->is_debug && $log->debug("Limiting the number of new tracks to be added to the specified limit ($staticPLmaxTrackLimit)");
 		my $limitingExecStartTime = time();
 		@{$totalTrackIDList} = @{$totalTrackIDList}[0..($staticPLmaxTrackLimit - 1)];
 		main::DEBUGLOG && $log->is_debug && $log->debug('Limiting exec time: '.(time() - $limitingExecStartTime).' secs');
-	}
-
-	## shuffle all track IDs?
-	my $playlistTrackOrder = $playlist->{'playlisttrackorder'};
-	unless ($sortOrder > 1 || $playlistTrackOrder && ($playlistTrackOrder eq 'ordered' || $playlistTrackOrder eq 'ordereddescrandom' || $playlistTrackOrder eq 'orderedascrandom')) {
-		main::DEBUGLOG && $log->is_debug && $log->debug('Shuffling all track IDs');
-		my $shuffledIDlist = shuffleIDlist($totalTrackIDList, $totalTracksCompleteInfo);
-		@{$totalTrackIDList} = @{$shuffledIDlist};
 	}
 
 	## Get tracks for ids
@@ -4890,7 +5029,7 @@ sub saveAsStaticPlaylist {
 		my $clientMode = Slim::Buttons::Common::mode($client);
 		if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4'),
-								 $statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4').$statusmsg));
+								$statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4').$statusmsg));
 		}
 		if ($material_enabled) {
 			Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id, 'timeout:'.getMsgDisplayTime($statusmsg)]);
@@ -6780,6 +6919,16 @@ sub _buildCustomPlaylistId {
 		$playlistId = 'dplusercustom_'.$safeName.'_'.$i++;
 	}
 	return $playlistId;
+}
+
+sub _resolveCustomPlaylistId {
+	my $playlistId = shift;
+	return $playlistId if !$playlistId || !$playLists || $playLists->{$playlistId} || index($playlistId, 'dplusercustom_') != 0;
+	# try normalized dpl ID in case it's a legacy custom dpl ID
+	my $normalizedId = _buildCustomPlaylistId(substr($playlistId, 14));
+	return $playlistId if !$playLists->{$normalizedId};
+	main::DEBUGLOG && $log->is_debug && $log->debug("Legacy custom dpl ID '$playlistId' resolved to '$normalizedId'");
+	return $normalizedId;
 }
 
 sub parsePlaylistName {
