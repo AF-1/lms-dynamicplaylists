@@ -1279,10 +1279,10 @@ sub addParameterValues {
 			for (my $i = 1; $i < $parameter->{'id'}; $i++) {
 				my $value;
 				if (defined($parameterValues)) {
-					$value = $parameterValues->{$i};
+					$value = normalizeParameterValue($playlist->{'parameters'}->{$i}->{'type'}, $parameterValues->{$i});
 				} else {
 					my $parameter = $client->modeParam('dynamicplaylist_parameter_'.$i);
-					$value = $parameter->{'id'};
+					$value = normalizeParameterValue($playlist->{'parameters'}->{$i}->{'type'}, $parameter->{'id'});
 				}
 				my $parameterid = "\'PlaylistParameter".$i."\'";
 				main::DEBUGLOG && $log->is_debug && $log->debug('Replacing '.$parameterid.' with '.$value);
@@ -1304,14 +1304,10 @@ sub addParameterValues {
 					$log->error("Error executing: $sql -- ".$sth->errstr);
 				} else {
 					my ($id, $name, $sortlink);
-					if ($paramType eq 'customdecade' || $paramType eq 'year' || $paramType eq 'customyear') {
+					if ($paramType eq 'customdecade' || $paramType eq 'year' || $paramType eq 'customyear' || $sth->{'NUM_OF_FIELDS'} < 3) {
 						eval { $sth->bind_columns(undef, \$id, \$name) };
 					} else {
 						eval { $sth->bind_columns(undef, \$id, \$name, \$sortlink) };
-						if ($@) {
-							$@ = '';
-							eval { $sth->bind_columns(undef, \$id, \$name) };
-						}
 					}
 					if ($@) {
 						$log->error("Error binding columns: $@");
@@ -1360,7 +1356,7 @@ sub getTrackIDsForPlaylist {
 				if (defined($paramValues) && defined($paramValues->{$pk})) {
 					my %parameter = (
 						'id' => $parameters->{$pk}->{'id'},
-						'value' => $paramValues->{$pk}
+						'value' => normalizeParameterValue($parameters->{$pk}->{'type'}, $paramValues->{$pk})
 					);
 					$parameterHash{$pk} = \%parameter;
 				}
@@ -1590,9 +1586,8 @@ sub handleWebMixParameters {
 	my $i = 1;
 	while (defined($params->{'dynamicplaylist_parameter_'.$i})) {
 		$parameterId++;
-		my $parameter = $playlist->{'parameters'}->{$i};
 		my %value = (
-			'id' => normalizeParameterValue($parameter && $parameter->{'type'}, $params->{'dynamicplaylist_parameter_'.$i})
+			'id' => $params->{'dynamicplaylist_parameter_'.$i}
 		);
 
 		$client->modeParam('dynamicplaylist_parameter_'.$i, \%value);
@@ -3342,7 +3337,7 @@ sub cliPlayPlaylist {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
 				main::DEBUGLOG && $log->is_debug && $log->debug("Using: $k = ".$params->{$k});
-				$newParamValues{$1} = normalizeParameterValue($playLists->{$playlistId}->{'parameters'}->{$1}->{'type'}, $params->{$k});
+				$newParamValues{$1} = $params->{$k};
 				$providedUserReqParamValues++;
 			}
 		} else {
@@ -3415,7 +3410,7 @@ sub cliContinuePlaylist {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
 				main::DEBUGLOG && $log->is_debug && $log->debug("Using: $k = ".$params->{$k});
-				$newParamValues{$1} = normalizeParameterValue($playLists->{$playlistId}->{'parameters'}->{$1}->{'type'}, $params->{$k});
+				$newParamValues{$1} = $params->{$k};
 				$providedUserReqParamValues++;
 			}
 		} else {
@@ -3482,7 +3477,7 @@ sub cliAddPlaylist {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
 				main::DEBUGLOG && $log->is_debug && $log->debug("Using: $k = ".$params->{$k});
-				$newParamValues{$1} = normalizeParameterValue($playLists->{$playlistId}->{'parameters'}->{$1}->{'type'}, $params->{$k});
+				$newParamValues{$1} = $params->{$k};
 				$providedUserReqParamValues++;
 			}
 		} else {
@@ -3552,7 +3547,7 @@ sub cliGetPlaylistTracks {
 	for my $k (keys %{$params}) {
 		my ($parameterId) = $k =~ /^dynamicplaylist_parameter_(.*)$/;
 		next unless defined $parameterId && exists $parameters->{$parameterId};
-		$paramValues{$parameterId} = normalizeParameterValue($parameters->{$parameterId}->{'type'}, $params->{$k});
+		$paramValues{$parameterId} = $params->{$k};
 	}
 	if (scalar(keys %paramValues) != scalar(keys %{$parameters})) {
 		$log->warn('This dynamic playlist requires user input but the CLI command did not provide '.(scalar(keys %paramValues) == 0 ? 'any' : 'all').' parameter values.');
@@ -3673,7 +3668,7 @@ sub cliDstmSeedListPlay {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/) {
 			if (exists $playLists->{$playlistId}->{'parameters'}->{$1}) {
 				main::DEBUGLOG && $log->is_debug && $log->debug("Using: $k = ".$params->{$k});
-				$newParamValues{$1} = normalizeParameterValue($playLists->{$playlistId}->{'parameters'}->{$1}->{'type'}, $params->{$k});
+				$newParamValues{$1} = $params->{$k};
 				$providedUserReqParamValues++;
 			}
 		} else {
@@ -3917,10 +3912,10 @@ sub cliSaveFavorite {
 	main::DEBUGLOG && $log->is_debug && $log->debug('params = '.Data::Dump::dump($params));
 
 	my $dplUserReqParamCount = defined $playlist->{'parameters'} ? scalar keys %{$playlist->{'parameters'}} : 0;
-	my (%normalizedValues, $providedUserReqParamValues);
+	my (%paramValues, $providedUserReqParamValues);
 	for my $k (keys %{$params}) {
 		if ($k =~ /^dynamicplaylist_parameter_(.*)$/ && exists $playlist->{'parameters'}->{$1}) {
-			$normalizedValues{$1} = normalizeParameterValue($playlist->{'parameters'}->{$1}->{'type'}, $params->{$k});
+			$paramValues{$1} = $params->{$k};
 			$providedUserReqParamValues++;
 		}
 	}
@@ -3941,7 +3936,7 @@ sub cliSaveFavorite {
 	my $addOnly = $request->getParam('addOnly') ? 1 : 0;
 	my $url = ($addOnly ? 'dynamicplaylistaddonly://' : 'dynamicplaylist://').$playlistId;
 	if ($dplUserReqParamCount) {
-		$url .= '?'.join('&', map { 'p'.$_.'='.$normalizedValues{$_} } sort keys %normalizedValues);
+		$url .= '?'.join('&', map { 'p'.$_.'='.$paramValues{$_} } sort keys %paramValues);
 	}
 	my $title = $request->getParam('name') || $playlist->{'name'};
 	$title .= ' ('.string('PLUGIN_DYNAMICPLAYLISTS4_SAVEDASFAV_ADDONLY_SUFFIX').')' if $addOnly;
@@ -5343,12 +5338,7 @@ sub _toggleMultipleSelectionStateIP3k {
 	if ($item->{'name'} && ($item->{'name'} eq string('PLUGIN_DYNAMICPLAYLISTS4_NEXT') || $item->{'name'} eq string('PLUGIN_DYNAMICPLAYLISTS4_PLAY'))) {
 		my $parameterId = $client->modeParam('dynamicplaylist_nextparameter');
 		my $playlist = $client->modeParam('dynamicplaylist_selectedplaylist');
-		my $multipleSelectionString;
-		if ($item->{'paramType'} eq 'multipledecades') {
-			$multipleSelectionString = getMultipleSelectionString($client, $item->{'paramType'}, 1);
-		} else {
-			$multipleSelectionString = getMultipleSelectionString($client, $item->{'paramType'});
-		}
+		my $multipleSelectionString = getMultipleSelectionString($client, $item->{'paramType'});
 		$item->{'value'} = $multipleSelectionString;
 		$item->{'id'} = $multipleSelectionString;
 		requestNextParameter($client, $item, $parameterId, $playlist);
@@ -5638,7 +5628,7 @@ sub getSortedStaticPlaylists {
 }
 
 sub getMultipleSelectionString {
-	my ($client, $paramType, $includeYears) = @_;
+	my ($client, $paramType) = @_;
 	main::DEBUGLOG && $log->is_debug && $log->debug('paramType = '.$paramType);
 
 	if (!$paramType) {
@@ -5656,24 +5646,12 @@ sub getMultipleSelectionString {
 	} elsif ($paramType eq 'multipledecades') {
 		my $selectedDecades = $client->pluginData('selected_decades') || [];
 		main::DEBUGLOG && $log->is_debug && $log->debug('selectedDecades = '.Data::Dump::dump($selectedDecades)) if $debugVerbose;
-		if ($includeYears) {
-			my @yearsArray;
+		if (main::DEBUGLOG && $log->is_debug) {
 			for my $decade (@{$selectedDecades}) {
-				main::DEBUGLOG && $log->is_debug && $log->debug('Selected decade: '.$decade) if $debugVerbose;
-				push @yearsArray, $decade;
-				if ($decade) {
-					push @yearsArray, $decade + $_ for 1..9;
-				}
+				$log->debug('Selected decade: '.$decade) if $debugVerbose;
 			}
-			$multipleSelectionString = join(',', @yearsArray);
-		} else {
-			if (main::DEBUGLOG && $log->is_debug) {
-				for my $decade (@{$selectedDecades}) {
-					$log->debug('Selected decade: '.$decade) if $debugVerbose;
-				}
-			}
-			$multipleSelectionString = join(',', @{$selectedDecades});
 		}
+		$multipleSelectionString = join(',', @{$selectedDecades});
 
 	} elsif ($paramType eq 'multipleyears') {
 		my $selectedYears = $client->pluginData('selected_years') || [];
@@ -7174,18 +7152,11 @@ sub addToPlayListHistory {
 sub clearPlayListHistory {
 	my $clients = shift;
 	return unless Slim::Schema::hasLibrary() && !Slim::Music::Import->stillScanning;
-	my $dbh = Slim::Schema->dbh;
 
-	my $sth;
-	if ($clients) {
-		my $clientIds = join(',', map { $dbh->quote($_->id) } @{$clients});
-		main::DEBUGLOG && $log->is_debug && $log->debug('Deleting playlist history for players: '.$clientIds);
-		$sth = $dbh->prepare("delete from dynamicplaylist_history where client in ($clientIds)");
-	} else {
-		main::DEBUGLOG && $log->is_debug && $log->debug('Deleting playlist history for all players');
-		$sth = $dbh->prepare("delete from dynamicplaylist_history");
-	}
-	eval { $sth->execute() };
+	my @clientIds = $clients ? map { $_->id } @{$clients} : ();
+	main::DEBUGLOG && $log->is_debug && $log->debug($clients ? 'Deleting playlist history for players: '.join(',', @clientIds) : 'Deleting playlist history for all players');
+	my $sth = Slim::Schema->dbh->prepare($clients ? 'delete from dynamicplaylist_history where client in ('.join(',', ('?') x scalar(@clientIds)).')' : 'delete from dynamicplaylist_history');
+	eval { $sth->execute(@clientIds) };
 	if ($@) {
 		$log->error("Database error: $@");
 	}
@@ -7251,6 +7222,7 @@ sub _migrateDPLschema {
 
 	if ($fromVersion < 1) {
 		my $needsRecreate = 0;
+		my ($historyTableExists) = $dbh->selectrow_array("select count(*) from sqlite_master where type = 'table' and name = 'dynamicplaylist_history'");
 		eval {
 			my $correctIndexExists = 0;
 			my $sth = $dbh->prepare("pragma index_list(dynamicplaylist_history)");
@@ -7280,7 +7252,7 @@ sub _migrateDPLschema {
 			$log->error("DPL schema migration v1: failed to read index_list: $@");
 			return;
 		}
-		if ($needsRecreate) {
+		if ($needsRecreate && $historyTableExists) {
 			$log->warn('DPL schema migration v1: recreating history table with correct unique(id, client) constraint');
 			eval { $dbh->do("drop table if exists dynamicplaylist_history") };
 			if ($@) {
@@ -7662,15 +7634,17 @@ sub handleSearchText {
 sub normalizeParameterValue {
 	my ($parameterType, $value) = @_;
 
+	# stored values (favorite urls, queue, client state, static playlists) stay raw and are normalized exactly once, because e.g. the escaping of search text is not repeatable
 	if ($parameterType && $parameterType eq 'multipledecades') {
-		my @yearsArray;
+		# expects decade start years (e.g. 1990), only multiples of 10 are expanded and duplicates are removed, so an already expanded value (e.g. from an older favorite) stays unchanged
+		my (@yearsArray, %seen);
 		foreach my $decade (split(/,/, $value)) {
 			push @yearsArray, $decade;
-			if ($decade) {
+			if ($decade && $decade % 10 == 0) {
 				push @yearsArray, $decade + $_ for 1..9;
 			}
 		}
-		return join(',', @yearsArray);
+		return join(',', grep { !$seen{$_}++ } @yearsArray);
 	}
 	if ($parameterType && ($parameterType eq 'albumtitlecontains' || $parameterType eq 'tracktitlecontains')) {
 		return handleSearchText($value);
