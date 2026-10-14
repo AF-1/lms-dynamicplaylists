@@ -36,9 +36,9 @@ Some features are not enabled by default.
 
 * Supports LMS **virtual libraries**.
 
-* [External API](https://github.com/AF-1/lms-dynamicplaylists/wiki/External-API) for other apps/plugins
+* [External API](https://github.com/AF-1/lms-dynamicplaylists/wiki/External-API) for apps / LMS plugins
 
-* Other plugins can provide their own dynamic playlists. See [Wiki page](https://github.com/AF-1/lms-dynamicplaylists/wiki/Providing-playlists-from-other-plugins).
+* Other LMS plugins can provide their own dynamic playlists. See [Wiki page](https://github.com/AF-1/lms-dynamicplaylists/wiki/Providing-playlists-from-other-plugins).
 
 * Save dynamic playlists with (user input) parameters to LMS **favourites** (see [FAQ](#faq)).
 
