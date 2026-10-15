@@ -37,6 +37,7 @@ my $log = Slim::Utils::Log->addLogCategory({
 
 my ($playLists, $localDynamicPlaylists, $localBuiltinDynamicPlaylists, $playListTypes, $playListMenuItems, $dplc_enabled, $dstm_enabled, $apc_enabled, $material_enabled, $debugVerbose);
 my $rescan = 0;
+my @nonTrackContentTypes = qw(ssp cpl src dir); # content types of non-playable rows in the tracks table
 
 my (%clientDplState, %stopcommands, %plugins);
 my (%choiceMapping, %disable, %categorylangstrings, %customsortnames);
@@ -671,16 +672,18 @@ sub findAndAdd {
 		main::DEBUGLOG && $log->is_debug && $log->debug((($addOnly || $continue) ? 'Adding ' : 'Playing ')."$type with first trackid ".($firstTrackID));
 		my $addingExecStartTime = time();
 		# Replace the current playlist with the first item / track or add it to end
-		my $request = $client->execute(['playlist', (($addOnly && $addOnly != 2) || $continue) ? 'addtracks' : 'loadtracks', sprintf('%s=%d', getLinkAttribute('track'), $firstTrackID)]);
+		my $request = Slim::Control::Request->new($client->id(), ['playlist', (($addOnly && $addOnly != 2) || $continue) ? 'addtracks' : 'loadtracks', sprintf('%s=%d', getLinkAttribute('track'), $firstTrackID)]);
 		$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+		$request->execute() if $request->isStatusDispatchable();
 
 		# Add the remaining items to the end
 		if (!defined $limit || $limit > 1 || scalar(@{$randomIDs2add}) >= 1) {
 			main::DEBUGLOG && $log->is_debug && $log->debug('Adding remaining '.scalar(@{$randomIDs2add}).' tracks to the end of the playlist.');
 			if (scalar(@{$randomIDs2add}) >= 1) {
 				foreach my $id (@{$randomIDs2add}) {
-					$request = $client->execute(['playlist', 'addtracks', sprintf('%s=%d', getLinkAttribute('track'), $id)]);
+					$request = Slim::Control::Request->new($client->id(), ['playlist', 'addtracks', sprintf('%s=%d', getLinkAttribute('track'), $id)]);
 					$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+					$request->execute() if $request->isStatusDispatchable();
 				}
 			}
 		}
@@ -825,8 +828,9 @@ sub playRandom {
 				if (defined($action->{'type'}) && lc($action->{'type'}) eq 'cli' && defined($action->{'data'})) {
 					main::DEBUGLOG && $log->is_debug && $log->debug('Executing action: '.$action->{'type'}.', '.$action->{'data'});
 					my @parts = split(/ /, $action->{'data'});
-					my $request = $client->execute(\@parts);
+					my $request = Slim::Control::Request->new($client->id(), \@parts);
 					$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+					$request->execute() if $request->isStatusDispatchable();
 				}
 			}
 		}
@@ -909,13 +913,15 @@ sub playRandom {
 			if (Slim::Player::Source::playmode($client) ne 'stop') {
 				my $alarm = Slim::Utils::Alarm->getCurrentAlarm($client);
 				if (!defined($alarm) || !$alarm->active()) {
-					my $request = $client->execute(['stop']);
+					my $request = Slim::Control::Request->new($client->id(), ['stop']);
 					$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+					$request->execute() if $request->isStatusDispatchable();
 				}
 			}
 			if (!$client->power()) {
-				my $request = $client->execute(['power', '1']);
+				my $request = Slim::Control::Request->new($client->id(), ['power', '1']);
 				$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+				$request->execute() if $request->isStatusDispatchable();
 			}
 		}
 
@@ -971,8 +977,9 @@ sub playRandom {
 	}
 
 	if ($continue) {
-		my $request = $client->execute(['pause', '0']);
+		my $request = Slim::Control::Request->new($client->id(), ['pause', '0']);
 		$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+		$request->execute() if $request->isStatusDispatchable();
 	}
 
 	if ($type && $type eq 'disable') {
@@ -1065,8 +1072,9 @@ sub playRandom {
 							if (defined($action->{'type'}) && lc($action->{'type'}) eq 'cli' && defined($action->{'data'})) {
 								main::DEBUGLOG && $log->is_debug && $log->debug('Executing action: '.$action->{'type'}.', '.$action->{'data'});
 								my @parts = split(/ /, $action->{'data'});
-								my $request = $client->execute(\@parts);
+								my $request = Slim::Control::Request->new($client->id(), \@parts);
 								$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+								$request->execute() if $request->isStatusDispatchable();
 							}
 						}
 					}
@@ -1370,12 +1378,37 @@ sub getTrackIDsForPlaylist {
 			return 'error';
 		} else {
 			main::DEBUGLOG && $log->is_debug && $log->debug('Found '.scalar(@{$result}).(scalar(@{$result}) == 1 ? ' trackID ' : ' trackIDs ').'for playlist \''.$playlist->{'name'}.'\'');
+			if (ref $result eq 'ARRAY' && scalar @{$result}) {
+				# drop non-playable tracks
+				my $nonTrackIDs = getNonTrackIDs();
+				my @nonTracksInResult = grep { $nonTrackIDs->{$_} } @{$result};
+				if (@nonTracksInResult) {
+					$result = [grep { !$nonTrackIDs->{$_} } @{$result}];
+					delete @{$tracksCompleteInfo}{@nonTracksInResult} if ref $tracksCompleteInfo eq 'HASH';
+					main::DEBUGLOG && $log->is_debug && $log->debug('Removed '.scalar(@nonTracksInResult).' non-track item(s) from the result of playlist \''.$playlist->{'name'}.'\': '.join(',', @nonTracksInResult));
+				}
+			}
 		}
 	}
 
 	use strict 'refs';
 	main::DEBUGLOG && $log->is_debug && $log->debug('result = '.Data::Dump::dump($result)) if $debugVerbose;
 	return $result, $tracksCompleteInfo;
+}
+
+sub getNonTrackIDs {
+	# IDs of all non-playable rows in the tracks table
+	return {} unless scalar @nonTrackContentTypes;
+
+	my $startTime = time();
+	my $ids = eval {Slim::Schema->dbh->selectcol_arrayref('select tracks.id from tracks where tracks.content_type in ('.join(',', ('?') x scalar @nonTrackContentTypes).')', undef, @nonTrackContentTypes)};
+	if ($@ || !$ids) {
+		$log->warn('Could not get non-track IDs: '.($@ || 'no result'));
+		return {};
+	}
+	main::DEBUGLOG && $log->is_debug && $log->debug('Got '.scalar(@{$ids}).' non-track IDs in '.sprintf('%.3f', time() - $startTime).' secs');
+	my %nonTrackIDs = map { $_ => 1 } @{$ids};
+	return \%nonTrackIDs;
 }
 
 
@@ -6208,8 +6241,9 @@ sub _transferActivePlaylist {
 
 	Slim::Utils::Timers::setTimer($thisClient, Time::HiRes::time() + 1, sub {
 		unless ($thisClientPlaying) {
-			my $request = $targetClient->execute(['pause', '1']);
+			my $request = Slim::Control::Request->new($targetClient->id(), ['pause', '1']);
 			$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+			$request->execute() if $request->isStatusDispatchable();
 		}
 		$thisClient->execute(['playlist', 'clear']);
 		$thisClient->currentPlaylistUpdateTime(Time::HiRes::time());
@@ -7452,8 +7486,9 @@ sub commandCallback {
 
 			# Delete tracks before this one on the playlist
 			for (1..$songIndex - $songsToKeep) {
-				my $request = $client->execute(['playlist', 'delete', 0]);
+				my $request = Slim::Control::Request->new($client->id(), ['playlist', 'delete', 0]);
 				$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+				$request->execute() if $request->isStatusDispatchable();
 			}
 		}
 
