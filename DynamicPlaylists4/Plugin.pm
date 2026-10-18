@@ -112,6 +112,7 @@ sub initPlugin {
 	Slim::Control::Request::addDispatch(['dynamicplaylist', 'refreshplaylists'], [1, 0, 0, \&cliRefreshPlaylists]);
 	Slim::Control::Request::addDispatch(['dynamicplaylistmultipletoggle', '_paramtype', '_item', '_value'], [1, 0, 0, \&_toggleMultipleSelectionState]);
 	Slim::Control::Request::addDispatch(['dynamicplaylistmultipleall', '_paramtype', '_value'], [1, 0, 0, \&_multipleSelectAllOrNone]);
+	Slim::Control::Request::addDispatch(['dynamicplaylist', 'restored', '_dplid'], [1, 0, 0, undef]); # notify after a previously active dpl has been restored/continued
 
 	Slim::Player::ProtocolHandlers->registerHandler(dynamicplaylist => 'Plugins::DynamicPlaylists4::ProtocolHandler');
 	Slim::Player::ProtocolHandlers->registerHandler(dynamicplaylistaddonly => 'Plugins::DynamicPlaylists4::PlaylistProtocolHandler');
@@ -1449,6 +1450,7 @@ sub stateContinue {
 	my ($client, $type, $offset, $parameters) = @_;
 
 	$clientDplState{$client}->{'type'} = $type;
+	masterOrSelf($client)->pluginData('type' => $type);
 	$clientDplState{$client}->{'offset'} = $offset;
 	$clientDplState{$client}->{'parameterValues'} = $parameters;
 	$prefs->client($client)->set('playlist', $type);
@@ -7350,9 +7352,7 @@ sub powerCallback {
 	return if !defined $client;
 
 	if ($request->getParam('_newvalue')) {
-		if ($prefs->get('rememberactiveplaylist')) {
-			continuePreviousPlaylist($client);
-		}
+		continuePreviousPlaylist($client) if $prefs->get('rememberactiveplaylist');
 	}
 }
 
@@ -7361,10 +7361,7 @@ sub clientNewCallback {
 	my $client = $request->client();
 
 	return if !defined $client;
-
-	if ($prefs->get('rememberactiveplaylist')) {
-		continuePreviousPlaylist($client);
-	}
+	continuePreviousPlaylist($client) if $prefs->get('rememberactiveplaylist');
 }
 
 sub rescanDone {
@@ -7402,10 +7399,14 @@ sub continuePreviousPlaylist {
 		my $parameters = $prefs->client($masterClient)->get('playlist_parameters');
 
 		my $playlist = getPlayList($masterClient, $type);
+		if (!$playlist) {
+			main::INFOLOG && $log->is_info && $log->info("Not restoring dpl '$type' on ".$client->name.": no matching dynamic playlist definition found (deleted or provider plugin unavailable)");
+			return;
+		}
 		my @players = Slim::Player::Sync::slaves($masterClient);
 		push @players, $masterClient;
 		foreach my $player (@players) {
-			if ($playlist && $playlist->{'usespreselection'}) {
+			if ($playlist->{'usespreselection'}) {
 				for my $listName (qw(cachedArtists cachedAlbums)) {
 					my $preselectionList = $prefs->client($player)->get($listName);
 					if ($preselectionList) {
@@ -7416,6 +7417,7 @@ sub continuePreviousPlaylist {
 			}
 			stateContinue($player, $type, $offset, $parameters);
 		}
+		Slim::Control::Request::notifyFromArray($masterClient, ['dynamicplaylist', 'restored', $type]);
 	} else {
 		main::DEBUGLOG && $log->is_debug && $log->debug('No previously playing playlist');
 	}
