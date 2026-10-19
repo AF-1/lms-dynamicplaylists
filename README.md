@@ -21,9 +21,11 @@ Some features are not enabled by default.
 
 ## Features
 
-* Use **your own custom dynamic playlist files/definitions directly in DPL** without intermediary plugins - you don't have to install other plugins to get dynamic playlists. See [FAQ](#faq).
-
 * Comes with more than 200 ready-to-use dynamic playlists (stand-alone + for context menus).
+
+* Use **your own custom dynamic playlist files** (SQLite statements) directly in DPL without intermediary plugins. You don't have to install other plugins to get dynamic playlists. See [FAQ](#faq).
+
+* **Context menus** for artists, albums, genres, years/decades and static playlists. Available in the LMS web UI, in Material and on jivelite players (piCorePlayer, Touch, Radio, SqueezePlay).
 
 * **Multiple** selection of *genres*, *decades*, *years* and *static playlists*.
 
@@ -31,25 +33,19 @@ Some features are not enabled by default.
 
 * Use dynamic playlists to **create *static/normal* playlists**.
 
-* Queue dynamic playlists (see [FAQ](#faq)).
-
 * **Continue listening** to your *active* dynamic playlist **on another player** by transferring it with one click (incl. history, cache + all parameters).
-
-* Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
 
 * Supports LMS **virtual libraries**.
 
-* [External API](https://github.com/AF-1/lms-dynamicplaylists/wiki/External-API) for apps / LMS plugins
+* Queue dynamic playlists (see [FAQ](#faq)).
 
-* Other LMS plugins can provide their own dynamic playlists. See [Wiki page](https://github.com/AF-1/lms-dynamicplaylists/wiki/Providing-playlists-from-other-plugins).
+* Create a *Don't Stop the Music* seed list and auto-start your DSTM mix.
 
 * Save dynamic playlists with (user input) parameters to LMS **favourites** (see [FAQ](#faq)).
 
-* New playlist parameters (see [wiki](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format)).
+* Compatible with [**Dynamic Playlist Creator**](https://github.com/AF-1/#-dynamic-playlist-creator), [**Alternative Play Count**](https://github.com/AF-1/#-alternative-play-count) and [**Custom Skip**](https://github.com/AF-1/#-custom-skip). If you have installed Alternative Play Count, you will see some additional dynamic playlists that use its data.
 
-* Compatible with [**Dynamic Playlist Creator**](https://github.com/AF-1/#-dynamic-playlist-creator), [**Alternative Play Count**](https://github.com/AF-1/#-alternative-play-count) and [**Custom Skip**](https://github.com/AF-1/#-custom-skip).
-
-* If you have installed the [**Alternative Play Count**](https://github.com/AF-1/#-alternative-play-count) plugin, you will see some additional dynamic playlists that use the data from this plugin.
+* **For developers:** [External API](https://github.com/AF-1/lms-dynamicplaylists/wiki/External-API) for apps and LMS plugins, other plugins can [provide their own dynamic playlists](https://github.com/AF-1/lms-dynamicplaylists/wiki/Providing-playlists-from-other-plugins), and the [dynamic playlist format](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format) offers special playlist parameters.
 <br><br><br><br>
 
 
@@ -57,8 +53,8 @@ Some features are not enabled by default.
 While the Dynamic Playlists menu in the LMS home menu is easy to find, its **context menus** can easily be overlooked. You'll find the **Dynamic Playlists menus** in the *context menus* for **artists**, **albums**, **genres**, **years** (for years and decades) and **static playlists**. Some of them are presented below.
 <br><br>
 
-### Players with Jivlite UI (Touch, piCorePlayer, SqueezePlay, Radio)
-![Players with Jivlite UI (Touch, piCorePlayer, SqueezePlay, Radio)](screenshots/jivelite.gif)
+### Players with Jivelite UI (Touch, piCorePlayer, SqueezePlay, Radio)
+![Players with Jivelite UI (Touch, piCorePlayer, SqueezePlay, Radio)](screenshots/jivelite.gif)
 <hr><br>
 
 ### LMS Web UI - Default Skin
@@ -138,7 +134,7 @@ For dynamic playlists that can retrieve <b>all</b> tracks matching your search p
 </p></details><br>
 
 <details><summary>»<b>I've added a dynamic playlist to my LMS favorites, but it no longer works.</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>There are some dynamic playlists that I can't add to LMS favorites.</b>«<br>&nbsp;&nbsp;&nbsp;&nbsp;»<b>DPL shows a favorite icon with a <i>p</i> (default skin) or an orange tint (classic skin) next to my dynamic playlists. Why?</b>«</summary><br><p>
-Prior to <i>Dynamic Playlists <b>3</b></i>, you could <b>only</b> save <i>one-click</i> dynamic playlists as favorites that don't ask for user input when you start them.<br><br>Now you can also add dynamic playlists <b>with</b> user input parameters.<br>By <b>default</b>, <i>Dynamic Playlists</i> will <b>not</b> let you save</b> dynamic playlists as LMS favorites that ask users for <b>volatile</b> input at run-time (artist, album, genre(s) or playlist(s)) because those values <b>could change after a rescan</b> and break such favorites.<br>
+Prior to <i>Dynamic Playlists <b>3</b></i>, you could <b>only</b> save <i>one-click</i> dynamic playlists as favorites that don't ask for user input when you start them.<br><br>Now you can also add dynamic playlists <b>with</b> user input parameters.<br>By <b>default</b>, <i>Dynamic Playlists</i> will <b>not</b> let you save dynamic playlists as LMS favorites that ask users for <b>volatile</b> input at run-time (artist, album, genre(s) or playlist(s)) because those values <b>could change after a rescan</b> and break such favorites.<br>
 If you still want to add dynamic playlists with <b>volatile</b> parameter values (artist, album, genre(s) or playlist(s)) to LMS favorites, you can enable this in the plugin settings. However, keep in mind that such favorites may no longer work after a rescan and you'd have to delete and <b>readd</b> them. Therefore I suggest you choose a descriptive name so you'll remember what parameter values you chose (like "Alternative 80s rated").<br><br>
 If you always select the same artists, albums, genres or playlists, it's probably better to create a <b>custom</b> dynamic playlist with the actual artist/album/genre/playlist <b>names</b>. A favorite for such a one-click dynamic playlist is not affected by rescans.<br><br>
 This feature is <b>limited to the LMS web UI</b> (<i>(Dark) Default</i> and <i>Classic</i> skin), <b>players with jivelite UI</b> (<i>Touch</i>, <i>Radio</i>, <i>SqueezePlay</i>, <i>piCorePlayer</i>) and <b>Material</b> skin.<br><br>
