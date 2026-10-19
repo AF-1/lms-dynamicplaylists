@@ -23,7 +23,9 @@ Some features are not enabled by default.
 
 * Comes with more than 200 ready-to-use dynamic playlists (stand-alone + for context menus).
 
-* Use **your own custom dynamic playlist files** (SQLite statements) directly in DPL without intermediary plugins. You don't have to install other plugins to get dynamic playlists. See [FAQ](#faq).
+* Use **custom dynamic playlists** tailored to your specific needs:
+	* **Easily** with [**Dynamic Playlist Creator**](https://github.com/AF-1/#-dynamic-playlist-creator): its templates offer many options and need no SQLite knowledge.
+	* **Manually** with your own [SQLite statements](https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format) that you use directly in DPL (see [FAQ](#faq)).
 
 * **Context menus** for artists, albums, genres, years/decades and static playlists. Available in the LMS web UI, in Material and on jivelite players (piCorePlayer, Touch, Radio, SqueezePlay).
 
