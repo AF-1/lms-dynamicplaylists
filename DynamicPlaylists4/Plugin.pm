@@ -40,7 +40,7 @@ my $rescan = 0;
 my @nonTrackContentTypes = qw(ssp cpl src dir); # content types of non-playable rows in the tracks table
 
 my (%clientDplState, %stopcommands, %plugins);
-my (%choiceMapping, %disable, %categorylangstrings, %customsortnames);
+my (%choiceMapping, %disable, %categorylangstrings, %customsortnames, %simpleOptionRegexes);
 my $cache = Slim::Utils::Cache->new();
 
 sub initPlugin {
@@ -7104,8 +7104,9 @@ sub parseVirtualLibraryID {
 
 sub _parseSimpleOption {
 	my ($line, $tag, $warnOnMissing) = @_;
-	if ($line =~ /^\s*--\s*\Q$tag\E\s*[:=]\s*/) {
-		$line =~ m/^\s*--\s*\Q$tag\E\s*[:=]\s*([^:]+)\s*(.*)$/;
+	my $regexes = $simpleOptionRegexes{$tag} ||= [qr/^\s*--\s*\Q$tag\E\s*[:=]\s*/, qr/^\s*--\s*\Q$tag\E\s*[:=]\s*([^:]+)\s*(.*)$/];
+	if ($line =~ $regexes->[0]) {
+		$line =~ $regexes->[1];
 		my $value = $1;
 		if (_hasValue($value)) {
 			$value =~ s/^\s+|\s+$//g;
