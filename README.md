@@ -177,7 +177,7 @@ And <b>context menus</b> (= <i><b>M</b>ore</i> menu in the web UI or <i>click/to
 
 <details><summary>»<b>I want my dynamic playlist to use one of Custom Skip's filter sets.</b>«</summary><br><p>
 Use <a href="https://github.com/AF-1/#-dynamic-playlist-creator"><b>Dynamic Playlist Creator</b></a> to create a custom dynamic playlist with a specific Custom Skip filter set that's enabled/disabled when your dynamic playlists starts/stops.<br>If you have created a custom dynamic playlist from scratch (raw SQLite), just add the necessary <b>action/CLI playlist parameters</b> to your file as described <a href="https://github.com/AF-1/lms-dynamicplaylists/wiki/DPL-playlist-format#general-parameters">here</a>.<br>
-If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create a Custom Skip filter set that will <i>only</i> be active if DPL plays a dynamic playlist. See Custom Skip <a href="https://github.com/AF-1/lms-customskip/wiki#i-want-customskip-to-filter-only-dynamic-playlist-tracks">Wiki</a>.
+If you only need <b>one</b> filter set for <b>all</b> dynamic playlists, create a Custom Skip filter set that will <i>only</i> be active if DPL plays a dynamic playlist. See Custom Skip <a href="https://github.com/AF-1/lms-customskip/wiki#only-filter-dynamic-playlist-tracks">Wiki</a>.
 </p></details><br>
 
 <details><summary>»<b>Do I need the <i>Dynamic Mix</i> plugin?</b>«</summary><br><p>
