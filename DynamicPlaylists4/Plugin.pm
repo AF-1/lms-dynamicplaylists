@@ -520,7 +520,7 @@ sub findAndAdd {
 	if (scalar(@{$totalTrackIDList}) > 0) {
 		# dynamic playlists that use cache should not contain SQLite limit
 		main::DEBUGLOG && $log->is_debug && $log->debug('Using (remaining) '.scalar(@{$totalTrackIDList}).' cached track IDs');
-	} elsif (!$client->pluginData('cacheFilled') || $forcedAddDifferentPlaylist) {
+	} elsif (!$dplUseCache || !$client->pluginData('cacheFilled') || $forcedAddDifferentPlaylist) {
 		main::DEBUGLOG && $log->is_debug && $log->debug('Cache '.($dplUseCache ? 'empty' : 'not used').'. Getting track IDs');
 		my $noOfRetriesToGetUnplayedTracks = $dplUseCache ? 1 : 20;
 		my $i = 1;
@@ -675,6 +675,7 @@ sub findAndAdd {
 		# Replace the current playlist with the first item / track or add it to end
 		my $request = Slim::Control::Request->new($client->id(), ['playlist', (($addOnly && $addOnly != 2) || $continue) ? 'addtracks' : 'loadtracks', sprintf('%s=%d', getLinkAttribute('track'), $firstTrackID)]);
 		$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+		$request->privateData('PLUGIN_DYNAMICPLAYLISTS4');
 		$request->execute() if $request->isStatusDispatchable();
 
 		# Add the remaining items to the end
@@ -684,6 +685,7 @@ sub findAndAdd {
 				foreach my $id (@{$randomIDs2add}) {
 					$request = Slim::Control::Request->new($client->id(), ['playlist', 'addtracks', sprintf('%s=%d', getLinkAttribute('track'), $id)]);
 					$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+					$request->privateData('PLUGIN_DYNAMICPLAYLISTS4');
 					$request->execute() if $request->isStatusDispatchable();
 				}
 			}
@@ -831,6 +833,7 @@ sub playRandom {
 					my @parts = split(/ /, $action->{'data'});
 					my $request = Slim::Control::Request->new($client->id(), \@parts);
 					$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+					$request->privateData('PLUGIN_DYNAMICPLAYLISTS4');
 					$request->execute() if $request->isStatusDispatchable();
 				}
 			}
@@ -916,12 +919,14 @@ sub playRandom {
 				if (!defined($alarm) || !$alarm->active()) {
 					my $request = Slim::Control::Request->new($client->id(), ['stop']);
 					$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+					$request->privateData('PLUGIN_DYNAMICPLAYLISTS4');
 					$request->execute() if $request->isStatusDispatchable();
 				}
 			}
 			if (!$client->power()) {
 				my $request = Slim::Control::Request->new($client->id(), ['power', '1']);
 				$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+				$request->privateData('PLUGIN_DYNAMICPLAYLISTS4');
 				$request->execute() if $request->isStatusDispatchable();
 			}
 		}
@@ -954,7 +959,7 @@ sub playRandom {
 					my $clientMode = Slim::Buttons::Common::mode($client);
 					if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 						$client->showBriefly({'line' => [$statusmsg,
-											 $playlistName]}, getMsgDisplayTime($statusmsg.$playlistName));
+											$playlistName]}, getMsgDisplayTime($statusmsg.$playlistName));
 					}
 					if ($material_enabled) {
 						my $materialMsg = $statusmsg.' '.$playlistName;
@@ -965,7 +970,7 @@ sub playRandom {
 					my $clientMode = Slim::Buttons::Common::mode($client);
 					if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 						$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED'),
-											 string('PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED_LONG').' '.$playlistName]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED').string('PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED_LONG').$playlistName));
+											string('PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED_LONG').' '.$playlistName]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED').string('PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED_LONG').$playlistName));
 					}
 					if ($material_enabled) {
 						my $materialMsg = string('PLUGIN_DYNAMICPLAYLISTS4_NOW_PLAYING_FAILED_LONG').' '.$playlistName;
@@ -980,6 +985,7 @@ sub playRandom {
 	if ($continue) {
 		my $request = Slim::Control::Request->new($client->id(), ['pause', '0']);
 		$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+		$request->privateData('PLUGIN_DYNAMICPLAYLISTS4');
 		$request->execute() if $request->isStatusDispatchable();
 	}
 
@@ -1075,6 +1081,7 @@ sub playRandom {
 								my @parts = split(/ /, $action->{'data'});
 								my $request = Slim::Control::Request->new($client->id(), \@parts);
 								$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+								$request->privateData('PLUGIN_DYNAMICPLAYLISTS4');
 								$request->execute() if $request->isStatusDispatchable();
 							}
 						}
@@ -1135,7 +1142,7 @@ sub playRandom {
 				my $clientMode = Slim::Buttons::Common::mode($client);
 				if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 					$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_FAILED'),
-										 $statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_FAILED').$statusmsg));
+										$statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4_DSTM_PLAY_FAILED').$statusmsg));
 				}
 				if ($material_enabled) {
 					Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id, 'timeout:'.getMsgDisplayTime($statusmsg)]);
@@ -3031,7 +3038,7 @@ sub _cliJiveSaveFavWithParams {
 		my $clientMode = Slim::Buttons::Common::mode($client);
 		if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 			$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4'),
-								 $statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4').$statusmsg));
+								$statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4').$statusmsg));
 		}
 		if ($material_enabled) {
 			Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id, 'timeout:'.getMsgDisplayTime($statusmsg)]);
@@ -5298,7 +5305,7 @@ sub _saveStaticPlaylistJive {
 			my $clientMode = Slim::Buttons::Common::mode($client);
 			if (!defined($clientMode) || $clientMode !~ /^SCREENSAVER./) {
 				$client->showBriefly({'line' => [string('PLUGIN_DYNAMICPLAYLISTS4'),
-									 $statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4').$statusmsg));
+									$statusmsg]}, getMsgDisplayTime(string('PLUGIN_DYNAMICPLAYLISTS4').$statusmsg));
 			}
 			if ($material_enabled) {
 				Slim::Control::Request::executeRequest(undef, ['material-skin', 'send-notif', 'type:info', 'msg:'.$statusmsg, 'client:'.$client->id, 'timeout:'.getMsgDisplayTime($statusmsg)]);
@@ -6245,6 +6252,7 @@ sub _transferActivePlaylist {
 		unless ($thisClientPlaying) {
 			my $request = Slim::Control::Request->new($targetClient->id(), ['pause', '1']);
 			$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+			$request->privateData('PLUGIN_DYNAMICPLAYLISTS4');
 			$request->execute() if $request->isStatusDispatchable();
 		}
 		$thisClient->execute(['playlist', 'clear']);
@@ -7429,11 +7437,13 @@ sub commandCallback {
 	my $client = $request->client();
 	my $masterClient = masterOrSelf($client);
 
-	if (defined($request->source()) && $request->source() eq 'PLUGIN_DYNAMICPLAYLISTS4') {
+	my $source = $request->source();
+	my $privateData = $request->privateData();
+	if ((defined($source) && $source eq 'PLUGIN_DYNAMICPLAYLISTS4') || (defined($privateData) && !ref($privateData) && $privateData eq 'PLUGIN_DYNAMICPLAYLISTS4')) {
 		main::DEBUGLOG && $log->is_debug && $log->debug('ignoring command initiated by PLUGIN_DYNAMICPLAYLISTS4') if $debugVerbose;
 		return;
-	} elsif (defined($request->source())) {
-		main::DEBUGLOG && $log->is_debug && $log->debug('received command initiated by '.$request->source());
+	} elsif (defined($source)) {
+		main::DEBUGLOG && $log->is_debug && $log->debug('received command initiated by '.$source);
 	}
 	if ($request->isCommand([['playlist'], ['play']])) {
 		my $url = $request->getParam('_item');
@@ -7491,6 +7501,7 @@ sub commandCallback {
 			for (1..$songIndex - $songsToKeep) {
 				my $request = Slim::Control::Request->new($client->id(), ['playlist', 'delete', 0]);
 				$request->source('PLUGIN_DYNAMICPLAYLISTS4');
+				$request->privateData('PLUGIN_DYNAMICPLAYLISTS4');
 				$request->execute() if $request->isStatusDispatchable();
 			}
 		}
