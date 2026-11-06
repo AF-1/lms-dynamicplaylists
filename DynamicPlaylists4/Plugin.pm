@@ -7440,7 +7440,7 @@ sub commandCallback {
 	my $source = $request->source();
 	my $privateData = $request->privateData();
 	if ((defined($source) && $source eq 'PLUGIN_DYNAMICPLAYLISTS4') || (defined($privateData) && !ref($privateData) && $privateData eq 'PLUGIN_DYNAMICPLAYLISTS4')) {
-		main::DEBUGLOG && $log->is_debug && $log->debug('ignoring command initiated by PLUGIN_DYNAMICPLAYLISTS4') if $debugVerbose;
+		main::DEBUGLOG && $log->is_debug && $log->debug('Ignoring own command "'.$request->getRequestString().'" (source: '.($source // 'undef').')');
 		return;
 	} elsif (defined($source)) {
 		main::DEBUGLOG && $log->is_debug && $log->debug('received command initiated by '.$source);
