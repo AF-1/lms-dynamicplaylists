@@ -1495,6 +1495,7 @@ sub stateStop {
 	$masterClient->pluginData('type' => '');
 	$masterClient->pluginData('repeatcounter' => '');
 	$client->pluginData('lastSongIndex' => -1);
+	$client->pluginData('lastSongKey' => '');
 }
 
 
@@ -7455,9 +7456,7 @@ sub commandCallback {
 	main::DEBUGLOG && $log->is_debug && $log->debug('');
 	main::DEBUGLOG && $log->is_debug && $log->debug('received command: '.($request->getRequestString()));
 
-	# because of the filter this should never happen
-	# in addition there are valid commands (e.g. rescan) that have no client
-	# so the bt() is strange here
+	# no client or no active dynamic playlist for this master, nothing to do
 	if (!defined $masterClient || !defined $clientDplState{$masterClient}->{'type'}) {
 		return;
 	}
@@ -7479,15 +7478,24 @@ sub commandCallback {
 				return;
 			}
 
+			my $song = Slim::Player::Source::playingSong($client);
+			my $track = ($song && $song->currentTrack()) ? $song->currentTrack() : undef;
+			my $trackKey = $track ? ($track->urlmd5 || $track->url || '') : '';
+			main::DEBUGLOG && $log->is_debug && $log->debug('trackKey = '.Data::Dump::dump($trackKey)) if $debugVerbose;
+			my $songKey = $song ? Scalar::Util::refaddr($song).'|'.$trackKey : '';
+			main::DEBUGLOG && $log->is_debug && $log->debug('songKey = '.Data::Dump::dump($songKey)) if $debugVerbose;
+			my $lastSongKey = $client->pluginData('lastSongKey') // '';
+			main::DEBUGLOG && $log->is_debug && $log->debug('lastSongKey = '.Data::Dump::dump($lastSongKey)) if $debugVerbose;
 			my $lastSongIndex = $client->pluginData('lastSongIndex') // -1;
-			if ($songIndex == $lastSongIndex) {
-				main::DEBUGLOG && $log->is_debug && $log->debug("Ignoring duplicate newsong event for same song index ($songIndex), probably in-song jump event.");
+			my $isDuplicate = $songKey ne '' ? ($songKey eq $lastSongKey) : ($songIndex == $lastSongIndex);
+			if ($isDuplicate) {
+				main::DEBUGLOG && $log->is_debug && $log->debug("Ignoring duplicate newsong event for the same song (client playlist index: $songIndex), probably in-song jump event.");
 				return;
 			}
 			$client->pluginData('lastSongIndex' => $songIndex);
+			$client->pluginData('lastSongKey' => $songKey);
 
-			my $song = Slim::Player::Source::playingSong($client);
-			my $newTrackTitle = ($song && $song->currentTrack()) ? $song->currentTrack()->title : '';
+			my $newTrackTitle = $track ? $track->title : '';
 			main::DEBUGLOG && $log->is_debug && $log->debug("new song detected (client playlist index: $songIndex)".($newTrackTitle ? ': '.$newTrackTitle : ''));
 		} else {
 			main::DEBUGLOG && $log->is_debug && $log->debug('deletion detected (client playlist index: '.($request->getParam('_index')).')');
@@ -7508,6 +7516,10 @@ sub commandCallback {
 
 		my $songAddingCheckDelay = $prefs->get('song_adding_check_delay') || 0;
 		$songIndex = Slim::Player::Source::streamingSongIndex($client);
+
+		# remember the index after(!) stripping so the next song is not mistaken for a duplicate
+		$client->pluginData('lastSongIndex' => $songIndex) if $request->isCommand([['playlist'], ['newsong']]);
+
 		my $songsRemaining = Slim::Player::Playlist::count($client) - $songIndex - 1;
 		if ($songAddingCheckDelay && $songsRemaining > 0) {
 			main::DEBUGLOG && $log->is_debug && $log->debug("Will check in $songAddingCheckDelay seconds if new songs have to be added\n\n");
